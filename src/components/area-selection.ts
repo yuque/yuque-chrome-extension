@@ -60,7 +60,6 @@ class AreaSelection extends EventEmitter {
   }
 
   getClosestElem(target: EventTarget | null): HTMLElement | null {
-    // 添加以下代码来排除 overlay
     if (this.overlay && target === this.overlay[0]) {
       return null;
     }
@@ -150,14 +149,13 @@ class AreaSelection extends EventEmitter {
   onMouseMove = (e: JQuery.Event): false | void => {
     e.stopPropagation();
     e.preventDefault();
-    e.stopImmediatePropagation(); // 添加此行以阻止原生页面事件
+    e.stopImmediatePropagation();
 
     // 暂时隐藏覆盖层
     if (this.overlay) {
       this.overlay.css('display', 'none');
     }
 
-    // 使用 document.elementFromPoint 获取实际元素
     const actualElem = document.elementFromPoint(e.clientX, e.clientY);
     const elem = this.getClosestElem(actualElem);
 
@@ -205,6 +203,7 @@ class AreaSelection extends EventEmitter {
         (elem as any).imageSrc = (elem as HTMLImageElement).src;
       }
     }
+    this.emit('change', this.selectedElems.size);
   }
 
   onSelectedArea = (e: JQuery.Event): false | void => {

@@ -92,7 +92,6 @@ const SELECT_TYPES = [
 const useViewModel = () => {
   const [books, setBooks] = useState([NOTE_DATA]);
   const [currentBookId, setCurrentBookId] = useState(NOTE_DATA.id);
-  // const [currentType, setCurrentType] = useState(null);
   const [showContinueButton, setShowContinueButton] = useState(false);
   const { editorValue, currentType, setEditorValue, setCurrentType } =
     useContext(EditorValueContext);

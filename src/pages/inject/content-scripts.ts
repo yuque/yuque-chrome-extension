@@ -22,10 +22,10 @@ class App {
   private createTipMask() {
     // 创建遮罩层和提示信息，并添加样式
     const mask = $('<div>')
-      .addClass('mask')
+      .addClass('tip-mask')
       .css({
         position: 'fixed',
-        top: '20%', // 靠上的位置，可以根据需要调整
+        top: '10%', // 靠上的位置，可以根据需要调整
         left: '50%',
         transform: 'translateX(-50%)',
         padding: '20px',
@@ -33,6 +33,7 @@ class App {
         zIndex: 9998,
         borderRadius: '10px', // 圆角矩形
         textAlign: 'center',
+        pointerEvents: 'none', // 遮罩层不需要响应鼠标事件
       })
       .appendTo('body');
     const maskMessage = $('<div>')
@@ -45,24 +46,29 @@ class App {
       })
       .appendTo(mask);
 
-    // 设置一个定时器，在 4 秒后移除蒙层
-    setTimeout(() => {
-      mask.remove();
-    }, 3000);
-
     return mask;
+  }
+
+  private removeTipMask() {
+    $('.tip-mask').remove();
+  }
+
+  private updateSelectedCounter() {
+    this.areaSelection.on('change', count => {
+      $('.submit-selection').text(`确认选取 (${count})`);
+    });
   }
 
   private createConfirmButton(iframe) {
     const submitBtn = $('<button>')
       .addClass('submit-selection')
-      .text('确认选取')
+      .text('确认选取 (0)')
       .css({
         position: 'fixed',
-        bottom: 32,
+        top: 32,
         right: 32,
         zIndex: 999999,
-        width: 96,
+        width: 120,
         backgroundColor: '#25b864',
         borderColor: '#25b864', // @primary-color
         borderRadius: 2,
@@ -99,6 +105,7 @@ class App {
         );
         this.areaSelection.clean();
         submitBtn.remove();
+        this.removeTipMask();
       });
 
     submitBtn.hover(
@@ -116,6 +123,8 @@ class App {
       },
     );
 
+    this.updateSelectedCounter();
+
     return submitBtn;
   }
 
@@ -124,8 +133,10 @@ class App {
     if (key === 'Escape' || key === 'Esc') {
       this.areaSelection.clean();
       this.removeConfirmButton();
+      this.removeTipMask();
     } else if (key === 'Enter') {
       this.confirmSelection();
+      this.removeTipMask();
     }
   };
 
