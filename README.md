@@ -14,6 +14,14 @@
   </a>
 </p>
 
+<p align="center">
+  <img
+    alt="logo"
+    src="./resources/demo.gif"
+    width="600"
+  />
+</p>
+
 ## 插件说明
 
 文档说明：https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome
@@ -29,6 +37,9 @@ $ npm install
 # 启动开发环境
 $ npm run dev
 ```
+
+![](./resources/dev-1.png)
+![](./resources/dev-2.png)
 
 ## Contributors
 
