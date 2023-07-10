@@ -108,6 +108,16 @@ const SELECT_TYPES = [
   },
 ];
 
+function BookWithIcon({ book }) {
+  const icon = book.type === 'note' ? <EditFilled /> : <BookFilled />;
+  return (
+    <>
+      <span style={{ marginRight: 4, color: '#888' }}>{icon}</span>
+      {book.name}
+    </>
+  );
+}
+
 const useViewModel = () => {
   const [books, setBooks] = useState([NOTE_DATA]);
   const [currentBookId, setCurrentBookId] = useState(NOTE_DATA.id);
@@ -323,14 +333,13 @@ const SaveTo = () => {
       <Select
         className={styles.list}
         onChange={(value: string) => onSelectBookId(Number(value))}
-        defaultValue={books.find(book => book.id === currentBookId)?.name}
+        defaultValue={<BookWithIcon book={books.find(book => book.id === currentBookId)} />}
       >
         {books.map(book => {
-          const icon = book.type === 'note' ? <EditFilled /> : <BookFilled />;
+          
           return (
             <Select.Option value={book.id}>
-              <span style={{ marginRight: 4, color: '#888' }}>{icon}</span>
-              {book.name}
+              <BookWithIcon book={book} />
             </Select.Option>
           );
         })}
