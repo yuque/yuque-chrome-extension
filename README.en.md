@@ -1,17 +1,25 @@
-# Chrome 插件
+# Chrome Extension
+
+> Yuque extension for Google Chrome
 
 ---
 
-[English](README.en.md)
+[简体中文](README.zh.md)
+
+[![build status][travis-image]][travis-url]
+
+[travis-image]: https://travis-ci.com/xudafeng/yuque-chrome-extension.svg?branch=master
+[travis-url]: https://travis-ci.com/xudafeng/yuque-chrome-extension
+
 
 <!-- GITCONTRIBUTOR_START -->
 
-## 贡献者
+## Contributors
 
 |[<img src="https://avatars.githubusercontent.com/u/1011681?v=4" width="100px;"/><br/><sub><b>xudafeng</b></sub>](https://github.com/xudafeng)<br/>|[<img src="https://avatars.githubusercontent.com/u/71264455?v=4" width="100px;"/><br/><sub><b>TbabmBarry</b></sub>](https://github.com/TbabmBarry)<br/>|[<img src="https://avatars.githubusercontent.com/u/2292646?v=4" width="100px;"/><br/><sub><b>arnozhang</b></sub>](https://github.com/arnozhang)<br/>|
 | :---: | :---: | :---: |
 
 
-[git-contributor 说明](https://github.com/xudafeng/git-contributor)，自动生成时间：`Thu Jun 01 2023 16:23:59 GMT+0800`。
+This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Thu Jun 01 2023 16:23:59 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->

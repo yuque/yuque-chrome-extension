@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background-wrapper.js"
+  },
+  "action": {},
+  "content_scripts": [
+    {
+      "js": [
+        "content-scripts.js"
+      ],
+      "matches": [
+        "<all_urls>",
+        "*://*/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "34": "icon-34.png",
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "sandbox.html",
+        "browser-script.js"
+      ],
+      "matches": [
+        "<all_urls>",
+        "*://*/*"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "script-src": "'self' 'unsafe-eval'",
+    "object-src": "'self'"
+  },
+  "host_permissions": [
+    "<all_urls>",
+    "*://*/*"
+  ],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "declarativeContent",
+    "declarativeNetRequest",
+    "background",
+    "contextMenus",
+    "cookies",
+    "storage",
+    "tabs",
+    "webRequest"
+  ]
+}
