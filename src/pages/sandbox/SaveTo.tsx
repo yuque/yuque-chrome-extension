@@ -70,7 +70,7 @@ const SELECT_TYPES = [
     key: 'area-select',
     enabled: true,
     get text() {
-      return __i18n('选取');
+      return __i18n('多选剪藏');
     },
   },
   {

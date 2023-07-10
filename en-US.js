@@ -21,6 +21,7 @@ module.exports = {
   "请填写内容": "Please fill in the content",
   "退出账户": "Logout account",
   "选取": "Select",
+  "多选剪藏": "Multi-select Clip",
   "链接卡片": "Link card",
   "问题反馈": "Feedback"
 };
