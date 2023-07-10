@@ -14,6 +14,8 @@
   </a>
 </p>
 
+## 插件说明
+
 <p align="center">
   <img
     alt="logo"
@@ -22,11 +24,7 @@
   />
 </p>
 
-## 插件说明
-
 文档说明：https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome
-
-<!-- GITCONTRIBUTOR_START -->
 
 ## 如何开发
 
@@ -38,8 +36,19 @@ $ npm install
 $ npm run dev
 ```
 
-![](./resources/dev-1.png)
-![](./resources/dev-2.png)
+<img
+  alt="logo"
+  src="./resources/dev-1.png"
+  width="750"
+/>
+
+<img
+  alt="logo"
+  src="./resources/dev-2.png"
+  width="240"
+/>
+
+<!-- GITCONTRIBUTOR_START -->
 
 ## Contributors
 
@@ -47,6 +56,6 @@ $ npm run dev
 | :---: | :---: |
 
 
-This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Mon Jul 10 2023 19:50:03 GMT+0800`.
+This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Mon Jul 10 2023 22:04:24 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->
