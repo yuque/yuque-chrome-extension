@@ -29,6 +29,25 @@ interface RequestMessage {
 
 let editorInstance;
 
+const getBookmarkContent = (tab: chrome.tabs.Tab) => {
+  return [
+    {
+      type: 'heading-two',
+      children: [{ text: tab.title }],
+    },
+    {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'link',
+          url: tab.url,
+          children: [{ text: tab.title }],
+        },
+      ],
+    },
+  ];
+};
+
 const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
   new Promise(resolve => {
     Chrome.tabs.getCurrent(tab => {
@@ -99,6 +118,8 @@ const useViewModel = () => {
 
   const startSelect = () => {
     getCurrentTab().then(tab => {
+      const bookmarkContent = getBookmarkContent(tab);
+      setEditorValue(bookmarkContent);
       Chrome.tabs.sendMessage(tab.id, {
         action: GLOBAL_EVENTS.START_SELECT,
       });
@@ -162,23 +183,8 @@ const useViewModel = () => {
       startSelect();
     } else if (currentType === SELECT_TYPES[1].key) {
       getCurrentTab().then(tab => {
-        const newValue = [
-          {
-            type: 'heading-two',
-            children: [{ text: tab.title }],
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'link',
-                url: tab.url,
-                children: [{ text: tab.title }],
-              },
-            ],
-          },
-        ];
-        setEditorValue(editorValue.concat(newValue));
+        const bookmarkContent = getBookmarkContent(tab);
+        setEditorValue(bookmarkContent);
       });
     } else if (currentType === SELECT_TYPES[2].key) {
       getPageHTML().then(res => {
