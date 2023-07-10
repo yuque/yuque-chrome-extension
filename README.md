@@ -4,6 +4,8 @@
 
 [English](README.en.md)
 
+文档说明：https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome
+
 <!-- GITCONTRIBUTOR_START -->
 
 ## 贡献者
