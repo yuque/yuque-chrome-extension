@@ -1,0 +1,54 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  .welcome {
+    min-height: 181px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  .list {
+    margin-top: @base-padding * 2;
+    min-height: 80px;
+    cursor: pointer;
+    display: none;
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+
+      .login {
+        font-weight: normal;
+        color: @text-color-secondary;
+      }
+    }
+
+    :global {
+      .ant-list-item {
+        padding: 12px 4px;
+
+        &:hover {
+          background-color: @grey-2;
+        }
+
+        &.selected {
+          background-color: @grey-2;
+        }
+      }
+
+      .ant-list-item-meta {
+        align-items: center;
+      }
+    }
+  }
+
+  .button {
+    margin-top: @base-padding * 2;
+  }
+
+  .feedback {
+    margin: @base-padding * 2 0;
+  }
+}

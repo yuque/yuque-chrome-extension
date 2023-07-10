@@ -1,0 +1,6 @@
+node_modules
+coverage
+.vscode
+*.js
+*.jsx
+app

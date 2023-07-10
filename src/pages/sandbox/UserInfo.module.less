@@ -1,0 +1,57 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+
+  .name {
+    margin-left: 8px;
+    margin-right: 8px;
+    font-size: 14px;
+    color: @grey-8;
+  }
+
+  .switch {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.popover {
+  .info {
+    padding: 12px;
+    border-bottom: 1px solid @border-color;
+
+    .login {
+      font-size: @font-size-sm;
+      color: @text-color-secondary;
+      a {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  :global {
+    .ant-popover-inner-content {
+      padding: 0;
+      width: 200px;
+    }
+
+    .ant-menu {
+      border: none;
+
+      .ant-menu-item {
+        margin-bottom: 0;
+        height: auto;
+        line-height: normal;
+        padding: 8px 12px;
+
+        &:hover {
+          background-color: @grey-3;
+        }
+      }
+    }
+  }
+}

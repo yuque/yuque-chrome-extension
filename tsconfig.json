@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "incremental": true,
+    "target": "es6",
+    "module": "commonjs",
+    "strict": false,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+  },
+  "requireConfigFile": false,
+  "include": [
+    "./src/**/*.tsx",
+    "./src/**/*.ts",
+  ],
+  "exclude": [
+    "node_modules",
+  ]
+}
