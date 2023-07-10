@@ -22,6 +22,6 @@ module.exports = {
   "退出账户": "Logout account",
   "选取": "Select",
   "多选剪藏": "Multi-select Clip",
-  "链接卡片": "Link card",
+  "链接卡片": "Bookmark",
   "问题反馈": "Feedback"
 };
