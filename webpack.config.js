@@ -204,7 +204,7 @@ const options = {
     },
   },
   optimization: {
-    minimize: false,
+    minimize: isProd,
   },
 };
 
