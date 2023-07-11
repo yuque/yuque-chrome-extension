@@ -16,6 +16,7 @@ const pkg = require('./package');
 
 const {
   SERVER_HOST,
+  NODE_ENV,
   npm_lifecycle_event,
 } = process.env;
 
@@ -162,6 +163,9 @@ const rules = [
   },
 ];
 
+/**
+ * @type import('webpack').Configuration
+ */
 const options = {
   stats: 'errors-only',
   entry,
@@ -205,6 +209,7 @@ const options = {
   },
   optimization: {
     minimize: isProd,
+    nodeEnv: NODE_ENV,
   },
 };
 
