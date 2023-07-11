@@ -19,7 +19,15 @@
 <p align="center">
   <img
     alt="logo"
-    src="./resources/demo.gif"
+    src="./resources/demo-1.gif"
+    width="600"
+  />
+</p>
+
+<p align="center">
+  <img
+    alt="logo"
+    src="./resources/demo-2.gif"
     width="600"
   />
 </p>
