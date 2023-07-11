@@ -11,17 +11,20 @@
 }
 
 .menu {
-  &>* {
+  & > * {
     display: inline-block;
   }
 
-  &>*+* {
+  & > * + * {
     margin-left: 15px;
   }
 }
 
 .button {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button.active {

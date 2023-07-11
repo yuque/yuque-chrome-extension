@@ -28,6 +28,7 @@
     "@babel/plugin-transform-runtime": "^7.7.4",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "7.8.3",
+    "@mui/icons-material": "^5.13.7",
     "@types/chrome": "^0.0.224",
     "@types/node": "^18.15.3",
     "@types/react": "^18.0.28",
@@ -93,5 +94,11 @@
     "hooks": {
       "pre-commit": "lint"
     }
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.13.7",
+    "@mui/material": "^5.13.7"
   }
 }

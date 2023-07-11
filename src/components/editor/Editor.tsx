@@ -39,21 +39,6 @@ interface ExtendedElementProps extends ElementProps {
 
 interface ImageElementProps extends ExtendedElementProps {}
 
-const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    SlateEditor.removeMark(editor, format);
-  } else {
-    SlateEditor.addMark(editor, format, true);
-  }
-};
-
-const isMarkActive = (editor, format) => {
-  const marks = SlateEditor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
-
 const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
     children = <strong>{children}</strong>;
@@ -63,8 +48,12 @@ const Leaf = ({ attributes, children, leaf }) => {
     children = <em>{children}</em>;
   }
 
-  if (leaf.underlined) {
+  if (leaf.underline) {
     children = <u>{children}</u>;
+  }
+
+  if (leaf.code) {
+    children = <code>{children}</code>;
   }
 
   return <span {...attributes}>{children}</span>;
@@ -126,6 +115,7 @@ const ImageElement: React.FC<ImageElementProps> = ({
 
 export interface CustomElement extends SlateElement {
   type: string;
+  align?: string;
   url?: string;
   bold?: boolean;
 }
@@ -149,7 +139,7 @@ const SHORTCUTS: { [key: string]: string } = {
   '######': 'heading-six',
 };
 
-const isCustomElement = (node: Node): node is CustomElement => {
+export const isCustomElement = (node: Node): node is CustomElement => {
   return (
     !SlateEditor.isEditor(node) &&
     SlateElement.isElement(node) &&
@@ -295,7 +285,9 @@ const withShortcuts = (editor: ReactEditor & HistoryEditor) => {
 
           if (block.type === 'list-item') {
             Transforms.unwrapNodes(editor, {
-              match: n => isCustomElement(n) && n.type === 'bulleted-list',
+              match: n =>
+                isCustomElement(n) &&
+                (n.type === 'bulleted-list' || n.type === 'numbered-list'), // Update this line
               split: true,
             });
           }
@@ -318,6 +310,8 @@ const Element = (props: ExtendedElementProps) => {
       return <blockquote {...attributes}>{children}</blockquote>;
     case 'bulleted-list':
       return <ul {...attributes}>{children}</ul>;
+    case 'numbered-list':
+      return <ol {...attributes}>{children}</ol>;
     case 'heading-one':
       return <h1 {...attributes}>{children}</h1>;
     case 'heading-two':
@@ -346,6 +340,12 @@ const Element = (props: ExtendedElementProps) => {
           element={element}
           editor={editor}
         />
+      );
+    case 'code':
+      return (
+        <pre {...attributes}>
+          <code>{children}</code>
+        </pre>
       );
     default:
       return <p {...attributes}>{children}</p>;
@@ -414,6 +414,8 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
     [editor],
   );
 
+  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
+
   useEffect(() => {
     const setCursorAtEnd = editor => {
       const lastNode = value[value.length - 1];
@@ -480,7 +482,7 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
       <div ref={editorContainerRef}>
         <Editable
           renderElement={renderElement}
-          renderLeaf={props => <Leaf {...props} />}
+          renderLeaf={renderLeaf}
           placeholder={__i18n('请填写内容')}
           spellCheck
           autoFocus
