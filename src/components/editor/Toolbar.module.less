@@ -4,21 +4,21 @@
   display: flex;
   justify-content: start;
   align-items: center;
-  background-color: #f8f9fa;
+  background-color: @toolbar-background-color;
   padding: @base-padding;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 8px;
+  border: 1px solid @toolbar-border-color;
+  border-radius: @toolbar-border-radius;
+  box-shadow: @toolbar-box-shadow;
+  margin-bottom: @toolbar-margin-bottom;
 }
 
 .menu {
-  & > * {
+  &>* {
     display: inline-block;
   }
 
-  & > * + * {
-    margin-left: 15px;
+  &>*+* {
+    margin-left: @menu-item-spacing;
   }
 }
 
@@ -30,17 +30,17 @@
 }
 
 .button.active {
-  color: black;
+  color: @black;
 }
 
 .button.inactive {
-  color: #ccc;
+  color: @grey-6;
 }
 
 .button.reversed.active {
-  color: white;
+  color: @white;
 }
 
 .button.reversed.inactive {
-  color: #aaa;
+  color: @grey-7;
 }
