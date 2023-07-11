@@ -71,7 +71,7 @@ export const Toolbar = React.forwardRef(
         />
         <FormatButton
           editor={editor}
-          format="underline"
+          format="underlined"
           IconComponent={UnderlineOutlined}
         />
       </Menu>
