@@ -169,7 +169,7 @@ const useViewModel = () => {
           newHtml,
           'text/html',
         );
-        console.log(document.body);
+
         const value = deserialize(document.body);
         setEditorValue([...editorValue, ...formatMD(value)]);
         setCurrentType('selection');
@@ -333,10 +333,11 @@ const SaveTo = () => {
       <Select
         className={styles.list}
         onChange={(value: string) => onSelectBookId(Number(value))}
-        defaultValue={<BookWithIcon book={books.find(book => book.id === currentBookId)} />}
+        defaultValue={
+          <BookWithIcon book={books.find(book => book.id === currentBookId)} />
+        }
       >
         {books.map(book => {
-          
           return (
             <Select.Option value={book.id}>
               <BookWithIcon book={book} />

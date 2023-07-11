@@ -1,97 +1,103 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useFocused } from 'slate-react';
-import { Editor, Range, Transforms, Text } from 'slate';
+import React, { HTMLAttributes, PropsWithChildren, Ref, useRef } from 'react';
+import { Editor, Transforms, Text } from 'slate';
 import {
   BoldOutlined,
   ItalicOutlined,
   UnderlineOutlined,
 } from '@ant-design/icons';
-import { Button, Tooltip, Popover } from 'antd';
 import styles from './Toolbar.module.less';
 
-const Toolbar = ({ editor }) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const focused = useFocused();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const updateToolbarPosition = () => {
-      const el = ref.current;
-      const { selection } = editor;
-      if (!el || !selection || !focused || Range.isCollapsed(selection)) {
-        setVisible(false);
-        return;
-      }
-
-      const domSelection = window.getSelection();
-      const domRange = domSelection.getRangeAt(0);
-      const rect = domRange.getBoundingClientRect();
-      const lineHeight =
-        parseInt(
-          getComputedStyle(document.body).getPropertyValue('line-height'),
-          10,
-        ) || 20;
-
-      el.style.position = 'absolute';
-      el.style.top = `${
-        rect.top + window.pageYOffset - el.offsetHeight - lineHeight / 2
-      }px`;
-      el.style.left = `${
-        rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
-      }px`;
-
-      setVisible(true);
-    };
-
-    document.addEventListener('selectionchange', updateToolbarPosition);
-
-    return () => {
-      document.removeEventListener('selectionchange', updateToolbarPosition);
-    };
-  }, [editor, focused]);
-
-  const content = (
-    <div>
-      <FormatButton
-        editor={editor}
-        format="bold"
-        IconComponent={BoldOutlined}
-      />
-      <FormatButton
-        editor={editor}
-        format="italic"
-        IconComponent={ItalicOutlined}
-      />
-      <FormatButton
-        editor={editor}
-        format="underline"
-        IconComponent={UnderlineOutlined}
-      />
-    </div>
-  );
-
-  return (
-    <div ref={ref} className={visible ? styles.toolbar : ''}>
-      <Popover content={content} title={null} trigger="click" visible={visible}>
-        <span />
-      </Popover>
-    </div>
-  );
+type BaseProps = {
+  className?: string;
 };
+
+type OrNull<T> = T | null;
+
+type ToolbarProps = {
+  editor: Editor;
+} & BaseProps;
+
+type ButtonProps = {
+  active: boolean;
+  reversed: boolean;
+} & BaseProps &
+  HTMLAttributes<HTMLSpanElement>;
+
+const Menu = React.forwardRef(
+  (
+    { className, ...props }: PropsWithChildren<BaseProps>,
+    ref: Ref<OrNull<HTMLDivElement>>,
+  ) => (
+    <div
+      {...props}
+      data-test-id="menu"
+      ref={ref}
+      className={`${styles.menu} ${className}`}
+    />
+  ),
+);
+
+const Button = React.forwardRef(
+  (
+    { className, active, reversed, ...props }: PropsWithChildren<ButtonProps>,
+    ref: Ref<OrNull<HTMLSpanElement>>,
+  ) => (
+    <span
+      {...props}
+      ref={ref}
+      className={`${styles.button} ${
+        active ? styles.active : styles.inactive
+      } ${reversed ? styles.reversed : ''} ${className}`}
+    />
+  ),
+);
+
+export const Toolbar = React.forwardRef(
+  (
+    { className, editor, ...props }: PropsWithChildren<ToolbarProps>,
+    ref: Ref<OrNull<HTMLDivElement>>,
+  ) => {
+    return (
+      <Menu {...props} ref={ref} className={`${styles.toolbar} ${className}`}>
+        <FormatButton
+          editor={editor}
+          format="bold"
+          IconComponent={BoldOutlined}
+        />
+        <FormatButton
+          editor={editor}
+          format="italic"
+          IconComponent={ItalicOutlined}
+        />
+        <FormatButton
+          editor={editor}
+          format="underline"
+          IconComponent={UnderlineOutlined}
+        />
+      </Menu>
+    );
+  },
+);
 
 const FormatButton = ({ editor, format, IconComponent }) => {
+  const isActive = isMarkActive(editor, format);
+
+  const handleMouseDown = e => {
+    e.preventDefault();
+    toggleMark(editor, format);
+  };
+
   return (
-    <Tooltip title={format} mouseEnterDelay={0} mouseLeaveDelay={0}>
-      <Button
-        type="text"
-        icon={<IconComponent />}
-        onClick={() => toggleMark(editor, format)}
-        style={{ color: isMarkActive(editor, format) ? 'black' : '#ccc' }}
-      />
-    </Tooltip>
+    <Button
+      onMouseDown={handleMouseDown}
+      active={isActive}
+      reversed={false}
+      className="format-button"
+    >
+      <IconComponent />
+    </Button>
   );
 };
-
 const isMarkActive = (editor, format) => {
   const { selection } = editor;
   if (selection) {
