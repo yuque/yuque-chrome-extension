@@ -484,19 +484,6 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
           placeholder={__i18n('请填写内容')}
           spellCheck
           autoFocus
-          onDOMBeforeInput={(event: InputEvent) => {
-            switch (event.inputType) {
-              case 'formatBold':
-                event.preventDefault();
-                return toggleMark(editor, 'bold');
-              case 'formatItalic':
-                event.preventDefault();
-                return toggleMark(editor, 'italic');
-              case 'formatUnderline':
-                event.preventDefault();
-                return toggleMark(editor, 'underlined');
-            }
-          }}
         />
       </div>
     </Slate>
