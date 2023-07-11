@@ -26,6 +26,7 @@ import {
 } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import proxy from '@/core/proxy';
+import Toolbar from './Toolbar';
 
 interface CustomEditorProps {
   defaultValue?: Node[];
@@ -37,6 +38,37 @@ interface ExtendedElementProps extends ElementProps {
 }
 
 interface ImageElementProps extends ExtendedElementProps {}
+
+const toggleMark = (editor, format) => {
+  const isActive = isMarkActive(editor, format);
+
+  if (isActive) {
+    SlateEditor.removeMark(editor, format);
+  } else {
+    SlateEditor.addMark(editor, format, true);
+  }
+};
+
+const isMarkActive = (editor, format) => {
+  const marks = SlateEditor.marks(editor);
+  return marks ? marks[format] === true : false;
+};
+
+const Leaf = ({ attributes, children, leaf }) => {
+  if (leaf.bold) {
+    children = <strong>{children}</strong>;
+  }
+
+  if (leaf.italic) {
+    children = <em>{children}</em>;
+  }
+
+  if (leaf.underlined) {
+    children = <u>{children}</u>;
+  }
+
+  return <span {...attributes}>{children}</span>;
+};
 
 const ImageElement: React.FC<ImageElementProps> = ({
   attributes,
@@ -444,12 +476,27 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
 
   return (
     <Slate editor={editor} value={value} onChange={onChange}>
+      <Toolbar editor={editor} />
       <div ref={editorContainerRef}>
         <Editable
           renderElement={renderElement}
+          renderLeaf={props => <Leaf {...props} />}
           placeholder={__i18n('请填写内容')}
           spellCheck
           autoFocus
+          onDOMBeforeInput={(event: InputEvent) => {
+            switch (event.inputType) {
+              case 'formatBold':
+                event.preventDefault();
+                return toggleMark(editor, 'bold');
+              case 'formatItalic':
+                event.preventDefault();
+                return toggleMark(editor, 'italic');
+              case 'formatUnderline':
+                event.preventDefault();
+                return toggleMark(editor, 'underlined');
+            }
+          }}
         />
       </div>
     </Slate>
