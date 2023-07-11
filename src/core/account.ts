@@ -1,9 +1,6 @@
 import { pick } from 'lodash';
-import moment from 'moment';
 import { STORAGE_KEYS } from '@/config';
 import Chrome from '@/core/chrome';
-
-const MAX_EXPIERED_DAYS = 3;
 
 export const getCurrentAccount = () =>
   new Promise(resolve => {
@@ -11,14 +8,6 @@ export const getCurrentAccount = () =>
       const account = res[STORAGE_KEYS.CURRENT_ACCOUNT];
       if (!account?.login_at) {
         resolve({});
-        return;
-      }
-      const day1 = moment(account.login_at);
-      const diff = moment().diff(day1, 'days');
-      if (diff >= MAX_EXPIERED_DAYS) {
-        clearCurrentAccount().then(() => {
-          resolve({});
-        });
         return;
       }
       resolve(account || {});
