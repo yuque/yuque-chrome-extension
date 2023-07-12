@@ -4,6 +4,7 @@ import { YUQUE_DOMAIN } from '@/config';
 export const SERVER_URLS = {
   LOGOUT: `${YUQUE_DOMAIN}/logout`,
   LOGIN: `${YUQUE_DOMAIN}/api/accounts/login`,
+  DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
 };
 
 const RequestProxy = {
