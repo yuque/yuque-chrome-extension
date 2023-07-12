@@ -96,7 +96,7 @@ const SELECT_TYPES = [
     key: 'bookmark',
     enabled: true,
     get text() {
-      return __i18n('链接卡片');
+      return __i18n('链接剪藏');
     },
   },
   {
@@ -333,10 +333,11 @@ const SaveTo = () => {
       <Select
         className={styles.list}
         onChange={(value: string) => onSelectBookId(Number(value))}
-        defaultValue={<BookWithIcon book={books.find(book => book.id === currentBookId)} />}
+        defaultValue={
+          <BookWithIcon book={books.find(book => book.id === currentBookId)} />
+        }
       >
         {books.map(book => {
-          
           return (
             <Select.Option value={book.id}>
               <BookWithIcon book={book} />

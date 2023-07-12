@@ -92,8 +92,14 @@ const ImageElement: React.FC<ImageElementProps> = ({
   );
 };
 
+export interface CustomText {
+  text: string;
+  bold?: boolean;
+}
+
 export interface CustomElement extends SlateElement {
   type: string;
+  children: CustomText[];
   url?: string;
   bold?: boolean;
 }
@@ -117,13 +123,17 @@ const SHORTCUTS: { [key: string]: string } = {
   '######': 'heading-six',
 };
 
-const isCustomElement = (node: Node): node is CustomElement => {
+export const isCustomElement = (node: Node): node is CustomElement => {
   return (
     !SlateEditor.isEditor(node) &&
     SlateElement.isElement(node) &&
     'type' in node &&
     typeof node.type === 'string'
   );
+};
+
+export const isCustomText = (node: Node): node is CustomText => {
+  return 'text' in node && typeof node.text === 'string';
 };
 
 const isImageElement = (
