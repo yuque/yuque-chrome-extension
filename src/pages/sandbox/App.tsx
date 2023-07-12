@@ -69,19 +69,11 @@ const useViewModel = () => {
 
   function waitForWindowLogined(windowId) {
     return new Promise<void>(resolve => {
-      Chrome.webRequest.onHeadersReceived.addListener(
+      Chrome.webRequest.onCompleted.addListener(
         data => {
-          if (data.url === SERVER_URLS.LOGIN) {
-            if (
-              data?.frameType === 'outermost_frame' &&
-              data?.method === 'POST'
-            ) {
-              const value = data.responseHeaders.find(
-                value => value.name === 'set-cookie',
-              );
-              if (value) {
-                resolve();
-              }
+          if (data.url === SERVER_URLS.DASHBOARD) {
+            if (data.statusCode === 200) {
+              resolve();
             }
           }
         },
@@ -89,7 +81,6 @@ const useViewModel = () => {
           urls: [],
           windowId,
         },
-        ['responseHeaders', 'extraHeaders'],
       );
     });
   }
