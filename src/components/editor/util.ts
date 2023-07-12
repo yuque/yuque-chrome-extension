@@ -1,8 +1,4 @@
-export const encodeCardValue = (value: {
-  src: string;
-  originWidth?: number;
-  originHeight?: number;
-}): string => {
+export const encodeCardValue = (value): string => {
   let rst;
   try {
     rst = encodeURIComponent(JSON.stringify(value));

@@ -1,17 +1,18 @@
 import { Text } from 'slate';
 import escapeHtml from 'escape-html';
-import { CustomElement } from './Editor';
+import {
+  CustomElement,
+  CustomText,
+  isCustomElement,
+  isCustomText,
+} from './Editor';
 import contentParser from './content-parser';
-
-interface CustomText extends Text {
-  bold?: boolean;
-}
 
 const serialize = (
   node: CustomElement | CustomText,
   isASL: boolean = false,
 ): string => {
-  if (Text.isText(node)) {
+  if (isCustomText(node)) {
     let string = escapeHtml(node.text);
 
     if (node.bold) {
@@ -21,28 +22,38 @@ const serialize = (
     return string;
   }
 
-  const children = node.children
-    .map(child => serialize(child as CustomElement, isASL))
-    .join('');
+  if (isCustomElement(node)) {
+    const children = node.children
+      .map(child => serialize(child, isASL))
+      .join('');
 
-  switch (node.type) {
-    case 'quote':
-      return `<blockquote><p>${children}</p></blockquote>`;
-    case 'paragraph':
-      return `<p>${children}</p>`;
-    case 'link':
-      return `<a href="${escapeHtml(node.url)}">${children}</a>`;
-    case 'image':
-      if (isASL) {
-        const value = contentParser.createLakeAslByImageUrl(
-          escapeHtml(node.url),
-        );
-        return value;
-      } else {
-        return `<img src="${escapeHtml(node.url)}" />`;
-      }
-    default:
-      return children;
+    switch (node.type) {
+      case 'quote':
+        return `<blockquote><p>${children}</p></blockquote>`;
+      case 'paragraph':
+        return `<p>${children}</p>`;
+      case 'link':
+        if (isASL) {
+          const value = contentParser.createLakeAslByLinkDetail(
+            escapeHtml(node.url),
+            node.children[0]?.text,
+          );
+          return value;
+        }
+      case 'image':
+        if (isASL) {
+          const value = contentParser.createLakeAslByImageUrl(
+            escapeHtml(node.url),
+          );
+          return value;
+        } else {
+          return `<img src="${escapeHtml(node.url)}" />`;
+        }
+      default:
+        return children;
+    }
+  } else {
+    return '';
   }
 };
 

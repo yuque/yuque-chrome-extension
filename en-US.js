@@ -23,5 +23,6 @@ module.exports = {
   "选取": "Select",
   "多选剪藏": "Multi-select Clip",
   "链接卡片": "Bookmark",
+  "链接剪藏": "Link Clip",
   "问题反馈": "Feedback"
 };
