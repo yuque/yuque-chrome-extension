@@ -113,9 +113,17 @@ const ImageElement: React.FC<ImageElementProps> = ({
   );
 };
 
+export interface CustomText {
+  text: string;
+  bold?: boolean;
+  code?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+}
+
 export interface CustomElement extends SlateElement {
   type: string;
-  align?: string;
+  children: CustomText[];
   url?: string;
   bold?: boolean;
 }
@@ -146,6 +154,10 @@ export const isCustomElement = (node: Node): node is CustomElement => {
     'type' in node &&
     typeof node.type === 'string'
   );
+};
+
+export const isCustomText = (node: Node): node is CustomText => {
+  return 'text' in node && typeof node.text === 'string';
 };
 
 const isImageElement = (

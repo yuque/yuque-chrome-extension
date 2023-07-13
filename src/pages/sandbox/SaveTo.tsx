@@ -96,7 +96,7 @@ const SELECT_TYPES = [
     key: 'bookmark',
     enabled: true,
     get text() {
-      return __i18n('链接卡片');
+      return __i18n('链接剪藏');
     },
   },
   {

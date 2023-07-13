@@ -1,6 +1,6 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Yuque extension for Google Chrome",
   "repository": {
@@ -9,8 +9,8 @@
   },
   "issues": "https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome",
   "scripts": {
-    "dev": "webpack --mode=development",
-    "build": "webpack --mode=production && npm run archive",
+    "dev": "NODE_ENV=development webpack --mode=development",
+    "build": "NODE_ENV=production webpack --mode=production && npm run archive",
     "archive": "sh ./build.sh",
     "lint": "eslint . --ext .jsx,.js --fix && stylelint --fix ./**/*.less -s less",
     "translate": "easy-i18n-cli -c ./i18n.config.js",
@@ -36,6 +36,7 @@
     "@types/node": "^18.15.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/webpack": "^5.28.1",
     "@types/webpack-env": "^1.18.0",
     "antd": "4.8.x",
     "axios": "^0.21.1",
