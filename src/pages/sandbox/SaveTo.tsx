@@ -39,9 +39,31 @@ const getBookmarkContent = (tab: chrome.tabs.Tab) => {
       type: 'paragraph',
       children: [
         {
-          type: 'link',
+          type: 'bookmark-link',
           url: tab.url,
           children: [{ text: tab.title }],
+        },
+      ],
+    },
+  ];
+};
+
+const getCitation = (tab: chrome.tabs.Tab) => {
+  return [
+    {
+      type: 'paragraph',
+      children: [
+        {
+          text: '来自: ',
+        },
+        {
+          type: 'link',
+          url: tab.url,
+          children: [
+            {
+              text: `${tab.url}`,
+            },
+          ],
         },
       ],
     },
@@ -206,6 +228,11 @@ const useViewModel = () => {
         const value = deserialize(document.body);
         const formattedValue = formatMD(value);
         setEditorValue(editorValue.concat(formattedValue));
+      });
+    } else if (currentType === 'selection') {
+      getCurrentTab().then(tab => {
+        const citation = getCitation(tab);
+        setEditorValue(editorValue.concat(citation));
       });
     }
   }, [currentType]);
