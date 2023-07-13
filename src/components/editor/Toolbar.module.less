@@ -1,0 +1,46 @@
+@import '~@/styles/parameters.less';
+
+.toolbar {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  background-color: @toolbar-background-color;
+  padding: @base-padding;
+  border: 1px solid @toolbar-border-color;
+  border-radius: @toolbar-border-radius;
+  box-shadow: @toolbar-box-shadow;
+  margin-bottom: @toolbar-margin-bottom;
+}
+
+.menu {
+  &>* {
+    display: inline-block;
+  }
+
+  &>*+* {
+    margin-left: @menu-item-spacing;
+  }
+}
+
+.button {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button.active {
+  color: @black;
+}
+
+.button.inactive {
+  color: @grey-6;
+}
+
+.button.reversed.active {
+  color: @white;
+}
+
+.button.reversed.inactive {
+  color: @grey-7;
+}

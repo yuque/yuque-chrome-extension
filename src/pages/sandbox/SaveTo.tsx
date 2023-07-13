@@ -169,7 +169,7 @@ const useViewModel = () => {
           newHtml,
           'text/html',
         );
-        console.log(document.body);
+
         const value = deserialize(document.body);
         setEditorValue([...editorValue, ...formatMD(value)]);
         setCurrentType('selection');

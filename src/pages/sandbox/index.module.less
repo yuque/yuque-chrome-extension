@@ -3,3 +3,24 @@
 body {
   background-color: transparent;
 }
+
+blockquote {
+  border-left: 2px solid @grey-4;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: @blockquote-padding-left;
+  color: @grey-7;
+  font-style: italic;
+}
+
+pre {
+  padding: @pre-padding;
+  background-color: @grey-2;
+  white-space: pre-wrap;
+}
+
+:not(pre)>code {
+  font-family: @code-font-family;
+  background-color: @grey-2;
+  padding: @code-padding;
+}
