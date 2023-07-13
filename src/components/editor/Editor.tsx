@@ -344,6 +344,12 @@ const Element = (props: ExtendedElementProps) => {
           {children}
         </a>
       );
+    case 'bookmark-link':
+      return (
+        <a {...attributes} href={element.url}>
+          {children}
+        </a>
+      );
     case 'image':
       return (
         <ImageElement

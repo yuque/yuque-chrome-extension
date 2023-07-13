@@ -37,7 +37,11 @@ const serializeCustomElement = (node, isASL) => {
     'bulleted-list': wrapWith('ul', children),
   };
 
-  if (node.type === 'link' && isASL) {
+  if (node.type === 'link') {
+    return `<a href="${escapeHtml(node.url)}">${children}</a>`;
+  }
+
+  if (node.type === 'bookmark-link' && isASL) {
     return contentParser.createLakeAslByLinkDetail(
       escapeHtml(node.url),
       node.children[0]?.text,
