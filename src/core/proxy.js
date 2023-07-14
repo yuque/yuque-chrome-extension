@@ -18,16 +18,19 @@ const RequestProxy = {
     }
   },
   doc: {
-    async create(data = {}) {
-      return await request('/api/docs', {
+    async create(payload = {}) {
+      const { data, status } = await request('/api/docs', {
         method: 'POST',
         data: {
           type: 'Doc',
           format: 'lake',
           status: 1,
-          ...data,
+          ...payload,
         },
       });
+      if (status === 200) {
+        return data.data;
+      }
     },
   },
   book: {

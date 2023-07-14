@@ -13,7 +13,6 @@ import formatHTML from '@/components/editor/format-html';
 import formatMD from '@/components/editor/format-md';
 import contentParser from '@/components/editor/content-parser';
 import { GLOBAL_EVENTS } from '@/events';
-import { getCurrentAccount } from '@/core/account';
 import styles from './SaveTo.module.less';
 import { EditorValueContext } from './EditorValueContext';
 
@@ -277,18 +276,16 @@ const useViewModel = () => {
             description: serializedAsiContent,
           })
           .then(() => {
-            getCurrentAccount().then(() => {
-              const url = LinkHelper.goMyNote();
-              message.success(
-                <span>
-                  {__i18n('保存成功')}，
-                  <a target="_blank" href={url}>
-                    {__i18n('去小记查看')}
-                  </a>
-                </span>,
-              );
-              onSuccess();
-            });
+            const url = LinkHelper.goMyNote();
+            message.success(
+              <span>
+                {__i18n('保存成功')}，
+                <a target="_blank" href={url}>
+                  {__i18n('去小记查看')}
+                </a>
+              </span>,
+            );
+            onSuccess();
           })
           .catch(onError);
       });
@@ -296,25 +293,26 @@ const useViewModel = () => {
       getCurrentTab().then(tab => {
         proxy.doc
           .create({
-            title: __i18n('[来自剪藏] {title}', { title: tab.title }),
+            title: __i18n('[来自剪藏] {title}', {
+              title: tab.title,
+            }),
             book_id: currentBookId,
             body_draft_asl: serializedAsiContent,
             body_asl: serializedAsiContent,
             body: serializedHtmlContent,
+            insert_to_catalog: true,
           })
-          .then(({ data }) => {
-            getCurrentAccount().then(() => {
-              const url = LinkHelper.goDoc(data.data);
-              message.success(
-                <span>
-                  {__i18n('保存成功')}，
-                  <a target="_blank" href={url}>
-                    {__i18n('立即查看')}
-                  </a>
-                </span>,
-              );
-              onSuccess();
-            });
+          .then((doc) => {
+            const url = LinkHelper.goDoc(doc);
+            message.success(
+              <span>
+                {__i18n('保存成功')}，
+                <a target="_blank" href={url}>
+                  {__i18n('立即查看')}
+                </a>
+              </span>,
+            );
+            onSuccess();
           })
           .catch(onError);
       });
