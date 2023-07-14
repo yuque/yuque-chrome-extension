@@ -32,6 +32,7 @@ const getBookmarkContent = (tab: chrome.tabs.Tab) => {
   return [
     {
       type: 'heading-two',
+      reference: true,
       children: [{ text: tab.title }],
     },
     {
@@ -244,11 +245,18 @@ const useViewModel = () => {
 
   const onSave = () => {
     if (!editorInstance) return;
+    const shouldAddReferenceNode = currentBookId === NOTE_DATA.id;
+
     const serializedAsiContent = contentParser.wrapLakeAslBody(
-      editorInstance.children.map(node => serialize(node, true)).join(''),
+      editorInstance.children
+        .map(node => serialize(node, true, shouldAddReferenceNode))
+        .join(''),
     );
+
     const serializedHtmlContent = contentParser.wrapLakeHtmlBody(
-      editorInstance.children.map(node => serialize(node, false)).join(''),
+      editorInstance.children
+        .map(node => serialize(node, false, shouldAddReferenceNode))
+        .join(''),
     );
 
     const onSuccess = () => {

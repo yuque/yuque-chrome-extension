@@ -7,9 +7,10 @@ import {
 } from './Editor';
 import contentParser from './content-parser';
 
-const wrapWith = (tag, content) => `<${tag}>${content}</${tag}>`;
+const wrapWith = (tag: string, content: string) =>
+  `<${tag}>${content}</${tag}>`;
 
-const serializeCustomText = node => {
+const serializeCustomText = (node: CustomText) => {
   let string = escapeHtml(node.text);
 
   if (node.bold) string = wrapWith('strong', string);
@@ -20,7 +21,12 @@ const serializeCustomText = node => {
   return string;
 };
 
-const serializeCustomElement = (node, isASL) => {
+const serializeCustomElement = (
+  node: CustomElement,
+  isASL: boolean,
+  addReferenceTitle: boolean,
+) => {
+  if (node.reference && !addReferenceTitle) return '';
   const children = node.children.map(child => serialize(child, isASL)).join('');
 
   const typeToTag = {
@@ -57,9 +63,11 @@ const serializeCustomElement = (node, isASL) => {
 const serialize = (
   node: CustomElement | CustomText,
   isASL: boolean = false,
+  addReferenceTitle: boolean = true,
 ): string => {
   if (isCustomText(node)) return serializeCustomText(node);
-  if (isCustomElement(node)) return serializeCustomElement(node, isASL);
+  if (isCustomElement(node))
+    return serializeCustomElement(node, isASL, addReferenceTitle);
 
   return '';
 };

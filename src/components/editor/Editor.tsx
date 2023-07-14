@@ -125,7 +125,7 @@ export interface CustomElement extends SlateElement {
   type: string;
   children: CustomText[];
   url?: string;
-  bold?: boolean;
+  reference?: boolean;
 }
 
 interface ElementProps {
@@ -406,8 +406,6 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
     onChange,
   } = useViewModel(props);
 
-  const [firstRender, setFirstRender] = useState(true);
-
   const editorContainerRef = useRef(null);
 
   function getClickedRow(event) {
@@ -433,33 +431,6 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
   );
 
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-
-  useEffect(() => {
-    const setCursorAtEnd = editor => {
-      const lastNode = value[value.length - 1];
-      const lastNodeLength = Node.string(lastNode).length;
-
-      const endPosition = {
-        path: [value.length - 1, 0],
-        offset: lastNodeLength,
-      };
-
-      Transforms.select(editor, {
-        anchor: endPosition,
-        focus: endPosition,
-      });
-    };
-    if (
-      firstRender &&
-      editor &&
-      ReactEditor.isFocused(editor) &&
-      value &&
-      value.length > 0
-    ) {
-      setCursorAtEnd(editor);
-      setFirstRender(false);
-    }
-  }, [firstRender, editor, value]);
 
   useEffect(() => {
     const handleClick = e => {
