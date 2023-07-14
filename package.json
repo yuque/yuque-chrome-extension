@@ -76,6 +76,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "eslint-plugin-react": "^7.11.1",
+    "git-contributor": "^2.1.5",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^4.3.7",
     "jsx-loader": "^0.13.2",
