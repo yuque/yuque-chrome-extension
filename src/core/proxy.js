@@ -42,8 +42,12 @@ const RequestProxy = {
           offset: 0,
         },
       });
-      if (status === 200) {
+      if (false && status === 200) {
         return data.data;
+      } else if (true || status === 400) {
+        const error = new Error();
+        error.tips = 'data.message';
+        throw error;
       }
       return [];
     },

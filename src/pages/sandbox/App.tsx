@@ -35,6 +35,7 @@ const { TabPane } = Tabs;
 
 const useViewModel = () => {
   const [account, setAccount] = useState<IYuqueAccount>();
+  const [upgrageInfo, setUpgradeInfo] = useState('');
 
   const onClose = () => {
     Chrome.tabs.getCurrent((tab: any) => {
@@ -44,9 +45,12 @@ const useViewModel = () => {
     });
   };
 
-  const onLogout = () => {
+  const onLogout = (data = {}) => {
     clearCurrentAccount().then(() => {
       setAccount(undefined);
+      if (data.tips) {
+        setUpgradeInfo(data.tips);
+      }
     });
   };
 
@@ -113,6 +117,7 @@ const useViewModel = () => {
   return {
     state: {
       account,
+      upgrageInfo,
     },
     onClose,
     onLogout,
@@ -124,7 +129,7 @@ const App = () => {
   const [editorValue, setEditorValue] = useState([]);
   const [currentType, setCurrentType] = useState(null);
   const {
-    state: { account },
+    state: { account, upgrageInfo },
     onClose,
     onLogout,
     onLogin,
@@ -154,6 +159,17 @@ const App = () => {
     }
   };
 
+  function renderUnLogin() {
+    if (upgrageInfo) {
+      return (
+        <div>{upgrageInfo}</div>
+      );
+    }
+    return (
+      <Login onConfirm={onLogin} />
+    );
+  }
+
   useEffect(() => {
     Chrome.runtime.onMessage.addListener(onReceiveMessage);
     return () => {
@@ -180,7 +196,7 @@ const App = () => {
             <>
               <Tabs defaultActiveKey="save-to" size="small" type="card">
                 <TabPane tab={__i18n('剪藏')} key="save-to">
-                  <SaveTo />
+                  <SaveTo onLogout={onLogout}/>
                 </TabPane>
                 <TabPane
                   tab={
@@ -195,9 +211,7 @@ const App = () => {
                 </TabPane>
               </Tabs>
             </>
-          ) : (
-            <Login onConfirm={onLogin} />
-          )}
+          ) : renderUnLogin()}
         </div>
         {account?.id && (
           <div className={styles.account}>
