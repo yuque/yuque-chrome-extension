@@ -4,6 +4,9 @@ import { get as safeGet, isEmpty } from 'lodash';
 import { EditFilled, BookFilled } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
+import {
+  clearCurrentAccount,
+} from '@/core/account';
 import processHtmls from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import Editor from '@/components/editor/Editor';
@@ -139,7 +142,7 @@ function BookWithIcon({ book }) {
   );
 }
 
-const useViewModel = () => {
+const useViewModel = (props) => {
   const [books, setBooks] = useState([NOTE_DATA]);
   const [currentBookId, setCurrentBookId] = useState(NOTE_DATA.id);
   const [showContinueButton, setShowContinueButton] = useState(false);
@@ -158,9 +161,13 @@ const useViewModel = () => {
   };
 
   useEffect(() => {
-    proxy.book.getBooks().then(books => {
-      setBooks([NOTE_DATA, ...books]);
-    });
+    proxy.book.getBooks()
+      .then(books => {
+        setBooks([NOTE_DATA, ...books]);
+      })
+      .catch(e => {
+        props.onLogout(e);
+      });
   }, []);
 
   const onReceiveMessage = async (
@@ -340,7 +347,7 @@ const useViewModel = () => {
   };
 };
 
-const SaveTo = () => {
+const SaveTo = (props) => {
   const { currentType, editorValue } = useContext(EditorValueContext);
   const {
     state: { books, currentBookId, showContinueButton },
@@ -348,7 +355,7 @@ const SaveTo = () => {
     onSave,
     onContinue,
     onSelectType,
-  } = useViewModel();
+  } = useViewModel(props);
   return (
     <div className={styles.wrapper}>
       <Radio.Group
