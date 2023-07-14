@@ -35,7 +35,7 @@ const { TabPane } = Tabs;
 
 const useViewModel = () => {
   const [account, setAccount] = useState<IYuqueAccount>();
-  const [upgrageInfo, setUpgradeInfo] = useState('');
+  const [upgradeInfo, setUpgradeInfo] = useState<string>();
 
   const onClose = () => {
     Chrome.tabs.getCurrent((tab: any) => {
@@ -48,8 +48,8 @@ const useViewModel = () => {
   const onLogout = (data = {}) => {
     clearCurrentAccount().then(() => {
       setAccount(undefined);
-      if (data.tips) {
-        setUpgradeInfo(data.tips);
+      if (data.html) {
+        setUpgradeInfo(data.html);
       }
     });
   };
@@ -117,7 +117,7 @@ const useViewModel = () => {
   return {
     state: {
       account,
-      upgrageInfo,
+      upgradeInfo,
     },
     onClose,
     onLogout,
@@ -129,7 +129,7 @@ const App = () => {
   const [editorValue, setEditorValue] = useState([]);
   const [currentType, setCurrentType] = useState(null);
   const {
-    state: { account, upgrageInfo },
+    state: { account, upgradeInfo },
     onClose,
     onLogout,
     onLogin,
@@ -160,14 +160,10 @@ const App = () => {
   };
 
   function renderUnLogin() {
-    if (upgrageInfo) {
-      return (
-        <div>{upgrageInfo}</div>
-      );
+    if (upgradeInfo) {
+      return <div dangerouslySetInnerHTML={{ __html: upgradeInfo }} />;
     }
-    return (
-      <Login onConfirm={onLogin} />
-    );
+    return <Login onConfirm={onLogin} />;
   }
 
   useEffect(() => {
@@ -196,7 +192,7 @@ const App = () => {
             <>
               <Tabs defaultActiveKey="save-to" size="small" type="card">
                 <TabPane tab={__i18n('剪藏')} key="save-to">
-                  <SaveTo onLogout={onLogout}/>
+                  <SaveTo onLogout={onLogout} />
                 </TabPane>
                 <TabPane
                   tab={
@@ -211,7 +207,9 @@ const App = () => {
                 </TabPane>
               </Tabs>
             </>
-          ) : renderUnLogin()}
+          ) : (
+            renderUnLogin()
+          )}
         </div>
         {account?.id && (
           <div className={styles.account}>

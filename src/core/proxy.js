@@ -35,21 +35,20 @@ const RequestProxy = {
   },
   book: {
     async getBooks() {
-      const { status, data } = await request('/api/mine/personal_books', {
-        method: 'GET',
-        data: {
-          limit: 200,
-          offset: 0,
-        },
-      });
-      if (false && status === 200) {
+      try {
+        const { data } = await request('/api/mine/personal_books', {
+          method: 'GET',
+          data: {
+            limit: 200,
+            offset: 0,
+          },
+        });
         return data.data;
-      } else if (true || status === 400) {
-        const error = new Error();
-        error.tips = 'data.message';
-        throw error;
+      } catch (error) {
+        const err = new Error();
+        err.html = error.response?.data?.html;
+        throw err;
       }
-      return [];
     },
   },
   note: {
