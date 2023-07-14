@@ -5,7 +5,6 @@ import { EditFilled, BookFilled } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
 import processHtmls from '@/core/html-parser';
-import { CsrfTokenError } from '@/core/request';
 import LinkHelper from '@/core/link-helper';
 import Editor from '@/components/editor/Editor';
 import serialize from '@/components/editor/serialize';
@@ -252,6 +251,14 @@ const useViewModel = () => {
       editorInstance.children.map(node => serialize(node, false)).join(''),
     );
 
+    const onSuccess = () => {
+      setEditorValue([]);
+    };
+
+    const onError = () => {
+      message.error(__i18n('保存失败'));
+    };
+
     if (currentBookId === NOTE_DATA.id) {
       proxy.note.getStatus().then(({ data }) => {
         const noteId = safeGet(data, 'meta.mirror.id');
@@ -272,11 +279,10 @@ const useViewModel = () => {
                   </a>
                 </span>,
               );
+              onSuccess();
             });
           })
-          .catch(() => {
-            message.error(__i18n('保存失败'));
-          });
+          .catch(onError);
       });
     } else {
       getCurrentTab().then(tab => {
@@ -299,15 +305,10 @@ const useViewModel = () => {
                   </a>
                 </span>,
               );
+              onSuccess();
             });
           })
-          .catch(error => {
-            if (error instanceof CsrfTokenError) {
-              message.error(__i18n('保存失败'));
-            } else {
-              message.error(__i18n('保存失败'));
-            }
-          });
+          .catch(onError);
       });
     }
   };
