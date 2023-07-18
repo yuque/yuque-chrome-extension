@@ -5,9 +5,9 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/xudafeng/yuque-chrome-extension.git"
+    "url": "https://github.com/yuque/yuque-chrome-extension.git"
   },
-  "issues": "https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome",
+  "issues": "https://www.yuque.com/yuque/yuque-chrome-extension/welcome",
   "scripts": {
     "archive": "sh ./build.sh",
     "build": "NODE_ENV=production webpack --mode=production && npm run archive",
