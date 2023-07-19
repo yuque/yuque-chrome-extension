@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Publish extension
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Build
+      run: |
+        npm ci
+        npm run build
+        sh ./build.sh
+
+    - name: Upload to Chrome extension store
+      uses: mnao305/chrome-extension-upload@v4.0.1 # https://github.com/mnao305/chrome-extension-upload
+      with:
+        file-path: ${{ github.event.release.tag_name }}.zip
+        extension-id: ${{ secrets.CHROME_PRODUCT_ID }}
+        client-id: ${{ secrets.CHROME_CLIENT_ID }}
+        client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+        refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+        publish: false
+
+    - name: Upload to Edge extension store
+      uses: wdzeng/edge-addon@v1 # https://github.com/wdzeng/edge-addon
+      with:
+        product-id: ${{ secrets.EDGE_PRODUCT_ID }}
+        zip-path: ${{ github.event.release.tag_name }}.zip
+        client-id: ${{ secrets.EDGE_CLIENT_ID }}
+        client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+        access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
