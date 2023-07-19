@@ -1,4 +1,6 @@
-# Chrome/Edge 插件
+# 语雀浏览器插件
+
+> 支持 Chrome/Edge
 
 ---
 
