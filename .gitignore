@@ -4,3 +4,4 @@ docs_dist
 .env
 *.zip
 .vscode
+*lock.yaml

@@ -23,8 +23,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "sandbox.html",
-        "browser-script.js"
+        "sandbox.html"
       ],
       "matches": [
         "<all_urls>",

@@ -29,7 +29,6 @@ const fileExtensions = [
 
 const entries = {
   contentScript: 'content-scripts',
-  browserScript: 'browser-script',
   background: 'background',
   extensionPage: [ 'sandbox' ],
 };
@@ -77,7 +76,6 @@ if (isProd) {
 const entry = {
   [entries.background]: path.join(pagesPath, entries.background),
   [entries.contentScript]: path.join(pagesPath, 'inject', entries.contentScript),
-  [entries.browserScript]: path.join(pagesPath, 'inject', entries.browserScript),
 };
 
 entries.extensionPage.map(item => {
