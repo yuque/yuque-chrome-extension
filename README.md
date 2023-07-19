@@ -1,4 +1,4 @@
-# Chrome 插件
+# Chrome/Edge 插件
 
 ---
 

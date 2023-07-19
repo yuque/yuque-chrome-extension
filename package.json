@@ -1,7 +1,7 @@
 {
-  "name": "yuque-chrome-extension",
+  "name": "yuque-extension",
   "version": "0.2.0",
-  "description": "Yuque extension for Google Chrome",
+  "description": "Yuque extension",
   "private": true,
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
-# Chrome Extension
+# Chrome/Edge Extension
 
-> Yuque extension for Google Chrome
+> Yuque extension for Google Chrome and Microsoft Edge (Chromium based)
 
 ---
 
