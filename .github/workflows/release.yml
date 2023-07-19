@@ -41,3 +41,13 @@ jobs:
         client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
         access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
         upload-only: true
+
+    - name: Offline crx release
+      uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+      with:
+        zipFilePath: ${{ github.event.release.tag_name }}.zip
+        crxFilePath: ${{ github.event.release.tag_name }}.crx
+        privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
+        # The following is optional if you need update.xml file
+        # updateXmlPath: 'build/update.xml'
+        # updateXmlCodebaseUrl: 'https://server.com/extension.crx'
