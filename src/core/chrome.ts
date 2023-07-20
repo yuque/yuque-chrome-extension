@@ -10,6 +10,7 @@ const {
   webRequest,
   declarativeNetRequest,
   windows,
+  downloads,
 } = _globalThis.chrome;
 
 export default {
@@ -22,6 +23,7 @@ export default {
   webRequest,
   declarativeNetRequest,
   windows,
+  downloads,
   getCurrentTab: () => new Promise(resolve => {
     tabs.getCurrent(resolve);
   }),

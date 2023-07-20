@@ -2,7 +2,7 @@ import Chrome from '@/core/chrome';
 import { YUQUE_DOMAIN } from '@/config';
 import { initI18N } from '@/isomorphic/i18n';
 import { listenBrowserActionEvent } from './browser-action';
-import { createContextMenu, listenContextMenuEvents } from './context-menu.ts';
+import { createContextMenu, listenContextMenuEvents } from './context-menu';
 
 console.log('-- in background.js');
 
@@ -22,16 +22,16 @@ function updateDynamicRules() {
     {
       id: 1,
       action: {
-        type: 'modifyHeaders',
+        type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
         requestHeaders: [
           {
             header: 'Referer',
-            operation: 'set',
+            operation: chrome.declarativeNetRequest.HeaderOperation.SET,
             value: YUQUE_DOMAIN,
           },
           {
             header: 'Origin',
-            operation: 'set',
+            operation: chrome.declarativeNetRequest.HeaderOperation.SET,
             value: YUQUE_DOMAIN,
           },
         ],
@@ -42,7 +42,7 @@ function updateDynamicRules() {
         ],
         urlFilter: `${YUQUE_DOMAIN}/api/upload/attach`,
         resourceTypes: [
-          'xmlhttprequest',
+          chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
         ],
       },
     },
