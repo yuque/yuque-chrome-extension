@@ -6,6 +6,7 @@ import {
   YUQUE_DOMAIN,
   YUQUE_CSRF_COOKIE_NAME,
   CSRF_HEADER_NAME,
+  EXTENSION_ID,
 } from '@/config';
 
 export class CsrfTokenError extends Error {
@@ -52,6 +53,7 @@ export const getCsrfToken = async (
 const prepareHeaders = async (): Promise<Record<string, string>> => {
   const headers: Record<string, string> = {
     [REQUEST_HEADER_VERSION]: pkg.version,
+    [EXTENSION_ID]: Chrome.runtime.id,
   };
   const csrfToken = await getCsrfToken(YUQUE_DOMAIN, YUQUE_CSRF_COOKIE_NAME);
   if (csrfToken) {
