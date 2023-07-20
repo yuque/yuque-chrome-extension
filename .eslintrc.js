@@ -6,6 +6,16 @@ module.exports = {
     ecmaVersion: 2018,
     requireConfigFile: false,
   },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@', `${__dirname}/src`],
+        },
+      },
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    },
+  },
   rules: {
     'valid-jsdoc': 0,
     'no-script-url': 0,

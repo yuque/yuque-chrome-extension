@@ -10,14 +10,14 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "allowJs": true,
+    "typeRoots": [ "node_modules/@types" ],
     "paths": {
       "@/*": ["./src/*"]
     },
   },
   "requireConfigFile": false,
   "include": [
-    "./src/**/*.tsx",
-    "./src/**/*.ts",
+    "./src",
   ],
   "exclude": [
     "node_modules",
