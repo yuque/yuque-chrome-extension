@@ -15,4 +15,4 @@ script:
   - git init
   - git add --all .
   - git commit -m "Travis CI Auto Builder"
-  - git push --quiet --force https://$REPO_TOKEN@github.com/xudafeng/yuque-chrome-extension.git master:gh-pages
+  - git push --quiet --force https://$REPO_TOKEN@github.com/yuque/yuque-chrome-extension.git master:gh-pages

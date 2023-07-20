@@ -24,7 +24,7 @@ module.exports = {
   ],
   serviceWorker: true,
   themeConfig: {
-    repo: `xudafeng/${name}`,
+    repo: `yuque/${name}`,
     editLinks: true,
     docsDir: 'docs',
     locales: {
