@@ -1,6 +1,6 @@
 import locale from 'easy-i18n-cli/src/locale';
 
-export function initI18N(globalOrWindow) {
+export function initI18N(globalOrWindow?: any) {
   let object = globalOrWindow;
   if (!object) {
     if (typeof window !== 'undefined') {

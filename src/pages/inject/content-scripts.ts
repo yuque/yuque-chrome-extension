@@ -309,7 +309,7 @@ class App {
 function initBridge() {
   contentExtensionBridge.connect();
   contentExtensionBridge.onMessage(SandboxMessageType.SHOW_BOARD, () => {
-    window.app.showBoard();
+    window._yuque_ext_app.showBoard();
   });
 }
 
@@ -317,7 +317,7 @@ function initSandbox() {
   initI18N();
   initBridge();
 
-  window.app = window.app || new App();
+  window._yuque_ext_app = window._yuque_ext_app || new App();
 }
 
 initSandbox();
