@@ -8,8 +8,8 @@ module.exports = {
   "剪藏": "Collections",
   "即将上新": "Coming soon",
   "去小记查看": "Go to Note",
+  "多选剪藏": "Multi-select Clip",
   "小记": "Note",
-  "整个页面(即将支持)": "All page",
   "欢迎，请点击登录语雀账户": "Welcome",
   "登录失败": "登录失败",
   "登录验证": "登录验证",
@@ -20,9 +20,6 @@ module.exports = {
   "语雀插件": "Yuque plugin",
   "请填写内容": "Please fill in the content",
   "退出账户": "Logout account",
-  "选取": "Select",
-  "多选剪藏": "Multi-select Clip",
-  "链接卡片": "Bookmark",
   "链接剪藏": "Link Clip",
   "问题反馈": "Feedback"
 };

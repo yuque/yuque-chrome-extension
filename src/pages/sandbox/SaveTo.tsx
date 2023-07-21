@@ -4,9 +4,6 @@ import { get as safeGet, isEmpty } from 'lodash';
 import { EditFilled, BookFilled } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
-import {
-  clearCurrentAccount,
-} from '@/core/account';
 import processHtmls from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import Editor from '@/components/editor/Editor';
@@ -123,13 +120,6 @@ const SELECT_TYPES = [
       return __i18n('链接剪藏');
     },
   },
-  {
-    key: 'all-page',
-    enabled: false,
-    get text() {
-      return __i18n('整个页面(即将支持)');
-    },
-  },
 ];
 
 function BookWithIcon({ book }) {
@@ -224,7 +214,7 @@ const useViewModel = (props) => {
         const bookmarkContent = getBookmarkContent(tab);
         setEditorValue(bookmarkContent);
       });
-    } else if (currentType === SELECT_TYPES[2].key) {
+    } else if (currentType === SELECT_TYPES[2]?.key) {
       getPageHTML().then(res => {
         const html = formatHTML(res);
         const document = new window.DOMParser().parseFromString(
