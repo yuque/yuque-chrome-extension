@@ -24,5 +24,6 @@ module.exports = {
   "多选剪藏": "Multi-select Clip",
   "链接卡片": "Bookmark",
   "链接剪藏": "Link Clip",
-  "问题反馈": "Feedback"
+  "问题反馈": "Feedback",
+  "升级新版本": "New version"
 };
