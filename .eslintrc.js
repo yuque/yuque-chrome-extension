@@ -11,7 +11,7 @@ module.exports = {
       alias: {
         map: [
           ['@', `${__dirname}/src`],
-        },
+        ],
       },
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     },
