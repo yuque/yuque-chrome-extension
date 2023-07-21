@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, message } from 'antd';
 import { CloseOutlined, ExperimentOutlined } from '@ant-design/icons';
+import SemverCompare from 'semver-compare';
+
 import Chrome from '@/core/chrome';
 import formatHTML from '@/components/editor/format-html';
 import formatMD from '@/components/editor/format-md';
@@ -13,12 +15,15 @@ import {
   setCurrentAccount,
   clearCurrentAccount,
 } from '@/core/account';
+import { VERSION } from '@/config';
+
 import UserInfo, { IYuqueAccount } from './UserInfo';
 import FeedBack from './FeedBack';
 import SaveTo from './SaveTo';
 import Login from './Login';
 import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
+import { useCheckVersion } from './CheckVersion';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -173,16 +178,36 @@ const App = () => {
     };
   }, [editorValue]);
 
+  const newVersion = useCheckVersion();
+  const needUpgrade = React.useMemo(() => {
+    return SemverCompare(newVersion || '', VERSION) === 1;
+  }, [newVersion]);
+
   return (
     <EditorValueContext.Provider
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
     >
       <div className={styles.wrapper}>
         <div className={styles.header}>
-          <span className={styles.version}>
-            v{process.env.VERSION}
-            <span className={styles.buildtime}>/{process.env.BUILD_TIME}</span>
-          </span>
+          <div className={styles.versionHit}>
+            <span className={styles.version}>
+              v{VERSION}
+              <span className={styles.buildtime}>/{process.env.BUILD_TIME}</span>
+            </span>
+            {
+              needUpgrade
+                ? (
+                  <a
+                    href="https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome#G8HaG"
+                    target='_blank'
+                    style={{ marginLeft: 8 }}
+                  >
+                    {__i18n('升级新版本')}
+                    &nbsp;v{newVersion}
+                  </a>
+                ) : null
+            }
+          </div>
           <span className={styles.close} onClick={onClose}>
             <CloseOutlined />
           </span>
