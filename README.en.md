@@ -6,6 +6,10 @@
 
 [简体中文](README.zh.md)
 
+[![CI][ci-image]][ci-url]
+[ci-image]: https://github.com/yuque/yuque-chrome-extension/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/yuque/yuque-chrome-extension/actions/workflows/ci.yml
+
 [![build status][travis-image]][travis-url]
 
 [travis-image]: https://travis-ci.com/xudafeng/yuque-chrome-extension.svg?branch=master
