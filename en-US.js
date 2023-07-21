@@ -6,6 +6,7 @@ module.exports = {
   "保存成功": "Saved successfully",
   "其他": "Others",
   "剪藏": "Collections",
+  "升级新版本": "New version",
   "即将上新": "Coming soon",
   "去小记查看": "Go to Note",
   "多选剪藏": "Multi-select Clip",
