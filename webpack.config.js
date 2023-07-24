@@ -12,7 +12,7 @@ const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
 const templatePath = path.join(srcPath, 'template.html');
-const pkg = require('./package');
+const pkg = require('./package.json');
 
 const {
   SERVER_HOST,
@@ -78,7 +78,7 @@ const entry = {
   [entries.contentScript]: path.join(pagesPath, 'inject', entries.contentScript),
 };
 
-entries.extensionPage.map(item => {
+entries.extensionPage.forEach(item => {
   entry[item] = path.join(pagesPath, item);
 });
 

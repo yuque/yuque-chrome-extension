@@ -20,7 +20,7 @@ export const encodeCardValue = (value): string => {
 export const isMarkActive = (editor, format) => {
   const { selection } = editor;
   if (selection) {
-    const [match] = SlateEditor.nodes(editor, {
+    const [ match ] = SlateEditor.nodes(editor, {
       at: selection,
       match: n => Text.isText(n) && n[format] === true,
     });
@@ -33,7 +33,7 @@ export const isBlockActive = (editor, format, blockType = 'type') => {
   const { selection } = editor;
   if (!selection) return false;
 
-  const [match] = Array.from(
+  const [ match ] = Array.from(
     SlateEditor.nodes(editor, {
       at: SlateEditor.unhangRange(editor, selection),
       match: n =>

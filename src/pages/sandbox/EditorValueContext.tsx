@@ -10,6 +10,8 @@ export interface EditorValueContextType {
 export const EditorValueContext = createContext<EditorValueContextType>({
   currentType: null,
   editorValue: [],
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setEditorValue: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setCurrentType: () => {},
 });

@@ -1,45 +1,89 @@
 'use strict';
 
-module.exports = {
+/* eslint-env node */
+const eslintConfig = {
   extends: 'eslint-config-egg',
-  parserOptions: {
-    ecmaVersion: 2018,
-    requireConfigFile: false,
+  env: {
+    browser: true,
+    es6: true,
+    node: true,
   },
   settings: {
     'import/resolver': {
       alias: {
         map: [
-          ['@', `${__dirname}/src`],
+          [ '@', `${__dirname}/src` ],
+        ],
+        extensions: [ '.ts', '.tsx', '.js', '.jsx', '.json' ],
+      },
+    },
+  },
+  // parser: '@babel/eslint-parser',
+  parserOptions: {
+    ecmaVersion: 2020,
+    ecmaFeatures: {
+      experimentalObjectRestSpread: true,
+    },
+  },
+  plugins: [
+    'import',
+    'react',
+    'react-hooks',
+  ],
+  ignorePatterns: [ '*.d.ts' ],
+  rules: {
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        ts: 'never',
+        tsx: 'never',
+        js: 'never',
+        jsx: 'never',
+      },
+    ],
+  },
+  overrides: [],
+};
+
+const tslintConfig = {
+  // enable the rule specifically for TypeScript files
+  files: [ '*.ts', '*.tsx' ],
+  extends: [
+    'eslint-config-egg/typescript',
+    'plugin:@typescript-eslint/recommended',
+  ],
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    '@typescript-eslint',
+  ],
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': [ '.ts', '.tsx' ],
+    },
+    'import/resolver': {
+      ...eslintConfig.settings['import/resolver'],
+      typescript: {
+        project: [
+          'tsconfig.json',
         ],
       },
-      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     },
   },
   rules: {
-    'valid-jsdoc': 0,
-    'no-script-url': 0,
-    'no-multi-spaces': 0,
-    'default-case': 0,
-    'no-case-declarations': 0,
-    'one-var-declaration-per-line': 0,
-    'no-restricted-syntax': 0,
-    'jsdoc/require-param': 0,
-    'jsdoc/check-param-names': 0,
-    'jsdoc/require-param-description': 0,
-    'arrow-parens': 0,
-    'prefer-promise-reject-errors': 0,
-    'no-control-regex': 0,
-    'no-use-before-define': 0,
-    'array-callback-return': 0,
-    'no-bitwise': 0,
-    'no-self-compare': 0,
-    'one-var': 0,
+    ...eslintConfig.rules,
+    'no-unused-vars': 'off',
+    'no-undef': 'off',
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    strict: 'off',
+    '@typescript-eslint/ban-ts-comment': [ 'warn' ],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
   },
-  env: {
-    jest: true
-  },
-  globals:{
-    window: false
-  }
 };
+
+eslintConfig.overrides.push(tslintConfig);
+
+module.exports = eslintConfig;

@@ -62,12 +62,11 @@ const serializeCustomElement = (
 
 const serialize = (
   node: CustomElement | CustomText,
-  isASL: boolean = false,
-  addReferenceTitle: boolean = true,
+  isASL = false,
+  addReferenceTitle = true,
 ): string => {
   if (isCustomText(node)) return serializeCustomText(node);
-  if (isCustomElement(node))
-    return serializeCustomElement(node, isASL, addReferenceTitle);
+  if (isCustomElement(node)) { return serializeCustomElement(node, isASL, addReferenceTitle); }
 
   return '';
 };

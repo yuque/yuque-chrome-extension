@@ -48,8 +48,8 @@ function updateDynamicRules() {
     },
   ];
 
-  Chrome.declarativeNetRequest.getDynamicRules((previousRules) => {
-    const previousRuleIds = previousRules.map((rule) => rule.id);
+  Chrome.declarativeNetRequest.getDynamicRules(previousRules => {
+    const previousRuleIds = previousRules.map(rule => rule.id);
     Chrome.declarativeNetRequest.updateDynamicRules({
       removeRuleIds: previousRuleIds,
       addRules: rules,

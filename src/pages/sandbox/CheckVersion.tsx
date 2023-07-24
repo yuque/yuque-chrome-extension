@@ -16,7 +16,7 @@ async function fetchAndParseXML(): Promise<string | undefined> {
 }
 
 export function useCheckVersion(): string | undefined {
-  const [version, setVersion] = useState<string | undefined>();
+  const [ version, setVersion ] = useState<string | undefined>();
 
   useEffect(() => {
     fetchAndParseXML().then(res => {
