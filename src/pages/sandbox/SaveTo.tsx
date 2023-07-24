@@ -361,23 +361,15 @@ const SaveTo = props => {
           ))}
         </Space>
       </Radio.Group>
-      <Select
+      <Select<number>
         className={styles.list}
-        /* @ts-ignore */
-        onChange={(value: string) => onSelectBookId(Number(value))}
-        /* @ts-ignore */
-        defaultValue={
-          <BookWithIcon book={books.find(book => book.id === currentBookId)} />
-        }
-      >
-        {books.map(book => {
-          return (
-            <Select.Option value={book.id}>
-              <BookWithIcon book={book} />
-            </Select.Option>
-          );
-        })}
-      </Select>
+        onChange={(value: number) => onSelectBookId(Number(value))}
+        defaultValue={currentBookId}
+        options={books.map(book => ({
+          value: book.id,
+          label: <BookWithIcon book={book} />
+        }))}
+      />
       <Button className={styles.button} type="primary" block onClick={onSave}>
         {__i18n('保存到')}
         {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
