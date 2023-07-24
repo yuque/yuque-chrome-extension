@@ -113,12 +113,10 @@
   },
   "lint-staged": {
     "*/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*/*.less": [
-      "stylelint --fix -s less",
-      "git add"
+      "stylelint --fix -s less"
     ]
   }
 }
