@@ -46,7 +46,7 @@ const RequestProxy = {
         return data.data;
       } catch (error) {
         const err = new Error();
-        err.html = error.response?.data?.html;
+        (err as any).html = error.response?.data?.html;
         throw err;
       }
     },
@@ -82,9 +82,9 @@ const RequestProxy = {
       const { status, statusText, data } = await uploadFile('/api/upload/attach', file, attachableId);
       if (status === 200) {
         return data;
-      } else {
-        throw new Error(`Error uploading image: ${statusText}`);
       }
+      throw new Error(`Error uploading image: ${statusText}`);
+
     },
   },
 };

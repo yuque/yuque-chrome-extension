@@ -37,7 +37,7 @@ interface ExtendedElementProps extends ElementProps {
   editor: ReactEditor & HistoryEditor;
 }
 
-interface ImageElementProps extends ExtendedElementProps {}
+type ImageElementProps = ExtendedElementProps;
 
 const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
@@ -190,7 +190,7 @@ const withImages = (editor: ReactEditor & HistoryEditor) => {
       }
       for (const file of files) {
         const reader = new FileReader();
-        const [mime] = file.type.split('/');
+        const [ mime ] = file.type.split('/');
 
         if (mime === 'image') {
           reader.addEventListener('load', async () => {
@@ -282,7 +282,7 @@ const withShortcuts = (editor: ReactEditor & HistoryEditor) => {
       });
 
       if (match) {
-        const [block, path] = match;
+        const [ block, path ] = match;
         const start = SlateEditor.start(editor, path);
 
         if (
@@ -371,7 +371,7 @@ const Element = (props: ExtendedElementProps) => {
 };
 
 const useViewModel = (props: CustomEditorProps) => {
-  const [value, setValue] = useState([]);
+  const [ value, setValue ] = useState([]);
   const editor = useMemo(
     () =>
       withImages(
@@ -386,9 +386,9 @@ const useViewModel = (props: CustomEditorProps) => {
   }, []);
   useEffect(() => {
     setValue(props.defaultValue);
-  }, [props.defaultValue]);
-  const onChange = value => {
-    setValue(value);
+  }, [ props.defaultValue ]);
+  const onChange = val => {
+    setValue(val);
   };
   return {
     state: {
@@ -427,10 +427,10 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
         element={elementProps.element}
       />
     ),
-    [editor],
+    [ editor ],
   );
 
-  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
+  const renderLeaf = useCallback(prop => <Leaf {...prop} />, []);
 
   useEffect(() => {
     const handleClick = e => {
@@ -449,7 +449,7 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
               children: [{ text: '' }],
             };
             Transforms.insertNodes(editor, newLineNode, {
-              at: [currentRowCount],
+              at: [ currentRowCount ],
               select: true,
             });
             currentRowCount++;
@@ -463,7 +463,7 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
     return () => {
       document.removeEventListener('mousedown', handleClick);
     };
-  }, [editor]);
+  }, [ editor ]);
 
   return (
     <Slate editor={editor} value={value} onChange={onChange}>

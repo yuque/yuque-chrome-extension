@@ -10,10 +10,10 @@ import FeedBack from './FeedBack';
 import styles from './Login.module.less';
 import { IYuqueAccount } from './UserInfo';
 
-const Login = (props) => {
-  const [loading] = useState(true);
-  const [accounts] = useState<IYuqueAccount[]>([]);
-  const [selectedAccount] = useState<IYuqueAccount>(
+const Login = props => {
+  const [ loading ] = useState(true);
+  const [ accounts ] = useState<IYuqueAccount[]>([]);
+  const [ selectedAccount ] = useState<IYuqueAccount>(
     {} as IYuqueAccount,
   );
 

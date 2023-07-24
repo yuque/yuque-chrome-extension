@@ -13,21 +13,21 @@ const menuList: MenuItem[] = [
     get title() {
       return __i18n('保存到语雀小记');
     },
-    contexts: ['selection'],
+    contexts: [ 'selection' ],
   },
   {
     id: 'save-to-yuque',
     get title() {
       return __i18n('语雀插件');
     },
-    contexts: ['page'],
+    contexts: [ 'page' ],
   },
   {
     id: 'save-to-yuque-image',
     get title() {
       return __i18n('语雀插件');
     },
-    contexts: ['image'],
+    contexts: [ 'image' ],
   },
 ];
 

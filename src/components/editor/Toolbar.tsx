@@ -30,7 +30,7 @@ type ButtonProps = {
   active: boolean;
   reversed: boolean;
 } & BaseProps &
-  HTMLAttributes<HTMLSpanElement>;
+HTMLAttributes<HTMLSpanElement>;
 
 const Menu = React.forwardRef(
   (
@@ -105,7 +105,7 @@ export const Toolbar = React.forwardRef(
 );
 
 const MarkButton = ({ editor, format, IconComponent }) => {
-  const [isActive, setIsActive] = useState(() => isMarkActive(editor, format));
+  const [ isActive, setIsActive ] = useState(() => isMarkActive(editor, format));
 
   useEffect(() => {
     const updateIsActive = () => {
@@ -116,7 +116,7 @@ const MarkButton = ({ editor, format, IconComponent }) => {
     return () => {
       document.removeEventListener('selectionchange', updateIsActive);
     };
-  }, [editor, format]);
+  }, [ editor, format ]);
 
   const handleMouseDown = e => {
     e.preventDefault();
@@ -136,7 +136,7 @@ const MarkButton = ({ editor, format, IconComponent }) => {
 };
 
 const BlockButton = ({ editor, format, IconComponent }) => {
-  const [isActive, setIsActive] = useState(() => isBlockActive(editor, format));
+  const [ isActive, setIsActive ] = useState(() => isBlockActive(editor, format));
 
   useEffect(() => {
     const updateIsActive = () => {
@@ -147,7 +147,7 @@ const BlockButton = ({ editor, format, IconComponent }) => {
     return () => {
       document.removeEventListener('selectionchange', updateIsActive);
     };
-  }, [editor, format]);
+  }, [ editor, format ]);
 
   const handleMouseDown = e => {
     e.preventDefault();

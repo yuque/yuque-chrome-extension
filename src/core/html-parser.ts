@@ -10,7 +10,7 @@ async function urlToFile(url: string, filename: string) {
     }
 
     const blob = await response.blob();
-    const file = new File([blob], filename, { type: blob.type });
+    const file = new File([ blob ], filename, { type: blob.type });
     return file;
   } catch (error) {
     console.error('Error in urlToFile:', error);

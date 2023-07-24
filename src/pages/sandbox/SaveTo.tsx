@@ -132,10 +132,10 @@ function BookWithIcon({ book }) {
   );
 }
 
-const useViewModel = (props) => {
-  const [books, setBooks] = useState([NOTE_DATA]);
-  const [currentBookId, setCurrentBookId] = useState(NOTE_DATA.id);
-  const [showContinueButton, setShowContinueButton] = useState(false);
+const useViewModel = props => {
+  const [ books, setBooks ] = useState([ NOTE_DATA ]);
+  const [ currentBookId, setCurrentBookId ] = useState(NOTE_DATA.id);
+  const [ showContinueButton, setShowContinueButton ] = useState(false);
   const { editorValue, currentType, setEditorValue, setCurrentType } =
     useContext(EditorValueContext);
   const onSelectType = setCurrentType;
@@ -152,8 +152,8 @@ const useViewModel = (props) => {
 
   useEffect(() => {
     proxy.book.getBooks()
-      .then(books => {
-        setBooks([NOTE_DATA, ...books]);
+      .then(bookList => {
+        setBooks([ NOTE_DATA, ...bookList ]);
       })
       .catch(e => {
         props.onLogout(e);
@@ -176,7 +176,7 @@ const useViewModel = (props) => {
           'text/html',
         );
         const value = deserialize(document.body);
-        setEditorValue([...editorValue, ...formatMD(value)]);
+        setEditorValue([ ...editorValue, ...formatMD(value) ]);
         sendResponse(true);
         return;
       }
@@ -189,7 +189,7 @@ const useViewModel = (props) => {
         );
 
         const value = deserialize(document.body);
-        setEditorValue([...editorValue, ...formatMD(value)]);
+        setEditorValue([ ...editorValue, ...formatMD(value) ]);
         setCurrentType('selection');
         sendResponse(true);
         return;
@@ -204,7 +204,7 @@ const useViewModel = (props) => {
     return () => {
       Chrome.runtime.onMessage.removeListener(onReceiveMessage);
     };
-  }, [editorValue]);
+  }, [ editorValue ]);
 
   useEffect(() => {
     if (currentType === SELECT_TYPES[0].key) {
@@ -231,13 +231,13 @@ const useViewModel = (props) => {
         setEditorValue(editorValue.concat(citation));
       });
     }
-  }, [currentType]);
+  }, [ currentType ]);
 
   useEffect(() => {
     setShowContinueButton(
       currentType === SELECT_TYPES[1].key && !isEmpty(editorValue),
     );
-  }, [editorValue, currentType]);
+  }, [ editorValue, currentType ]);
 
   const onSave = () => {
     if (!editorInstance) return;
@@ -299,7 +299,7 @@ const useViewModel = (props) => {
             body: serializedHtmlContent,
             insert_to_catalog: true,
           })
-          .then((doc) => {
+          .then(doc => {
             const url = LinkHelper.goDoc(doc);
             message.success(
               <span>
@@ -337,7 +337,7 @@ const useViewModel = (props) => {
   };
 };
 
-const SaveTo = (props) => {
+const SaveTo = props => {
   const { currentType, editorValue } = useContext(EditorValueContext);
   const {
     state: { books, currentBookId, showContinueButton },
@@ -363,7 +363,9 @@ const SaveTo = (props) => {
       </Radio.Group>
       <Select
         className={styles.list}
+        /* @ts-ignore */
         onChange={(value: string) => onSelectBookId(Number(value))}
+        /* @ts-ignore */
         defaultValue={
           <BookWithIcon book={books.find(book => book.id === currentBookId)} />
         }

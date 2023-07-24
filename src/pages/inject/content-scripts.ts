@@ -109,13 +109,13 @@ class App {
       });
 
     submitBtn.hover(
-      function () {
+      function() {
         $(this).css({
           backgroundColor: '#00b96b',
           borderColor: '#00b96b',
         });
       },
-      function () {
+      function() {
         $(this).css({
           backgroundColor: '#009456',
           borderColor: '#009456',
@@ -242,7 +242,7 @@ class App {
     const mask = this.createTipMask();
     const confirmSelectionButton = this.createConfirmButton(iframe);
 
-    this.areaSelection.init([confirmSelectionButton[0], mask[0]]);
+    this.areaSelection.init([ confirmSelectionButton[0], mask[0] ]);
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
@@ -259,7 +259,7 @@ class App {
         const { selectionText } = data;
         Chrome.runtime.sendMessage({
           action: GLOBAL_EVENTS.GET_SELECTED_TEXT,
-          htmls: [selectionText],
+          htmls: [ selectionText ],
         });
       });
 

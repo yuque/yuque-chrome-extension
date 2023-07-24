@@ -39,8 +39,8 @@ initI18N();
 const { TabPane } = Tabs;
 
 const useViewModel = () => {
-  const [account, setAccount] = useState<IYuqueAccount>();
-  const [upgradeInfo, setUpgradeInfo] = useState<string>();
+  const [ account, setAccount ] = useState<IYuqueAccount>();
+  const [ upgradeInfo, setUpgradeInfo ] = useState<string>();
 
   const onClose = () => {
     Chrome.tabs.getCurrent((tab: any) => {
@@ -53,7 +53,9 @@ const useViewModel = () => {
   const onLogout = (data = {}) => {
     clearCurrentAccount().then(() => {
       setAccount(undefined);
+      // @ts-ignore
       if (data.html) {
+        // @ts-ignore
         setUpgradeInfo(data.html);
       }
     });
@@ -104,18 +106,18 @@ const useViewModel = () => {
     const windowId = await createLoginWindow();
     await waitForWindowLogined(windowId);
     await removeWindow(windowId);
-    const account = await proxy.getMineInfo();
-    if (!account) {
+    const accountInfo = await proxy.getMineInfo();
+    if (!accountInfo) {
       message.error(__i18n('登录失败'));
       return;
     }
-    await setCurrentAccount(account);
-    setAccount(account);
+    await setCurrentAccount(accountInfo);
+    setAccount(accountInfo);
   };
 
   useEffect(() => {
-    getCurrentAccount().then(account => {
-      setAccount(account as IYuqueAccount);
+    getCurrentAccount().then(info => {
+      setAccount(info as IYuqueAccount);
     });
   }, []);
 
@@ -131,8 +133,8 @@ const useViewModel = () => {
 };
 
 const App = () => {
-  const [editorValue, setEditorValue] = useState([]);
-  const [currentType, setCurrentType] = useState(null);
+  const [ editorValue, setEditorValue ] = useState([]);
+  const [ currentType, setCurrentType ] = useState(null);
   const {
     state: { account, upgradeInfo },
     onClose,
@@ -154,7 +156,7 @@ const App = () => {
           'text/html',
         );
         const value = deserialize(document.body);
-        setEditorValue([...editorValue, ...formatMD(value)]);
+        setEditorValue([ ...editorValue, ...formatMD(value) ]);
         setCurrentType('selection');
         sendResponse(true);
         return;
@@ -176,12 +178,12 @@ const App = () => {
     return () => {
       Chrome.runtime.onMessage.removeListener(onReceiveMessage);
     };
-  }, [editorValue]);
+  }, [ editorValue ]);
 
   const newVersion = useCheckVersion();
   const needUpgrade = React.useMemo(() => {
     return SemverCompare(newVersion || '', VERSION) === 1;
-  }, [newVersion]);
+  }, [ newVersion ]);
 
   return (
     <EditorValueContext.Provider

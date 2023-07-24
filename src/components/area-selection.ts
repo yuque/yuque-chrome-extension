@@ -55,7 +55,8 @@ class AreaSelection extends EventEmitter {
 
   injectStyleIfNeeded(className: string, css: string) {
     if (!$(`style.${className}`)[0]) {
-      $('<style>').addClass(className).text(css).appendTo('head');
+      $('<style>').addClass(className).text(css)
+        .appendTo('head');
     }
   }
 

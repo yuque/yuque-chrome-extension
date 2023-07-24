@@ -11,6 +11,8 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "typeRoots": [ "node_modules/@types" ],
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./src/*"]
     },

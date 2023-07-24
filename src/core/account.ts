@@ -13,7 +13,7 @@ export const getCurrentAccount = () => new Promise(resolve => {
   });
 });
 
-export const setCurrentAccount = (account) => new Promise(resolve => {
+export const setCurrentAccount = account => new Promise(resolve => {
   const value = pick(account, [
     'id',
     'login',

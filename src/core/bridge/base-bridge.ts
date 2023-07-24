@@ -88,13 +88,14 @@ export class BaseBridge {
 
     if (handlers) {
       Object.entries(handlers).forEach(item => {
-        this._handlers[item[0]] = [item[1]];
+        this._handlers[item[0]] = [ item[1] ];
       });
     }
   }
 
   onMessage(event: string, handler: IBridgeEventHandler): IHandlerRemover {
     if (!handler) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       return () => {};
     }
 
@@ -115,6 +116,7 @@ export class BaseBridge {
 
   onMessages(handlers: MapT<IBridgeEventHandler>): IHandlerRemover {
     if (!handlers) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       return () => {};
     }
 
