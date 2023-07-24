@@ -1,4 +1,4 @@
-# Chrome/Edge Extension
+# Yuque Extension
 
 > Yuque extension for Google Chrome and Microsoft Edge (Chromium based)
 
