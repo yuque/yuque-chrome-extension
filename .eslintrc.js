@@ -18,7 +18,6 @@ const eslintConfig = {
       },
     },
   },
-  // parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: 2020,
     ecmaFeatures: {
