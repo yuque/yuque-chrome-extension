@@ -49,6 +49,9 @@ $ npm install
 
 # 启动开发环境
 $ npm run dev
+
+# 发布版本
+$ npm run release
 ```
 
 <img
