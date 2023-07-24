@@ -10,7 +10,8 @@
   "issues": "https://www.yuque.com/yuque/yuque-chrome-extension/welcome",
   "scripts": {
     "archive": "sh ./build.sh",
-    "build": "NODE_ENV=production webpack --mode=production && npm run archive",
+    "bundle": "NODE_ENV=production webpack --mode=production",
+    "build": "npm run bundle && npm run archive",
     "contributor": "git-contributor",
     "dev": "NODE_ENV=development webpack --mode=development",
     "docs:dev": "vuepress dev docs",

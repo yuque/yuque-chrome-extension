@@ -32,7 +32,13 @@ jobs:
       - name: Install dependencies
         run: npm install --force
 
-      - name: Continuous integration
+      - name: Lint and Types
         run:
           npm run lint
           npm run type:check
+          npm run bundle
+
+      - name: Bundle
+        run:
+          npm run bundle
+
