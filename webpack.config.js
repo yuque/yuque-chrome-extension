@@ -17,10 +17,9 @@ const pkg = require('./package.json');
 const {
   SERVER_HOST,
   NODE_ENV,
-  npm_lifecycle_event,
 } = process.env;
 
-const isProd = npm_lifecycle_event === 'build';
+const isProd = NODE_ENV === 'production';
 
 const fileExtensions = [
   'jpg', 'jpeg', 'png', 'gif',
