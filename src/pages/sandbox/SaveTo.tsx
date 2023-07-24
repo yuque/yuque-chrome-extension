@@ -363,7 +363,9 @@ const SaveTo = props => {
       </Radio.Group>
       <Select
         className={styles.list}
+        /* @ts-ignore */
         onChange={(value: string) => onSelectBookId(Number(value))}
+        /* @ts-ignore */
         defaultValue={
           <BookWithIcon book={books.find(book => book.id === currentBookId)} />
         }

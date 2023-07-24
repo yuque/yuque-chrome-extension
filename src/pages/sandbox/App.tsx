@@ -53,7 +53,9 @@ const useViewModel = () => {
   const onLogout = (data = {}) => {
     clearCurrentAccount().then(() => {
       setAccount(undefined);
+      // @ts-ignore
       if (data.html) {
+        // @ts-ignore
         setUpgradeInfo(data.html);
       }
     });

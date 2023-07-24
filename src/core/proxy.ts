@@ -46,7 +46,7 @@ const RequestProxy = {
         return data.data;
       } catch (error) {
         const err = new Error();
-        err.html = error.response?.data?.html;
+        (err as any).html = error.response?.data?.html;
         throw err;
       }
     },

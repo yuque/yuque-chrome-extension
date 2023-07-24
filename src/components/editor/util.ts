@@ -78,6 +78,7 @@ export const toggleBlock = (editor, format) => {
   let newProperties: Partial<CustomElement>;
   if (TEXT_ALIGN_TYPES.includes(format)) {
     newProperties = {
+      // @ts-ignore
       align: isActive ? undefined : format,
     };
   } else {
