@@ -14,9 +14,12 @@
     "contributor": "git-contributor",
     "dev": "NODE_ENV=development webpack --mode=development",
     "docs:dev": "vuepress dev docs",
-    "lint": "eslint . --ext .jsx,.js --fix && stylelint --fix ./**/*.less -s less",
+    "lint:js": "eslint . --ext .jsx,.js --fix",
+    "lint:less": "stylelint --fix ./**/*.less -s less",
+    "lint": "npm run lint:js && npm run lint:less",
     "translate": "easy-i18n-cli -c ./i18n.config.js",
-    "translate:check": "npm run translate -- --check"
+    "translate:check": "npm run translate -- --check",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -52,6 +55,8 @@
     "@babel/plugin-transform-runtime": "^7.7.4",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "7.8.3",
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
     "@types/chrome": "^0.0.224",
     "@types/node": "^18.15.3",
     "@types/react": "^18.0.28",
@@ -78,9 +83,10 @@
     "eslint-plugin-react": "^7.11.1",
     "git-contributor": "^2.1.5",
     "html-webpack-plugin": "^5.5.0",
-    "husky": "^4.3.7",
+    "husky": "^8.0.3",
     "jsx-loader": "^0.13.2",
     "less-loader": "^10.2.0",
+    "lint-staged": "^13.2.3",
     "prettier": "^2.8.4",
     "style-loader": "^3.3.2",
     "stylelint": "^12.0.1",
@@ -97,9 +103,17 @@
   "optionalDependencies": {
     "copy-paste": "^1.3.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint"
-    }
+  "commitlint": {
+    "extends": [ "@commitlint/config-conventional" ]
+  },
+  "lint-staged": {
+    "*/*.{js,jsx,ts,tsx}": [
+      "npm run lint:js",
+      "git add"
+    ],
+    "*/*.{less}": [
+      "npm run lint:less",
+      "git add"
+    ]
   }
 }
