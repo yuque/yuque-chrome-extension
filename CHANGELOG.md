@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/yuque/yuque-chrome-extension/compare/v0.3.1...v0.3.2) (2023-07-25)
+
+
+### Bug Fixes
+
+* 更新 feedback url ([#52](https://github.com/yuque/yuque-chrome-extension/issues/52)) ([737f1ee](https://github.com/yuque/yuque-chrome-extension/commit/737f1eed7aeb3da765be73f41bd412a61a1f02f2))
+
 ### [0.3.1](https://github.com/yuque/yuque-chrome-extension/compare/v0.3.0...v0.3.1) (2023-07-25)
 
 
