@@ -1,7 +1,8 @@
 import { jsx } from 'slate-hyperscript';
 
-type JSXElement = ReturnType<typeof jsx>;
-const deserialize = (el: Node): JSXElement | string | null => {
+type SlateJSXElement = ReturnType<typeof jsx>;
+const deserialize = (el: Node): SlateJSXElement | string | null => {
+  // 递归到 children 时直接返回 textContent string 格式
   if (el.nodeType === 3) {
     return (el as Text).textContent;
   } else if (el.nodeType !== 1) {
@@ -9,7 +10,7 @@ const deserialize = (el: Node): JSXElement | string | null => {
   }
 
   const htmlElement = el as HTMLElement;
-  let children: (JSXElement | string)[] = Array.from(
+  let children: (SlateJSXElement | string)[] = Array.from(
     htmlElement.childNodes,
   ).map(deserialize);
 
@@ -46,7 +47,7 @@ const deserialize = (el: Node): JSXElement | string | null => {
         children,
       );
     default:
-      return htmlElement.textContent || '';
+      return jsx('element', { type: 'paragraph' }, [ htmlElement.textContent || '' ]);
   }
 };
 
