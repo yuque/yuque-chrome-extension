@@ -235,7 +235,7 @@ const useViewModel = props => {
 
   useEffect(() => {
     setShowContinueButton(
-      currentType === SELECT_TYPES[1].key && !isEmpty(editorValue),
+      currentType === SELECT_TYPES[0].key && !isEmpty(editorValue),
     );
   }, [ editorValue, currentType ]);
 
