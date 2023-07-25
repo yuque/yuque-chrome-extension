@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 
 async function fetchAndParseXML(): Promise<string | undefined> {
-  const response = await fetch('https://app.nlark.com/yuque-chrome-extension/updates.xml');
+  const response = await fetch(
+    'https://app.nlark.com/yuque-chrome-extension/updates.xml',
+    // 强制与 cdn 做校验是否可使用缓存内容
+    { cache: 'no-cache' },
+  );
   const xmlString = await response.text();
 
   const parser = new DOMParser();
