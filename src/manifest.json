@@ -41,8 +41,6 @@
   ],
   "permissions": [
     "activeTab",
-    "scripting",
-    "declarativeContent",
     "declarativeNetRequest",
     "background",
     "contextMenus",
