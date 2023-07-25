@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/yuque/yuque-chrome-extension/compare/v0.2.1...v0.3.0) (2023-07-25)
+
+
+### Bug Fixes
+
+* 调整 book 选择器实现避免类型问题 ([#42](https://github.com/yuque/yuque-chrome-extension/issues/42)) ([a6cfc78](https://github.com/yuque/yuque-chrome-extension/commit/a6cfc788f4040e7592ab4b11cca8e479e1bbdc7f))
+
 ### [0.2.1](https://github.com/yuque/yuque-chrome-extension/compare/v0.2.0...v0.2.1) (2023-07-24)
 
 
