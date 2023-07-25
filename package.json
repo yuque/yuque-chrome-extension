@@ -23,7 +23,8 @@
     "translate": "easy-i18n-cli -c ./i18n.config.js",
     "translate:check": "npm run translate -- --check",
     "prepare": "husky install",
-    "release": "standard-version && git push origin --tags"
+    "release": "standard-version",
+    "postrelease": "git push origin --tags"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
