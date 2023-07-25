@@ -1,5 +1,16 @@
 import { jsx } from 'slate-hyperscript';
 
+function nodeNameToHeadingJsx(nodeName: string, children: any[]) {
+  return {
+    H1: jsx('element', { type: 'heading-one' }, children),
+    H2: jsx('element', { type: 'heading-two' }, children),
+    H3: jsx('element', { type: 'heading-three' }, children),
+    H4: jsx('element', { type: 'heading-four' }, children),
+    H5: jsx('element', { type: 'heading-five' }, children),
+    H6: jsx('element', { type: 'heading-six' }, children),
+  }[nodeName];
+}
+
 type SlateJSXElement = ReturnType<typeof jsx>;
 const deserialize = (el: Node): SlateJSXElement | string | null => {
   // 递归到 children 时直接返回 textContent string 格式
@@ -46,6 +57,13 @@ const deserialize = (el: Node): SlateJSXElement | string | null => {
         },
         children,
       );
+    case 'H1':
+    case 'H2':
+    case 'H3':
+    case 'H4':
+    case 'H5':
+    case 'H6':
+      return nodeNameToHeadingJsx(htmlElement.nodeName, children);
     default:
       return jsx('element', { type: 'paragraph' }, [ htmlElement.textContent || '' ]);
   }
