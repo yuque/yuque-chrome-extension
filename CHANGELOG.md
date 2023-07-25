@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/yuque/yuque-chrome-extension/compare/v0.3.0...v0.3.1) (2023-07-25)
+
+
+### Features
+
+* 保存成功后收起整个剪藏工具面板 ([#49](https://github.com/yuque/yuque-chrome-extension/issues/49)) ([0f8f320](https://github.com/yuque/yuque-chrome-extension/commit/0f8f320cce76196ebe9690cd32df2cc2427da30c))
+* 支持 h1 到 h6 的剪藏 ([#46](https://github.com/yuque/yuque-chrome-extension/issues/46)) ([9133777](https://github.com/yuque/yuque-chrome-extension/commit/9133777cc2e326399ce008aadb06fe7c15cac902))
+
+
+### Bug Fixes
+
+* 清理掉 manifest.json 中未使用的 permission ([#50](https://github.com/yuque/yuque-chrome-extension/issues/50)) ([744bf21](https://github.com/yuque/yuque-chrome-extension/commit/744bf2147eaf567bb0d6ed4f9872545d42d9fa2b))
+* 继续选取时不再提取当前页面的信息 ([#51](https://github.com/yuque/yuque-chrome-extension/issues/51)) ([666e46a](https://github.com/yuque/yuque-chrome-extension/commit/666e46a0a4bb2146834d1f347cf9d844896a933b))
+* 解决反序列化导致节点丢失块信息出现任意键入后回删文本和图片的问题 ([#45](https://github.com/yuque/yuque-chrome-extension/issues/45)) ([895bd97](https://github.com/yuque/yuque-chrome-extension/commit/895bd97f8d7c6cda400e3b64340a8dac3f3ddba1))
+* 请求 updates.xml 时使用 no-cache 策略 ([#47](https://github.com/yuque/yuque-chrome-extension/issues/47)) ([11b9187](https://github.com/yuque/yuque-chrome-extension/commit/11b91872bf98ee41009400fca551c04d054b393c))
+* 调整 继续选取 到多选剪藏下 ([#48](https://github.com/yuque/yuque-chrome-extension/issues/48)) ([b321903](https://github.com/yuque/yuque-chrome-extension/commit/b321903102e20e46b88df1202e0a40857478ce20))
+
 ## [0.3.0](https://github.com/yuque/yuque-chrome-extension/compare/v0.2.1...v0.3.0) (2023-07-25)
 
 
