@@ -257,6 +257,7 @@ const useViewModel = props => {
 
     const onSuccess = () => {
       setEditorValue([]);
+      setCurrentType(null);
     };
 
     const onError = () => {
@@ -351,6 +352,7 @@ const SaveTo = props => {
       <Radio.Group
         buttonStyle="solid"
         size="small"
+        value={currentType}
         onChange={e => onSelectType(e.target.value)}
       >
         <Space direction="vertical">
