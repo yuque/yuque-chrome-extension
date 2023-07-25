@@ -24,7 +24,7 @@
     "translate:check": "npm run translate -- --check",
     "prepare": "husky install",
     "release": "standard-version",
-    "postrelease": "git push origin --tags"
+    "postrelease": "git push origin main && git push origin --tags"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
