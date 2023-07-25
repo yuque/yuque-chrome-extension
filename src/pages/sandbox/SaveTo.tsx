@@ -140,10 +140,12 @@ const useViewModel = props => {
     useContext(EditorValueContext);
   const onSelectType = setCurrentType;
 
-  const startSelect = () => {
+  const startSelect = (append = false) => {
     getCurrentTab().then(tab => {
       const bookmarkContent = getBookmarkContent(tab);
-      setEditorValue(bookmarkContent);
+      if (!append) {
+        setEditorValue(bookmarkContent);
+      }
       Chrome.tabs.sendMessage(tab.id, {
         action: GLOBAL_EVENTS.START_SELECT,
       });
@@ -318,7 +320,7 @@ const useViewModel = props => {
   };
 
   const onContinue = () => {
-    startSelect();
+    startSelect(true);
   };
 
   const onSelectBookId = setCurrentBookId;
