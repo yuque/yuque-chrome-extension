@@ -200,7 +200,7 @@ const App = () => {
               needUpgrade
                 ? (
                   <a
-                    href="https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome#G8HaG"
+                    href="https://www.yuque.com/yuque/yuque-chrome-extension/welcome#G8HaG"
                     target='_blank'
                     style={{ marginLeft: 8 }}
                   >
