@@ -12,7 +12,7 @@
 [ci-url]: https://github.com/yuque/yuque-chrome-extension/actions/workflows/ci.yml
 
 <p align="center">
-  <a href="https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome">
+  <a href="https://www.yuque.com/yuque/yuque-chrome-extension/welcome">
     <img
       alt="logo"
       src="./resources/logo.png"
@@ -39,7 +39,7 @@
   />
 </p>
 
-文档说明：https://www.yuque.com/xudafeng/yuque-chrome-extension/welcome
+文档说明：https://www.yuque.com/yuque/yuque-chrome-extension/welcome
 
 ## 如何开发
 
