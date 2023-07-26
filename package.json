@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/yuque/yuque-chrome-extension.git"
   },
-  "issues": "https://www.yuque.com/yuque/yuque-chrome-extension/welcome",
+  "issues": "https://www.yuque.com/yuque/yuque-browser-extension/welcome",
   "scripts": {
     "archive": "sh ./build.sh",
     "bundle": "NODE_ENV=production webpack --mode=production",
