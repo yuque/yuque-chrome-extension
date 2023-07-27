@@ -6,11 +6,13 @@
   top: @base-padding * 2;
   background: rgb(250, 250, 250);
   border-radius: @base-padding;
-  box-shadow: 0 1px 4px 0 rgb(0, 0, 0, 10%);
+  box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.4);
+
   color: @text-color;
   width: @main-board-width;
   display: flex;
   flex-flow: column nowrap;
+  padding: 20px @base-padding * 3 @base-padding * 3;
 
   .header {
     padding: @base-padding @base-padding * 2;
@@ -42,17 +44,18 @@
         }
       }
     }
+  }
 
-    .close {
-      padding: 0 2px;
-      cursor: pointer;
-    }
+  .close {
+    position: absolute;
+    right: @base-padding * 3;
+    top: @base-padding * 3;
+    cursor: pointer;
   }
 
   .items {
-    flex: 1 1 auto;
-    padding: 0 @base-padding * 2;
-    min-height: 226px;
+    // flex: 1 1 auto;
+    // min-height: 226px;
 
     .login {
       min-height: 100px;

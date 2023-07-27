@@ -190,7 +190,7 @@ const App = () => {
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
     >
       <div className={styles.wrapper}>
-        <div className={styles.header}>
+        {/* <div className={styles.header}>
           <div className={styles.versionHit}>
             <span className={styles.version}>
               v{VERSION}
@@ -210,10 +210,8 @@ const App = () => {
                 ) : null
             }
           </div>
-          <span className={styles.close} onClick={onClose}>
-            <CloseOutlined />
-          </span>
-        </div>
+        </div> */}
+        <CloseOutlined className={styles.close} onClick={onClose} />
         <div className={styles.items}>
           {account?.id ? (
             <>

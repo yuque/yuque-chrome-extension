@@ -7,8 +7,12 @@ import {
 import classnames from 'classnames';
 import { setCurrentAccount } from '@/core/account';
 import FeedBack from './FeedBack';
+
+import type { IYuqueAccount } from './UserInfo';
+
+import YuqueLogo from '@/assets/images/yuque-logo.png';
+
 import styles from './Login.module.less';
-import { IYuqueAccount } from './UserInfo';
 
 const Login = props => {
   const [ loading ] = useState(true);
@@ -26,7 +30,8 @@ const Login = props => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.welcome}>
-        {__i18n('欢迎，请点击登录语雀账户')}
+        <img width="60" src={YuqueLogo} alt="yuque logo" />
+        <div className={styles.loginTip}>{__i18n('欢迎，请点击登录语雀账户')}</div>
       </div>
       <List
         className={styles.list}
@@ -66,7 +71,6 @@ const Login = props => {
         )}
       />
       <Button
-        className={styles.button}
         type="primary"
         block
         onClick={onConfirm}
@@ -74,9 +78,7 @@ const Login = props => {
       >
         {__i18n('登录验证')}
       </Button>
-      <div className={styles.feedback}>
-        <FeedBack />
-      </div>
+      <FeedBack className={styles.feedback} />
     </div>
   );
 };

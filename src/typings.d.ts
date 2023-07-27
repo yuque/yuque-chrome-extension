@@ -8,4 +8,6 @@ declare module '*.less' {
   export = resource;
 }
 
+declare module '*.png'
+
 declare function __i18n(text: string, params?: any): string;
