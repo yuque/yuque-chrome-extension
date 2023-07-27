@@ -95,11 +95,6 @@ const rules = [
     exclude: /node_modules/,
   },
   {
-    test: /\.(js|jsx)$/,
-    loader: 'babel-loader',
-    exclude: /node_modules/,
-  },
-  {
     test: /\.less$/,
     exclude(filePath) {
       return filePath.endsWith('.module.less');
@@ -157,6 +152,17 @@ const rules = [
     generator: {
       filename: '[name][ext]',
     },
+  },
+  {
+    test: /\.svg$/i,
+    issuer: /\.tsx?$/,
+    resourceQuery: { not: [ /url/ ] }, // exclude react component if *.svg?url
+    use: [ '@svgr/webpack' ],
+  },
+  {
+    test: /\.svg$/i,
+    resourceQuery: /url/, // *.svg?url
+    type: 'asset',
   },
 ];
 

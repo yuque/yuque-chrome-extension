@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, message } from 'antd';
+import { Radio, RadioChangeEvent, Tabs, message } from 'antd';
 import { CloseOutlined, ExperimentOutlined } from '@ant-design/icons';
 import SemverCompare from 'semver-compare';
 
@@ -132,6 +132,8 @@ const useViewModel = () => {
   };
 };
 
+type TabName = 'save-to' | 'other';
+
 const App = () => {
   const [ editorValue, setEditorValue ] = useState([]);
   const [ currentType, setCurrentType ] = useState(null);
@@ -185,6 +187,12 @@ const App = () => {
     return SemverCompare(newVersion || '', VERSION) === 1;
   }, [ newVersion ]);
 
+  const [ tab, setTab ] = React.useState<TabName>('save-to');
+
+  const handleTabChange = (e: RadioChangeEvent) => {
+    setTab(e.target.value as unknown as TabName);
+  };
+
   return (
     <EditorValueContext.Provider
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
@@ -211,26 +219,24 @@ const App = () => {
             }
           </div>
         </div> */}
+        {
+          account?.id
+            ? <div className={styles.header}>{__i18n('语雀剪藏')}</div>
+            : null
+        }
         <CloseOutlined className={styles.close} onClick={onClose} />
         <div className={styles.items}>
           {account?.id ? (
             <>
-              <Tabs defaultActiveKey="save-to" size="small" type="card">
-                <TabPane tab={__i18n('剪藏')} key="save-to">
-                  <SaveTo onLogout={onLogout} />
-                </TabPane>
-                <TabPane
-                  tab={
-                    <span>
-                      <ExperimentOutlined />
-                      {__i18n('其他')}
-                    </span>
-                  }
-                  key="others"
-                >
-                  {__i18n('即将上新')}
-                </TabPane>
-              </Tabs>
+              <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
+                <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
+                <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
+              </Radio.Group>
+              {
+                tab === 'save-to'
+                  ? <SaveTo onLogout={onLogout} />
+                  : <div>{__i18n('即将上新')}</div>
+              }
             </>
           ) : (
             renderUnLogin()

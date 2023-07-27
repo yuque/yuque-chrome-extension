@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Radio, Select, message, Space } from 'antd';
+import { Button, Radio, Select, message, Space, Menu } from 'antd';
 import { get as safeGet, isEmpty } from 'lodash';
-import { EditFilled, BookFilled } from '@ant-design/icons';
+import Icon, { LinkOutlined, EditFilled, BookFilled } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
 import processHtmls from '@/core/html-parser';
@@ -15,6 +15,8 @@ import contentParser from '@/components/editor/content-parser';
 import { GLOBAL_EVENTS } from '@/events';
 import styles from './SaveTo.module.less';
 import { EditorValueContext } from './EditorValueContext';
+
+import ClipperSvg from '@/assets/svg/clipper.svg';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -110,15 +112,17 @@ const SELECT_TYPES = [
     key: 'area-select',
     enabled: true,
     get text() {
-      return __i18n('多选剪藏');
+      return __i18n('剪藏选取的内容');
     },
+    icon: <Icon component={ClipperSvg} />,
   },
   {
     key: 'bookmark',
     enabled: true,
     get text() {
-      return __i18n('链接剪藏');
+      return __i18n('剪藏网址');
     },
+    icon: <LinkOutlined />,
   },
 ];
 
@@ -351,27 +355,28 @@ const SaveTo = props => {
   } = useViewModel(props);
   return (
     <div className={styles.wrapper}>
-      <Radio.Group
-        buttonStyle="solid"
-        size="small"
-        value={currentType}
-        onChange={e => onSelectType(e.target.value)}
-      >
-        <Space direction="vertical">
-          {SELECT_TYPES.map(item => (
-            <Radio disabled={!item.enabled} value={item.key}>
-              {item.text}
-            </Radio>
-          ))}
-        </Space>
-      </Radio.Group>
+      {__i18n('选择剪藏方式')}
+      <Menu
+        mode="inline"
+        openKeys={[ currentType ]}
+        onOpenChange={(openKeys: string[]) => {
+          onSelectType(openKeys[0]);
+        }}
+        style={{ width: 256 }}
+        items={SELECT_TYPES.map(item => ({
+          key: item.key,
+          icon: item.icon,
+          label: item.text,
+        }))}
+      />
+      {__i18n('剪藏到')}
       <Select<number>
         className={styles.list}
         onChange={(value: number) => onSelectBookId(Number(value))}
         defaultValue={currentBookId}
         options={books.map(book => ({
           value: book.id,
-          label: <BookWithIcon book={book} />
+          label: <BookWithIcon book={book} />,
         }))}
       />
       <Button className={styles.button} type="primary" block onClick={onSave}>
