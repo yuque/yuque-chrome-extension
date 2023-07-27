@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Radio, Select, message, Space, Menu } from 'antd';
+import { ConfigProvider, Button, Radio, Select, message, Space, Menu } from 'antd';
+import classnames from 'classnames';
 import { get as safeGet, isEmpty } from 'lodash';
 import Icon, { LinkOutlined, EditFilled, BookFilled } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
@@ -137,9 +138,9 @@ function BookWithIcon({ book }) {
 }
 
 const useViewModel = props => {
-  const [ books, setBooks ] = useState([ NOTE_DATA ]);
-  const [ currentBookId, setCurrentBookId ] = useState(NOTE_DATA.id);
-  const [ showContinueButton, setShowContinueButton ] = useState(false);
+  const [books, setBooks] = useState([NOTE_DATA]);
+  const [currentBookId, setCurrentBookId] = useState(NOTE_DATA.id);
+  const [showContinueButton, setShowContinueButton] = useState(false);
   const { editorValue, currentType, setEditorValue, setCurrentType } =
     useContext(EditorValueContext);
   const onSelectType = setCurrentType;
@@ -159,7 +160,7 @@ const useViewModel = props => {
   useEffect(() => {
     proxy.book.getBooks()
       .then(bookList => {
-        setBooks([ NOTE_DATA, ...bookList ]);
+        setBooks([NOTE_DATA, ...bookList]);
       })
       .catch(e => {
         props.onLogout(e);
@@ -182,7 +183,7 @@ const useViewModel = props => {
           'text/html',
         );
         const value = deserialize(document.body);
-        setEditorValue([ ...editorValue, ...formatMD(value) ]);
+        setEditorValue([...editorValue, ...formatMD(value)]);
         sendResponse(true);
         return;
       }
@@ -195,7 +196,7 @@ const useViewModel = props => {
         );
 
         const value = deserialize(document.body);
-        setEditorValue([ ...editorValue, ...formatMD(value) ]);
+        setEditorValue([...editorValue, ...formatMD(value)]);
         setCurrentType('selection');
         sendResponse(true);
         return;
@@ -210,7 +211,7 @@ const useViewModel = props => {
     return () => {
       Chrome.runtime.onMessage.removeListener(onReceiveMessage);
     };
-  }, [ editorValue ]);
+  }, [editorValue]);
 
   useEffect(() => {
     if (currentType === SELECT_TYPES[0].key) {
@@ -237,13 +238,13 @@ const useViewModel = props => {
         setEditorValue(editorValue.concat(citation));
       });
     }
-  }, [ currentType ]);
+  }, [currentType]);
 
   useEffect(() => {
     setShowContinueButton(
       currentType === SELECT_TYPES[0].key && !isEmpty(editorValue),
     );
-  }, [ editorValue, currentType ]);
+  }, [editorValue, currentType]);
 
   const onSave = () => {
     if (!editorInstance) return;
@@ -354,49 +355,64 @@ const SaveTo = props => {
     onSelectType,
   } = useViewModel(props);
   return (
-    <div className={styles.wrapper}>
-      {__i18n('选择剪藏方式')}
-      <Menu
-        mode="inline"
-        openKeys={[ currentType ]}
-        onOpenChange={(openKeys: string[]) => {
-          onSelectType(openKeys[0]);
-        }}
-        style={{ width: 256 }}
-        items={SELECT_TYPES.map(item => ({
-          key: item.key,
-          icon: item.icon,
-          label: item.text,
-        }))}
-      />
-      {__i18n('剪藏到')}
-      <Select<number>
-        className={styles.list}
-        onChange={(value: number) => onSelectBookId(Number(value))}
-        defaultValue={currentBookId}
-        options={books.map(book => ({
-          value: book.id,
-          label: <BookWithIcon book={book} />,
-        }))}
-      />
-      <Button className={styles.button} type="primary" block onClick={onSave}>
-        {__i18n('保存到')}
-        {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
-      </Button>
-      {showContinueButton && (
-        <Button className={styles.button} block onClick={onContinue}>
-          {__i18n('继续选取')}
-        </Button>
-      )}
-      {currentType && (
-        <div className={styles.editor}>
-          <Editor
-            onLoad={editor => (editorInstance = editor)}
-            defaultValue={editorValue}
-          />
+    <ConfigProvider
+      theme={{
+        components: {
+          Menu: {
+            activeBarBorderWidth: 0,
+            itemMarginInline: 0,
+          },
+        },
+      }}
+    >
+      <div className={styles.wrapper}>
+        <div className={styles.actionTip}>
+          {__i18n('选择剪藏方式')}
         </div>
-      )}
-    </div>
+        <Menu
+          mode="inline"
+          inlineIndent={8}
+          openKeys={[ currentType ].filter(Boolean)}
+          onOpenChange={(openKeys: string[]) => {
+            onSelectType(openKeys[0]);
+          }}
+          items={SELECT_TYPES.map(item => ({
+            key: item.key,
+            icon: item.icon,
+            label: item.text,
+          }))}
+        />
+        <div className={classnames(styles.actionTip, styles.clipTarger)}>
+          {__i18n('剪藏到')}
+        </div>
+        <Select<number>
+          className={styles.list}
+          onChange={(value: number) => onSelectBookId(Number(value))}
+          defaultValue={currentBookId}
+          options={books.map(book => ({
+            value: book.id,
+            label: <BookWithIcon book={book} />,
+          }))}
+        />
+        <Button className={styles.button} type="primary" block onClick={onSave}>
+          {__i18n('保存到')}
+          {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
+        </Button>
+        {showContinueButton && (
+          <Button className={styles.button} block onClick={onContinue}>
+            {__i18n('继续选取')}
+          </Button>
+        )}
+        {currentType && (
+          <div className={styles.editor}>
+            <Editor
+              onLoad={editor => (editorInstance = editor)}
+              defaultValue={editorValue}
+            />
+          </div>
+        )}
+      </div>
+    </ConfigProvider>
   );
 };
 

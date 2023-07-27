@@ -1,8 +1,9 @@
 import React from 'react';
-import { Avatar, Menu, Popover } from 'antd';
-import { images } from '@/assets';
+import { Avatar, ConfigProvider, Menu, Popover } from 'antd';
 import LinkHelper from '@/core/link-helper';
-import { LogoutOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
+import type { MenuInfo } from 'rc-menu/lib/interface';
+
 import styles from './UserInfo.module.less';
 
 export interface IYuqueAccountError {
@@ -27,40 +28,81 @@ interface Props {
 
 const UserInfo = (props: Props) => {
   const { user, onLogout } = props;
+  const handleMenuClick = (info: MenuInfo) => {
+    // eslint-disable-next-line default-case
+    switch (info.key) {
+      case 'user-profile':
+        window.open(LinkHelper.goMyPage(user), '_blank');
+        break;
+      case 'logout':
+        onLogout?.();
+        break;
+      case 'update-version':
+        // todo:
+        break;
+    }
+  };
+
   const menu = (
-    <>
-      <div className={styles.info}>
-        <div className={styles.title}>{user.name}</div>
-        <div className={styles.login}>
-          {user.login}
-          <a target="_blank" href={LinkHelper.goMyPage(user)}>
-            {__i18n('访问主页')}
-          </a>
-        </div>
+    <Menu
+      mode="inline"
+      inlineIndent={8}
+      onClick={handleMenuClick}
+      items={[
+        {
+          key: 'user-profile',
+          label: __i18n('访问主页'),
+        },
+        {
+          key: 'update-version',
+          label: __i18n('升级到新版本'),
+        },
+        {
+          key: 'logout',
+          label: __i18n('退出账户'),
+        },
+      ]}
+    />
+  );
+
+  const title = (
+    <div className={styles.title}>
+      <Avatar src={user.avatar_url} size={32} />
+      <div className={styles.userInfo}>
+        <div className={styles.name}>{user.name}</div>
+        <div className={styles.login}>{user.login}</div>
       </div>
-      <div className={styles.logout} onClick={onLogout}>
-        <LogoutOutlined style={{ marginRight: 8 }} />
-        <span>{__i18n('退出账户')}</span>
-      </div>
-    </>
+    </div>
   );
 
   return (
-    <Popover
-      overlayClassName={styles.popover}
-      content={menu}
-      placement="bottomRight"
-      getPopupContainer={node => node.parentElement}
+    <ConfigProvider
+      theme={{
+        components: {
+          Menu: {
+            itemHeight: 32,
+            itemMarginInline: 0,
+            itemPaddingInline: 8,
+            activeBarBorderWidth: 0,
+          },
+        },
+      }}
     >
-      <div className={styles.wrapper}>
-        <Avatar src={user.avatar_url} size={24} />
-        <span className={styles.name}>{user.name}</span>
-        <img
-          className={styles.switch}
-          src={images.switchAccount}
-        />
-      </div>
-    </Popover>
+      <Popover
+        overlayClassName={styles.popover}
+        title={title}
+        content={menu}
+        placement="bottomLeft"
+        open
+        getPopupContainer={node => node.parentElement}
+      >
+        <div className={styles.wrapper}>
+          <Avatar src={user.avatar_url} size={24} />
+          <span className={styles.name}>{user.name}</span>
+          <DownOutlined className={styles.switch} />
+        </div>
+      </Popover>
+    </ConfigProvider>
   );
 };
 

@@ -20,6 +20,27 @@
 }
 
 .popover {
+  :global(.ant-popover-title) {
+    margin-bottom: 0 !important;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .04);
+    padding-bottom: 14px;
+
+    .userInfo {
+      margin-left: @base-padding;
+    }
+
+    .login {
+      font-size: @font-size-sm;
+      color: rgba(0, 0, 0, .45);
+    }
+
+  }
+
   .info {
     padding-left: 12px;
     padding-right: 12px;
