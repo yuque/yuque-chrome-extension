@@ -49,7 +49,6 @@ const UserInfo = (props: Props) => {
     <Popover
       overlayClassName={styles.popover}
       content={menu}
-      open
       placement="bottomRight"
       getPopupContainer={node => node.parentElement}
     >
