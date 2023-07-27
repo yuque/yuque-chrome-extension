@@ -6,7 +6,7 @@ import { LogoutOutlined } from '@ant-design/icons';
 import styles from './UserInfo.module.less';
 
 export interface IYuqueAccountError {
-  code: number|string;
+  code: number | string;
 }
 
 export interface IYuqueAccount {
@@ -38,12 +38,10 @@ const UserInfo = (props: Props) => {
           </a>
         </div>
       </div>
-      <Menu>
-        <Menu.Item onClick={onLogout}>
-          <LogoutOutlined />
-          <span>{__i18n('退出账户')}</span>
-        </Menu.Item>
-      </Menu>
+      <div className={styles.logout} onClick={onLogout}>
+        <LogoutOutlined style={{ marginRight: 8 }} />
+        <span>{__i18n('退出账户')}</span>
+      </div>
     </>
   );
 
@@ -51,6 +49,7 @@ const UserInfo = (props: Props) => {
     <Popover
       overlayClassName={styles.popover}
       content={menu}
+      open
       placement="bottomRight"
       getPopupContainer={node => node.parentElement}
     >

@@ -21,7 +21,8 @@
 
 .popover {
   .info {
-    padding: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
     border-bottom: 1px solid @border-color;
 
     .login {
@@ -33,25 +34,10 @@
     }
   }
 
-  :global {
-    .ant-popover-inner-content {
-      padding: 0;
-      width: 200px;
-    }
-
-    .ant-menu {
-      border: none;
-
-      .ant-menu-item {
-        margin-bottom: 0;
-        height: auto;
-        line-height: normal;
-        padding: 8px 12px;
-
-        &:hover {
-          background-color: @grey-3;
-        }
-      }
-    }
+  .logout {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 8px;
+    cursor: pointer;
   }
 }
