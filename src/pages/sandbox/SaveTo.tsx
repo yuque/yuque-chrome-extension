@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ConfigProvider, Button, Radio, Select, message, Space, Menu } from 'antd';
+import { ConfigProvider, Button, Select, message, Menu } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet, isEmpty } from 'lodash';
 import Icon, { LinkOutlined, EditFilled, BookFilled } from '@ant-design/icons';
@@ -18,6 +18,8 @@ import styles from './SaveTo.module.less';
 import { EditorValueContext } from './EditorValueContext';
 
 import ClipperSvg from '@/assets/svg/clipper.svg';
+import BookLogoSvg from '@/assets/svg/book-logo.svg';
+import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -128,19 +130,19 @@ const SELECT_TYPES = [
 ];
 
 function BookWithIcon({ book }) {
-  const icon = book.type === 'note' ? <EditFilled /> : <BookFilled />;
+  const iconSvg = book.type === 'note' ? NoteLogoSvg : BookLogoSvg;
   return (
     <>
-      <span style={{ marginRight: 4, color: '#888' }}>{icon}</span>
+      <Icon style={{ marginRight: 4, color: '#888' }} component={iconSvg} />
       {book.name}
     </>
   );
 }
 
 const useViewModel = props => {
-  const [books, setBooks] = useState([NOTE_DATA]);
-  const [currentBookId, setCurrentBookId] = useState(NOTE_DATA.id);
-  const [showContinueButton, setShowContinueButton] = useState(false);
+  const [ books, setBooks ] = useState([ NOTE_DATA ]);
+  const [ currentBookId, setCurrentBookId ] = useState(NOTE_DATA.id);
+  const [ showContinueButton, setShowContinueButton ] = useState(false);
   const { editorValue, currentType, setEditorValue, setCurrentType } =
     useContext(EditorValueContext);
   const onSelectType = setCurrentType;
@@ -160,7 +162,7 @@ const useViewModel = props => {
   useEffect(() => {
     proxy.book.getBooks()
       .then(bookList => {
-        setBooks([NOTE_DATA, ...bookList]);
+        setBooks([ NOTE_DATA, ...bookList ]);
       })
       .catch(e => {
         props.onLogout(e);
@@ -183,7 +185,7 @@ const useViewModel = props => {
           'text/html',
         );
         const value = deserialize(document.body);
-        setEditorValue([...editorValue, ...formatMD(value)]);
+        setEditorValue([ ...editorValue, ...formatMD(value) ]);
         sendResponse(true);
         return;
       }
@@ -196,7 +198,7 @@ const useViewModel = props => {
         );
 
         const value = deserialize(document.body);
-        setEditorValue([...editorValue, ...formatMD(value)]);
+        setEditorValue([ ...editorValue, ...formatMD(value) ]);
         setCurrentType('selection');
         sendResponse(true);
         return;
@@ -211,7 +213,7 @@ const useViewModel = props => {
     return () => {
       Chrome.runtime.onMessage.removeListener(onReceiveMessage);
     };
-  }, [editorValue]);
+  }, [ editorValue ]);
 
   useEffect(() => {
     if (currentType === SELECT_TYPES[0].key) {
@@ -238,13 +240,13 @@ const useViewModel = props => {
         setEditorValue(editorValue.concat(citation));
       });
     }
-  }, [currentType]);
+  }, [ currentType ]);
 
   useEffect(() => {
     setShowContinueButton(
       currentType === SELECT_TYPES[0].key && !isEmpty(editorValue),
     );
-  }, [editorValue, currentType]);
+  }, [ editorValue, currentType ]);
 
   const onSave = () => {
     if (!editorInstance) return;
@@ -382,7 +384,7 @@ const SaveTo = props => {
             label: item.text,
           }))}
         />
-        <div className={classnames(styles.actionTip, styles.clipTarger)}>
+        <div className={classnames(styles.actionTip, styles.clipTarget)}>
           {__i18n('剪藏到')}
         </div>
         <Select<number>

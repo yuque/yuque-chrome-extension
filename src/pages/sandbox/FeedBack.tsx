@@ -12,9 +12,7 @@ const FeedBack: React.FC<React.HTMLAttributes<HTMLAnchorElement>> = props => (
     rel="noopener noreferrer"
     href={pkg.issues}
   >
-    <span className={styles.icon}>
-      <QuestionCircleOutlined />
-    </span>
+    <QuestionCircleOutlined className={styles.icon} />
     {__i18n('问题反馈')}
   </a>
 );

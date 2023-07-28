@@ -20,33 +20,6 @@
     font-weight: bold;
   }
 
-  .header {
-    .versionHit {
-      display: flex;
-      align-items: center;
-    }
-
-    .version {
-      color: @grey-4;
-      font-size: @font-size-sm;
-      transition: color 0.8s ease-in;
-      cursor: pointer;
-
-      .buildtime {
-        opacity: 0;
-        transition: opacity 0.8s ease-in;
-      }
-
-      &:hover {
-        color: @grey-8;
-
-        .buildtime {
-          opacity: 1;
-        }
-      }
-    }
-  }
-
   .close {
     position: absolute;
     right: @base-padding * 3;
@@ -55,6 +28,7 @@
   }
 
   .items {
+    margin-top: @base-padding;
     // flex: 1 1 auto;
     // min-height: 226px;
 
@@ -79,66 +53,5 @@
     justify-content: space-between;
     flex: 0 0 auto;
     margin-top: @base-padding * 2;
-  }
-
-  :global {
-    .ant-tabs-card {
-      &.ant-tabs-small > .ant-tabs-nav .ant-tabs-tab {
-        padding: 4px 8px;
-        margin-right: 4px;
-      }
-    }
-
-    .ant-tabs-tab {
-      .anticon {
-        margin-right: 2px !important;
-      }
-    }
-
-    .ant-btn {
-      line-height: 1.15;
-      padding: 0 12px;
-      box-shadow: none;
-      text-shadow: none;
-
-      &.ant-dropdown-trigger .anticon {
-        height: 1em;
-      }
-
-      &.ant-dropdown-trigger {
-        vertical-align: bottom;
-      }
-
-      &,
-      &:hover,
-      &:focus {
-        background-image: linear-gradient(0deg, @grey-3, #fff);
-      }
-
-      &.ant-btn-primary {
-        color: #fff !important;
-        background: @primary-color !important;
-        border-color: @primary-color !important;
-      }
-
-      &.ant-btn-primary,
-      &.ant-btn-dashed {
-        &,
-        &:hover,
-        &:focus {
-          background-image: none;
-        }
-
-        box-shadow: none;
-      }
-
-      > .larkicon {
-        margin-right: 8px;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
   }
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Radio, RadioChangeEvent, Tabs, message } from 'antd';
+import { ConfigProvider, Radio, RadioChangeEvent, Tabs, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import SemverCompare from 'semver-compare';
 
 import Chrome from '@/core/chrome';
 import formatHTML from '@/components/editor/format-html';
@@ -15,7 +14,6 @@ import {
   setCurrentAccount,
   clearCurrentAccount,
 } from '@/core/account';
-import { VERSION } from '@/config';
 
 import UserInfo, { IYuqueAccount } from './UserInfo';
 import FeedBack from './FeedBack';
@@ -23,7 +21,6 @@ import SaveTo from './SaveTo';
 import Login from './Login';
 import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
-import { useCheckVersion } from './CheckVersion';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -182,11 +179,6 @@ const App = () => {
     };
   }, [ editorValue ]);
 
-  const newVersion = useCheckVersion();
-  const needUpgrade = React.useMemo(() => {
-    return SemverCompare(newVersion || '', VERSION) === 1;
-  }, [ newVersion ]);
-
   const [ tab, setTab ] = React.useState<TabName>('save-to');
 
   const handleTabChange = (e: RadioChangeEvent) => {
@@ -198,27 +190,6 @@ const App = () => {
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
     >
       <div className={styles.wrapper}>
-        {/* <div className={styles.header}>
-          <div className={styles.versionHit}>
-            <span className={styles.version}>
-              v{VERSION}
-              <span className={styles.buildtime}>/{process.env.BUILD_TIME}</span>
-            </span>
-            {
-              needUpgrade
-                ? (
-                  <a
-                    href="https://www.yuque.com/yuque/yuque-browser-extension/welcome#G8HaG"
-                    target='_blank'
-                    style={{ marginLeft: 8 }}
-                  >
-                    {__i18n('升级新版本')}
-                    &nbsp;v{newVersion}
-                  </a>
-                ) : null
-            }
-          </div>
-        </div> */}
         {
           account?.id
             ? <div className={styles.header}>{__i18n('语雀剪藏')}</div>
@@ -253,4 +224,18 @@ const App = () => {
   );
 };
 
-export default App;
+const ThemedApp: React.FC = () => {
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#00B96B',
+        },
+      }}
+    >
+      <App />
+    </ConfigProvider>
+  );
+};
+
+export default ThemedApp;
