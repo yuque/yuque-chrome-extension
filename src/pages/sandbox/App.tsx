@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Radio, RadioChangeEvent, Tabs, message } from 'antd';
-import { CloseOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import SemverCompare from 'semver-compare';
 
 import Chrome from '@/core/chrome';

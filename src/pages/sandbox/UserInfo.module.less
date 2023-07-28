@@ -20,15 +20,22 @@
 }
 
 .popover {
-  :global(.ant-popover-title) {
-    margin-bottom: 0 !important;
+  :global {
+    .ant-popover-inner {
+      padding: 8px !important;
+    }
+
+    .ant-popover-title {
+      margin-bottom: 4px !important;
+    }
   }
+
 
   .title {
     display: flex;
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, .04);
-    padding-bottom: 14px;
+    padding: 8px @base-padding 14px;
 
     .userInfo {
       margin-left: @base-padding;
