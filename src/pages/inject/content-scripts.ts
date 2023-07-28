@@ -40,7 +40,7 @@ class App {
         pointerEvents: 'none', // 遮罩层不需要响应鼠标事件
         color: '#fff',
       })
-      .text('单击区域以选中，再次单击取消选中 ESC 退出， ↲ 完成。')
+      .text('单击区域以选中，再次单击取消选中。ESC 退出， ↲ 完成。')
       .appendTo('body');
 
     return mask;

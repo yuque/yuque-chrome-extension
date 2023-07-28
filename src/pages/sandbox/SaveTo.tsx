@@ -242,6 +242,8 @@ const useViewModel = props => {
     }
   }, [ currentType ]);
 
+  const [ loading, setLoading ] = React.useState<boolean>(false);
+
   const onSave = () => {
     if (!editorInstance) return;
     const shouldAddReferenceNode = currentBookId === NOTE_DATA.id;
@@ -258,15 +260,42 @@ const useViewModel = props => {
         .join(''),
     );
 
-    const onSuccess = () => {
+    const onSuccess = (type: 'doc' | 'note', noteOrDoc: any) => {
       setEditorValue([]);
       setCurrentType(null);
+      setLoading(false);
+
+      if (type === 'note') {
+        const url = LinkHelper.goMyNote();
+        message.success(
+          <span>
+            {__i18n('保存成功！')}
+            &nbsp;&nbsp;
+            <a target="_blank" href={url}>
+              {__i18n('去小记查看')}
+            </a>
+          </span>,
+        );
+      } else {
+        const url = LinkHelper.goDoc(noteOrDoc);
+        message.success(
+          <span>
+            {__i18n('保存成功！')}
+            &nbsp;&nbsp;
+            <a target="_blank" href={url}>
+              {__i18n('立即查看')}
+            </a>
+          </span>,
+        );
+      }
     };
 
     const onError = () => {
-      message.error(__i18n('保存失败'));
+      message.error(__i18n('保存失败，请重试！'));
+      setLoading(false);
     };
 
+    setLoading(true);
     if (currentBookId === NOTE_DATA.id) {
       proxy.note.getStatus().then(({ data }) => {
         const noteId = safeGet(data, 'meta.mirror.id');
@@ -277,16 +306,7 @@ const useViewModel = props => {
             description: serializedAsiContent,
           })
           .then(() => {
-            const url = LinkHelper.goMyNote();
-            message.success(
-              <span>
-                {__i18n('保存成功')}，
-                <a target="_blank" href={url}>
-                  {__i18n('去小记查看')}
-                </a>
-              </span>,
-            );
-            onSuccess();
+            onSuccess('note', data);
           })
           .catch(onError);
       });
@@ -304,16 +324,7 @@ const useViewModel = props => {
             insert_to_catalog: true,
           })
           .then(doc => {
-            const url = LinkHelper.goDoc(doc);
-            message.success(
-              <span>
-                {__i18n('保存成功')}，
-                <a target="_blank" href={url}>
-                  {__i18n('立即查看')}
-                </a>
-              </span>,
-            );
-            onSuccess();
+            onSuccess('doc', doc);
           })
           .catch(onError);
       });
@@ -332,6 +343,7 @@ const useViewModel = props => {
       editorValue,
       currentBookId,
       currentType,
+      loading,
     },
     onSave,
     onContinue,
@@ -343,7 +355,7 @@ const useViewModel = props => {
 const SaveTo = React.forwardRef<{}, any>((ref, props) => {
   const { currentType, editorValue } = useContext(EditorValueContext);
   const {
-    state: { books, currentBookId },
+    state: { books, currentBookId, loading },
     onSelectBookId,
     onSave,
     onContinue,
@@ -391,7 +403,14 @@ const SaveTo = React.forwardRef<{}, any>((ref, props) => {
             label: <BookWithIcon book={book} />,
           }))}
         />
-        <Button className={styles.button} type="primary" block onClick={onSave}>
+        <Button
+          className={styles.button}
+          type="primary"
+          block
+          loading={loading}
+          disabled={!currentType}
+          onClick={onSave}
+        >
           {__i18n('保存到')}
           {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
         </Button>
