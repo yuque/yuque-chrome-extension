@@ -4,55 +4,40 @@
   position: fixed;
   right: @base-padding * 2;
   top: @base-padding * 2;
-  background: rgb(250, 250, 250);
+  background: white;
   border-radius: @base-padding;
-  box-shadow: 0 1px 4px 0 rgb(0, 0, 0, 10%);
-  color: @text-color;
+  box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.4);
+
   width: @main-board-width;
+  box-sizing: border-box;
+
+  color: @text-color;
   display: flex;
   flex-flow: column nowrap;
+  padding: 20px @base-padding * 3 @base-padding * 8;
 
   .header {
-    padding: @base-padding @base-padding * 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin-bottom: @base-padding;
+    font-size: @font-size-lg;
+    font-weight: bold;
+  }
 
-    .versionHit {
-      display: flex;
-      align-items: center;
-    }
-
-    .version {
-      color: @grey-4;
-      font-size: @font-size-sm;
-      transition: color 0.8s ease-in;
-      cursor: pointer;
-
-      .buildtime {
-        opacity: 0;
-        transition: opacity 0.8s ease-in;
-      }
-
-      &:hover {
-        color: @grey-8;
-
-        .buildtime {
-          opacity: 1;
-        }
-      }
-    }
-
-    .close {
-      padding: 0 2px;
-      cursor: pointer;
-    }
+  .close {
+    position: absolute;
+    right: @base-padding * 3;
+    top: @base-padding * 3;
+    cursor: pointer;
   }
 
   .items {
-    flex: 1 1 auto;
-    padding: 0 @base-padding * 2;
-    min-height: 226px;
+    margin-top: @base-padding;
+    height: 292px;
+    will-change: height;
+    transition: height 0.3s ease;
+
+    &.unlogin {
+      height: 180px;
+    }
 
     .login {
       min-height: 100px;
@@ -71,72 +56,15 @@
   }
 
   .account {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 @base-padding * 3 20px;
+    box-sizing: border-box;
+
     display: flex;
     justify-content: space-between;
     flex: 0 0 auto;
-    border-top: 1px solid @border-color;
-    margin-top: @base-padding * 2;
-    padding: @base-padding @base-padding * 2;
-  }
-
-  :global {
-    .ant-tabs-card {
-      &.ant-tabs-small > .ant-tabs-nav .ant-tabs-tab {
-        padding: 4px 8px;
-        margin-right: 4px;
-      }
-    }
-
-    .ant-tabs-tab {
-      .anticon {
-        margin-right: 2px !important;
-      }
-    }
-
-    .ant-btn {
-      line-height: 1.15;
-      padding: 0 12px;
-      box-shadow: none;
-      text-shadow: none;
-
-      &.ant-dropdown-trigger .anticon {
-        height: 1em;
-      }
-
-      &.ant-dropdown-trigger {
-        vertical-align: bottom;
-      }
-
-      &,
-      &:hover,
-      &:focus {
-        background-image: linear-gradient(0deg, @grey-3, #fff);
-      }
-
-      &.ant-btn-primary {
-        color: #fff !important;
-        background: @primary-color !important;
-        border-color: @primary-color !important;
-      }
-
-      &.ant-btn-primary,
-      &.ant-btn-dashed {
-        &,
-        &:hover,
-        &:focus {
-          background-image: none;
-        }
-
-        box-shadow: none;
-      }
-
-      > .larkicon {
-        margin-right: 8px;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
   }
 }

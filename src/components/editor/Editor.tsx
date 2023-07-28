@@ -31,6 +31,7 @@ import Toolbar from './Toolbar';
 interface CustomEditorProps {
   defaultValue?: Node[];
   onLoad: (editor: SlateEditor) => void;
+  onClipContinueClick: () => void;
 }
 
 interface ExtendedElementProps extends ElementProps {
@@ -370,7 +371,7 @@ const Element = (props: ExtendedElementProps) => {
   }
 };
 
-const useViewModel = (props: CustomEditorProps) => {
+const useViewModel = (props: Omit<CustomEditorProps, 'onClipContinueClick'>) => {
   const [ value, setValue ] = useState([]);
   const editor = useMemo(
     () =>
@@ -399,12 +400,12 @@ const useViewModel = (props: CustomEditorProps) => {
   };
 };
 
-const CustomEditor: React.FC<CustomEditorProps> = props => {
+const CustomEditor: React.FC<CustomEditorProps> = ({ onClipContinueClick, ...restProps }) => {
   const {
     state: { value },
     editor,
     onChange,
-  } = useViewModel(props);
+  } = useViewModel(restProps);
 
   const editorContainerRef = useRef(null);
 
@@ -467,7 +468,7 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
 
   return (
     <Slate editor={editor} value={value} onChange={onChange}>
-      <Toolbar editor={editor} />
+      <Toolbar editor={editor} onClipContinueClick={onClipContinueClick} />
       <div ref={editorContainerRef}>
         <Editable
           renderElement={renderElement}

@@ -2,53 +2,19 @@
 
 .wrapper {
   .welcome {
-    min-height: 181px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 30px;
     font-size: 16px;
+    text-align: center;
   }
 
-  .list {
+  .loginTip {
     margin-top: @base-padding * 2;
-    min-height: 80px;
-    cursor: pointer;
-    display: none;
-
-    .title {
-      display: flex;
-      justify-content: space-between;
-
-      .login {
-        font-weight: normal;
-        color: @text-color-secondary;
-      }
-    }
-
-    :global {
-      .ant-list-item {
-        padding: 12px 4px;
-
-        &:hover {
-          background-color: @grey-2;
-        }
-
-        &.selected {
-          background-color: @grey-2;
-        }
-      }
-
-      .ant-list-item-meta {
-        align-items: center;
-      }
-    }
-  }
-
-  .button {
-    margin-top: @base-padding * 2;
+    font-size: @font-size;
+    color: @grey-9;
   }
 
   .feedback {
-    margin: @base-padding * 2 0;
+    margin-top: @base-padding * 1.5;
   }
 }

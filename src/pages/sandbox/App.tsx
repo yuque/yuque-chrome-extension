@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, message } from 'antd';
-import { CloseOutlined, ExperimentOutlined } from '@ant-design/icons';
-import SemverCompare from 'semver-compare';
+import { ConfigProvider, Radio, RadioChangeEvent, message } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import classnames from 'classnames';
 
 import Chrome from '@/core/chrome';
 import formatHTML from '@/components/editor/format-html';
@@ -15,7 +15,6 @@ import {
   setCurrentAccount,
   clearCurrentAccount,
 } from '@/core/account';
-import { VERSION } from '@/config';
 
 import UserInfo, { IYuqueAccount } from './UserInfo';
 import FeedBack from './FeedBack';
@@ -23,7 +22,7 @@ import SaveTo from './SaveTo';
 import Login from './Login';
 import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
-import { useCheckVersion } from './CheckVersion';
+import { Other } from './Other';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -36,11 +35,10 @@ interface RequestMessage {
 
 initI18N();
 
-const { TabPane } = Tabs;
-
 const useViewModel = () => {
+  const [ appReady, setAppReady ] = useState<boolean>(false);
   const [ account, setAccount ] = useState<IYuqueAccount>();
-  const [ upgradeInfo, setUpgradeInfo ] = useState<string>();
+  const [ forceUpgradeInfo, setForceUpgradeInfo ] = useState<string>();
 
   const onClose = () => {
     Chrome.tabs.getCurrent((tab: any) => {
@@ -56,7 +54,7 @@ const useViewModel = () => {
       // @ts-ignore
       if (data.html) {
         // @ts-ignore
-        setUpgradeInfo(data.html);
+        setForceUpgradeInfo(data.html);
       }
     });
   };
@@ -118,13 +116,16 @@ const useViewModel = () => {
   useEffect(() => {
     getCurrentAccount().then(info => {
       setAccount(info as IYuqueAccount);
+    }).finally(() => {
+      setAppReady(true);
     });
   }, []);
 
   return {
     state: {
+      appReady,
       account,
-      upgradeInfo,
+      forceUpgradeInfo,
     },
     onClose,
     onLogout,
@@ -132,11 +133,13 @@ const useViewModel = () => {
   };
 };
 
+type TabName = 'save-to' | 'other';
+
 const App = () => {
   const [ editorValue, setEditorValue ] = useState([]);
   const [ currentType, setCurrentType ] = useState(null);
   const {
-    state: { account, upgradeInfo },
+    state: { account, forceUpgradeInfo, appReady },
     onClose,
     onLogout,
     onLogin,
@@ -167,8 +170,8 @@ const App = () => {
   };
 
   function renderUnLogin() {
-    if (upgradeInfo) {
-      return <div dangerouslySetInnerHTML={{ __html: upgradeInfo }} />;
+    if (forceUpgradeInfo) {
+      return <div dangerouslySetInnerHTML={{ __html: forceUpgradeInfo }} />;
     }
     return <Login onConfirm={onLogin} />;
   }
@@ -180,59 +183,41 @@ const App = () => {
     };
   }, [ editorValue ]);
 
-  const newVersion = useCheckVersion();
-  const needUpgrade = React.useMemo(() => {
-    return SemverCompare(newVersion || '', VERSION) === 1;
-  }, [ newVersion ]);
+  const [ tab, setTab ] = React.useState<TabName>('save-to');
+
+  const handleTabChange = (e: RadioChangeEvent) => {
+    setTab(e.target.value as unknown as TabName);
+  };
+
+  const isLogined = account?.id;
+
+  if (!appReady) return null;
 
   return (
     <EditorValueContext.Provider
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
     >
       <div className={styles.wrapper}>
-        <div className={styles.header}>
-          <div className={styles.versionHit}>
-            <span className={styles.version}>
-              v{VERSION}
-              <span className={styles.buildtime}>/{process.env.BUILD_TIME}</span>
-            </span>
-            {
-              needUpgrade
-                ? (
-                  <a
-                    href="https://www.yuque.com/yuque/yuque-browser-extension/welcome#G8HaG"
-                    target='_blank'
-                    style={{ marginLeft: 8 }}
-                  >
-                    {__i18n('升级新版本')}
-                    &nbsp;v{newVersion}
-                  </a>
-                ) : null
-            }
-          </div>
-          <span className={styles.close} onClick={onClose}>
-            <CloseOutlined />
-          </span>
-        </div>
-        <div className={styles.items}>
-          {account?.id ? (
+        {
+          account?.id
+            ? <div className={styles.header}>{__i18n('语雀剪藏')}</div>
+            : null
+        }
+        <CloseOutlined className={styles.close} onClick={onClose} />
+        <div className={classnames(styles.items, {
+          [styles.unlogin]: !isLogined,
+        })}>
+          {isLogined ? (
             <>
-              <Tabs defaultActiveKey="save-to" size="small" type="card">
-                <TabPane tab={__i18n('剪藏')} key="save-to">
-                  <SaveTo onLogout={onLogout} />
-                </TabPane>
-                <TabPane
-                  tab={
-                    <span>
-                      <ExperimentOutlined />
-                      {__i18n('其他')}
-                    </span>
-                  }
-                  key="others"
-                >
-                  {__i18n('即将上新')}
-                </TabPane>
-              </Tabs>
+              <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
+                <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
+                <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
+              </Radio.Group>
+              {
+                tab === 'save-to'
+                  ? <SaveTo onLogout={onLogout} />
+                  : <Other />
+              }
             </>
           ) : (
             renderUnLogin()
@@ -249,4 +234,18 @@ const App = () => {
   );
 };
 
-export default App;
+const ThemedApp: React.FC = () => {
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#00B96B',
+        },
+      }}
+    >
+      <App />
+    </ConfigProvider>
+  );
+};
+
+export default ThemedApp;

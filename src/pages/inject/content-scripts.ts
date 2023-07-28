@@ -24,27 +24,24 @@ class App {
     const mask = $('<div>')
       .addClass('tip-mask')
       .css({
+        display: 'flex',
+        alignItems: 'center',
         position: 'fixed',
         top: '10%', // 靠上的位置，可以根据需要调整
         left: '50%',
+        height: 40,
+        padding: '0 12px',
+        fontSize: 14,
         transform: 'translateX(-50%)',
-        padding: '20px',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.65)',
         zIndex: 9998,
         borderRadius: '10px', // 圆角矩形
         textAlign: 'center',
         pointerEvents: 'none', // 遮罩层不需要响应鼠标事件
-      })
-      .appendTo('body');
-    $('<div>')
-      .addClass('mask-message')
-      .text('单击区域以选中，再次单击取消选中 ESC 退出， ↲ 完成。')
-      .css({
         color: '#fff',
-        fontSize: '16px',
-        fontWeight: '500',
       })
-      .appendTo(mask);
+      .text('单击区域以选中，再次单击取消选中。ESC 退出， ↲ 完成。')
+      .appendTo('body');
 
     return mask;
   }
@@ -62,23 +59,20 @@ class App {
   private createConfirmButton(iframe) {
     const submitBtn = $('<button>')
       .addClass('submit-selection')
-      .text('确认选取 (0)')
+      .text('确认选取')
       .css({
-        position: 'fixed',
-        top: 32,
-        right: 32,
-        zIndex: 999999,
-        width: 120,
+        height: 24,
+        lineHeight: '24px',
+        marginLeft: 42,
         backgroundColor: '#25b864',
         borderColor: '#25b864', // @primary-color
-        borderRadius: 2,
+        borderRadius: 4,
         cursor: 'pointer',
         display: 'inline-block',
         color: '#fff',
-        fontSize: '14px',
+        fontSize: 12,
         fontWeight: 400,
-        lineHeight: 1.5,
-        padding: '4px 15px',
+        padding: '0 8px',
         textAlign: 'center',
         touchAction: 'manipulation',
         userSelect: 'none',
@@ -87,7 +81,7 @@ class App {
         textDecoration: 'none',
         transition: 'all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)',
       })
-      .appendTo('body')
+      .appendTo('.tip-mask')
       .on('click', async () => {
         const selectedElems = this.areaSelection.getSelectedElems();
         const htmls = Array.from(selectedElems).map(elem =>

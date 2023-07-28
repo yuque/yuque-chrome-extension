@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Radio, Select, message, Space } from 'antd';
+import { ConfigProvider, Button, Select, message, Menu } from 'antd';
+import classnames from 'classnames';
 import { get as safeGet, isEmpty } from 'lodash';
-import { EditFilled, BookFilled } from '@ant-design/icons';
+import type { MenuInfo } from 'rc-menu/lib/interface';
+import Icon, { LinkOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
 import processHtmls from '@/core/html-parser';
@@ -13,8 +15,12 @@ import formatHTML from '@/components/editor/format-html';
 import formatMD from '@/components/editor/format-md';
 import contentParser from '@/components/editor/content-parser';
 import { GLOBAL_EVENTS } from '@/events';
-import styles from './SaveTo.module.less';
 import { EditorValueContext } from './EditorValueContext';
+
+import ClipperSvg from '@/assets/svg/clipper.svg';
+import BookLogoSvg from '@/assets/svg/book-logo.svg';
+import NoteLogoSvg from '@/assets/svg/note-logo.svg';
+import styles from './SaveTo.module.less';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -110,23 +116,25 @@ const SELECT_TYPES = [
     key: 'area-select',
     enabled: true,
     get text() {
-      return __i18n('多选剪藏');
+      return __i18n('剪藏选取的内容');
     },
+    icon: <Icon component={ClipperSvg} />,
   },
   {
     key: 'bookmark',
     enabled: true,
     get text() {
-      return __i18n('链接剪藏');
+      return __i18n('剪藏网址');
     },
+    icon: <LinkOutlined />,
   },
 ];
 
 function BookWithIcon({ book }) {
-  const icon = book.type === 'note' ? <EditFilled /> : <BookFilled />;
+  const iconSvg = book.type === 'note' ? NoteLogoSvg : BookLogoSvg;
   return (
     <>
-      <span style={{ marginRight: 4, color: '#888' }}>{icon}</span>
+      <Icon style={{ marginRight: 4, color: '#888' }} component={iconSvg} />
       {book.name}
     </>
   );
@@ -135,7 +143,6 @@ function BookWithIcon({ book }) {
 const useViewModel = props => {
   const [ books, setBooks ] = useState([ NOTE_DATA ]);
   const [ currentBookId, setCurrentBookId ] = useState(NOTE_DATA.id);
-  const [ showContinueButton, setShowContinueButton ] = useState(false);
   const { editorValue, currentType, setEditorValue, setCurrentType } =
     useContext(EditorValueContext);
   const onSelectType = setCurrentType;
@@ -235,11 +242,7 @@ const useViewModel = props => {
     }
   }, [ currentType ]);
 
-  useEffect(() => {
-    setShowContinueButton(
-      currentType === SELECT_TYPES[0].key && !isEmpty(editorValue),
-    );
-  }, [ editorValue, currentType ]);
+  const [ loading, setLoading ] = React.useState<boolean>(false);
 
   const onSave = () => {
     if (!editorInstance) return;
@@ -257,15 +260,42 @@ const useViewModel = props => {
         .join(''),
     );
 
-    const onSuccess = () => {
+    const onSuccess = (type: 'doc' | 'note', noteOrDoc: any) => {
       setEditorValue([]);
       setCurrentType(null);
+      setLoading(false);
+
+      if (type === 'note') {
+        const url = LinkHelper.goMyNote();
+        message.success(
+          <span>
+            {__i18n('保存成功！')}
+            &nbsp;&nbsp;
+            <a target="_blank" href={url}>
+              {__i18n('去小记查看')}
+            </a>
+          </span>,
+        );
+      } else {
+        const url = LinkHelper.goDoc(noteOrDoc);
+        message.success(
+          <span>
+            {__i18n('保存成功！')}
+            &nbsp;&nbsp;
+            <a target="_blank" href={url}>
+              {__i18n('立即查看')}
+            </a>
+          </span>,
+        );
+      }
     };
 
     const onError = () => {
-      message.error(__i18n('保存失败'));
+      message.error(__i18n('保存失败，请重试！'));
+      setLoading(false);
     };
 
+    setLoading(true);
     if (currentBookId === NOTE_DATA.id) {
       proxy.note.getStatus().then(({ data }) => {
         const noteId = safeGet(data, 'meta.mirror.id');
@@ -276,16 +306,7 @@ const useViewModel = props => {
             description: serializedAsiContent,
           })
           .then(() => {
-            const url = LinkHelper.goMyNote();
-            message.success(
-              <span>
-                {__i18n('保存成功')}，
-                <a target="_blank" href={url}>
-                  {__i18n('去小记查看')}
-                </a>
-              </span>,
-            );
-            onSuccess();
+            onSuccess('note', data);
           })
           .catch(onError);
       });
@@ -303,16 +324,7 @@ const useViewModel = props => {
             insert_to_catalog: true,
           })
           .then(doc => {
-            const url = LinkHelper.goDoc(doc);
-            message.success(
-              <span>
-                {__i18n('保存成功')}，
-                <a target="_blank" href={url}>
-                  {__i18n('立即查看')}
-                </a>
-              </span>,
-            );
-            onSuccess();
+            onSuccess('doc', doc);
           })
           .catch(onError);
       });
@@ -330,8 +342,8 @@ const useViewModel = props => {
       books,
       editorValue,
       currentBookId,
-      showContinueButton,
       currentType,
+      loading,
     },
     onSave,
     onContinue,
@@ -340,59 +352,80 @@ const useViewModel = props => {
   };
 };
 
-const SaveTo = props => {
+const SaveTo = React.forwardRef<{}, any>((ref, props) => {
   const { currentType, editorValue } = useContext(EditorValueContext);
   const {
-    state: { books, currentBookId, showContinueButton },
+    state: { books, currentBookId, loading },
     onSelectBookId,
     onSave,
     onContinue,
     onSelectType,
   } = useViewModel(props);
+  const handleTypeSelect = (info: MenuInfo) => {
+    onSelectType(info.key);
+  };
+
   return (
-    <div className={styles.wrapper}>
-      <Radio.Group
-        buttonStyle="solid"
-        size="small"
-        value={currentType}
-        onChange={e => onSelectType(e.target.value)}
-      >
-        <Space direction="vertical">
-          {SELECT_TYPES.map(item => (
-            <Radio disabled={!item.enabled} value={item.key}>
-              {item.text}
-            </Radio>
-          ))}
-        </Space>
-      </Radio.Group>
-      <Select<number>
-        className={styles.list}
-        onChange={(value: number) => onSelectBookId(Number(value))}
-        defaultValue={currentBookId}
-        options={books.map(book => ({
-          value: book.id,
-          label: <BookWithIcon book={book} />
-        }))}
-      />
-      <Button className={styles.button} type="primary" block onClick={onSave}>
-        {__i18n('保存到')}
-        {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
-      </Button>
-      {showContinueButton && (
-        <Button className={styles.button} block onClick={onContinue}>
-          {__i18n('继续选取')}
-        </Button>
-      )}
-      {currentType && (
-        <div className={styles.editor}>
-          <Editor
-            onLoad={editor => (editorInstance = editor)}
-            defaultValue={editorValue}
-          />
+    <ConfigProvider
+      theme={{
+        components: {
+          Menu: {
+            activeBarBorderWidth: 0,
+            itemMarginInline: 0,
+          },
+        },
+      }}
+    >
+      <div className={styles.wrapper}>
+        <div className={styles.actionTip}>
+          {__i18n('选择剪藏方式')}
         </div>
-      )}
-    </div>
+        <Menu
+          mode="inline"
+          inlineIndent={8}
+          openKeys={[ currentType ].filter(Boolean)}
+          onClick={handleTypeSelect}
+          items={SELECT_TYPES.map(item => ({
+            key: item.key,
+            icon: item.icon,
+            label: item.text,
+          }))}
+        />
+        <div className={classnames(styles.actionTip, styles.clipTarget)}>
+          {__i18n('剪藏到')}
+        </div>
+        <Select<number>
+          className={styles.list}
+          onChange={(value: number) => onSelectBookId(Number(value))}
+          defaultValue={currentBookId}
+          options={books.map(book => ({
+            value: book.id,
+            label: <BookWithIcon book={book} />,
+          }))}
+        />
+        <Button
+          className={styles.button}
+          type="primary"
+          block
+          loading={loading}
+          disabled={!currentType}
+          onClick={onSave}
+        >
+          {__i18n('保存到')}
+          {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
+        </Button>
+        {currentType && (
+          <div className={styles.editor}>
+            <Editor
+              onLoad={editor => (editorInstance = editor)}
+              defaultValue={editorValue}
+              onClipContinueClick={onContinue}
+            />
+          </div>
+        )}
+      </div>
+    </ConfigProvider>
   );
-};
+});
 
 export default SaveTo;

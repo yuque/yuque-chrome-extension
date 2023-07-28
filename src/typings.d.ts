@@ -8,4 +8,12 @@ declare module '*.less' {
   export = resource;
 }
 
+declare module '*.png'
+declare module '*.jpg'
+
+declare module '*.svg' {
+  export default string;
+  export const ReactComponent = React.Component;
+}
+
 declare function __i18n(text: string, params?: any): string;
