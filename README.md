@@ -21,6 +21,10 @@
   </a>
 </p>
 
+## 安装
+* [Chrome Web Store](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
+* [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/yuque-extension/mnfokalcidkmaadmfmdmhiamdnjljhgj)
+
 ## 插件说明
 
 <p align="center">
@@ -77,3 +81,5 @@ $ npm run release
 This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Fri Jul 14 2023 22:32:27 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->
+
+[![Chrome Web Store](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/mPGKYBIR2uCP0ApchDXE.png)](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)

@@ -11,6 +11,11 @@
 [ci-image]: https://github.com/yuque/yuque-chrome-extension/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/yuque/yuque-chrome-extension/actions/workflows/ci.yml
 
+## Install
+* [Chrome Web Store](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
+* [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/yuque-extension/mnfokalcidkmaadmfmdmhiamdnjljhgj)
+
+
 
 <!-- GITCONTRIBUTOR_START -->
 
@@ -23,3 +28,5 @@
 This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Fri Jul 14 2023 22:32:27 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->
+
+[![Chrome Web Store](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/mPGKYBIR2uCP0ApchDXE.png)](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
