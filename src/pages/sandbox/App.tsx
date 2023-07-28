@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ConfigProvider, Radio, RadioChangeEvent, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import classnames from 'classnames';
 
 import Chrome from '@/core/chrome';
 import formatHTML from '@/components/editor/format-html';
@@ -188,6 +189,8 @@ const App = () => {
     setTab(e.target.value as unknown as TabName);
   };
 
+  const isLogined = account?.id;
+
   if (!appReady) return null;
 
   return (
@@ -201,8 +204,10 @@ const App = () => {
             : null
         }
         <CloseOutlined className={styles.close} onClick={onClose} />
-        <div className={styles.items}>
-          {account?.id ? (
+        <div className={classnames(styles.items, {
+          [styles.unlogin]: !isLogined,
+        })}>
+          {isLogined ? (
             <>
               <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
                 <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
