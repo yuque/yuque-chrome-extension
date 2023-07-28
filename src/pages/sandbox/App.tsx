@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ConfigProvider, Radio, RadioChangeEvent, Tabs, message } from 'antd';
+import { ConfigProvider, Radio, RadioChangeEvent, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
 import Chrome from '@/core/chrome';
@@ -34,11 +34,10 @@ interface RequestMessage {
 
 initI18N();
 
-const { TabPane } = Tabs;
-
 const useViewModel = () => {
+  const [ appReady, setAppReady ] = useState<boolean>(false);
   const [ account, setAccount ] = useState<IYuqueAccount>();
-  const [ upgradeInfo, setUpgradeInfo ] = useState<string>();
+  const [ forceUpgradeInfo, setForceUpgradeInfo ] = useState<string>();
 
   const onClose = () => {
     Chrome.tabs.getCurrent((tab: any) => {
@@ -54,7 +53,7 @@ const useViewModel = () => {
       // @ts-ignore
       if (data.html) {
         // @ts-ignore
-        setUpgradeInfo(data.html);
+        setForceUpgradeInfo(data.html);
       }
     });
   };
@@ -116,13 +115,16 @@ const useViewModel = () => {
   useEffect(() => {
     getCurrentAccount().then(info => {
       setAccount(info as IYuqueAccount);
+    }).finally(() => {
+      setAppReady(true);
     });
   }, []);
 
   return {
     state: {
+      appReady,
       account,
-      upgradeInfo,
+      forceUpgradeInfo,
     },
     onClose,
     onLogout,
@@ -136,7 +138,7 @@ const App = () => {
   const [ editorValue, setEditorValue ] = useState([]);
   const [ currentType, setCurrentType ] = useState(null);
   const {
-    state: { account, upgradeInfo },
+    state: { account, forceUpgradeInfo, appReady },
     onClose,
     onLogout,
     onLogin,
@@ -167,8 +169,8 @@ const App = () => {
   };
 
   function renderUnLogin() {
-    if (upgradeInfo) {
-      return <div dangerouslySetInnerHTML={{ __html: upgradeInfo }} />;
+    if (forceUpgradeInfo) {
+      return <div dangerouslySetInnerHTML={{ __html: forceUpgradeInfo }} />;
     }
     return <Login onConfirm={onLogin} />;
   }
@@ -185,6 +187,8 @@ const App = () => {
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);
   };
+
+  if (!appReady) return null;
 
   return (
     <EditorValueContext.Provider
