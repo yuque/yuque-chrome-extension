@@ -9,6 +9,8 @@ declare module '*.less' {
 }
 
 declare module '*.png'
+declare module '*.jpg'
+
 declare module '*.svg' {
   export default string;
   export const ReactComponent = React.Component;

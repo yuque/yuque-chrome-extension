@@ -21,6 +21,7 @@ import SaveTo from './SaveTo';
 import Login from './Login';
 import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
+import { Other } from './Other';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -206,7 +207,7 @@ const App = () => {
               {
                 tab === 'save-to'
                   ? <SaveTo onLogout={onLogout} />
-                  : <div>{__i18n('即将上新')}</div>
+                  : <Other />
               }
             </>
           ) : (

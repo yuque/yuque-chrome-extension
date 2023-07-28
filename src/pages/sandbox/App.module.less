@@ -8,11 +8,14 @@
   border-radius: @base-padding;
   box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.4);
 
-  color: @text-color;
+  height: 394px;
   width: @main-board-width;
+  box-sizing: border-box;
+
+  color: @text-color;
   display: flex;
   flex-flow: column nowrap;
-  padding: 20px @base-padding * 3 @base-padding * 3;
+  padding: 20px @base-padding * 3 0;
 
   .header {
     margin-bottom: @base-padding;
@@ -49,9 +52,15 @@
   }
 
   .account {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 @base-padding * 3 20px;
+    box-sizing: border-box;
+
     display: flex;
     justify-content: space-between;
     flex: 0 0 auto;
-    margin-top: @base-padding * 2;
   }
 }
