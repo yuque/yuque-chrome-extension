@@ -216,8 +216,6 @@ const useViewModel = props => {
   }, [ editorValue ]);
 
   useEffect(() => {
-    console.log(editorValue, 'editorValue');
-
     if (currentType === SELECT_TYPES[0].key) {
       startSelect();
     } else if (currentType === SELECT_TYPES[1].key) {

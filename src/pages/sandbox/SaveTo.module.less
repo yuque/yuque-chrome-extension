@@ -24,12 +24,13 @@
     padding: @base-padding * 2;
     background: #fff;
     border-radius: @base-padding;
-    box-shadow: 0 1px 4px 0 rgb(0, 0, 0, 10%);
+    box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 40%);
     color: @text-color;
     width: @main-editor-width;
     min-height: @main-editor-width;
-    max-height: calc(100vh ~"-" @base-padding * 4);
+    max-height: 640px;
     overflow-y: scroll;
     user-select: none;
+    box-sizing: border-box;
   }
 }

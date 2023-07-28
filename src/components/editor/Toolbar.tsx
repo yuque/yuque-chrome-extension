@@ -62,7 +62,7 @@ const Button = React.forwardRef(
 
 export const Toolbar = React.forwardRef(
   (
-    { className, editor, ...props }: PropsWithChildren<ToolbarProps>,
+    { className, editor, onClipContinueClick, ...props }: PropsWithChildren<ToolbarProps>,
     ref: Ref<OrNull<HTMLDivElement>>,
   ) => {
     return (
@@ -100,7 +100,7 @@ export const Toolbar = React.forwardRef(
             IconComponent={FormatListBulletedIcon}
           />
         </Menu>
-        <AntdButton className={styles.continueBtn} onClick={props.onClipContinueClick}>
+        <AntdButton className={styles.continueBtn} onClick={onClipContinueClick}>
           {__i18n('继续选取')}
         </AntdButton>
       </div>
