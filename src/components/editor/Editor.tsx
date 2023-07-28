@@ -31,6 +31,7 @@ import Toolbar from './Toolbar';
 interface CustomEditorProps {
   defaultValue?: Node[];
   onLoad: (editor: SlateEditor) => void;
+  onClipContinueClick: () => void;
 }
 
 interface ExtendedElementProps extends ElementProps {
@@ -467,7 +468,7 @@ const CustomEditor: React.FC<CustomEditorProps> = props => {
 
   return (
     <Slate editor={editor} value={value} onChange={onChange}>
-      <Toolbar editor={editor} />
+      <Toolbar editor={editor} onClipContinueClick={props.onClipContinueClick} />
       <div ref={editorContainerRef}>
         <Editable
           renderElement={renderElement}

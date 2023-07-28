@@ -2,7 +2,7 @@
 
 .toolbar {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   background-color: @toolbar-background-color;
   padding: @base-padding;
@@ -13,6 +13,9 @@
 }
 
 .menu {
+  display: flex;
+  align-items: center;
+
   & > * {
     display: inline-block;
   }
@@ -43,4 +46,8 @@
 
 .button.reversed.inactive {
   color: @grey-7;
+}
+
+.continueBtn {
+  float: right;
 }

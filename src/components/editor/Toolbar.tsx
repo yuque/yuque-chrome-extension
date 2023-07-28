@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { Button as AntdButton } from 'antd';
 import { Editor as SlateEditor } from 'slate';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import CodeIcon from '@mui/icons-material/Code';
@@ -24,13 +25,13 @@ type OrNull<T> = T | null;
 
 type ToolbarProps = {
   editor: SlateEditor;
+  onClipContinueClick: () => void;
 } & BaseProps;
 
 type ButtonProps = {
   active: boolean;
   reversed: boolean;
-} & BaseProps &
-HTMLAttributes<HTMLSpanElement>;
+} & BaseProps & HTMLAttributes<HTMLSpanElement>;
 
 const Menu = React.forwardRef(
   (
@@ -54,9 +55,7 @@ const Button = React.forwardRef(
     <span
       {...props}
       ref={ref}
-      className={`${styles.button} ${
-        active ? styles.active : styles.inactive
-      } ${reversed ? styles.reversed : ''} ${className}`}
+      className={`${styles.button} ${active ? styles.active : styles.inactive} ${reversed ? styles.reversed : ''} ${className}`}
     />
   ),
 );
@@ -67,39 +66,44 @@ export const Toolbar = React.forwardRef(
     ref: Ref<OrNull<HTMLDivElement>>,
   ) => {
     return (
-      <Menu {...props} ref={ref} className={`${styles.toolbar} ${className}`}>
-        <MarkButton
-          editor={editor}
-          format="bold"
-          IconComponent={FormatBoldIcon}
-        />
-        <MarkButton
-          editor={editor}
-          format="italic"
-          IconComponent={FormatItalicIcon}
-        />
-        <MarkButton
-          editor={editor}
-          format="underline"
-          IconComponent={FormatUnderlinedIcon}
-        />
-        <MarkButton editor={editor} format="code" IconComponent={CodeIcon} />
-        <BlockButton
-          editor={editor}
-          format="block-quote"
-          IconComponent={FormatQuoteIcon}
-        />
-        <BlockButton
-          editor={editor}
-          format="numbered-list"
-          IconComponent={FormatListNumberedIcon}
-        />
-        <BlockButton
-          editor={editor}
-          format="bulleted-list"
-          IconComponent={FormatListBulletedIcon}
-        />
-      </Menu>
+      <div className={`${styles.toolbar} ${className}`}>
+        <Menu {...props} ref={ref}>
+          <MarkButton
+            editor={editor}
+            format="bold"
+            IconComponent={FormatBoldIcon}
+          />
+          <MarkButton
+            editor={editor}
+            format="italic"
+            IconComponent={FormatItalicIcon}
+          />
+          <MarkButton
+            editor={editor}
+            format="underline"
+            IconComponent={FormatUnderlinedIcon}
+          />
+          <MarkButton editor={editor} format="code" IconComponent={CodeIcon} />
+          <BlockButton
+            editor={editor}
+            format="block-quote"
+            IconComponent={FormatQuoteIcon}
+          />
+          <BlockButton
+            editor={editor}
+            format="numbered-list"
+            IconComponent={FormatListNumberedIcon}
+          />
+          <BlockButton
+            editor={editor}
+            format="bulleted-list"
+            IconComponent={FormatListBulletedIcon}
+          />
+        </Menu>
+        <AntdButton className={styles.continueBtn} onClick={props.onClipContinueClick}>
+          {__i18n('继续选取')}
+        </AntdButton>
+      </div>
     );
   },
 );
@@ -118,7 +122,7 @@ const MarkButton = ({ editor, format, IconComponent }) => {
     };
   }, [ editor, format ]);
 
-  const handleMouseDown = e => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     toggleMark(editor, format);
   };

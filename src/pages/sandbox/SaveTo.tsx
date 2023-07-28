@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { ConfigProvider, Button, Select, message, Menu } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet, isEmpty } from 'lodash';
-import Icon, { LinkOutlined, EditFilled, BookFilled } from '@ant-design/icons';
+import type { MenuInfo } from 'rc-menu/lib/interface';
+import Icon, { LinkOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
 import processHtmls from '@/core/html-parser';
@@ -14,12 +15,12 @@ import formatHTML from '@/components/editor/format-html';
 import formatMD from '@/components/editor/format-md';
 import contentParser from '@/components/editor/content-parser';
 import { GLOBAL_EVENTS } from '@/events';
-import styles from './SaveTo.module.less';
 import { EditorValueContext } from './EditorValueContext';
 
 import ClipperSvg from '@/assets/svg/clipper.svg';
 import BookLogoSvg from '@/assets/svg/book-logo.svg';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
+import styles from './SaveTo.module.less';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -142,7 +143,6 @@ function BookWithIcon({ book }) {
 const useViewModel = props => {
   const [ books, setBooks ] = useState([ NOTE_DATA ]);
   const [ currentBookId, setCurrentBookId ] = useState(NOTE_DATA.id);
-  const [ showContinueButton, setShowContinueButton ] = useState(false);
   const { editorValue, currentType, setEditorValue, setCurrentType } =
     useContext(EditorValueContext);
   const onSelectType = setCurrentType;
@@ -216,6 +216,8 @@ const useViewModel = props => {
   }, [ editorValue ]);
 
   useEffect(() => {
+    console.log(editorValue, 'editorValue');
+
     if (currentType === SELECT_TYPES[0].key) {
       startSelect();
     } else if (currentType === SELECT_TYPES[1].key) {
@@ -241,12 +243,6 @@ const useViewModel = props => {
       });
     }
   }, [ currentType ]);
-
-  useEffect(() => {
-    setShowContinueButton(
-      currentType === SELECT_TYPES[0].key && !isEmpty(editorValue),
-    );
-  }, [ editorValue, currentType ]);
 
   const onSave = () => {
     if (!editorInstance) return;
@@ -337,7 +333,6 @@ const useViewModel = props => {
       books,
       editorValue,
       currentBookId,
-      showContinueButton,
       currentType,
     },
     onSave,
@@ -347,15 +342,19 @@ const useViewModel = props => {
   };
 };
 
-const SaveTo = props => {
+const SaveTo = React.forwardRef<{}, any>((ref, props) => {
   const { currentType, editorValue } = useContext(EditorValueContext);
   const {
-    state: { books, currentBookId, showContinueButton },
+    state: { books, currentBookId },
     onSelectBookId,
     onSave,
     onContinue,
     onSelectType,
   } = useViewModel(props);
+  const handleTypeSelect = (info: MenuInfo) => {
+    onSelectType(info.key);
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -375,9 +374,7 @@ const SaveTo = props => {
           mode="inline"
           inlineIndent={8}
           openKeys={[ currentType ].filter(Boolean)}
-          onOpenChange={(openKeys: string[]) => {
-            onSelectType(openKeys[0]);
-          }}
+          onClick={handleTypeSelect}
           items={SELECT_TYPES.map(item => ({
             key: item.key,
             icon: item.icon,
@@ -400,22 +397,18 @@ const SaveTo = props => {
           {__i18n('保存到')}
           {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
         </Button>
-        {showContinueButton && (
-          <Button className={styles.button} block onClick={onContinue}>
-            {__i18n('继续选取')}
-          </Button>
-        )}
         {currentType && (
           <div className={styles.editor}>
             <Editor
               onLoad={editor => (editorInstance = editor)}
               defaultValue={editorValue}
+              onClipContinueClick={onContinue}
             />
           </div>
         )}
       </div>
     </ConfigProvider>
   );
-};
+});
 
 export default SaveTo;
