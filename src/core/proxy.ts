@@ -43,7 +43,10 @@ const RequestProxy = {
             offset: 0,
           },
         });
-        return data.data;
+        return Array.isArray(data?.data)
+          // 过滤掉非文档类型的知识库
+          ? data.data.filter(b => b.type === 'Book')
+          : [];
       } catch (error) {
         const err = new Error();
         (err as any).html = error.response?.data?.html;
