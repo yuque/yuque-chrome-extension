@@ -352,7 +352,7 @@ const useViewModel = props => {
   };
 };
 
-const SaveTo = React.forwardRef<{}, any>((props, ref) => {
+const SaveTo: React.FC = props => {
   const { currentType, editorValue } = useContext(EditorValueContext);
   const {
     state: { books, currentBookId, loading },
@@ -426,6 +426,6 @@ const SaveTo = React.forwardRef<{}, any>((props, ref) => {
       </div>
     </ConfigProvider>
   );
-});
+};
 
 export default SaveTo;
