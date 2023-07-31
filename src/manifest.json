@@ -17,8 +17,10 @@
     }
   ],
   "icons": {
-    "34": "icon-34.png",
-    "128": "icon-128.png"
+    "16": "yuque-logo-16.png",
+    "32": "yuque-logo-32.png",
+    "48": "yuque-logo-48.png",
+    "128": "yuque-logo-128.png"
   },
   "web_accessible_resources": [
     {
