@@ -19,12 +19,16 @@ class App {
     this.bindEvent();
   }
 
+  private maskCls = '_yq_ext_tip-mask';
+  private submitBtnCls = '_yq_ext_submit-selection';
+
   private createTipMask() {
     // 创建遮罩层和提示信息，并添加样式
     const mask = $('<div>')
-      .addClass('tip-mask')
+      .addClass(this.maskCls)
       .css({
         display: 'flex',
+        boxSizing: 'border-box',
         alignItems: 'center',
         position: 'fixed',
         top: '10%', // 靠上的位置，可以根据需要调整
@@ -47,25 +51,26 @@ class App {
   }
 
   private removeTipMask() {
-    $('.tip-mask').remove();
+    $(`.${this.maskCls}`).remove();
   }
 
   private updateSelectedCounter() {
     this.areaSelection.on('change', count => {
-      $('.submit-selection').text(`确认选取 (${count})`);
+      $(`.${this.submitBtnCls}`).text(`确认选取 (${count})`);
     });
   }
 
   private createConfirmButton(iframe) {
-    const submitBtn = $('<button>')
-      .addClass('submit-selection')
+    const submitBtn = $('<div>')
+      .addClass(this.submitBtnCls)
       .text('确认选取')
       .css({
         height: 24,
         lineHeight: '24px',
         marginLeft: 42,
-        backgroundColor: '#25b864',
-        borderColor: '#25b864', // @primary-color
+        backgroundColor: '#00B96B',
+        boxSizing: 'border-box',
+        borderColor: '#00B96B', // @primary-color
         borderRadius: 4,
         cursor: 'pointer',
         display: 'inline-block',
@@ -82,7 +87,7 @@ class App {
         pointerEvents: 'all',
         transition: 'all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)',
       })
-      .appendTo('.tip-mask')
+      .appendTo(`.${this.maskCls}`)
       .on('click', async () => {
         const selectedElems = this.areaSelection.getSelectedElems();
         const htmls = Array.from(selectedElems).map(elem =>
@@ -158,7 +163,7 @@ class App {
 
   private removeConfirmButton() {
     const { sandboxURL } = this;
-    $('.submit-selection').remove();
+    $(`.${this.submitBtnCls}`).remove();
     const iframe = $(`iframe[src="${sandboxURL}"]`);
     iframe.addClass('show');
   }
