@@ -44,13 +44,18 @@ const RequestProxy = {
           },
         });
         return Array.isArray(data?.data)
-          // 过滤掉非文档类型的知识库
-          ? data.data.filter(b => b.type === 'Book')
+          ? // 过滤掉非文档类型的知识库
+          data.data.filter(b => b.type === 'Book')
           : [];
       } catch (error) {
-        const err = new Error();
-        (err as any).html = error.response?.data?.html;
-        throw err;
+        if (
+          error.response?.status === 400 &&
+          error.response?.data?.code === 'force_upgrade_version'
+        ) {
+          const err = new Error();
+          (err as any).html = error.response?.data?.html;
+          throw err;
+        }
       }
     },
   },
