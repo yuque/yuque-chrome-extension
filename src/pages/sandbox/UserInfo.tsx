@@ -85,23 +85,12 @@ const UserInfo = (props: Props) => {
         ),
       },
       {
-        key: 'current-version',
-        label: (<span>
-          {__i18n('当前版本')}
-          &nbsp;v{VERSION}
-        </span>
-        ),
-      },
-      {
         key: 'logout',
         label: __i18n('退出账户'),
       },
     ].filter(n => {
       if (n.key === 'upgrade-version') {
         return needUpgrade;
-      }
-      if (n.key === 'current-version') {
-        return !needUpgrade;
       }
       return true;
     });
