@@ -1,7 +1,7 @@
 import React from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
-import { pkg } from '@/config';
+import { pkg, VERSION } from '@/config';
 
 import styles from './FeedBack.module.less';
 
@@ -13,7 +13,7 @@ const FeedBack: React.FC<React.HTMLAttributes<HTMLAnchorElement>> = props => (
     href={pkg.issues}
   >
     <QuestionCircleOutlined className={styles.icon} />
-    {__i18n('问题反馈')}
+    {__i18n('问题反馈')}&nbsp;v{VERSION}
   </a>
 );
 
