@@ -134,3 +134,7 @@ docs_dist
 *.zip
 .vscode
 *lock.yaml
+
+*.crx
+*.pem
+updates.xml
