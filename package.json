@@ -10,6 +10,7 @@
   "issues": "https://www.yuque.com/yuque/yuque-browser-extension/welcome",
   "scripts": {
     "archive": "sh ./build.sh",
+    "pack-crx": "node scripts/build-crx.js",
     "bundle": "NODE_ENV=production webpack --mode=production",
     "build": "npm run bundle && npm run archive",
     "contributor": "git-contributor",
@@ -75,6 +76,7 @@
     "clean-webpack-plugin": "3.0.0",
     "copy-webpack-plugin": "6",
     "cross-env": "^7.0.3",
+    "crx": "^5.0.1",
     "css-loader": "^6.6.0",
     "dotenv": "^10.0.0",
     "easy-i18n-cli": "^1.0.0",
