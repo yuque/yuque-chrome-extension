@@ -18,11 +18,11 @@ import {
 
 import UserInfo, { IYuqueAccount } from './UserInfo';
 import FeedBack from './FeedBack';
-import SaveTo from './SaveTo';
 import Login from './Login';
 import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
+import SaveToLakeEditor from './SaveToLakeEditor';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -215,7 +215,7 @@ const App = () => {
               </Radio.Group>
               {
                 tab === 'save-to'
-                  ? <SaveTo onLogout={onLogout} />
+                  ? <SaveToLakeEditor onLogout={onLogout} />
                   : <Other />
               }
             </>

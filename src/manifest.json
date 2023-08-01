@@ -25,7 +25,11 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "sandbox.html"
+        "sandbox.html",
+        "doc.css",
+        "doc.umd.js",
+        "CodeMirror.js",
+        "katex.min.js"
       ],
       "matches": [
         "<all_urls>",
