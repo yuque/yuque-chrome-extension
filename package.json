@@ -9,10 +9,10 @@
   },
   "issues": "https://www.yuque.com/yuque/yuque-browser-extension/welcome",
   "scripts": {
-    "archive": "sh ./build.sh",
+    "pack-zip": "sh ./build.sh",
     "pack-crx": "node scripts/build-crx.js",
     "bundle": "NODE_ENV=production webpack --mode=production",
-    "build": "npm run bundle && npm run archive",
+    "build": "npm run bundle && npm run pack-zip && npm run pack-crx",
     "contributor": "git-contributor",
     "dev": "NODE_ENV=development webpack --mode=development",
     "docs:dev": "vuepress dev docs",
