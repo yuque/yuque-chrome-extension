@@ -1,6 +1,6 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "Yuque browser extension for Chrome/Edge",
   "private": true,
   "repository": {
@@ -9,12 +9,13 @@
   },
   "issues": "https://www.yuque.com/yuque/yuque-browser-extension/welcome",
   "scripts": {
-    "pack-zip": "sh ./build.sh",
-    "pack-crx": "node scripts/build-crx.js && sh scripts/zip-crx.sh",
+    "pack-zip": "sh ./scripts/build-zip.sh",
+    "pack-crx": "node ./scripts/build-crx.js && sh ./scripts/zip-crx.sh",
+    "preset-editor": "node ./scripts/preset-editor.js",
     "bundle": "NODE_ENV=production webpack --mode=production",
-    "build": "npm run bundle && npm run pack-zip && npm run pack-crx",
+    "build": "npm run bundle && npm run preset-editor && npm run pack-zip",
     "contributor": "git-contributor",
-    "dev": "NODE_ENV=development webpack --mode=development",
+    "dev": "npm run preset-editor && NODE_ENV=development webpack --mode=development",
     "docs:dev": "vuepress dev docs",
     "type:check": "tsc --noEmit",
     "lint:js": "eslint . --fix",
@@ -23,7 +24,6 @@
     "lint-staged": "lint-staged",
     "translate": "easy-i18n-cli -c ./i18n.config.js",
     "translate:check": "npm run translate -- --check",
-    "prepare": "husky install",
     "release": "standard-version",
     "postrelease": "git push origin main && git push origin --tags"
   },
@@ -47,10 +47,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "semver-compare": "^1.0.0",
-    "slate": "^0.63.0",
-    "slate-history": "^0.62.0",
-    "slate-hyperscript": "^0.62.0",
-    "slate-react": "^0.65.0",
     "turndown": "^7.0.0"
   },
   "devDependencies": {
@@ -89,7 +85,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "git-contributor": "^2.1.5",
     "html-webpack-plugin": "^5.5.0",
-    "husky": "^8.0.3",
+    "husky": "^1.3.1",
     "jsx-loader": "^0.13.2",
     "less-loader": "^10.2.0",
     "lint-staged": "^13.2.3",
@@ -103,6 +99,7 @@
     "ts-loader": "^8.4.0",
     "typescript": "^4.9.5",
     "url-loader": "^4.1.1",
+    "urllib": "^3.17.1",
     "vuepress": "^1.8.2",
     "webpack": "^5.69.1",
     "webpack-cli": "^4.9.0",
@@ -115,6 +112,11 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

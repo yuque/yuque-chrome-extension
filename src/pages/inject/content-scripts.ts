@@ -198,6 +198,7 @@ class App {
         top: 0;
         z-index: 999999;
         background: rgba(0, 0, 0, 0.2);
+        color-scheme: none;
       }
       .${iframeClassName}.show {
         display: block;
