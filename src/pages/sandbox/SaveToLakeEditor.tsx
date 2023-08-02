@@ -167,7 +167,7 @@ const useViewModel = props => {
   const [ loading, setLoading ] = React.useState<boolean>(false);
 
   const onSave = () => {
-    if (!editorInstance) return;
+    if (!editorRef.current) return;
 
     const serializedAsiContent = editorRef.current?.getContent('lake') || '';
     const serializedHtmlContent = editorRef.current?.getContent('text/html') || '';
