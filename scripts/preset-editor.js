@@ -31,7 +31,11 @@ async function downloadFile(remoteURL, localFilename) {
 
 const urls = Object.values(AssetsURL);
 
-module.exports = async function main() {
+module.exports.webpackCleanIgnorePatterns = urls
+  .map(url => url.split('/').pop())
+  .map(fileName => `!${fileName}`);
+
+module.exports.presetEditor = async function main() {
   console.log('start preset editor ...');
 
   for (let i = 0; i < urls.length; i++) {

@@ -8,7 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const presetEditor = require('./scripts/preset-editor');
+const { presetEditor, webpackCleanIgnorePatterns } = require('./scripts/preset-editor');
 const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
@@ -70,7 +70,13 @@ const plugins = [
 ];
 
 if (isProd) {
-  plugins.unshift(new CleanWebpackPlugin({ verbose: true }));
+  plugins.unshift(new CleanWebpackPlugin({
+    verbose: true,
+    cleanOnceBeforeBuildPatterns: [
+      '**/*',
+      ...webpackCleanIgnorePatterns,
+    ],
+  }));
 }
 
 const entry = {
