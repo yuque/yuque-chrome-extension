@@ -245,6 +245,13 @@ class App {
     const confirmSelectionButton = this.createConfirmButton(iframe);
 
     this.areaSelection.init([ confirmSelectionButton[0], mask[0] ]);
+    /**
+     * 当开始选取时，延时 300ms 切换焦点，避免 document.activeElement 区域在 iframe
+     * 导致监听的 keydown 失效
+     */
+    setTimeout(() => {
+      this.areaSelection.overlay.focus();
+    }, 300)
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
