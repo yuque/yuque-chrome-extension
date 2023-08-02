@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import Chrome from '@/core/chrome';
 
-async function fetchAndParseXML(): Promise<string | undefined> {
+async function fetchAndParseXML(updateUrl: string): Promise<string | undefined> {
   const response = await fetch(
-    'https://app.nlark.com/yuque-chrome-extension/updates.xml',
+    updateUrl,
     // 强制与 cdn 做校验是否可使用缓存内容
     { cache: 'no-cache' },
   );
@@ -23,9 +24,25 @@ export function useCheckVersion(): string | undefined {
   const [ version, setVersion ] = useState<string | undefined>();
 
   useEffect(() => {
-    fetchAndParseXML().then(res => {
-      setVersion(res);
-    });
+    const manifest = Chrome.runtime.getManifest();
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('update_url: %s', manifest?.update_url);
+    }
+
+    if (manifest?.update_url) {
+      // 官方商店的 update_url 跳过更新检查
+      // https://clients2.google.com/service/update2/crx
+      // https://edge.microsoft.com/extensionwebstorebase/v1/crx
+      if (/(google|microsoft)\.com/.test(manifest.update_url)) {
+        return;
+      }
+
+      fetchAndParseXML(manifest.update_url).then(res => {
+        setVersion(res);
+      }).catch(err => {
+        console.log(err, 'retrive update_url failed');
+      });
+    }
   }, []);
 
   return version;

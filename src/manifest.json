@@ -41,6 +41,7 @@
     "<all_urls>",
     "*://*/*"
   ],
+  "update_url": "https://app.nlark.com/yuque-chrome-extension/updates.xml",
   "permissions": [
     "activeTab",
     "declarativeNetRequest",

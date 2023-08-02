@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ConfigProvider, Button, Select, message, Menu } from 'antd';
 import classnames from 'classnames';
-import { get as safeGet, isEmpty } from 'lodash';
+import { get as safeGet } from 'lodash';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import Icon, { LinkOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
