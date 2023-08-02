@@ -7,10 +7,13 @@ const pkg = require('../package.json');
 const { distFolder, cdnPrefix } = require('./common');
 
 async function buildCrxFromZip() {
+  if (!process.env.CHROME_KEY_PEM) {
+    console.warn('No CHROME_KEY_PEM found, skip building crx.');
+    return;
+  }
+
   const crx = new CRX({
-    privateKey: process.env.CHROME_KEY_PEM
-      ? decodeURIComponent(process.env.CHROME_KEY_PEM)
-      : fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
+    privateKey: decodeURIComponent(process.env.CHROME_KEY_PEM),
     // use this field in update.xml
     codebase: `${cdnPrefix}/${pkg.version}.crx`,
   });
