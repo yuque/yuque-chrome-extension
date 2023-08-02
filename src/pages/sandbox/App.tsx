@@ -22,7 +22,7 @@ import Login from './Login';
 import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
-import SaveToLakeEditor from './SaveToLakeEditor';
+import SaveTo from './SaveTo';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -215,7 +215,7 @@ const App = () => {
               </Radio.Group>
               {
                 tab === 'save-to'
-                  ? <SaveToLakeEditor onLogout={onLogout} />
+                  ? <SaveTo onLogout={onLogout} />
                   : <Other />
               }
             </>
