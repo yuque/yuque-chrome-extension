@@ -17,6 +17,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "outDir": "dist/"
   },
   "requireConfigFile": false,
   "include": [
