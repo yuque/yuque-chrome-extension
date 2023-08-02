@@ -10,7 +10,9 @@ const distFolder = path.resolve(__dirname, '../dist', pkg.version);
 
 async function buildCrxFromZip() {
   const crx = new CRX({
-    privateKey: process.env.CHROME_KEY_PEM || fs.readFileSync(path.resolve(__dirname, '../key.pem')),
+    privateKey: process.env.CHROME_KEY_PEM
+      ? decodeURIComponent(process.env.CHROME_KEY_PEM)
+      : fs.readFileSync(path.resolve(__dirname, '../key.pem')),
     // use this field in update.xml
     codebase: `https://app.nlark.com/yuque-chrome-extension/${pkg.version}.crx`,
   });
