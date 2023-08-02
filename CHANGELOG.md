@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.5](https://github.com/yuque/yuque-chrome-extension/compare/v0.3.2...v0.3.5) (2023-08-02)
+
+
+### Features
+
+* 更换应用图标 ([#59](https://github.com/yuque/yuque-chrome-extension/issues/59)) ([0c2fd92](https://github.com/yuque/yuque-chrome-extension/commit/0c2fd92e109394e6c4cd43c5015a904867f93faf))
+* 仅离线版本 crx 做更新检查 ([11bae3f](https://github.com/yuque/yuque-chrome-extension/commit/11bae3ff7ee22770db06bad05bb5c0bf29e40819))
+* 使用 lake 编辑器 ([#67](https://github.com/yuque/yuque-chrome-extension/issues/67)) ([0d19b22](https://github.com/yuque/yuque-chrome-extension/commit/0d19b220bd2d29b35911aa54dfc190bfbf1415a2))
+* 支持构建 crx 文件产物以支持离线使用场景 ([#65](https://github.com/yuque/yuque-chrome-extension/issues/65)) ([6713b8f](https://github.com/yuque/yuque-chrome-extension/commit/6713b8f6496efbbd76d3652fd2744ceb842a1540))
+* ui 组件库升级到 antd 5 ([#56](https://github.com/yuque/yuque-chrome-extension/issues/56)) ([aa71988](https://github.com/yuque/yuque-chrome-extension/commit/aa719882c332e2769d331a34b6635baab0838e0f))
+
+
+### Bug Fixes
+
+* 调整插件版本号展示位置 ([#60](https://github.com/yuque/yuque-chrome-extension/issues/60)) ([6c4398a](https://github.com/yuque/yuque-chrome-extension/commit/6c4398a9156a22be71c3b80688fbc386516370dc))
+* 过滤掉非文档类型的知识库 ([#61](https://github.com/yuque/yuque-chrome-extension/issues/61)) ([ee0f261](https://github.com/yuque/yuque-chrome-extension/commit/ee0f261a0d03966385ea17dac7db14c4edbdf9ee))
+* 修复暗黑模式下的遮罩问题 & 修改插件名称 ([#72](https://github.com/yuque/yuque-chrome-extension/issues/72)) ([e9cc641](https://github.com/yuque/yuque-chrome-extension/commit/e9cc641de3174723207bd2a25ed34ee4ffbbd473))
+* 修复确认选取按钮点击失效 ([#58](https://github.com/yuque/yuque-chrome-extension/issues/58)) ([5516c7e](https://github.com/yuque/yuque-chrome-extension/commit/5516c7e86423a26609711327d8867dc96fad3b3d))
+* 修复组件 props 传参错误 ([#63](https://github.com/yuque/yuque-chrome-extension/issues/63)) ([fb325a2](https://github.com/yuque/yuque-chrome-extension/commit/fb325a223fa602019b736b04dc2f2a5d6f65197c))
+* 移除无用的 forwardRef ([#64](https://github.com/yuque/yuque-chrome-extension/issues/64)) ([f995bb2](https://github.com/yuque/yuque-chrome-extension/commit/f995bb283cc83e7e7149c3cc213f8732e79b5bda))
+* 优化 content-script 实现避免出现注入按钮被原有站点的样式覆盖 ([#62](https://github.com/yuque/yuque-chrome-extension/issues/62)) ([1b905b9](https://github.com/yuque/yuque-chrome-extension/commit/1b905b9004396303b0e48a900b8a40211de5bfed))
+
 ### [0.3.2](https://github.com/yuque/yuque-chrome-extension/compare/v0.3.1...v0.3.2) (2023-07-25)
 
 
