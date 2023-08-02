@@ -10,7 +10,7 @@
   "issues": "https://www.yuque.com/yuque/yuque-browser-extension/welcome",
   "scripts": {
     "pack-zip": "sh ./build.sh",
-    "pack-crx": "node scripts/build-crx.js",
+    "pack-crx": "node scripts/build-crx.js && sh scripts/zip-crx.sh",
     "bundle": "NODE_ENV=production webpack --mode=production",
     "build": "npm run bundle && npm run pack-zip && npm run pack-crx",
     "contributor": "git-contributor",
