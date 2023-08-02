@@ -11,11 +11,10 @@
   "scripts": {
     "pack-zip": "sh ./scripts/build-zip.sh",
     "pack-crx": "node ./scripts/build-crx.js && sh ./scripts/zip-crx.sh",
-    "preset-editor": "node ./scripts/preset-editor.js",
     "bundle": "NODE_ENV=production webpack --mode=production",
-    "build": "npm run bundle && npm run preset-editor && npm run pack-zip && npm run pack-crx",
+    "build": "npm run bundle && npm run pack-zip && npm run pack-crx",
     "contributor": "git-contributor",
-    "dev": "npm run preset-editor && NODE_ENV=development webpack --mode=development",
+    "dev": "NODE_ENV=development webpack --mode=development",
     "docs:dev": "vuepress dev docs",
     "type:check": "tsc --noEmit",
     "lint:js": "eslint . --fix",

@@ -31,13 +31,13 @@ async function downloadFile(remoteURL, localFilename) {
 
 const urls = Object.values(AssetsURL);
 
-async function main() {
+module.exports = async function main() {
+  console.log('start preset editor ...');
+
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i];
     const fileName = url.split('/').pop();
     const localFilename = path.resolve(distFolder, fileName);
     await downloadFile(url, localFilename);
   }
-}
-
-main().catch(console.log);
+};

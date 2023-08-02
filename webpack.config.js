@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const presetEditor = require('./scripts/preset-editor');
 const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
@@ -216,4 +217,9 @@ const options = {
   },
 };
 
-module.exports = options;
+
+module.exports = async () => {
+  await presetEditor();
+
+  return options;
+};
