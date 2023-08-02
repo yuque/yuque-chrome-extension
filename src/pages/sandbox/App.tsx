@@ -4,9 +4,6 @@ import { CloseOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 
 import Chrome from '@/core/chrome';
-import formatHTML from '@/components/editor/format-html';
-import formatMD from '@/components/editor/format-md';
-import deserialize from '@/components/editor/deserialize';
 import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
 import proxy, { SERVER_URLS } from '@/core/proxy';
@@ -145,43 +142,12 @@ const App = () => {
     onLogin,
   } = useViewModel();
 
-  const onReceiveMessage = async (
-    request: RequestMessage,
-    _sender: MessageSender,
-    sendResponse: SendResponse,
-  ) => {
-    switch (request.action) {
-      case GLOBAL_EVENTS.GET_SELECTED_TEXT: {
-        const { htmls } = request;
-        const newHtml = htmls.map(html => formatHTML(html)).join('');
-        const document = new window.DOMParser().parseFromString(
-          newHtml,
-          'text/html',
-        );
-        const value = deserialize(document.body);
-        setEditorValue([ ...editorValue, ...formatMD(value) ]);
-        setCurrentType('selection');
-        sendResponse(true);
-        return;
-      }
-      default:
-        sendResponse(true);
-    }
-  };
-
   function renderUnLogin() {
     if (forceUpgradeInfo) {
       return <div dangerouslySetInnerHTML={{ __html: forceUpgradeInfo }} />;
     }
     return <Login onConfirm={onLogin} />;
   }
-
-  useEffect(() => {
-    Chrome.runtime.onMessage.addListener(onReceiveMessage);
-    return () => {
-      Chrome.runtime.onMessage.removeListener(onReceiveMessage);
-    };
-  }, [ editorValue ]);
 
   const [ tab, setTab ] = React.useState<TabName>('save-to');
 
