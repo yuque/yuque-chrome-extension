@@ -202,6 +202,7 @@ class App {
       }
       .${iframeClassName}.show {
         display: block;
+        color-scheme: auto;
       }
     `;
   }
