@@ -6,7 +6,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import Icon, { LinkOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
-import processHtmls from '@/core/html-parser';
+import processHTMLs from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
@@ -25,8 +25,6 @@ interface RequestMessage {
   action: keyof typeof GLOBAL_EVENTS;
   htmls?: string[];
 }
-
-let editorInstance;
 
 const getBookmarkHtml = (tab: chrome.tabs.Tab) => {
   return `<h2>${tab.title}</h2><p><a href="${tab.url}">${tab.title}</a></p>`;
@@ -121,12 +119,12 @@ const useViewModel = props => {
       case GLOBAL_EVENTS.GET_SELECTED_HTML: {
         const { htmls } = request;
         const noteId = await getNoteId();
-        const processedHtmls = await processHtmls(htmls, noteId);
+        const processedHTMLs = await processHTMLs(htmls, noteId);
         if (editorRef.current.isEmpty()) {
           const initHtml = getBookmarkHtml(await getCurrentTab());
           editorRef.current?.appendContent(initHtml);
         }
-        editorRef.current?.appendContent(processedHtmls.join(''), true);
+        editorRef.current?.appendContent(processedHTMLs.join(''), true);
         sendResponse(true);
         return;
       }
@@ -172,7 +170,7 @@ const useViewModel = props => {
     const serializedAsiContent = editorRef.current?.getContent('lake') || '';
     const serializedHtmlContent = editorRef.current?.getContent('text/html') || '';
 
-    const onSuccess = (type: 'doc' | 'note', noteOrDoc: any) => {
+    const onSuccess = (type: 'doc' | 'note', noteOrDoc: { id: string }) => {
       setCurrentType(null);
       setLoading(false);
 

@@ -157,7 +157,6 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   // 导出ref
   useImperativeHandle(ref, () => ({
     appendContent: (html: string, breakLine = false) => {
-      console.info(html);
       if (!editor) return;
       if (breakLine) {
         editor.execCommand('breakLine');

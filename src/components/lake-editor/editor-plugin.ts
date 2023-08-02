@@ -1,4 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare class IEditorPlugin {
+  editor: any;
+  init(): void;
+}
+
+declare class IRendererPlugin {
   editor: any;
   init(): void;
 }
@@ -11,7 +17,7 @@ export function InjectEditorPlugin({ EditorPlugin, Plugins, OpenEditorFactory, t
   OpenEditorFactory: {
     editorPlugins: IEditorPluginCls[];
     registerEditorPlugin: (plugins: IEditorPluginCls[]) => void;
-    registerRenderPlugin: (plugins: any[]) => void;
+    registerRenderPlugin: (plugins: IRendererPlugin[]) => void;
   };
   toolbarItems: Record<string, string>
 }, doc: Document) {
@@ -59,8 +65,7 @@ export function InjectEditorPlugin({ EditorPlugin, Plugins, OpenEditorFactory, t
           ],
         },
       };
-      console.info(this.editor
-        .getService({ value: 'IToolbarEditorService' }), doc.getElementById('toolbar'));
+
       this.editor
         .getService({ value: 'IToolbarEditorService' })
         ?.setLayer(doc.getElementById('toolbar') as HTMLDivElement);
