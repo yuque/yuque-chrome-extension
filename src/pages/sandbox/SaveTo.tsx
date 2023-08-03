@@ -274,7 +274,7 @@ const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
         },
       }}
     >
-      <div className={styles.wrapper}>
+      <div className={classnames(styles.wrapper, props.className)}>
         <div className={styles.actionTip}>
           {__i18n('选择剪藏方式')}
         </div>
@@ -314,9 +314,15 @@ const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
         </Button>
         {currentType && (
           <div className={styles['lake-editor']}>
-            <LakeEditor ref={editorRef} value="" onLoad={onLoad} onChange={html => {
-              // console.info(html);
-            }}>
+            <LakeEditor 
+              ref={editorRef} 
+              value="" 
+              onLoad={onLoad} 
+              onChange={html => {
+                // console.info(html);
+              }}
+              onSave={onSave}
+            >
               <Button onClick={onContinue}>
                 {__i18n('继续选取')}
               </Button>

@@ -53,6 +53,7 @@
     "cookies",
     "storage",
     "tabs",
-    "webRequest"
+    "webRequest",
+    "scripting"
   ]
 }
