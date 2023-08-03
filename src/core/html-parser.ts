@@ -43,6 +43,28 @@ async function uploadImage(imageUrl: string, noteId: string) {
   return uploadedImageUrl;
 }
 
+export async function urlOrFileUpload(data: string | File, noteId: string): Promise<{
+  url: string;
+  size: number;
+  filename: string;
+}> {
+  let file:File | undefined;
+  if (typeof data === 'string') {
+    if (isRelativePath(data)) {
+      data = chrome.runtime.getURL(data);
+    }
+
+    file = await urlToFile(data, 'image.jpg');
+  } else {
+    file = data;
+  }
+
+  console.info(data, file);
+
+  const response = await proxy.upload.attach(file, noteId);
+  return response.data;
+}
+
 async function processHtmlString(htmlString: string, noteId: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, 'text/html');

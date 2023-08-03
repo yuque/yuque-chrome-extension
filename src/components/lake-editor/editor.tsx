@@ -10,6 +10,15 @@ export interface EditorProps {
   onChange?: (value: string) => void;
   onLoad?: () => void
   onSave: () => void;
+  uploadImage: (params: { data: string | File }) => Promise<{
+    url: string;
+    size: number;
+    filename: string;
+  }>;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export interface IEditorRef {
@@ -29,7 +38,7 @@ export interface IEditorRef {
    * @param type 内容的格式
    * @return 文档内容
    */
-  getContent: (type: 'lake'|'text/html') => string;
+  getContent: (type: 'lake'|'text/html') => Promise<string>;
   /**
    * 判断当前文档是否是空文档
    * @return true表示当前是空文档
@@ -242,9 +251,10 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
             KaTexURL: './katex.min.js',
           },
           image: {
-            isCaptureImageURL() {
-              return false;
+            isCaptureImageURL(url: string) {
+              return !url?.startsWith('https://cdn.nlark.com/yuque');
             },
+            createUploadPromise: props.uploadImage,
           },
         });
         newEditor.on('visitLink', (url: string) => {
@@ -320,8 +330,17 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       if (!editor) return true;
       return editor.queryCommandValue('isEmpty');
     },
-    getContent: (type: 'lake'|'text/html'|'description') => {
+    getContent: async (type: 'lake'|'text/html'|'description') => {
       if (!editor) return '';
+      let times = 0;
+      while (!editor.canGetDocument()) {
+        // 10s 后返回超时
+        if (times > 100) {
+          throw new Error('文档上传未结束! 请删除未上传成功的图片');
+        }
+        times++;
+        await sleep(100);
+      }
       if (type === 'lake') {
         return editor.getDocument('text/lake');
       } else if (type === 'text/html') {
