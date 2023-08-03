@@ -6,6 +6,7 @@ import { InjectEditorPlugin } from './editor-plugin';
 export interface EditorProps {
   value: string;
   onChange: (value: string) => void;
+  onLoad?: () => void;
   children?: React.ReactElement;
 }
 
@@ -82,11 +83,12 @@ const templateHtml = `
 `;
 
 export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
-  const { value, onChange } = props;
+  const { value, onChange, onLoad } = props;
   const [ _loading, setLoading ] = useState(true);
   const [ editor, setEditor ] = useState<any>(null);
   const contextRef = useRef({
     onChange: props.onChange,
+    onLoad: props.onLoad,
   });
   const rootNodeRef = useRef<{ div: HTMLDivElement | null }>({
     div: null,
@@ -147,12 +149,14 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   useEffect(() => {
     if (!editor) return;
     editor.setDocument('text/html', value);
+    contextRef.current?.onLoad?.();
   }, [ editor, value ]);
 
   // 更新回调
   useEffect(() => {
     contextRef.current.onChange = onChange;
-  }, [ onChange ]);
+    contextRef.current.onLoad = onLoad;
+  }, [ onChange, onLoad ]);
 
   // 导出ref
   useImperativeHandle(ref, () => ({

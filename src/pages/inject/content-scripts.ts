@@ -90,14 +90,14 @@ class App {
       .appendTo(`.${this.maskCls}`)
       .on('click', async () => {
         const selectedElems = this.areaSelection.getSelectedElems();
-        const htmls = Array.from(selectedElems).map(elem =>
+        const HTMLs = Array.from(selectedElems).map(elem =>
           $(elem).prop('outerHTML'),
         );
 
         Chrome.runtime.sendMessage(
           {
             action: GLOBAL_EVENTS.GET_SELECTED_HTML,
-            htmls,
+            HTMLs,
           },
           () => {
             iframe.addClass('show');
@@ -142,14 +142,14 @@ class App {
 
   private confirmSelection() {
     const selectedElems = this.areaSelection.getSelectedElems();
-    const htmls = Array.from(selectedElems).map(elem =>
+    const HTMLs = Array.from(selectedElems).map(elem =>
       $(elem).prop('outerHTML'),
     );
 
     Chrome.runtime.sendMessage(
       {
         action: GLOBAL_EVENTS.GET_SELECTED_HTML,
-        htmls,
+        HTMLs,
       },
       () => {
         const { sandboxURL } = this;
@@ -251,7 +251,7 @@ class App {
      */
     setTimeout(() => {
       this.areaSelection.overlay.focus();
-    }, 300)
+    }, 300);
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
@@ -268,7 +268,7 @@ class App {
         const { selectionText } = data;
         Chrome.runtime.sendMessage({
           action: GLOBAL_EVENTS.GET_SELECTED_TEXT,
-          htmls: [ selectionText ],
+          HTMLs: [ selectionText ],
         });
       });
 
