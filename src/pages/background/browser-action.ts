@@ -2,13 +2,13 @@ import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
 
 function remindToRefreshPage(tabId: number) {
-  const msg = __i18n('你需要重新加载该页面才能剪藏。请重新加载页面后再试一次')
+  const msg = __i18n('你需要重新加载该页面才能剪藏。请重新加载页面后再试一次');
   Chrome.scripting.executeScript({
     target: { tabId },
-    args: [ { msg } ],
+    args: [{ msg }],
     func: (args: { msg: string }) => {
-      window.alert(args.msg);
-    }
+      window.alert(args.msg); // eslint-disable-line
+    },
   });
 }
 
