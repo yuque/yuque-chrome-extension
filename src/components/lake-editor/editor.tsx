@@ -6,9 +6,9 @@ import { InjectEditorPlugin } from './editor-plugin';
 
 export interface EditorProps {
   value: string;
-  onChange: (value: string) => void;
-  onLoad?: () => void;
   children?: React.ReactElement;
+  onChange?: (value: string) => void;
+  onLoad?: () => void
   onSave: () => void;
 }
 
@@ -55,6 +55,7 @@ const templateHtml = `
     }
     .toolbar-container {
       display: flex;
+      padding: 0 0 0 14px;
     }
     #toolbar {
       flex: 1;
@@ -70,6 +71,16 @@ const templateHtml = `
     }
     .ne-layout-mode-fixed .ne-editor-body, .ne-layout-mode-adapt .ne-editor-body {
       height: 100%;
+    }
+    .ne-ui-overlay-button {
+      width: 28px !important;
+      height: 28px !important;
+      padding: 0 !important;;
+      border: none !important;;
+    }
+    ::selection {
+      color: #fff !important;
+      background: #1677ff !important;
     }
   </style>
 </head>
@@ -119,6 +130,111 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
         InjectEditorPlugin(win.Doc, doc);
         // 创建编辑器
         const newEditor = createOpenEditor(doc.getElementById('root'), {
+          scrollNode: () => {
+            return doc.querySelector('.ne-editor-wrap');
+          },
+          slash: {
+            cardSelect: {
+              general: {
+                groups: [
+                  {
+                    type: 'icon',
+                    show: 'slash', // 只在斜杠面板中出现
+                    items: [
+                      'p',
+                      'h1',
+                      'h2',
+                      'h3',
+                      'h4',
+                      'h5',
+                      'h6',
+                      'unorderedList',
+                      'orderedList',
+                      'taskList',
+                      'link',
+                      'code',
+                    ],
+                  },
+                  {
+                    get title() {
+                      return '基础';
+                    },
+                    name: 'group-base',
+                    type: 'column',
+                    items: [
+                      'label',
+                      {
+                        name: 'table',
+                        allowSelector: true,
+                      },
+                    ],
+                  },
+                  {
+                    get title() {
+                      return '布局和样式';
+                    },
+                    name: 'group-layout',
+                    type: 'normal',
+                    items: [
+                      'quote',
+                      'hr',
+                      'alert',
+                      {
+                        name: 'columns',
+                        childMenus: [
+                          'columns2',
+                          'columns3',
+                          'columns4',
+                        ],
+                      },
+                      'collapse',
+                    ],
+                  },
+                  {
+                    get title() {
+                      return '程序员';
+                    },
+                    name: 'group-files',
+                    type: 'normal',
+                    items: [ 'codeblock', 'math' ],
+                  },
+                ],
+              },
+              table: {
+                groups: [
+                  {
+                    type: 'icon',
+                    show: 'slash', // 只在斜杠面板中出现
+                    items: [
+                      'p',
+                      'h1',
+                      'h2',
+                      'h3',
+                      'h4',
+                      'h5',
+                      'h6',
+                      'unorderedList',
+                      'orderedList',
+                      'taskList',
+                      'link',
+                      'code',
+                    ],
+                  },
+                  {
+                    get title() {
+                      return '基础';
+                    },
+                    name: 'group-base',
+                    type: 'normal',
+                    items: [
+                      'label',
+                      'math',
+                    ],
+                  },
+                ],
+              },
+            },
+          },
           codeblock: {
             codemirrorURL: './CodeMirror.js',
           },
@@ -130,6 +246,9 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
               return false;
             },
           },
+        });
+        newEditor.on('visitLink', (url: string) => {
+          window.open(url, '__blank');
         });
         // 监听内容变动
         newEditor.on('contentchange', () => {

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import { ConfigProvider, Button, Select, message, Menu } from 'antd';
+import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet } from 'lodash';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import Icon, { LinkOutlined } from '@ant-design/icons';
-import Chrome from '@/core/chrome';
+import Icon from '@ant-design/icons';
 import proxy from '@/core/proxy';
 import processHTMLs from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
@@ -12,59 +11,23 @@ import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
 import { EditorValueContext } from './EditorValueContext';
 
-import ClipperSvg from '@/assets/svg/clipper.svg';
 import BookLogoSvg from '@/assets/svg/book-logo.svg';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
+import { getBookmarkHtml, getCitation, getCurrentTab, getNoteId, startSelect } from './helper';
+import { SELECT_TYPES, SELECT_TYPE_AREA, SELECT_TYPE_BOOKMARK, SELECT_TYPE_SELECTION } from './constants/select-types';
 
-const getBookmarkHtml = (tab: chrome.tabs.Tab) => {
-  return `<h2>${tab.title}</h2><p><a href="${tab.url}">${tab.title}</a></p>`;
-};
 
-const getCitation = (tab: chrome.tabs.Tab) => {
-  return `<p>来自: <a href="${tab.url}">${tab.url}</a></p>`;
-};
+const NODE_DATA_ID = 0;
 
-const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
-  new Promise(resolve => {
-    Chrome.tabs.getCurrent(tab => {
-      resolve(tab);
-    });
-  });
-
-const getNoteId = async (): Promise<string> => {
-  const noteStatusResponse = await proxy.note.getStatus();
-  const noteId = safeGet(noteStatusResponse, 'data.meta.mirror.id');
-  return noteId;
-};
-
-const NOTE_DATA = {
-  id: 0,
+const BOOKS_DATA = [{
+  id: NODE_DATA_ID,
   type: 'note',
   get name() {
     return __i18n('小记');
   },
-};
-
-const SELECT_TYPES = [
-  {
-    key: 'area-select',
-    enabled: true,
-    get text() {
-      return __i18n('剪藏选取的内容');
-    },
-    icon: <Icon component={ClipperSvg} />,
-  },
-  {
-    key: 'bookmark',
-    enabled: true,
-    get text() {
-      return __i18n('剪藏网址');
-    },
-    icon: <LinkOutlined />,
-  },
-];
+}];
 
 function BookWithIcon({ book }) {
   const iconSvg = book.type === 'note' ? NoteLogoSvg : BookLogoSvg;
@@ -76,60 +39,56 @@ function BookWithIcon({ book }) {
   );
 }
 
-const useViewModel = props => {
-  const [ books, setBooks ] = useState([ NOTE_DATA ]);
-  const [ currentBookId, setCurrentBookId ] = useState(NOTE_DATA.id);
+export interface ISaveToProps {
+  onLogout: (e: any) => void;
+}
+
+const useViewModel = (props: ISaveToProps) => {
+  const [ loading, setLoading ] = useState(false);
+  const [ editorLoading, setEditorLoading ] = useState(false);
+  const [ books, setBooks ] = useState(BOOKS_DATA);
+  const [ currentBookId, setCurrentBookId ] = useState(NODE_DATA_ID);
+  const { currentType, setCurrentType } = useContext(EditorValueContext);
+
   const editorRef = useRef<IEditorRef>(null);
-  const { currentType, setCurrentType } =
-    useContext(EditorValueContext);
-  const onSelectType = setCurrentType;
 
-  const startSelect = (append = false) => {
-    getCurrentTab().then(tab => {
-      if (!append) {
-        const html = getBookmarkHtml(tab);
-        editorRef.current?.setContent(html);
-      }
-      Chrome.tabs.sendMessage(tab.id, {
-        action: GLOBAL_EVENTS.START_SELECT,
-      });
-    });
-  };
-
+  /**
+   * 获取知识库的数据
+   */
   useEffect(() => {
     proxy.book.getBooks()
       .then(bookList => {
-        setBooks([ NOTE_DATA, ...bookList ]);
+        setBooks([ ...BOOKS_DATA, ...bookList ]);
       })
       .catch(e => {
         props.onLogout(e);
       });
   }, []);
 
-  const onLoad = useCallback(() => {
-    if (editorRef.current) {
-      const HTMLs = ActionListener.getSelectHTMLs();
-      (async () => {
-        const noteId = await getNoteId();
-        const processedHTMLs = await processHTMLs(HTMLs, noteId);
-        editorRef.current?.appendContent(processedHTMLs.join(''));
-        editorRef.current?.appendContent(getCitation(await getCurrentTab()), true);
-      })();
-    }
-  }, []);
-
+  /**
+   * 对新选取的内容做出响应
+   */
   useEffect(() => {
     return ActionListener.addListener(async request => {
       switch (request.action) {
         case GLOBAL_EVENTS.GET_SELECTED_HTML: {
           const { HTMLs } = request;
-          const noteId = await getNoteId();
-          const processedHTMLs = await processHTMLs(HTMLs, noteId);
-          if (editorRef.current.isEmpty()) {
-            const initHtml = getBookmarkHtml(await getCurrentTab());
-            editorRef.current?.appendContent(initHtml);
+          setEditorLoading(true);
+          try {
+            const noteId = await getNoteId();
+            const processedHTMLs = await processHTMLs(HTMLs, noteId);
+            const isEmpty = editorRef.current.isEmpty();
+            // 判断当前文档是否是空的
+            // 如果是空的则插入初始内容
+            if (isEmpty) {
+              const initHtml = getBookmarkHtml(await getCurrentTab(), true);
+              editorRef.current?.appendContent(initHtml);
+            }
+            // 追加当前选取的html
+            editorRef.current?.appendContent(processedHTMLs.join(''), !isEmpty);
+          } finally {
+            setEditorLoading(false);
           }
-          editorRef.current?.appendContent(processedHTMLs.join(''), true);
           return;
         }
         default:
@@ -138,10 +97,16 @@ const useViewModel = props => {
     });
   }, []);
 
+  /**
+   * 监听currentType的变化，做出不同的响应
+   */
   useEffect(() => {
-    if (currentType === SELECT_TYPES[0].key) {
+    if (currentType === SELECT_TYPE_AREA) {
+      // 重新开始剪藏的时候需要清空内容
+      editorRef.current?.setContent('');
       startSelect();
-    } else if (currentType === SELECT_TYPES[1].key) {
+    } else if (currentType === SELECT_TYPE_BOOKMARK) {
+      // 选择了剪藏了网址，将编辑器的内容设置成bookmark
       getCurrentTab().then(tab => {
         const html = getBookmarkHtml(tab);
         editorRef.current?.setContent(html);
@@ -149,9 +114,36 @@ const useViewModel = props => {
     }
   }, [ currentType ]);
 
-  const [ loading, setLoading ] = React.useState<boolean>(false);
+  /**
+   * 文档加载成功后根据currentType做出不同的内容初始化
+   */
+  const onLoad = useCallback(() => {
+    if (!editorRef.current) return;
 
-  const onSave = () => {
+    if (currentType === SELECT_TYPE_SELECTION) {
+      // 如果使用的是右键剪藏 则插入对应的内容
+      const HTMLs = ActionListener.getSelectHTMLs();
+      (async () => {
+        setEditorLoading(true);
+        try {
+          const noteId = await getNoteId();
+          const processedHTMLs = await processHTMLs(HTMLs, noteId);
+          editorRef.current?.appendContent(processedHTMLs.join(''));
+          editorRef.current?.appendContent(getCitation(await getCurrentTab()), true);
+        } finally {
+          setEditorLoading(false);
+        }
+      })();
+    } else if (currentType === SELECT_TYPE_BOOKMARK) {
+      // 如果选择的是剪藏网址则插入bookmark
+      getCurrentTab().then(tab => {
+        const html = getBookmarkHtml(tab);
+        editorRef.current?.setContent(html);
+      });
+    }
+  }, [ currentType ]);
+
+  const onSave = useCallback(() => {
     if (!editorRef.current) return;
 
     const serializedAsiContent = editorRef.current?.getContent('lake') || '';
@@ -160,6 +152,7 @@ const useViewModel = props => {
     const onSuccess = (type: 'doc' | 'note', noteOrDoc: { id: string }) => {
       setCurrentType(null);
       setLoading(false);
+      setEditorLoading(false);
 
       if (type === 'note') {
         const url = LinkHelper.goMyNote();
@@ -189,10 +182,12 @@ const useViewModel = props => {
     const onError = () => {
       message.error(__i18n('保存失败，请重试！'));
       setLoading(false);
+      setEditorLoading(false);
     };
 
     setLoading(true);
-    if (currentBookId === NOTE_DATA.id) {
+    setEditorLoading(true);
+    if (currentBookId === NODE_DATA_ID) {
       proxy.note.getStatus().then(({ data }) => {
         const noteId = safeGet(data, 'meta.mirror.id');
         proxy.note
@@ -225,13 +220,7 @@ const useViewModel = props => {
           .catch(onError);
       });
     }
-  };
-
-  const onContinue = () => {
-    startSelect(true);
-  };
-
-  const onSelectBookId = setCurrentBookId;
+  }, [ editorRef ]);
 
   return {
     state: {
@@ -240,28 +229,30 @@ const useViewModel = props => {
       currentType,
       loading,
       editorRef,
+      editorLoading,
     },
     onSave,
-    onContinue,
-    onSelectType,
-    onSelectBookId,
     onLoad,
+    onContinue: startSelect,
+    onSelectType: setCurrentType,
+    onSelectBookId: setCurrentBookId,
   };
 };
 
-const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
+export default function SaveTo(props: ISaveToProps) {
   const { currentType } = useContext(EditorValueContext);
   const {
-    state: { books, currentBookId, loading, editorRef },
+    state: { books, currentBookId, loading, editorRef, editorLoading },
     onSelectBookId,
     onSave,
     onContinue,
     onSelectType,
     onLoad,
   } = useViewModel(props);
-  const handleTypeSelect = (info: MenuInfo) => {
+
+  const handleTypeSelect = useCallback((info: MenuInfo) => {
     onSelectType(info.key);
-  };
+  }, []);
 
   return (
     <ConfigProvider
@@ -310,17 +301,15 @@ const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
           onClick={onSave}
         >
           {__i18n('保存到')}
-          {currentBookId === NOTE_DATA.id ? __i18n('小记') : __i18n('知识库')}
+          {currentBookId === NODE_DATA_ID ? __i18n('小记') : __i18n('知识库')}
         </Button>
         {currentType && (
           <div className={styles['lake-editor']}>
+            { editorLoading ? <Spin className={styles.loading} spinning/> : null}
             <LakeEditor 
               ref={editorRef} 
               value="" 
               onLoad={onLoad} 
-              onChange={html => {
-                // console.info(html);
-              }}
               onSave={onSave}
             >
               <Button onClick={onContinue}>
@@ -332,6 +321,4 @@ const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
       </div>
     </ConfigProvider>
   );
-});
-
-export default SaveTo;
+}
