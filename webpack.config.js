@@ -8,7 +8,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const { presetEditor, webpackCleanIgnorePatterns } = require('./scripts/preset-editor');
+const {
+  presetEditor,
+  webpackCleanIgnorePatterns,
+} = require('./scripts/preset-editor');
 const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
