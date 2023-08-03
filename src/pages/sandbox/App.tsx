@@ -177,11 +177,17 @@ const App = () => {
                 <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
                 <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
               </Radio.Group>
-              {
-                tab === 'save-to'
-                  ? <SaveTo onLogout={onLogout} />
-                  : <Other />
-              }
+              <SaveTo
+                onLogout={onLogout}
+                className={classnames({
+                  [styles.hidden]: tab !== 'save-to'
+                })}
+              />
+              <Other
+                className={classnames({
+                  [styles.hidden]: tab !== 'other'
+                })}
+              />
             </>
           ) : (
             renderUnLogin()
