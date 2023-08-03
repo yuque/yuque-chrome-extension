@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import bowser from 'bowser';
 import loadLakeEditor from './load';
 import { InjectEditorPlugin } from './editor-plugin';
 
@@ -7,7 +8,8 @@ export interface EditorProps {
   value: string;
   children?: React.ReactElement;
   onChange?: (value: string) => void;
-  onLoad?: () => void;
+  onLoad?: () => void
+  onSave: () => void;
 }
 
 export interface IEditorRef {
@@ -270,6 +272,21 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
     editor.setDocument('text/html', value);
     contextRef.current?.onLoad?.();
   }, [ editor, value ]);
+
+  useEffect(() => {
+    if (!editor || !iframeRef.current) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && (bowser.windows ? e.ctrlKey : e.metaKey)) {
+        props.onSave();
+      }
+    }
+    document.addEventListener('keydown', onKeyDown, true);
+    iframeRef.current?.contentDocument.addEventListener('keydown', onKeyDown, true)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      iframeRef.current?.contentDocument.removeEventListener('keydown', onKeyDown)
+    }
+  }, [editor, iframeRef]);
 
   // 更新回调
   useEffect(() => {

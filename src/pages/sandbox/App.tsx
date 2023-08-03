@@ -12,6 +12,12 @@ import {
   setCurrentAccount,
   clearCurrentAccount,
 } from '@/core/account';
+import {
+  REQUEST_HEADER_VERSION,
+  EXTENSION_ID,
+  VERSION,
+  TRACERT_CONFIG,
+} from '@/config';
 
 import UserInfo, { IYuqueAccount } from './UserInfo';
 import FeedBack from './FeedBack';
@@ -21,6 +27,8 @@ import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
 import SaveTo from './SaveTo';
 import { ActionListener } from '@/core/action-listener';
+
+declare const Tracert: any;
 
 initI18N();
 
@@ -53,8 +61,8 @@ const useViewModel = () => {
       Chrome.windows.create(
         {
           focused: true,
-          width: 480,
-          height: 640,
+          width: 500,
+          height: 680,
           left: 400,
           top: 100,
           type: 'panel',
@@ -103,11 +111,24 @@ const useViewModel = () => {
   };
 
   useEffect(() => {
-    getCurrentAccount().then(info => {
-      setAccount(info as IYuqueAccount);
-    }).finally(() => {
-      setAppReady(true);
-    });
+    getCurrentAccount()
+      .then(info => {
+        setAccount(info as IYuqueAccount);
+
+        // 上报埋点
+        Tracert.start({
+          spmAPos: TRACERT_CONFIG.spmAPos,
+          spmBPos: TRACERT_CONFIG.spmBPos,
+          role_id: info?.id,
+          mdata: {
+            [REQUEST_HEADER_VERSION]: VERSION,
+            [EXTENSION_ID]: Chrome.runtime.id,
+          },
+        });
+      })
+      .finally(() => {
+        setAppReady(true);
+      });
   }, []);
 
   return {
@@ -177,11 +198,17 @@ const App = () => {
                 <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
                 <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
               </Radio.Group>
-              {
-                tab === 'save-to'
-                  ? <SaveTo onLogout={onLogout} />
-                  : <Other />
-              }
+              <SaveTo
+                onLogout={onLogout}
+                className={classnames({
+                  [styles.hidden]: tab !== 'save-to'
+                })}
+              />
+              <Other
+                className={classnames({
+                  [styles.hidden]: tab !== 'other'
+                })}
+              />
             </>
           ) : (
             renderUnLogin()

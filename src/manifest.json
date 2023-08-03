@@ -29,7 +29,8 @@
         "doc.css",
         "doc.umd.js",
         "CodeMirror.js",
-        "katex.min.js"
+        "katex.min.js",
+        "tracert_a385.js"
       ],
       "matches": [
         "<all_urls>",
@@ -53,6 +54,7 @@
     "cookies",
     "storage",
     "tabs",
-    "webRequest"
+    "webRequest",
+    "scripting"
   ]
 }

@@ -265,7 +265,7 @@ export default function SaveTo(props: ISaveToProps) {
         },
       }}
     >
-      <div className={styles.wrapper}>
+      <div className={classnames(styles.wrapper, props.className)}>
         <div className={styles.actionTip}>
           {__i18n('选择剪藏方式')}
         </div>
@@ -306,7 +306,12 @@ export default function SaveTo(props: ISaveToProps) {
         {currentType && (
           <div className={styles['lake-editor']}>
             { editorLoading ? <Spin className={styles.loading} spinning/> : null}
-            <LakeEditor ref={editorRef} value="" onLoad={onLoad}>
+            <LakeEditor 
+              ref={editorRef} 
+              value="" 
+              onLoad={onLoad} 
+              onSave={onSave}
+            >
               <Button onClick={onContinue}>
                 {__i18n('继续选取')}
               </Button>
