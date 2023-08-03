@@ -92,7 +92,6 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEd
           [ 'blockquote' ],
           {
             readNode(context: any, node: any) {
-              console.info('???', node);
               context.setNode({
                 id: '',
                 type: 'element',
