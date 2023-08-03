@@ -38,6 +38,11 @@ const onReceiveMessage = async (
   _sender: MessageSender,
   sendResponse: SendResponse,
 ) => {
+  const currentTab = await Chrome.getCurrentTab();
+  // 判断是否处于激活态，如果不是激活态不进行后续处理
+  if (!currentTab?.active) {
+    return;
+  }
   ActionListener.listener.forEach(listener => listener(request));
   if (request.action === GLOBAL_EVENTS.GET_SELECTED_TEXT) {
     ActionListener.currentType = 'selection';
