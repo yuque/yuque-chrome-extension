@@ -20,15 +20,7 @@ import styles from './App.module.less';
 import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
 import SaveTo from './SaveTo';
-
-type MessageSender = chrome.runtime.MessageSender;
-
-type SendResponse = (response: any) => void;
-
-interface RequestMessage {
-  action: keyof typeof GLOBAL_EVENTS;
-  htmls?: string[];
-}
+import { ActionListener } from '@/core/action-listener';
 
 initI18N();
 
@@ -134,7 +126,7 @@ type TabName = 'save-to' | 'other';
 
 const App = () => {
   const [ editorValue, setEditorValue ] = useState([]);
-  const [ currentType, setCurrentType ] = useState(null);
+  const [ currentType, setCurrentType ] = useState(ActionListener.currentType);
   const {
     state: { account, forceUpgradeInfo, appReady },
     onClose,
@@ -154,6 +146,12 @@ const App = () => {
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);
   };
+
+  useEffect(() => {
+    if (currentType === null && ActionListener.currentType) {
+      setCurrentType(ActionListener.currentType);
+    }
+  }, [ currentType ]);
 
   const isLogined = account?.id;
 

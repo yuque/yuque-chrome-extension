@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { ConfigProvider, Button, Select, message, Menu } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet } from 'lodash';
@@ -16,18 +16,14 @@ import ClipperSvg from '@/assets/svg/clipper.svg';
 import BookLogoSvg from '@/assets/svg/book-logo.svg';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import styles from './SaveTo.module.less';
-
-type MessageSender = chrome.runtime.MessageSender;
-
-type SendResponse = (response: any) => void;
-
-interface RequestMessage {
-  action: keyof typeof GLOBAL_EVENTS;
-  htmls?: string[];
-}
+import { ActionListener } from '@/core/action-listener';
 
 const getBookmarkHtml = (tab: chrome.tabs.Tab) => {
   return `<h2>${tab.title}</h2><p><a href="${tab.url}">${tab.title}</a></p>`;
+};
+
+const getCitation = (tab: chrome.tabs.Tab) => {
+  return `<p>来自: <a href="${tab.url}">${tab.url}</a></p>`;
 };
 
 const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
@@ -110,45 +106,36 @@ const useViewModel = props => {
       });
   }, []);
 
-  const onReceiveMessage = async (
-    request: RequestMessage,
-    _sender: MessageSender,
-    sendResponse: SendResponse,
-  ) => {
-    switch (request.action) {
-      case GLOBAL_EVENTS.GET_SELECTED_HTML: {
-        const { htmls } = request;
+  const onLoad = useCallback(() => {
+    if (editorRef.current) {
+      const HTMLs = ActionListener.getSelectHTMLs();
+      (async () => {
         const noteId = await getNoteId();
-        const processedHTMLs = await processHTMLs(htmls, noteId);
-        if (editorRef.current.isEmpty()) {
-          const initHtml = getBookmarkHtml(await getCurrentTab());
-          editorRef.current?.appendContent(initHtml);
-        }
-        editorRef.current?.appendContent(processedHTMLs.join(''), true);
-        sendResponse(true);
-        return;
-      }
-      case GLOBAL_EVENTS.GET_SELECTED_TEXT: {
-        const { htmls } = request;
-        if (editorRef.current.isEmpty()) {
-          const initHtml = getBookmarkHtml(await getCurrentTab());
-          editorRef.current?.appendContent(initHtml);
-        }
-        editorRef.current?.appendContent(htmls.join(''), true);
-        setCurrentType('selection');
-        sendResponse(true);
-        return;
-      }
-      default:
-        sendResponse(true);
+        const processedHTMLs = await processHTMLs(HTMLs, noteId);
+        editorRef.current?.appendContent(processedHTMLs.join(''));
+        editorRef.current?.appendContent(getCitation(await getCurrentTab()), true);
+      })();
     }
-  };
+  }, []);
 
   useEffect(() => {
-    Chrome.runtime.onMessage.addListener(onReceiveMessage);
-    return () => {
-      Chrome.runtime.onMessage.removeListener(onReceiveMessage);
-    };
+    return ActionListener.addListener(async request => {
+      switch (request.action) {
+        case GLOBAL_EVENTS.GET_SELECTED_HTML: {
+          const { HTMLs } = request;
+          const noteId = await getNoteId();
+          const processedHTMLs = await processHTMLs(HTMLs, noteId);
+          if (editorRef.current.isEmpty()) {
+            const initHtml = getBookmarkHtml(await getCurrentTab());
+            editorRef.current?.appendContent(initHtml);
+          }
+          editorRef.current?.appendContent(processedHTMLs.join(''), true);
+          return;
+        }
+        default:
+          break;
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -258,6 +245,7 @@ const useViewModel = props => {
     onContinue,
     onSelectType,
     onSelectBookId,
+    onLoad,
   };
 };
 
@@ -269,6 +257,7 @@ const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
     onSave,
     onContinue,
     onSelectType,
+    onLoad,
   } = useViewModel(props);
   const handleTypeSelect = (info: MenuInfo) => {
     onSelectType(info.key);
@@ -325,7 +314,7 @@ const SaveTo = React.forwardRef<IEditorRef, any>((props, ref) => {
         </Button>
         {currentType && (
           <div className={styles['lake-editor']}>
-            <LakeEditor ref={editorRef} value="" onChange={html => {
+            <LakeEditor ref={editorRef} value="" onLoad={onLoad} onChange={html => {
               // console.info(html);
             }}>
               <Button onClick={onContinue}>
