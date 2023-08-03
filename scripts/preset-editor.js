@@ -2,17 +2,17 @@
 
 const path = require('path');
 const urllib = require('urllib');
-const { promises: fs, mkdirSync, createWriteStream } = require('fs');
+const { promises: fs, mkdirSync, createWriteStream, createReadStream } = require('fs');
 
 const { distFolder, sleep } = require('./common');
 
-const LAKE_EDITOR_VERSION = '1.0.1-dev3';
+const LAKE_EDITOR_VERSION = '1.0.1-dev4';
 
 const AssetsURL = {
   lakejs: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.umd.js`,
   lakecss: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.css`,
   codemirror: 'https://gw.alipayobjects.com/render/p/yuyan_v/180020010000005484/7.1.4/CodeMirror.js',
-  katex: 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js',
+  katex: require.resolve('katex/dist/katex.min.js'),
 };
 
 async function downloadFile(remoteURL, localFilename) {
@@ -29,6 +29,19 @@ async function downloadFile(remoteURL, localFilename) {
   });
 }
 
+async function moveFile(src, dist) {
+  console.log(`# move file to ${dist} from ${src}`);
+  mkdirSync(path.dirname(dist), { recursive: true });
+  return new Promise((resolve, reject) => {
+    createReadStream(src)
+      .pipe(createWriteStream(dist))
+      .on('end', () => {
+        resolve(true);
+      })
+      .on('error', reject);
+  });
+}
+
 const urls = Object.values(AssetsURL);
 
 module.exports.webpackCleanIgnorePatterns = urls
@@ -42,6 +55,10 @@ module.exports.presetEditor = async function main() {
     const url = urls[i];
     const fileName = url.split('/').pop();
     const localFilename = path.resolve(distFolder, fileName);
-    await downloadFile(url, localFilename);
+    if (!url.startsWith('http')) {
+      moveFile(url, localFilename);
+    } else {
+      await downloadFile(url, localFilename);
+    }
   }
 };
