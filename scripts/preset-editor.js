@@ -13,6 +13,7 @@ const AssetsURL = {
   lakecss: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.css`,
   codemirror: 'https://gw.alipayobjects.com/render/p/yuyan_v/180020010000005484/7.1.4/CodeMirror.js',
   katex: 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js',
+  tracert_a385: 'https://ur.alipay.com/tracert_a385.js',
 };
 
 async function downloadFile(remoteURL, localFilename) {
