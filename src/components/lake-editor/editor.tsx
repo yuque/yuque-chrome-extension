@@ -279,14 +279,14 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       if (e.key === 'Enter' && (bowser.windows ? e.ctrlKey : e.metaKey)) {
         props.onSave();
       }
-    }
+    };
     document.addEventListener('keydown', onKeyDown, true);
-    iframeRef.current?.contentDocument.addEventListener('keydown', onKeyDown, true)
+    iframeRef.current?.contentDocument.addEventListener('keydown', onKeyDown, true);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      iframeRef.current?.contentDocument.removeEventListener('keydown', onKeyDown)
-    }
-  }, [editor, iframeRef]);
+      iframeRef.current?.contentDocument.removeEventListener('keydown', onKeyDown);
+    };
+  }, [ editor, iframeRef ]);
 
   // 更新回调
   useEffect(() => {
