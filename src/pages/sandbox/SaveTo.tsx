@@ -5,7 +5,7 @@ import { get as safeGet } from 'lodash';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import Icon from '@ant-design/icons';
 import proxy from '@/core/proxy';
-import processHTMLs from '@/core/html-parser';
+import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
@@ -76,8 +76,6 @@ const useViewModel = (props: ISaveToProps) => {
           const { HTMLs } = request;
           setEditorLoading(true);
           try {
-            const noteId = await getNoteId();
-            const processedHTMLs = await processHTMLs(HTMLs, noteId);
             const isEmpty = editorRef.current.isEmpty();
             // 判断当前文档是否是空的
             // 如果是空的则插入初始内容
@@ -86,7 +84,7 @@ const useViewModel = (props: ISaveToProps) => {
               editorRef.current?.appendContent(initHtml);
             }
             // 追加当前选取的html
-            editorRef.current?.appendContent(processedHTMLs.join(''), !isEmpty);
+            editorRef.current?.appendContent(HTMLs.join(''), !isEmpty);
           } finally {
             setEditorLoading(false);
           }
@@ -127,9 +125,7 @@ const useViewModel = (props: ISaveToProps) => {
       (async () => {
         setEditorLoading(true);
         try {
-          const noteId = await getNoteId();
-          const processedHTMLs = await processHTMLs(HTMLs, noteId);
-          editorRef.current?.appendContent(processedHTMLs.join(''));
+          editorRef.current?.appendContent(HTMLs.join(''));
           editorRef.current?.appendContent(getCitation(await getCurrentTab()), true);
         } finally {
           setEditorLoading(false);
@@ -144,11 +140,8 @@ const useViewModel = (props: ISaveToProps) => {
     }
   }, [ currentType ]);
 
-  const onSave = useCallback(() => {
+  const onSave = useCallback(async () => {
     if (!editorRef.current) return;
-
-    const serializedAsiContent = editorRef.current?.getContent('lake') || '';
-    const serializedHtmlContent = editorRef.current?.getContent('text/html') || '';
 
     const onSuccess = (type: 'doc' | 'note', noteOrDoc: { id: string }) => {
       setCurrentType(null);
@@ -188,40 +181,54 @@ const useViewModel = (props: ISaveToProps) => {
 
     setLoading(true);
     setEditorLoading(true);
-    if (currentBookId === NODE_DATA_ID) {
-      proxy.note.getStatus().then(({ data }) => {
-        const noteId = safeGet(data, 'meta.mirror.id');
-        proxy.note
-          .update(noteId, {
-            body_asl: serializedAsiContent,
-            body_html: serializedHtmlContent,
-            description: serializedAsiContent,
-          })
-          .then(() => {
-            onSuccess('note', data);
-          })
-          .catch(onError);
-      });
-    } else {
-      getCurrentTab().then(tab => {
-        proxy.doc
-          .create({
-            title: __i18n('[来自剪藏] {title}', {
-              title: tab.title,
-            }),
-            book_id: currentBookId,
-            body_draft_asl: serializedAsiContent,
-            body_asl: serializedAsiContent,
-            body: serializedHtmlContent,
-            insert_to_catalog: true,
-          })
-          .then(doc => {
-            onSuccess('doc', doc);
-          })
-          .catch(onError);
-      });
+
+    try {
+      const serializedAsiContent = await editorRef.current?.getContent('lake') || '';
+      const serializedHtmlContent = await editorRef.current?.getContent('text/html') || '';
+      if (currentBookId === NODE_DATA_ID) {
+        proxy.note.getStatus().then(({ data }) => {
+          const noteId = safeGet(data, 'meta.mirror.id');
+          proxy.note
+            .update(noteId, {
+              body_asl: serializedAsiContent,
+              body_html: serializedHtmlContent,
+              description: serializedAsiContent,
+            })
+            .then(() => {
+              onSuccess('note', data);
+            })
+            .catch(onError);
+        });
+      } else {
+        getCurrentTab().then(tab => {
+          proxy.doc
+            .create({
+              title: __i18n('[来自剪藏] {title}', {
+                title: tab.title,
+              }),
+              book_id: currentBookId,
+              body_draft_asl: serializedAsiContent,
+              body_asl: serializedAsiContent,
+              body: serializedHtmlContent,
+              insert_to_catalog: true,
+            })
+            .then(doc => {
+              onSuccess('doc', doc);
+            })
+            .catch(onError);
+        });
+      }
+    } catch (e) {
+      message.error(__i18n('保存失败，请重试！'));
+      setLoading(false);
+      setEditorLoading(false);
     }
   }, [ editorRef ]);
+
+  const onUploadImage = useCallback(async (params: {data: string}) => {
+    const noteId = await getNoteId();
+    return urlOrFileUpload(params.data, noteId);
+  }, []);
 
   return {
     state: {
@@ -234,6 +241,7 @@ const useViewModel = (props: ISaveToProps) => {
     },
     onSave,
     onLoad,
+    onUploadImage,
     onContinue: startSelect,
     onSelectType: setCurrentType,
     onSelectBookId: setCurrentBookId,
@@ -249,6 +257,7 @@ export default function SaveTo(props: ISaveToProps) {
     onContinue,
     onSelectType,
     onLoad,
+    onUploadImage,
   } = useViewModel(props);
 
   const handleTypeSelect = useCallback((info: MenuInfo) => {
@@ -312,6 +321,7 @@ export default function SaveTo(props: ISaveToProps) {
               value=""
               onLoad={onLoad}
               onSave={onSave}
+              uploadImage={onUploadImage}
             >
               <Button onClick={onContinue}>
                 {__i18n('继续选取')}
