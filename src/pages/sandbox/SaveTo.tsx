@@ -40,6 +40,7 @@ function BookWithIcon({ book }) {
 }
 
 export interface ISaveToProps {
+  className?: string;
   onLogout: (e: any) => void;
 }
 
@@ -306,10 +307,10 @@ export default function SaveTo(props: ISaveToProps) {
         {currentType && (
           <div className={styles['lake-editor']}>
             { editorLoading ? <Spin className={styles.loading} spinning/> : null}
-            <LakeEditor 
-              ref={editorRef} 
-              value="" 
-              onLoad={onLoad} 
+            <LakeEditor
+              ref={editorRef}
+              value=""
+              onLoad={onLoad}
               onSave={onSave}
             >
               <Button onClick={onContinue}>

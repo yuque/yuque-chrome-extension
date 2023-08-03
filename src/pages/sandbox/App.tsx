@@ -119,7 +119,7 @@ const useViewModel = () => {
         Tracert.start({
           spmAPos: TRACERT_CONFIG.spmAPos,
           spmBPos: TRACERT_CONFIG.spmBPos,
-          role_id: info?.id,
+          role_id: (info as IYuqueAccount)?.id,
           mdata: {
             [REQUEST_HEADER_VERSION]: VERSION,
             [EXTENSION_ID]: Chrome.runtime.id,
@@ -201,12 +201,12 @@ const App = () => {
               <SaveTo
                 onLogout={onLogout}
                 className={classnames({
-                  [styles.hidden]: tab !== 'save-to'
+                  [styles.hidden]: tab !== 'save-to',
                 })}
               />
               <Other
                 className={classnames({
-                  [styles.hidden]: tab !== 'other'
+                  [styles.hidden]: tab !== 'other',
                 })}
               />
             </>
