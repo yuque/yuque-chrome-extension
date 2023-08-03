@@ -24,7 +24,7 @@
     "translate": "easy-i18n-cli -c ./i18n.config.js",
     "translate:check": "npm run translate -- --check",
     "release": "git pull && standard-version",
-    "postrelease": "git push origin main && git push origin --tags"
+    "postrelease": "git push --follow-tags"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",

@@ -16,3 +16,10 @@ const App = () => {
   )
 }
 ```
+
+## Release
+
+```bash
+git checkout -b release-{version}
+npm run release
+```
