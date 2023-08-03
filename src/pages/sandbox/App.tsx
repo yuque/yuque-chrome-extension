@@ -53,8 +53,8 @@ const useViewModel = () => {
       Chrome.windows.create(
         {
           focused: true,
-          width: 480,
-          height: 640,
+          width: 500,
+          height: 680,
           left: 400,
           top: 100,
           type: 'panel',
