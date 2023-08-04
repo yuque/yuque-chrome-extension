@@ -90,9 +90,16 @@ class App {
       .appendTo(`.${this.maskCls}`)
       .on('click', async () => {
         const selectedElems = this.areaSelection.getSelectedElems();
-        const HTMLs = Array.from(selectedElems).map(elem =>
-          $(elem).prop('outerHTML'),
-        );
+        const HTMLs = Array.from(selectedElems).map(elem => {
+          if (elem.nodeName === 'CANVAS') {
+            try {
+              return `<img src="${(elem as HTMLCanvasElement).toDataURL()}">`;
+            } catch (e) {
+              return '';
+            }
+          }
+          return $(elem).prop('outerHTML');
+        });
 
         // 提前获取光标
         iframe.addClass('show');
@@ -145,9 +152,16 @@ class App {
 
   private confirmSelection() {
     const selectedElems = this.areaSelection.getSelectedElems();
-    const HTMLs = Array.from(selectedElems).map(elem =>
-      $(elem).prop('outerHTML'),
-    );
+    const HTMLs = Array.from(selectedElems).map(elem => {
+      if (elem.nodeName === 'CANVAS') {
+        try {
+          return `<img src="${(elem as HTMLCanvasElement).toDataURL()}">`;
+        } catch (e) {
+          return '';
+        }
+      }
+      return $(elem).prop('outerHTML');
+    });
 
     const { sandboxURL } = this;
     const iframe = $(`iframe[src="${sandboxURL}"]`);
