@@ -7,13 +7,20 @@ import { GLOBAL_EVENTS } from '@/events';
  * 获取文档开头的html片段
  * @param tab 浏览器当前的tab
  * @param useQuote 是否添加引用
+ * @param needHeading 是否添加标题
  * @return {string} html片段
  */
-export const getBookmarkHtml = (tab: chrome.tabs.Tab, useQuote = false) => {
-  if (useQuote) {
-    return `<h2>${tab.title}</h2><blockquote><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote><p><br/></p>`;
+export const getBookmarkHtml = (tab: chrome.tabs.Tab, useQuote = false, needHeading = true) => {
+  const ret = [];
+  if (needHeading) {
+    ret.push(`<h2>${tab.title}</h2>`);
   }
-  return `<h2>${tab.title}</h2><p><a href="${tab.url}">${tab.title}</a></p>`;
+  if (useQuote) {
+    ret.push(`<blockquote><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote><p><br/></p>`);
+  } else {
+    ret.push(`<p><a href="${tab.url}">${tab.title}</a></p>`);
+  }
+  return ret.join('');
 };
 
 /**
