@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
 import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet } from 'lodash';
@@ -252,17 +252,23 @@ export default function SaveTo(props: ISaveToProps) {
   const { currentType } = useContext(EditorValueContext);
   const {
     state: { books, currentBookId, loading, editorRef, editorLoading },
-    onSelectBookId,
     onSave,
+    onLoad,
     onContinue,
     onSelectType,
-    onLoad,
     onUploadImage,
+    onSelectBookId,
   } = useViewModel(props);
 
   const handleTypeSelect = useCallback((info: MenuInfo) => {
     onSelectType(info.key);
   }, []);
+
+  const SELECT_MENU_DATA = useMemo(() => SELECT_TYPES.map(item => ({
+    key: item.key,
+    icon: item.icon,
+    label: item.text,
+  })), []);
 
   return (
     <ConfigProvider
@@ -282,13 +288,9 @@ export default function SaveTo(props: ISaveToProps) {
         <Menu
           mode="inline"
           inlineIndent={8}
-          openKeys={[ currentType ].filter(Boolean)}
+          activeKey={currentType}
           onClick={handleTypeSelect}
-          items={SELECT_TYPES.map(item => ({
-            key: item.key,
-            icon: item.icon,
-            label: item.text,
-          }))}
+          items={SELECT_MENU_DATA}
         />
         <div className={classnames(styles.actionTip, styles.clipTarget)}>
           {__i18n('剪藏到')}

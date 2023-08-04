@@ -38,6 +38,7 @@ const onReceiveMessage = async (
   _sender: MessageSender,
   sendResponse: SendResponse,
 ) => {
+  sendResponse(true);
   const currentTab = await Chrome.getCurrentTab();
   // 判断是否处于激活态，如果不是激活态不进行后续处理
   if (!currentTab?.active) {
@@ -48,7 +49,6 @@ const onReceiveMessage = async (
     ActionListener.currentType = 'selection';
     ActionListener.HTMLs = request.HTMLs || [];
   }
-  sendResponse(true);
 };
 
 Chrome.runtime.onMessage.addListener(onReceiveMessage);
