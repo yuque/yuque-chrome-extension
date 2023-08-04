@@ -27,6 +27,7 @@ import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
 import SaveTo from './SaveTo';
 import { ActionListener } from '@/core/action-listener';
+import { SELECT_TYPE_SELECTION } from './constants/select-types';
 
 declare const Tracert: any;
 
@@ -172,6 +173,11 @@ const App = () => {
     if (currentType === null && ActionListener.currentType) {
       setCurrentType(ActionListener.currentType);
     }
+    return ActionListener.addListener(request => {
+      if (currentType === null && request.action === GLOBAL_EVENTS.GET_SELECTED_TEXT) {
+        setCurrentType(SELECT_TYPE_SELECTION);
+      }
+    });
   }, [ currentType ]);
 
   const isLogined = account?.id;

@@ -80,7 +80,7 @@ const useViewModel = (props: ISaveToProps) => {
             // 判断当前文档是否是空的
             // 如果是空的则插入初始内容
             if (isEmpty) {
-              const initHtml = getBookmarkHtml(await getCurrentTab(), true);
+              const initHtml = getBookmarkHtml(await getCurrentTab(), true, currentBookId !== NODE_DATA_ID);
               editorRef.current?.appendContent(initHtml);
             }
             // 追加当前选取的html
@@ -94,7 +94,7 @@ const useViewModel = (props: ISaveToProps) => {
           break;
       }
     });
-  }, []);
+  }, [ currentBookId ]);
 
   /**
    * 监听currentType的变化，做出不同的响应
