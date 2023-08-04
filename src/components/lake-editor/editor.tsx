@@ -15,6 +15,7 @@ export interface EditorProps {
     size: number;
     filename: string;
   }>;
+  onOCRTransNotWork: () => void;
 }
 
 function sleep(ms) {
@@ -105,12 +106,13 @@ const templateHtml = `
 `;
 
 export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
-  const { value, onChange, onLoad } = props;
+  const { value, onChange, onLoad, onOCRTransNotWork } = props;
   const [ _loading, setLoading ] = useState(true);
   const [ editor, setEditor ] = useState<any>(null);
   const contextRef = useRef({
     onChange: props.onChange,
     onLoad: props.onLoad,
+    onOCRTransNotWork: props.onOCRTransNotWork,
   });
   const rootNodeRef = useRef<{ div: HTMLDivElement | null }>({
     div: null,
@@ -251,6 +253,22 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
             KaTexURL: './katex.min.js',
           },
           image: {
+            innerButtonWidgets: [{
+              name: '',
+              title: '',
+              icon: <span>转</span>,
+              execute(cardUI: any) {
+                // ocr 转换成文本
+                const ocr = cardUI.cardData._cardValue?.ocr || [];
+                if (ocr.length > 0) {
+                  cardUI.editor.execCommand('delete');
+                  cardUI.editor.execCommand('input', ocr.map(v => v.text || '').join(''));
+                } else {
+                  contextRef.current.onOCRTransNotWork?.();
+                }
+              },
+              enable: true,
+            }],
             isCaptureImageURL(url: string) {
               return !url?.startsWith('https://cdn.nlark.com/yuque');
             },
@@ -302,7 +320,8 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   useEffect(() => {
     contextRef.current.onChange = onChange;
     contextRef.current.onLoad = onLoad;
-  }, [ onChange, onLoad ]);
+    contextRef.current.onOCRTransNotWork = onOCRTransNotWork;
+  }, [ onChange, onLoad, onOCRTransNotWork ]);
 
   // 导出ref
   useImperativeHandle(ref, () => ({

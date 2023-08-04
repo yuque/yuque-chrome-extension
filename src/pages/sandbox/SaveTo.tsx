@@ -225,6 +225,10 @@ const useViewModel = (props: ISaveToProps) => {
     }
   }, [ editorRef ]);
 
+  const onOCRTransNotWork = useCallback(() => {
+    message.error(__i18n('图片不包含OCR数据'));
+  }, []);
+
   const onUploadImage = useCallback(async (params: {data: string}) => {
     const noteId = await getNoteId();
     return urlOrFileUpload(params.data, noteId);
@@ -242,6 +246,7 @@ const useViewModel = (props: ISaveToProps) => {
     onSave,
     onLoad,
     onUploadImage,
+    onOCRTransNotWork,
     onContinue: startSelect,
     onSelectType: setCurrentType,
     onSelectBookId: setCurrentBookId,
@@ -258,6 +263,7 @@ export default function SaveTo(props: ISaveToProps) {
     onSelectType,
     onUploadImage,
     onSelectBookId,
+    onOCRTransNotWork,
   } = useViewModel(props);
 
   const handleTypeSelect = useCallback((info: MenuInfo) => {
@@ -324,6 +330,7 @@ export default function SaveTo(props: ISaveToProps) {
               onLoad={onLoad}
               onSave={onSave}
               uploadImage={onUploadImage}
+              onOCRTransNotWork={onOCRTransNotWork}
             >
               <Button onClick={onContinue}>
                 {__i18n('继续选取')}
