@@ -350,10 +350,7 @@ export default function SaveTo(props: ISaveToProps) {
         </div>
         <Select<number>
           className={styles.list}
-          onChange={(value: number) => {
-            console.log('我选择了')
-            onSelectBookId(Number(value))
-          }}
+          onChange={(value: number) => onSelectBookId(Number(value))}
           defaultValue={currentBookId}
           options={books.map(book => ({
             value: book.id,
