@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet } from 'lodash';
@@ -10,24 +17,37 @@ import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
 import { EditorValueContext } from './EditorValueContext';
-
 import BookLogoSvg from '@/assets/svg/book-logo.svg';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
-import { getBookmarkHtml, getCitation, getCurrentTab, getNoteId, startSelect } from './helper';
-import { SELECT_TYPES, SELECT_TYPE_AREA, SELECT_TYPE_BOOKMARK, SELECT_TYPE_SELECTION } from './constants/select-types';
-
+import {
+  extractSummaryRaw,
+  getBookmarkHtml,
+  getCitation,
+  getCurrentTab,
+  getNoteId,
+  startSelect,
+} from './helper';
+import {
+  SELECT_TYPES,
+  SELECT_TYPE_AREA,
+  SELECT_TYPE_BOOKMARK,
+  SELECT_TYPE_SELECTION,
+} from './constants/select-types';
+import { VIEW_MORE_TAG } from '@/isomorphic/constants';
 
 const NODE_DATA_ID = 0;
 
-const BOOKS_DATA = [{
-  id: NODE_DATA_ID,
-  type: 'note',
-  get name() {
-    return __i18n('小记');
+const BOOKS_DATA = [
+  {
+    id: NODE_DATA_ID,
+    type: 'note',
+    get name() {
+      return __i18n('小记');
+    },
   },
-}];
+];
 
 function BookWithIcon({ book }) {
   const iconSvg = book.type === 'note' ? NoteLogoSvg : BookLogoSvg;
@@ -80,7 +100,11 @@ const useViewModel = (props: ISaveToProps) => {
             // 判断当前文档是否是空的
             // 如果是空的则插入初始内容
             if (isEmpty) {
-              const initHtml = getBookmarkHtml(await getCurrentTab(), true, currentBookId !== NODE_DATA_ID);
+              const initHtml = getBookmarkHtml(
+                await getCurrentTab(),
+                true,
+                currentBookId !== NODE_DATA_ID,
+              );
               editorRef.current?.appendContent(initHtml);
             }
             // 追加当前选取的html
@@ -126,7 +150,10 @@ const useViewModel = (props: ISaveToProps) => {
         setEditorLoading(true);
         try {
           editorRef.current?.appendContent(HTMLs.join(''));
-          editorRef.current?.appendContent(getCitation(await getCurrentTab()), true);
+          editorRef.current?.appendContent(
+            getCitation(await getCurrentTab()),
+            true,
+          );
         } finally {
           setEditorLoading(false);
         }
@@ -185,14 +212,36 @@ const useViewModel = (props: ISaveToProps) => {
     try {
       const serializedAsiContent = await editorRef.current?.getContent('lake') || '';
       const serializedHtmlContent = await editorRef.current?.getContent('text/html') || '';
+      const summary = editorRef.current.getSummaryContent();
+      const wordCount = editorRef.current.wordCount();
+      const extractRes = extractSummaryRaw(serializedAsiContent, {
+        summary,
+      });
+      const {
+        hasImage: has_image,
+        hasBookmark: has_bookmark,
+        hasAttachment: has_attachment,
+        isFull,
+      } = extractRes;
+      let description = extractRes.html;
+      // 摘要与内容不相等，展示更多标记
+      if (!isFull) {
+        description += VIEW_MORE_TAG;
+      }
+      console.log(currentBookId, '我是啥')
       if (currentBookId === NODE_DATA_ID) {
         proxy.note.getStatus().then(({ data }) => {
-          const noteId = safeGet(data, 'meta.mirror.id');
+          const noteId = safeGet(data, 'mirror.id');
           proxy.note
-            .update(noteId, {
-              body_asl: serializedAsiContent,
-              body_html: serializedHtmlContent,
-              description: serializedAsiContent,
+            .update({
+              id: noteId,
+              source: serializedAsiContent,
+              html: serializedHtmlContent,
+              abstract: description,
+              has_image,
+              has_bookmark,
+              has_attachment,
+              word_count: wordCount,
             })
             .then(() => {
               onSuccess('note', data);
@@ -223,9 +272,9 @@ const useViewModel = (props: ISaveToProps) => {
       setLoading(false);
       setEditorLoading(false);
     }
-  }, [ editorRef ]);
+  }, [ editorRef, currentBookId ]);
 
-  const onUploadImage = useCallback(async (params: {data: string}) => {
+  const onUploadImage = useCallback(async (params: { data: string }) => {
     const noteId = await getNoteId();
     return urlOrFileUpload(params.data, noteId);
   }, []);
@@ -264,11 +313,15 @@ export default function SaveTo(props: ISaveToProps) {
     onSelectType(info.key);
   }, []);
 
-  const SELECT_MENU_DATA = useMemo(() => SELECT_TYPES.map(item => ({
-    key: item.key,
-    icon: item.icon,
-    label: item.text,
-  })), []);
+  const SELECT_MENU_DATA = useMemo(
+    () =>
+      SELECT_TYPES.map(item => ({
+        key: item.key,
+        icon: item.icon,
+        label: item.text,
+      })),
+    [],
+  );
 
   return (
     <ConfigProvider
@@ -282,7 +335,7 @@ export default function SaveTo(props: ISaveToProps) {
       }}
     >
       <div className={classnames(styles.wrapper, props.className)}>
-        <div className={styles.actionTip}>
+      <div className={styles.actionTip}>
           {__i18n('选择剪藏方式')}
         </div>
         <Menu
@@ -297,7 +350,10 @@ export default function SaveTo(props: ISaveToProps) {
         </div>
         <Select<number>
           className={styles.list}
-          onChange={(value: number) => onSelectBookId(Number(value))}
+          onChange={(value: number) => {
+            console.log('我选择了')
+            onSelectBookId(Number(value))
+          }}
           defaultValue={currentBookId}
           options={books.map(book => ({
             value: book.id,
@@ -317,7 +373,9 @@ export default function SaveTo(props: ISaveToProps) {
         </Button>
         {currentType && (
           <div className={styles['lake-editor']}>
-            { editorLoading ? <Spin className={styles.loading} spinning/> : null}
+            {editorLoading ? (
+              <Spin className={styles.loading} spinning />
+            ) : null}
             <LakeEditor
               ref={editorRef}
               value=""
