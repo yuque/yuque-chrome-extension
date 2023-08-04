@@ -7,6 +7,7 @@ const moment = require('moment');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const {
   presetEditor,
@@ -223,6 +224,7 @@ const options = {
   optimization: {
     minimize: isProd,
     nodeEnv: NODE_ENV,
+    minimizer: [ new TerserPlugin() ],
   },
 };
 
