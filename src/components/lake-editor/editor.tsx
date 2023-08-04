@@ -1,4 +1,10 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import ReactDOM from 'react-dom';
 import bowser from 'bowser';
 import loadLakeEditor from './load';
@@ -8,7 +14,7 @@ export interface EditorProps {
   value: string;
   children?: React.ReactElement;
   onChange?: (value: string) => void;
-  onLoad?: () => void
+  onLoad?: () => void;
   onSave: () => void;
   uploadImage: (params: { data: string | File }) => Promise<{
     url: string;
@@ -38,12 +44,24 @@ export interface IEditorRef {
    * @param type 内容的格式
    * @return 文档内容
    */
-  getContent: (type: 'lake'|'text/html') => Promise<string>;
+  getContent: (type: 'lake' | 'text/html') => Promise<string>;
   /**
    * 判断当前文档是否是空文档
    * @return true表示当前是空文档
    */
   isEmpty: () => boolean;
+
+  /**
+   * 获取额外信息
+   * @returns 
+   */
+  getSummaryContent: () => string;
+
+  /**
+   * 统计字数
+   * @returns 
+   */
+  wordCount: () => number;
 }
 
 /**
@@ -294,10 +312,17 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       }
     };
     document.addEventListener('keydown', onKeyDown, true);
-    iframeRef.current?.contentDocument.addEventListener('keydown', onKeyDown, true);
+    iframeRef.current?.contentDocument.addEventListener(
+      'keydown',
+      onKeyDown,
+      true,
+    );
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      iframeRef.current?.contentDocument.removeEventListener('keydown', onKeyDown);
+      iframeRef.current?.contentDocument.removeEventListener(
+        'keydown',
+        onKeyDown,
+      );
     };
   }, [ editor, iframeRef ]);
 
@@ -309,50 +334,59 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
 
   // 导出ref
   useImperativeHandle(ref, () => ({
-    appendContent: (html: string, breakLine = false) => {
-      if (!editor) return;
-      if (breakLine) {
-        editor.execCommand('breakLine');
-      }
-      editor.kernel.execCommand('paste', {
-        types: [ 'text/html' ],
-        getData() {
-          return html;
-        },
-      });
-      iframeRef.current?.focus();
-      editor.execCommand('focus', 'end');
-    },
-    setContent: (html: string) => {
-      if (!editor) return;
-      iframeRef.current?.focus();
-      editor.setDocument('text/html', html);
-      editor.execCommand('focus', 'end');
-    },
-    isEmpty: () => {
-      if (!editor) return true;
-      return editor.queryCommandValue('isEmpty');
-    },
-    getContent: async (type: 'lake'|'text/html'|'description') => {
-      if (!editor) return '';
-      let times = 0;
-      while (!editor.canGetDocument()) {
-        // 10s 后返回超时
-        if (times > 100) {
-          throw new Error('文档上传未结束! 请删除未上传成功的图片');
+      appendContent: (html: string, breakLine = false) => {
+        if (!editor) return;
+        if (breakLine) {
+          editor.execCommand('breakLine');
         }
-        times++;
-        await sleep(100);
-      }
-      if (type === 'lake') {
-        return editor.getDocument('text/lake');
-      } else if (type === 'text/html') {
-        return editor.getDocument('text/html');
-      }
-      return editor.getDocument('description');
-
-    },
-  }), [ editor ]);
+        editor.kernel.execCommand('paste', {
+          types: [ 'text/html' ],
+          getData() {
+            return html;
+          },
+        });
+        iframeRef.current?.focus();
+        editor.execCommand('focus', 'end');
+      },
+      setContent: (html: string) => {
+        if (!editor) return;
+        iframeRef.current?.focus();
+        editor.setDocument('text/html', html);
+        editor.execCommand('focus', 'end');
+      },
+      isEmpty: () => {
+        if (!editor) return true;
+        return editor.queryCommandValue('isEmpty');
+      },
+      getContent: async (type: 'lake' | 'text/html' | 'description') => {
+        if (!editor) return '';
+        let times = 0;
+        while (!editor.canGetDocument()) {
+          // 10s 后返回超时
+          if (times > 100) {
+            throw new Error('文档上传未结束! 请删除未上传成功的图片');
+          }
+          times++;
+          await sleep(100);
+        }
+        if (type === 'lake') {
+          return editor.getDocument('text/lake');
+        } else if (type === 'text/html') {
+          return editor.getDocument('text/html');
+        }
+        return editor.getDocument('description');
+      },
+      getSummaryContent: () => {
+        if (!editor) return '';
+        return editor.queryCommandValue('getSummary', 'lake');
+      },
+      wordCount: () => {
+        if (!editor) return 0;
+        return editor.queryCommandValue('wordCount');
+      },
+    }),
+    [ editor ],
+  );
 
   useEffect(() => {
     if (!rootNodeRef.current.div) return;
@@ -364,17 +398,19 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
 
   // 渲染iframe
   // 通过iframe加载lake编辑器防止样式污染
-  return <iframe
-    ref={iframeRef}
-    height="100%"
-    srcDoc={templateHtml}
-    allow="*"
-    style={{
-      position: 'absolute',
-      background: 'transparent',
-      border: 'none',
-      height: '100%',
-      width: '100%',
-    }}/>;
+  return (
+    <iframe
+      ref={iframeRef}
+      height="100%"
+      srcDoc={templateHtml}
+      allow="*"
+      style={{
+        position: 'absolute',
+        background: 'transparent',
+        border: 'none',
+        height: '100%',
+        width: '100%',
+      }}
+    />
+  );
 });
-
