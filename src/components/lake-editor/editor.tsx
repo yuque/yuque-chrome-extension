@@ -64,7 +64,7 @@ const templateHtml = `
     }
     .toolbar-container {
       display: flex;
-      padding: 0 0 0 14px;
+      padding: 0 0 0 24px;
     }
     #toolbar {
       flex: 1;
@@ -77,6 +77,9 @@ const templateHtml = `
       display: flex;
       align-items: center;
       padding: 0 16px;
+    }
+    .ne-layout-mode-fixed .ne-engine, .ne-layout-mode-adapt .ne-engine {
+      padding-top: 16px;
     }
     .ne-layout-mode-fixed .ne-editor-body, .ne-layout-mode-adapt .ne-editor-body {
       height: 100%;
