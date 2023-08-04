@@ -94,13 +94,16 @@ class App {
           $(elem).prop('outerHTML'),
         );
 
+        // 提前获取光标
+        iframe.addClass('show');
+        iframe.focus();
         Chrome.runtime.sendMessage(
           {
             action: GLOBAL_EVENTS.GET_SELECTED_HTML,
             HTMLs,
           },
           () => {
-            iframe.addClass('show');
+            iframe.focus();
           },
         );
         this.areaSelection.clean();
@@ -146,15 +149,17 @@ class App {
       $(elem).prop('outerHTML'),
     );
 
+    const { sandboxURL } = this;
+    const iframe = $(`iframe[src="${sandboxURL}"]`);
+    iframe.addClass('show');
+    iframe.focus();
     Chrome.runtime.sendMessage(
       {
         action: GLOBAL_EVENTS.GET_SELECTED_HTML,
         HTMLs,
       },
       () => {
-        const { sandboxURL } = this;
-        const iframe = $(`iframe[src="${sandboxURL}"]`);
-        iframe.addClass('show');
+        iframe.focus();
       },
     );
     this.areaSelection.clean();
