@@ -220,7 +220,7 @@ const App = () => {
         </div>
         {account?.id && (
           <div className={styles.account}>
-            <FeedBack />
+            <FeedBack showVersion={false} />
             <UserInfo user={account} onLogout={onLogout} />
           </div>
         )}
