@@ -178,7 +178,7 @@ const App = () => {
         setCurrentType(SELECT_TYPE_SELECTION);
       }
     });
-  }, [ currentType ]);
+  }, []);
 
   const isLogined = account?.id;
 
@@ -189,11 +189,9 @@ const App = () => {
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
     >
       <div className={styles.wrapper}>
-        {
-          account?.id
-            ? <div className={styles.header}>{__i18n('语雀剪藏')}</div>
-            : null
-        }
+        {account?.id ? (
+          <div className={styles.header}>{__i18n('语雀剪藏')}</div>
+        ) : null}
         <CloseOutlined className={styles.close} onClick={onClose} />
         <div className={classnames(styles.items, {
           [styles.unlogin]: !isLogined,

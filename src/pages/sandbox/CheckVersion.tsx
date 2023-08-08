@@ -23,25 +23,43 @@ async function fetchAndParseXML(updateUrl: string): Promise<string | undefined> 
 export function useCheckVersion(): string | undefined {
   const [ version, setVersion ] = useState<string | undefined>();
 
+  const fetchVersion = async () => {
+    fetchAndParseXML('https://app.nlark.com/yuque-chrome-extension/updates.xml')
+      .then(res => {
+        setVersion(res);
+      })
+      .catch(err => {
+        console.log(err, 'retrive update_url failed');
+      });
+  };
+
   useEffect(() => {
     const manifest = Chrome.runtime.getManifest();
     if (process.env.NODE_ENV !== 'production') {
       console.log('update_url: %s', manifest?.update_url);
     }
 
-    if (manifest?.update_url) {
-      // 官方商店的 update_url 跳过更新检查
-      // https://clients2.google.com/service/update2/crx
-      // https://edge.microsoft.com/extensionwebstorebase/v1/crx
-      if (/(google|microsoft)\.com/.test(manifest.update_url)) {
-        return;
-      }
+    // microsoft 不需要检测是否能够更新
+    if (/(microsoft)\.com/.test(manifest.update_url)) {
+      return;
+    }
 
-      fetchAndParseXML(manifest.update_url).then(res => {
-        setVersion(res);
-      }).catch(err => {
-        console.log(err, 'retrive update_url failed');
-      });
+    if (manifest?.update_url) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 3000);
+      // 3s 没有请求成功判定为不能访问外网，走插件内更新逻辑
+      fetch(manifest.update_url, { signal: controller.signal })
+        .then(res => {
+          if (res.status !== 200) {
+            fetchVersion();
+          }
+        })
+        .catch(() => {
+          fetchVersion();
+        })
+        .finally(() => {
+          clearTimeout(id);
+        });
     }
   }, []);
 
