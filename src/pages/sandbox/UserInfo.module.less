@@ -11,11 +11,28 @@
     margin-right: 8px;
     font-size: 14px;
     color: @grey-8;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100px;
   }
 
   .switch {
     width: 12px;
     height: 12px;
+  }
+}
+
+.upgradeVersionItem {
+  display: flex;
+
+  .name {
+    flex: 1;
+  }
+
+  .version {
+    flex: 0 0 auto;
+    color: rgba(0, 0, 0, 0.45);
   }
 }
 
@@ -69,3 +86,35 @@
     cursor: pointer;
   }
 }
+
+.updateModal {
+  display: flex;
+  align-items: center;
+
+  .updateIframe {
+    height: 90vh;
+    vertical-align: top;
+    border: none;
+    width: 100%;
+  }
+
+  :global {
+    .ant-modal-content {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .ant-modal-confirm-confirm {
+      top: 0;
+    }
+
+    .anticon-exclamation-circle {
+      display: none;
+    }
+
+    .ant-modal-confirm-content {
+      width: 100%;
+    }
+  }
+}
+

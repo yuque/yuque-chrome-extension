@@ -1,10 +1,10 @@
 import React from 'react';
-import { Avatar, Badge, ConfigProvider, Menu, Popover } from 'antd';
+import { Avatar, Badge, ConfigProvider, Menu, Popover, Modal } from 'antd';
 import LinkHelper from '@/core/link-helper';
 import { DownOutlined } from '@ant-design/icons';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import SemverCompare from 'semver-compare';
-import { VERSION } from '@/config';
+import { VERSION, pkg } from '@/config';
 import { useCheckVersion } from './CheckVersion';
 
 import styles from './UserInfo.module.less';
@@ -52,8 +52,22 @@ const UserInfo = (props: Props) => {
       case 'logout':
         onLogout?.();
         break;
+      case 'feedback':
+        window.open(pkg.issues, '_blank');
+        break;
       case 'upgrade-version':
-        window.open('https://www.yuque.com/yuque/yuque-browser-extension/welcome#G8HaG', '_blank');
+        Modal.confirm({
+          content: (
+            <iframe
+              src="https://www.yuque.com/yuque/yuque-browser-extension/install?view=doc_embed"
+              className={styles.updateIframe}
+            />
+          ),
+          width: 920,
+          footer: null,
+          maskClosable: true,
+          wrapClassName: styles.updateModal,
+        });
         break;
     }
     setOpen(false);
@@ -77,11 +91,18 @@ const UserInfo = (props: Props) => {
       },
       {
         key: 'upgrade-version',
-        label: (<span>
-          {__i18n('升级新版本')}
-          &nbsp;v{newVersion}
-          <Badge style={{ marginLeft: 4 }} status="processing" />
-        </span>
+        label: (
+          <div className={styles.upgradeVersionItem}>
+            <span className={styles.name}>
+              {__i18n('升级新版本')}
+              <Badge
+                style={{ marginLeft: 4 }}
+                status="processing"
+                color="blue"
+              />
+            </span>
+            <span className={styles.version}>&nbsp;v{newVersion}</span>
+          </div>
         ),
       },
       {
