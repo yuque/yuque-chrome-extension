@@ -39,6 +39,11 @@ export function useCheckVersion(): string | undefined {
       console.log('update_url: %s', manifest?.update_url);
     }
 
+    // microsoft 不需要检测是否能够更新
+    if (/(microsoft)\.com/.test(manifest.update_url)) {
+      return;
+    }
+
     if (manifest?.update_url) {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), 3000);
