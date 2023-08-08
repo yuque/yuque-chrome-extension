@@ -178,7 +178,7 @@ const App = () => {
         setCurrentType(SELECT_TYPE_SELECTION);
       }
     });
-  }, [ currentType ]);
+  }, []);
 
   const isLogined = account?.id;
 
@@ -189,18 +189,16 @@ const App = () => {
       value={{ editorValue, currentType, setEditorValue, setCurrentType }}
     >
       <div className={styles.wrapper}>
-        {
-          account?.id
-            ? <div className={styles.header}>{__i18n('语雀剪藏')}</div>
-            : null
-        }
+        {account?.id ? (
+          <div className={styles.header}>{__i18n('语雀剪藏')}</div>
+        ) : null}
         <CloseOutlined className={styles.close} onClick={onClose} />
         <div className={classnames(styles.items, {
           [styles.unlogin]: !isLogined,
         })}>
           {isLogined ? (
             <>
-              <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
+                       <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
                 <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
                 <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
               </Radio.Group>
