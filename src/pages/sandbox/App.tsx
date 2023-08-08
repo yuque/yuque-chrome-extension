@@ -198,7 +198,7 @@ const App = () => {
         })}>
           {isLogined ? (
             <>
-                       <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
+              <Radio.Group value={tab} onChange={handleTabChange} style={{ marginBottom: 16 }}>
                 <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
                 <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
               </Radio.Group>
