@@ -224,7 +224,11 @@ const options = {
   optimization: {
     minimize: isProd,
     nodeEnv: NODE_ENV,
-    minimizer: [ new TerserPlugin() ],
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+      }),
+    ],
   },
 };
 
