@@ -1,6 +1,6 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "4.0.0",
+  "version": "0.3.6",
   "description": "语雀浏览器插件",
   "private": true,
   "repository": {
