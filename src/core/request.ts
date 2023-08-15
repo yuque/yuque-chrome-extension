@@ -8,6 +8,8 @@ import {
   CSRF_HEADER_NAME,
   EXTENSION_ID,
 } from '@/config';
+import eventManager from './event/eventManager';
+import { AppEvents } from './event/events';
 
 export class CsrfTokenError extends Error {
   constructor(message) {
@@ -100,7 +102,27 @@ const request = async (
       };
     }
 
-    return axios(newOptions);
+    const iAxios = axios.create();
+
+    // 拦截器
+    iAxios.interceptors.response.use(
+      response => {
+        return response;
+      },
+      error => {
+        if (
+          error.response?.status === 400 &&
+          error.response?.data?.code === 'force_upgrade_version'
+        ) {
+          eventManager.notify(AppEvents.FORCE_UPGRADE_VERSION, {
+            html: error.response?.data?.html,
+          });
+        }
+        throw error;
+      },
+    );
+
+    return iAxios.call(null, newOptions);
   } catch (error) {
     throw error;
   }
