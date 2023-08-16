@@ -23,6 +23,7 @@ import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
 import {
   extractSummaryRaw,
+  getBookmarkHTMLs,
   getBookmarkHtml,
   getCitation,
   getCurrentTab,
@@ -77,7 +78,7 @@ const useViewModel = (props: ISaveToProps) => {
    */
   useEffect(() => {
     proxy.book.getBooks().then(bookList => {
-      setBooks([...BOOKS_DATA, ...bookList]);
+      setBooks([ ...BOOKS_DATA, ...bookList ]);
     });
   }, []);
 
@@ -95,15 +96,19 @@ const useViewModel = (props: ISaveToProps) => {
             // 判断当前文档是否是空的
             // 如果是空的则插入初始内容
             if (isEmpty) {
-              const initHtml = getBookmarkHtml(
-                await getCurrentTab(),
-                true,
-                currentBookId !== NODE_DATA_ID,
-              );
-              editorRef.current?.appendContent(initHtml);
+              const isNote = currentBookId === NODE_DATA_ID;
+              const { heading, quote } = getBookmarkHTMLs(await getCurrentTab());
+              editorRef.current?.appendContent(quote);
+              // 回到文档开头
+              editorRef.current?.focusToStart();
+              // 非小记插入标题
+              if (!isNote) {
+                editorRef.current?.appendContent(heading);
+                editorRef.current?.focusToStart(1);
+              }
             }
             // 追加当前选取的html
-            editorRef.current?.appendContent(HTMLs.join(''), !isEmpty);
+            editorRef.current?.appendContent(HTMLs.join(''));
           } finally {
             setEditorLoading(false);
           }
@@ -223,7 +228,7 @@ const useViewModel = (props: ISaveToProps) => {
       if (!isFull) {
         description += VIEW_MORE_TAG;
       }
-      console.log(currentBookId, '我是啥')
+      console.log(currentBookId, '我是啥');
       if (currentBookId === NODE_DATA_ID) {
         proxy.note.getStatus().then(({ data }) => {
           const noteId = safeGet(data, 'mirror.id');
@@ -330,7 +335,7 @@ export default function SaveTo(props: ISaveToProps) {
       }}
     >
       <div className={classnames(styles.wrapper, props.className)}>
-      <div className={styles.actionTip}>
+        <div className={styles.actionTip}>
           {__i18n('选择剪藏方式')}
         </div>
         <Menu

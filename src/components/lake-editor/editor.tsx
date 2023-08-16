@@ -53,15 +53,28 @@ export interface IEditorRef {
 
   /**
    * 获取额外信息
-   * @returns 
+   * @return
    */
   getSummaryContent: () => string;
 
   /**
    * 统计字数
-   * @returns 
+   * @return
    */
   wordCount: () => number;
+
+  /**
+   * 聚焦到文档开头
+   * @param {number} offset 偏移多少个段落，可以将选区落到开头的第offset个段落上, 默认是0
+   * @return
+   */
+  focusToStart: (offset?: number) => void;
+
+  /**
+   * 插入换行符
+   * @return
+   */
+  insertBreakLine: () => void;
 }
 
 /**
@@ -334,58 +347,82 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
 
   // 导出ref
   useImperativeHandle(ref, () => ({
-      appendContent: (html: string, breakLine = false) => {
-        if (!editor) return;
-        if (breakLine) {
-          editor.execCommand('breakLine');
+    appendContent: (html: string, breakLine = false) => {
+      if (!editor) return;
+      if (breakLine) {
+        editor.execCommand('breakLine');
+      }
+      editor.kernel.execCommand('paste', {
+        types: [ 'text/html' ],
+        getData() {
+          return html;
+        },
+      });
+      iframeRef.current?.focus();
+      editor.execCommand('focus');
+      editor.renderer.scrollToCurrentSelection();
+    },
+    setContent: (html: string) => {
+      if (!editor) return;
+      iframeRef.current?.focus();
+      editor.setDocument('text/html', html);
+      editor.execCommand('focus', 'end');
+    },
+    isEmpty: () => {
+      if (!editor) return true;
+      return editor.queryCommandValue('isEmpty');
+    },
+    getContent: async (type: 'lake' | 'text/html' | 'description') => {
+      if (!editor) return '';
+      let times = 0;
+      while (!editor.canGetDocument()) {
+        // 10s 后返回超时
+        if (times > 100) {
+          throw new Error('文档上传未结束! 请删除未上传成功的图片');
         }
-        editor.kernel.execCommand('paste', {
-          types: [ 'text/html' ],
-          getData() {
-            return html;
-          },
+        times++;
+        await sleep(100);
+      }
+      if (type === 'lake') {
+        return editor.getDocument('text/lake');
+      } else if (type === 'text/html') {
+        return editor.getDocument('text/html');
+      }
+      return editor.getDocument('description');
+    },
+    getSummaryContent: () => {
+      if (!editor) return '';
+      return editor.queryCommandValue('getSummary', 'lake');
+    },
+    wordCount: () => {
+      if (!editor) return 0;
+      return editor.queryCommandValue('wordCount');
+    },
+    focusToStart: (offset = 0) => {
+      if (!editor) return;
+      iframeRef.current?.focus();
+      if (offset) {
+        editor.kernel.execCommand('selection', {
+          ranges: [
+            {
+              start: {
+                node: editor.kernel.model.document.rootNode.children[offset],
+                offset: 0,
+              },
+            },
+          ],
         });
-        iframeRef.current?.focus();
-        editor.execCommand('focus', 'end');
-      },
-      setContent: (html: string) => {
-        if (!editor) return;
-        iframeRef.current?.focus();
-        editor.setDocument('text/html', html);
-        editor.execCommand('focus', 'end');
-      },
-      isEmpty: () => {
-        if (!editor) return true;
-        return editor.queryCommandValue('isEmpty');
-      },
-      getContent: async (type: 'lake' | 'text/html' | 'description') => {
-        if (!editor) return '';
-        let times = 0;
-        while (!editor.canGetDocument()) {
-          // 10s 后返回超时
-          if (times > 100) {
-            throw new Error('文档上传未结束! 请删除未上传成功的图片');
-          }
-          times++;
-          await sleep(100);
-        }
-        if (type === 'lake') {
-          return editor.getDocument('text/lake');
-        } else if (type === 'text/html') {
-          return editor.getDocument('text/html');
-        }
-        return editor.getDocument('description');
-      },
-      getSummaryContent: () => {
-        if (!editor) return '';
-        return editor.queryCommandValue('getSummary', 'lake');
-      },
-      wordCount: () => {
-        if (!editor) return 0;
-        return editor.queryCommandValue('wordCount');
-      },
-    }),
-    [ editor ],
+        editor.execCommand('focus');
+      } else {
+        editor.execCommand('focus', 'start');
+      }
+    },
+    insertBreakLine: () => {
+      if (!editor) return;
+      editor.execCommand('breakLine');
+    },
+  }),
+  [ editor ],
   );
 
   useEffect(() => {
