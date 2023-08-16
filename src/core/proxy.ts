@@ -49,28 +49,17 @@ const RequestProxy = {
   },
   book: {
     async getBooks() {
-      try {
-        const { data } = await request('/api/mine/personal_books', {
-          method: 'GET',
-          data: {
-            limit: 200,
-            offset: 0,
-          },
-        });
-        return Array.isArray(data?.data)
-          ? // 过滤掉非文档类型的知识库
+      const { data } = await request('/api/mine/personal_books', {
+        method: 'GET',
+        data: {
+          limit: 200,
+          offset: 0,
+        },
+      });
+      return Array.isArray(data?.data)
+        ? // 过滤掉非文档类型的知识库
           data.data.filter(b => b.type === 'Book')
-          : [];
-      } catch (error) {
-        if (
-          error.response?.status === 400 &&
-          error.response?.data?.code === 'force_upgrade_version'
-        ) {
-          const err = new Error();
-          (err as any).html = error.response?.data?.html;
-          throw err;
-        }
-      }
+        : [];
     },
   },
   note: {

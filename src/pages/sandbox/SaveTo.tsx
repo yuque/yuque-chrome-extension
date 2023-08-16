@@ -61,7 +61,6 @@ function BookWithIcon({ book }) {
 
 export interface ISaveToProps {
   className?: string;
-  onLogout: (e: any) => void;
 }
 
 const useViewModel = (props: ISaveToProps) => {
@@ -77,13 +76,9 @@ const useViewModel = (props: ISaveToProps) => {
    * 获取知识库的数据
    */
   useEffect(() => {
-    proxy.book.getBooks()
-      .then(bookList => {
-        setBooks([ ...BOOKS_DATA, ...bookList ]);
-      })
-      .catch(e => {
-        props.onLogout(e);
-      });
+    proxy.book.getBooks().then(bookList => {
+      setBooks([...BOOKS_DATA, ...bookList]);
+    });
   }, []);
 
   /**

@@ -17,7 +17,10 @@ import {
   EXTENSION_ID,
   VERSION,
   TRACERT_CONFIG,
+  REFERER_URL,
 } from '@/config';
+import eventManager from '@/core/event/eventManager';
+import { AppEvents } from '@/core/event/events';
 
 import UserInfo, { IYuqueAccount } from './UserInfo';
 import FeedBack from './FeedBack';
@@ -113,8 +116,10 @@ const useViewModel = () => {
 
   useEffect(() => {
     getCurrentAccount()
-      .then(info => {
+      .then(async info => {
         setAccount(info as IYuqueAccount);
+
+        const tabInfo = await Chrome.getCurrentTab();
 
         // 上报埋点
         Tracert.start({
@@ -124,12 +129,19 @@ const useViewModel = () => {
           mdata: {
             [REQUEST_HEADER_VERSION]: VERSION,
             [EXTENSION_ID]: Chrome.runtime.id,
+            [REFERER_URL]: tabInfo?.url,
           },
         });
       })
       .finally(() => {
         setAppReady(true);
       });
+  }, []);
+
+  useEffect(() => {
+    eventManager.listen(AppEvents.FORCE_UPGRADE_VERSION, data => {
+      onLogout(data);
+    });
   }, []);
 
   return {
@@ -203,7 +215,6 @@ const App = () => {
                 <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
               </Radio.Group>
               <SaveTo
-                onLogout={onLogout}
                 className={classnames({
                   [styles.hidden]: tab !== 'save-to',
                 })}
