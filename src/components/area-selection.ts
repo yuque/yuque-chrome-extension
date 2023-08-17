@@ -184,25 +184,47 @@ class AreaSelection extends EventEmitter {
 
     this.prevElem = elem;
 
-    // 仅当元素未被选中时才添加高亮类
-    if (!this.selectedElems.has(this.prevElem)) {
+    // 仅当元素未被选中时才添加高亮类并且没有父亲
+    if (!this.selectedElems.has(this.prevElem) && !this.getParentSelected(elem)) {
       $(this.prevElem).addClass(this.highlightClassName);
     }
   };
 
+  getParentSelected(elem) {
+    let parent = null;
+    this.selectedElems.forEach(exits => {
+      if (exits.contains(elem)) {
+        parent = exits;
+      }
+    });
+    return parent;
+  }
+
   toggleSelectedArea(elem: HTMLElement) {
-    if (this.selectedElems.has(elem)) {
-      $(elem).removeClass(`${this.highlightClassName} selected`);
-      this.selectedElems.delete(elem);
-      if (elem.tagName.toLowerCase() === 'img') {
-        delete (elem as any).imageSrc;
+    if (this.selectedElems.has(elem) || this.getParentSelected(elem)) {
+      const target = this.getParentSelected(elem) || elem;
+      $(target).removeClass(`${this.highlightClassName} selected`);
+      this.selectedElems.delete(target);
+      if (target.tagName.toLowerCase() === 'img') {
+        delete (target as any).imageSrc;
       }
     } else {
-      $(elem).addClass(`${this.highlightClassName} selected`);
-      this.selectedElems.add(elem);
-      if (elem.tagName.toLowerCase() === 'img') {
-        (elem as any).imageSrc = (elem as HTMLImageElement).src;
+      // 清理选择的子元素
+      this.selectedElems.forEach(exits => {
+        if (elem.contains(exits)) {
+          $(exits).removeClass(`${this.highlightClassName} selected`);
+          this.selectedElems.delete(exits);
+        }
+      });
+
+      if (!this.getParentSelected(elem)) {
+        $(elem).addClass(`${this.highlightClassName} selected`);
+        this.selectedElems.add(elem);
+        if (elem.tagName.toLowerCase() === 'img') {
+          (elem as any).imageSrc = (elem as HTMLImageElement).src;
+        }
       }
+
     }
     this.emit('change', this.selectedElems.size);
   }
