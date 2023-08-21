@@ -1,0 +1,57 @@
+.innerWordMarkWrapper {
+  background-color: #fff;
+  border: 1px solid #e5e8eb;
+  box-shadow: 0 8px 16px #919eab29;
+  border-radius: 5px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+
+  .yuqueLogo {
+    font-size: 16px;
+    padding: 0 6px;
+  }
+
+  .moreActions {
+    padding: 0 6px;
+  }
+
+  .pinList {
+    display: flex;
+    flex: 0 0 auto;
+
+    .pinToolbarItem {
+      display: flex;
+      cursor: pointer;
+      gap: 4px;
+      padding: 0 8px;
+      align-items: center;
+      color: #262626;
+
+      .name {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+  }
+}
+
+.overlayClassName {
+  // 禁止选中，不然会触发 mousedown 事件
+  user-select: none;
+
+  :global {
+    .ant-popover-inner, .ant-popover-inner-content {
+      padding: 0;
+    }
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    div {
+      box-sizing: border-box;
+    }
+  }
+}

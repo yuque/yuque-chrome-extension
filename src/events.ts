@@ -12,3 +12,11 @@ export const GLOBAL_EVENTS = {
 export const PAGE_EVENTS = {
   AREA_SELECTED: 'page/area-selected',
 };
+
+// 在 background.js 里面监听的事件
+export const BACKGROUND_EVENTS = {
+  UPDATE_WORD_MARK_PIN: 'background/update-word-mark-pin',
+  GET_WORD_MARK_PIN: 'background/get-word-mark-pin',
+  WORD_MARK_EXECUTE_COMMAND: 'background/word-mark-execute-command',
+  SAVE_TO_NOTE: 'background/save-to-note',
+};

@@ -1,6 +1,7 @@
 import { pick } from 'lodash';
 import { STORAGE_KEYS } from '@/config';
 import Chrome from '@/core/chrome';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 
 export const getCurrentAccount = () => new Promise(resolve => {
   Chrome.storage.local.get(STORAGE_KEYS.CURRENT_ACCOUNT, (res = {}) => {
@@ -36,3 +37,18 @@ export const clearCurrentAccount = () => new Promise(resolve => {
     resolve(undefined);
   });
 });
+
+export const updateWordMarkPinList = (list: WordMarkOptionTypeEnum[]) => new Promise(resolve => {
+  Chrome.storage.local.set({
+    [STORAGE_KEYS.SETTINGS.WORD_MARK_PIN]: list
+  }, () => {
+    resolve(list);
+  });
+});
+
+export const getWordMarkPinList = () => new Promise(resolve => {
+  Chrome.storage.local.get(STORAGE_KEYS.SETTINGS.WORD_MARK_PIN, (list) => {
+    resolve(list[STORAGE_KEYS.SETTINGS.WORD_MARK_PIN]);
+  });
+});
+

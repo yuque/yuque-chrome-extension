@@ -1,4 +1,3 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import Chrome from '@/core/chrome';
 import {
   pkg,
@@ -8,14 +7,24 @@ import {
   CSRF_HEADER_NAME,
   EXTENSION_ID,
 } from '@/config';
-import eventManager from './event/eventManager';
-import { AppEvents } from './event/events';
 
 export class CsrfTokenError extends Error {
   constructor(message) {
     super(message);
     this.name = 'CsrfTokenError';
   }
+}
+
+const generateQuery = (params: {[key: string]: any}) => {
+  let queryString = '';
+  const paramsArray = [];
+  Object.keys(params).forEach(key =>
+    paramsArray.push(`${key}=${params[key]}`),
+  );
+  if (paramsArray.length > 0) {
+    queryString = `?${paramsArray.join('&')}`;
+  }
+  return queryString;
 }
 
 const setCsrfToken = (
@@ -66,95 +75,101 @@ const prepareHeaders = async (): Promise<Record<string, string>> => {
   return headers;
 };
 
-const request = async (
+export type Method =
+  | 'GET'
+  | 'DELETE'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'PURGE'
+  | 'LINK'
+  | 'UNLINK';
+
+interface IConfig {
+  baseURL?: string;
+  method: Method;
+  data?: any;
+  headers?: HeadersInit;
+}
+
+async function request<T>(
   url: string,
-  options: AxiosRequestConfig = {},
+  config: IConfig,
   isFileUpload = false,
-): Promise<AxiosResponse> => {
+): Promise<{ status: number; data: T }> {
   try {
     const headers = await prepareHeaders();
-    const defaultOptions: AxiosRequestConfig = {
-      headers,
-      timeout: 3e3,
+    let queryString = '';
+    const options: RequestInit = {
+      headers: {
+        ...headers,
+        ...config.headers,
+      },
+      method: config.method,
+      ...config,
     };
-    defaultOptions.baseURL = YUQUE_DOMAIN;
-    const newOptions: AxiosRequestConfig = {
-      validateStatus: status => status >= 200 && status < 300,
-      withCredentials: true,
-      url,
-      ...defaultOptions,
-      ...options,
-    };
-
-    if (
-      !isFileUpload &&
-      (newOptions.method === 'POST' || newOptions.method === 'PUT')
-    ) {
-      newOptions.headers = {
-        'Content-Type': 'application/json',
+    if (isFileUpload) {
+      options.body = config.data;
+      console.log(options.body.toString())
+    } else if (options.method === 'POST' || options.method === 'PUT') {
+      options.headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
         Accept: 'application/json',
-        ...newOptions.headers,
+        ...options.headers,
       };
-    } else if (isFileUpload) {
-      newOptions.headers = {
-        'Content-Type': 'multipart/form-data',
-        ...newOptions.headers,
-      };
+      options.body = JSON.stringify(config.data);
+    } else if (options.method === 'GET' && config.data) {
+      const params = config.data;
+      const paramsArray = [];
+      Object.keys(params).forEach(key =>
+        paramsArray.push(`${key}=${params[key]}`),
+      );
+      if (paramsArray.length > 0) {
+        queryString = `?${paramsArray.join('&')}`;
+      }
     }
-
-    const iAxios = axios.create();
-
-    // 拦截器
-    iAxios.interceptors.response.use(
-      response => {
-        return response;
-      },
-      error => {
-        if (
-          error.response?.status === 400 &&
-          error.response?.data?.code === 'force_upgrade_version'
-        ) {
-          eventManager.notify(AppEvents.FORCE_UPGRADE_VERSION, {
-            html: error.response?.data?.html,
-          });
-        }
-        throw error;
-      },
-    );
-
-    return iAxios.call(null, newOptions);
-  } catch (error) {
-    throw error;
+    const baseURL = config.baseURL || YUQUE_DOMAIN;
+    const response = await fetch(`${baseURL}${url}${queryString}`, {
+      ...options,
+    });
+    const responseJson = await response.json();
+    if (!(response.status >= 200 && response.status < 300)) {
+      throw response;
+    }
+    return { status: response.status, data: responseJson };
+  } catch (e) {
+    throw e;
   }
-};
+}
 
-const uploadFile = async (
+export async function uploadFile(
   url: string,
   file: File,
   attachableId: number,
   attachableType = 'Note',
   fileType = 'image',
-): Promise<AxiosResponse> => {
+) {
   const formData = new FormData();
   formData.append('file', file);
   const csrfToken = await getCsrfToken(YUQUE_DOMAIN, YUQUE_CSRF_COOKIE_NAME);
+  const query = generateQuery({
+    attachable_type: attachableType,
+    attachable_id: attachableId,
+    type: fileType,
+    ctoken: csrfToken,
+  });
   const response = await request(
-    url,
+    `${url}${query}`,
     {
       method: 'POST',
       data: formData,
-      params: {
-        attachable_type: attachableType,
-        attachable_id: attachableId,
-        type: fileType,
-        ctoken: csrfToken,
-      },
     },
     true,
   );
 
   return response;
-};
+}
 
 export default request;
-export { uploadFile };

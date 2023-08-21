@@ -9,6 +9,9 @@ export const REQUEST_HEADER_VERSION = `${prefix}${hyphen}${pkgJSON.name}${hyphen
 export const CSRF_HEADER_NAME = [ 'x', 'csrf', 'token' ].join('-');
 export const STORAGE_KEYS = {
   CURRENT_ACCOUNT: 'storage/current-account',
+  SETTINGS: {
+    WORD_MARK_PIN: 'settings/word-mark-pin'
+  }
 };
 export const YUQUE_DOMAIN = 'https://www.yuque.com';
 export const YUQUE_CSRF_COOKIE_NAME = 'yuque_ctoken';
