@@ -30,6 +30,7 @@
         "doc.umd.js",
         "CodeMirror.js",
         "katex.min.js",
+        "kernel-editor.js",
         "tracert_a385.js"
       ],
       "matches": [
