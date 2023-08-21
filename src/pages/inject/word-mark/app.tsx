@@ -70,11 +70,11 @@ function App() {
     const rect = range.getBoundingClientRect();
     const width = wrapperRef.current?.offsetWidth || 0;
     const height = wrapperRef.current?.offsetHeight || 0;
-    const left = rect.left +  width / 2;
+    const left = rect.left + width / 2;
     const top = rect.bottom + window.scrollY + 16;
     const maxLeft = document.body.clientWidth - width;
     const maxTop = window.innerHeight + window.scrollY - height;
-    console.log(width, height, left, top, maxLeft, maxTop)
+    console.log(width, height, left, top, maxLeft, maxTop);
     wordMarkPositionRef.current = {
       left: Math.min(Math.max(left, 0), maxLeft),
       top: Math.min(Math.max(top, 0), maxTop),
@@ -134,7 +134,13 @@ function App() {
         )}
       </div>
       <div style={{ display: 'none' }}>
-        <KernelEditor ref={editorRef} value="" />
+        <KernelEditor ref={editorRef} value="" onLoad={() => {
+          console.info('loaded, -----------');
+          editorRef.current?.setContent('text/html', '<p>hello world</p>').then(() => {
+            editorRef.current.getContent('lake').then(console.log);
+          });
+          console.info('editor', editorRef.current);
+        }} />
       </div>
     </div>
   );
