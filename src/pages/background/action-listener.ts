@@ -1,5 +1,5 @@
-import { BACKGROUND_EVENTS } from '@/events';
-import { getWordMarkPinList, updateWordMarkPinList } from '@/core/account';
+import { BACKGROUND_EVENTS, PAGE_EVENTS } from '@/events';
+import { WordMarkConfigKey, getWordMarkConfig, updateWordMarkConfig } from '@/core/account';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
 
@@ -20,19 +20,31 @@ export const initBackGroundActionListener = () => {
       sendResponse: SendResponse,
     ) => {
       switch (request.action) {
-        case BACKGROUND_EVENTS.UPDATE_WORD_MARK_PIN: {
-          const { pinList = [] } = request.data || {};
-          updateWordMarkPinList(pinList).then(() => {
-            sendResponse({ result: pinList });
+        case BACKGROUND_EVENTS.GET_WORD_MARK_CONFIG:
+          getWordMarkConfig().then(res => {
+            sendResponse(res);
           });
           break;
-        }
-        case BACKGROUND_EVENTS.GET_WORD_MARK_PIN: {
-          getWordMarkPinList().then(res => {
-            sendResponse({ result: res });
+        case BACKGROUND_EVENTS.UPDATE_WORD_MARK_CONFIG:
+          const { key, value } = request.data;
+          updateWordMarkConfig(key, value).then(res => {
+            if (key === WordMarkConfigKey.enable && !false) {
+              Chrome.runtime.sendMessage({
+                action: PAGE_EVENTS.DISABLE_WORD_MARK,
+              });
+            }
+            if (key === WordMarkConfigKey.enable && !value) {
+              Chrome.tabs.query({}, tabs => {
+                for(const tab of tabs) {
+                  Chrome.tabs.sendMessage(tab.id, {
+                    action: PAGE_EVENTS.DISABLE_WORD_MARK,
+                  });
+                }
+              })
+            }
+            sendResponse(res);
           });
           break;
-        }
         case BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND: {
           const { selectText } = request.data;
           proxy.wordMark.translate([ selectText ]).then(res => {
@@ -49,6 +61,23 @@ export const initBackGroundActionListener = () => {
             .then(res => {
               sendResponse(res);
             });
+          break;
+        }
+        case BACKGROUND_EVENTS.SAVE_TO_BOOK: {
+          const data = request.data;
+          proxy.doc
+            .create({
+              ...data,
+            })
+            .then(res => {
+              sendResponse(res);
+            });
+
+          break;
+        }
+        case BACKGROUND_EVENTS.OPEN_SETTING_PAGE: {
+          Chrome.tabs.create({  url: Chrome.runtime.getURL('/setting.html') })
+          sendResponse(true);
           break;
         }
       }

@@ -10,7 +10,7 @@ export const CSRF_HEADER_NAME = [ 'x', 'csrf', 'token' ].join('-');
 export const STORAGE_KEYS = {
   CURRENT_ACCOUNT: 'storage/current-account',
   SETTINGS: {
-    WORD_MARK_PIN: 'settings/word-mark-pin'
+    WORD_MARK_CONFIG: 'settings/word-mark-config',
   }
 };
 export const YUQUE_DOMAIN = 'https://www.yuque.com';

@@ -1,5 +1,6 @@
 import request, { uploadFile } from '@/core/request';
 import { YUQUE_DOMAIN } from '@/config';
+import { Book } from './interface';
 
 export const SERVER_URLS = {
   LOGOUT: `${YUQUE_DOMAIN}/logout`,
@@ -49,13 +50,16 @@ const RequestProxy = {
   },
   book: {
     async getBooks() {
-      const { data } = await request<any>('/api/mine/personal_books', {
-        method: 'GET',
-        data: {
-          limit: 200,
-          offset: 0,
+      const { data } = await request<{ data: Book[] }>(
+        '/api/mine/personal_books',
+        {
+          method: 'GET',
+          data: {
+            limit: 200,
+            offset: 0,
+          },
         },
-      });
+      );
       return Array.isArray(data?.data)
         ? // 过滤掉非文档类型的知识库
         data.data.filter(b => b.type === 'Book')

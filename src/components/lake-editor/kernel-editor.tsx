@@ -2,6 +2,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -9,6 +10,10 @@ import React, {
 export interface KernelEditorProps {
   value: string;
   onLoad?: () => void;
+  resource: {
+    docJS: string;
+    kernelEditorJS: string;
+  };
 }
 
 const key = 'kernel-editor';
@@ -51,22 +56,7 @@ export interface IKernelEditorRef {
   wordCount: () => Promise<number>;
 }
 
-/**
- * iframe的内容
- */
-const templateHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
-  <script src="chrome-extension://ehnlicbeaedobffiadggeebjbmcgjnjh/doc.umd.js"></script>
-  <script src="chrome-extension://ehnlicbeaedobffiadggeebjbmcgjnjh/kernel-editor.js"></script>
-</body>
-</html>
-`;
+
 
 export default forwardRef<IKernelEditorRef, KernelEditorProps>((props, ref) => {
   const { value, onLoad } = props;
@@ -76,6 +66,24 @@ export default forwardRef<IKernelEditorRef, KernelEditorProps>((props, ref) => {
     onLoad: props.onLoad,
   });
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const templateHtml = useMemo(() => {
+    /**
+    * iframe的内容
+    */
+    return `
+   <!DOCTYPE html>
+   <html>
+   <head>
+     <meta charset="UTF-8">
+     <title></title>
+   </head>
+   <body>
+     <script src="${props.resource.docJS}"></script>
+     <script src="${props.resource.kernelEditorJS}"></script>
+   </body>
+   </html>
+   `;
+  }, [props.resource]);
 
   useEffect(() => {
     const resolveCache: Map<number, ((data: any) => void)> = new Map();

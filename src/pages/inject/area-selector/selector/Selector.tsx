@@ -89,7 +89,6 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         ];
         targetRef.current = null;
         targetRectRef.current = null;
-        console.log(targetRectListRef.current);
       }
       forceUpdate(state => state + 1);
     };
@@ -124,7 +123,6 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         )}
       </div>
       {targetRectListRef.current.map((item, index) => {
-        console.log(item, item?.width);
         return (
           item?.width && (
             <div

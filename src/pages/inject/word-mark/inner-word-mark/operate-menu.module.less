@@ -1,3 +1,5 @@
+@import '~@/styles/parameters.less';
+
 .menus {
   padding: 12px 8px;
   // 28px 是为拖拽预留
@@ -26,7 +28,7 @@
 
 .nameWrapper {
   flex: 1;
-  font-size: 14px;
+  font-size: @font-size;
   color: #262626;
   display: flex;
   align-items: center;
@@ -36,7 +38,7 @@
 .action {
   visibility: hidden;
   flex: 0 0 auto;
-  font-size: 14px;
+  font-size: @font-size;
   transform: rotate(-45deg);
 }
 

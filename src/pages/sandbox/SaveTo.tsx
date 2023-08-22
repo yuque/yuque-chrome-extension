@@ -10,17 +10,15 @@ import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
 import { get as safeGet } from 'lodash';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import Icon from '@ant-design/icons';
 import proxy from '@/core/proxy';
 import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
 import { EditorValueContext } from './EditorValueContext';
-import BookLogoSvg from '@/assets/svg/book-logo.svg';
-import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
+import BookWithIcon from '@/components/book-with-icon';
 import {
   extractSummaryRaw,
   getBookmarkHTMLs,
@@ -49,16 +47,6 @@ const BOOKS_DATA = [
     },
   },
 ];
-
-function BookWithIcon({ book }) {
-  const iconSvg = book.type === 'note' ? NoteLogoSvg : BookLogoSvg;
-  return (
-    <>
-      <Icon style={{ marginRight: 4, color: '#888' }} component={iconSvg} />
-      {book.name}
-    </>
-  );
-}
 
 export interface ISaveToProps {
   className?: string;
@@ -228,7 +216,6 @@ const useViewModel = (props: ISaveToProps) => {
       if (!isFull) {
         description += VIEW_MORE_TAG;
       }
-      console.log(currentBookId, '我是啥');
       if (currentBookId === NODE_DATA_ID) {
         proxy.note.getStatus().then(({ data }) => {
           const noteId = safeGet(data, 'mirror.id');

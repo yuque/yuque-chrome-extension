@@ -1,6 +1,8 @@
+@import '~@/styles/parameters.less';
+
 .innerWordMarkWrapper {
-  background-color: #fff;
-  border: 1px solid #e5e8eb;
+  background-color: @white;
+  border: 1px solid @border-color;
   box-shadow: 0 8px 16px #919eab29;
   border-radius: 5px;
   height: 30px;
@@ -15,6 +17,20 @@
 
   .moreActions {
     padding: 0 6px;
+    color: @text-color-secondary;
+  }
+
+  .closeActions {
+    height: 30px;
+    border-left: 1px solid @border-color;
+    display: flex;
+    align-items: center;
+    width: 34px;
+    font-size: @font-size;
+    justify-content: center;
+    margin-left: 6px;
+    color: @text-color-secondary;
+    cursor: pointer;
   }
 
   .pinList {
@@ -27,10 +43,10 @@
       gap: 4px;
       padding: 0 8px;
       align-items: center;
-      color: #262626;
+      color: @text-color;
 
       .name {
-        font-size: 14px;
+        font-size: @font-size;
         line-height: 20px;
       }
     }
@@ -42,11 +58,11 @@
   user-select: none;
 
   :global {
-    .ant-popover-inner, .ant-popover-inner-content {
+    .yq-word-mark-popover-inner, .yq-word-mark-popover-inner-content {
       padding: 0;
     }
 
-    .ant-popover-arrow {
+    .yq-word-mark-popover-arrow {
       display: none;
     }
 

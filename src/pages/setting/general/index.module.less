@@ -1,0 +1,58 @@
+@import '~@/styles/parameters.less';
+
+.title {
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: @text-color;
+  font-weight: 500;
+}
+
+.card {
+  display: flex;
+  border: 1px solid @border-color;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  gap: 12px;
+  align-items: center;
+  max-width: 420px;
+}
+
+.avatar {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+}
+
+.infoWrapper {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  color: @text-color;
+  overflow: hidden;
+
+  .desc {
+    font-size: @font-size-sm;
+    color: @text-color-secondary;
+
+  }
+
+  .name, .desc {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.operateWrapper {
+  display: flex;
+  gap: 16px;
+  flex: 0 0 auto;
+}
+
+.operateItem {
+  cursor: pointer;
+}
+

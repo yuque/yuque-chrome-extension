@@ -112,7 +112,6 @@ async function request<T>(
     };
     if (isFileUpload) {
       options.body = config.data;
-      console.log(options.body.toString())
     } else if (options.method === 'POST' || options.method === 'PUT') {
       options.headers = {
         'Content-Type': 'application/json; charset=UTF-8',

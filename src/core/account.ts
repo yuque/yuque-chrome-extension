@@ -2,8 +2,17 @@ import { pick } from 'lodash';
 import { STORAGE_KEYS } from '@/config';
 import Chrome from '@/core/chrome';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { Book } from './interface';
 
-export const getCurrentAccount = () => new Promise(resolve => {
+export interface IUser {
+  avatar_url?: string;
+  id?: number;
+  login?: string;
+  login_at?:  number;
+  name?: string;
+}
+
+export const getCurrentAccount = () => new Promise<IUser>(resolve => {
   Chrome.storage.local.get(STORAGE_KEYS.CURRENT_ACCOUNT, (res = {}) => {
     const account = res[STORAGE_KEYS.CURRENT_ACCOUNT];
     if (!account?.login_at) {
@@ -38,17 +47,51 @@ export const clearCurrentAccount = () => new Promise(resolve => {
   });
 });
 
-export const updateWordMarkPinList = (list: WordMarkOptionTypeEnum[]) => new Promise(resolve => {
-  Chrome.storage.local.set({
-    [STORAGE_KEYS.SETTINGS.WORD_MARK_PIN]: list
-  }, () => {
-    resolve(list);
+export enum WordMarkConfigKey {
+  // 是否开启
+  enable = 'enable',
+
+  // 剪藏默认存储地址
+  defaultSavePosition = 'defaultSavePosition',
+
+  // 划词置顶的操作
+  innerPinList = 'innerPinList',
+}
+
+
+export interface IWordMarkConfig {
+  [WordMarkConfigKey.enable]: boolean;
+  [WordMarkConfigKey.defaultSavePosition]: Book;
+  [WordMarkConfigKey.innerPinList]: Array<WordMarkOptionTypeEnum>;
+}
+
+export const defaultWordMarkConfig: IWordMarkConfig = {
+  [WordMarkConfigKey.enable]: true,
+  [WordMarkConfigKey.defaultSavePosition]: {
+    type: 'Note',
+    id: 0,
+    name: '小记',
+  },
+  [WordMarkConfigKey.innerPinList]: [WordMarkOptionTypeEnum.translate],
+}
+
+export const updateWordMarkConfig = (key: WordMarkConfigKey, value: any) => new Promise(resolve => {
+  Chrome.storage.local.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG, (config) => {
+    const result = {
+      ...(config?.[STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG] || defaultWordMarkConfig),
+      [key]: value,
+    };
+    Chrome.storage.local.set({
+      [STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG]: result,
+    }, () => {
+      resolve(result);
+    })
   });
 });
 
-export const getWordMarkPinList = () => new Promise(resolve => {
-  Chrome.storage.local.get(STORAGE_KEYS.SETTINGS.WORD_MARK_PIN, (list) => {
-    resolve(list[STORAGE_KEYS.SETTINGS.WORD_MARK_PIN]);
+export const getWordMarkConfig = () => new Promise<IWordMarkConfig>(resolve => {
+  Chrome.storage.local.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG, (config) => {
+    resolve(config[STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG] || defaultWordMarkConfig);
   });
 });
 

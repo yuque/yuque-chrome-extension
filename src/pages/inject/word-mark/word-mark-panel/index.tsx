@@ -3,6 +3,7 @@ import Icon from '@ant-design/icons';
 import { Input, message } from 'antd';
 import classnames from 'classnames';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { i18n } from '@/isomorphic/i18n';
 import { BACKGROUND_EVENTS } from '@/events';
 import Chrome from '@/core/chrome';
 import { CloseOutlined } from '@ant-design/icons';
@@ -10,7 +11,6 @@ import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import CopySvg from '@/assets/svg/copy.svg';
 import { IKernelEditorRef } from '@/components/lake-editor/kernel-editor';
 import { toolbars } from '../constants';
-import { saveToNote } from '../util';
 import styles from './index.module.less';
 
 interface WordMarkPanelProps {
@@ -18,6 +18,7 @@ interface WordMarkPanelProps {
   type: WordMarkOptionTypeEnum;
   closeWordMark: () => void;
   editorRef: React.MutableRefObject<IKernelEditorRef>;
+  save: () => void;
 }
 
 enum StepMessage {
@@ -25,21 +26,28 @@ enum StepMessage {
 }
 
 function WordMarkPanel(props: WordMarkPanelProps) {
-  const { selectText, type: defaultType, closeWordMark } = props;
-  const [ result, setResult ] = useState(StepMessage.onStart);
+  const {
+    selectText,
+    type: defaultType,
+    closeWordMark,
+    save,
+    editorRef,
+  } = props;
+  const [ result, setResult ] = useState<string>(StepMessage.onStart);
   const [ type, setType ] = useState(defaultType);
   const [ loading, setLoading ] = useState(true);
   const handClick = (type: WordMarkOptionTypeEnum) => {
     setType(type);
   };
 
-  const onCopyText = async () => {
-    await navigator.clipboard.writeText(result);
-    message.success(__i18n('复制成功'));
+  const onSave = async () => {
+    await editorRef.current?.setContent('text/html', result);
+    save();
   };
 
-  const onSave = async () => {
-    saveToNote(result);
+  const onCopyText = async () => {
+    await navigator.clipboard.writeText(result);
+    message.success(i18n('复制成功'));
   };
 
   const executeCommand = () => {
@@ -49,13 +57,14 @@ function WordMarkPanel(props: WordMarkPanelProps) {
       {
         action: BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND,
         data: {
-          type: type,
-          selectText: selectText,
-        }
+          type,
+          selectText,
+        },
       },
       res => {
         const { data } = res;
         setResult(data.join(''));
+        setLoading(false);
       },
     );
   };
@@ -99,21 +108,20 @@ function WordMarkPanel(props: WordMarkPanelProps) {
           disabled
           value={result}
         />
-        <div className={styles.resultFooter}>
-          <div className={styles.feedbackOperate}>
-            <div className={styles.feedbackOperateItem}>{__i18n('👍🏻 有用')}</div>
-            <div className={styles.feedbackOperateItem}>{__i18n('👎🏻 没用')}</div>
-          </div>
-          <div className={styles.saveOperate}>
-            <div className={styles.saveOperateItem} onClick={onSave}>
-              <Icon component={NoteLogoSvg} />
+        {!loading && (
+          <div className={styles.resultFooter}>
+            <div className={styles.feedbackOperate} />
+            <div className={styles.saveOperate}>
+              <div className={styles.saveOperateItem} onClick={onSave}>
+                <Icon component={NoteLogoSvg} />
+              </div>
+              <div className={styles.line} />
+              <div className={styles.saveOperateItem} onClick={onCopyText}>
+                <Icon component={CopySvg} />
+              </div>
             </div>
-            <div className={styles.line} />
-            <div className={styles.saveOperateItem} onClick={onCopyText}>
-              <Icon component={CopySvg} />
-            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={styles.closWrapper} onClick={closeWordMark}>
         <CloseOutlined />
