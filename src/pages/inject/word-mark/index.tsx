@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Root, createRoot } from 'react-dom/client';
+import { message } from 'antd';
+import { i18n } from '@/isomorphic/i18n';
+import { YUQUE_DOMAIN } from '@/config';
 import { YQ_INJECT_WORD_MARK_CONTAINER } from '@/isomorphic/constants';
 import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS, PAGE_EVENTS } from '@/events';
@@ -78,6 +81,25 @@ Chrome.runtime.onMessage.addListener(
       case PAGE_EVENTS.DISABLE_WORD_MARK:
         destroyWordMark();
         sendResponse(true);
+        break;
+      case PAGE_EVENTS.FORCE_UPGRADE_VERSION:
+        message.error({
+          content: (
+            <span>
+              {i18n('当前浏览器插件版本过低')}
+              <a
+                href={`${YUQUE_DOMAIN}/download`}
+                target={'_blank'}
+                style={{
+                  color: '#00B96B',
+                  marginLeft: '8px',
+                }}
+              >
+                {i18n('前往升级')}
+              </a>
+            </span>
+          ),
+        });
         break;
       default:
         sendResponse(true);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
 import classnames from 'classnames';
+import { CloseOutlined } from '@ant-design/icons';
 import { AccountContext } from '@/context/account-context';
 import {
   IUser,
@@ -27,10 +28,11 @@ declare const Tracert: any;
 interface IAccountLayoutProps {
   children: React.ReactNode;
   position?: 'rightTop' | 'center';
+  close?: () => void;
 }
 
 function AccountLayout(props: IAccountLayoutProps) {
-  const { position = 'rightTop' } = props;
+  const { position = 'rightTop', close } = props;
   const [ user, setUser ] = useState(null);
   const [ ready, setAppReady ] = useState(false);
   const [ forceUpgradeInfo, setForceUpgradeInfo ] = useState<string>();
@@ -90,12 +92,18 @@ function AccountLayout(props: IAccountLayoutProps) {
   };
 
   const renderUnLogin = () => {
-    if (forceUpgradeInfo) {
-      return <div dangerouslySetInnerHTML={{ __html: forceUpgradeInfo }} />;
-    }
     return (
       <div className={classnames(styles[position], styles.loginWrapper)}>
-        <Login onConfirm={onLogin} />
+        {forceUpgradeInfo ? (
+          <div dangerouslySetInnerHTML={{ __html: forceUpgradeInfo }} />
+        ) : (
+          <Login onConfirm={onLogin} />
+        )}
+        {close && (
+          <div onClick={close} className={styles.closeWrapper}>
+            <CloseOutlined />
+          </div>
+        )}
       </div>
     );
   };

@@ -7,6 +7,9 @@ import {
   CSRF_HEADER_NAME,
   EXTENSION_ID,
 } from '@/config';
+import { PAGE_EVENTS } from '@/events';
+import eventManager from './event/eventManager';
+import { AppEvents } from './event/events';
 
 export class CsrfTokenError extends Error {
   constructor(message) {
@@ -134,6 +137,20 @@ async function request<T>(
       ...options,
     });
     const responseJson = await response.json();
+    if (responseJson.status === 400 && responseJson.code === 'force_upgrade_version') {
+      if (typeof window !== 'undefined') {
+        eventManager.notify(AppEvents.FORCE_UPGRADE_VERSION, {
+          html: responseJson?.html,
+        });
+      } else {
+        Chrome.tabs.query({ active: true }, (tabs) => {
+          Chrome.tabs.sendMessage(tabs[0].id, {
+            action: PAGE_EVENTS.FORCE_UPGRADE_VERSION,
+          });
+        })
+      }
+      throw response;
+    }
     if (!(response.status >= 200 && response.status < 300)) {
       throw response;
     }

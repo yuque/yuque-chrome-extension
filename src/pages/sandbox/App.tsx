@@ -19,19 +19,18 @@ import styles from './App.module.less';
 initI18N();
 type TabName = 'save-to' | 'other';
 
+const onClose = () => {
+  Chrome.tabs.getCurrent((tab: any) => {
+    Chrome.tabs.sendMessage(tab.id, {
+      action: GLOBAL_EVENTS.CLOSE_BOARD,
+    });
+  });
+};
+
 const App = () => {
   const [ editorValue, setEditorValue ] = useState([]);
   const [ currentType, setCurrentType ] = useState(ActionListener.currentType);
   const accountContext = useContext(AccountContext);
-
-  const onClose = () => {
-    Chrome.tabs.getCurrent((tab: any) => {
-      Chrome.tabs.sendMessage(tab.id, {
-        action: GLOBAL_EVENTS.CLOSE_BOARD,
-      });
-    });
-  };
-
   const [ tab, setTab ] = React.useState<TabName>('save-to');
 
   const handleTabChange = (e: RadioChangeEvent) => {
@@ -100,7 +99,7 @@ function ContextApp() {
         },
       }}
     >
-      <AccountLayout>
+      <AccountLayout close={onClose}>
         <App />
       </AccountLayout>
     </ConfigProvider>

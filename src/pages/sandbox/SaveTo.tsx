@@ -19,8 +19,9 @@ import { EditorValueContext } from './EditorValueContext';
 import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
 import BookWithIcon from '@/components/common/book-with-icon';
+import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
+import { VIEW_MORE_TAG } from '@/isomorphic/constants';
 import {
-  extractSummaryRaw,
   getBookmarkHTMLs,
   getBookmarkHtml,
   getCitation,
@@ -34,7 +35,6 @@ import {
   SELECT_TYPE_BOOKMARK,
   SELECT_TYPE_SELECTION,
 } from './constants/select-types';
-import { VIEW_MORE_TAG } from '@/isomorphic/constants';
 
 const NODE_DATA_ID = 0;
 
