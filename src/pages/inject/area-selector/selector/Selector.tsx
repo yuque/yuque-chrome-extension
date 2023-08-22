@@ -66,7 +66,9 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       e.stopImmediatePropagation();
       e.preventDefault();
       const target = e.target as Element;
-      if (target?.closest('.select-inner')) {
+      if (target.closest('.select-confirm')) {
+        props.onSave();
+      } else if (target?.closest('.select-inner')) {
         const key = parseInt(target.getAttribute('data-select-index'));
         targetRectListRef.current = targetRectListRef.current.filter(
           (_, index) => key !== index,
@@ -99,7 +101,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       window.removeEventListener('mouseover', handleMouseOver);
       window.removeEventListener('click', onToggleSelect, true);
     };
-  }, []);
+  }, [props.onSave]);
 
   useImperativeHandle(
     propsRef,
@@ -117,7 +119,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       <div className={classnames(styles.mask, 'select-inner')}>
         单击区域以选中，再次单击取消选中。ESC 退出， ↲ 完成
         {!!targetRectListRef.current.length && (
-          <div className={styles.confirm} onClick={props.onSave}>
+          <div className={classnames(styles.confirm, 'select-confirm')} onClick={props.onSave}>
             确认选取({targetRectListRef.current.length})
           </div>
         )}

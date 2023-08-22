@@ -5,18 +5,18 @@ import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { Book } from './interface';
 
 export interface IUser {
-  avatar_url?: string;
-  id?: number;
-  login?: string;
-  login_at?:  number;
-  name?: string;
+  avatar_url: string;
+  id: number;
+  login: string;
+  login_at:  number;
+  name: string;
 }
 
 export const getCurrentAccount = () => new Promise<IUser>(resolve => {
   Chrome.storage.local.get(STORAGE_KEYS.CURRENT_ACCOUNT, (res = {}) => {
     const account = res[STORAGE_KEYS.CURRENT_ACCOUNT];
     if (!account?.login_at) {
-      resolve({});
+      resolve({} as IUser);
       return;
     }
     resolve(account || {});

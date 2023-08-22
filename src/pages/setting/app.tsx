@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ConfigProvider } from 'antd';
 import classnames from 'classnames';
 import { initI18N } from '@/isomorphic/i18n';
+import AccountLayout from '@/components/sandbox/account-layout';
 import General from './general';
 import WordMark from './word-mark';
 import styles from './app.module.less';
@@ -40,45 +41,47 @@ function App() {
         },
       }}
     >
-      <div className={styles.pageWrapper}>
-        <div className={styles.page}>
-          <div className={styles.left}>
-            <div className={styles.header}>{__i18n('语雀浏览器插件')}</div>
-            <div className={styles.menu}>
-              {menus.map(item => {
-                return (
-                  <div
-                    className={classnames(styles.menuItem, {
-                      [styles.menuItemSelect]: page === item.key,
-                    })}
-                    onClick={() => setPage(item.key)}
-                    key={item.key}
-                  >
-                    {item.name}
-                  </div>
-                );
-              })}
+      <AccountLayout position='center'>
+        <div className={styles.pageWrapper}>
+          <div className={styles.page}>
+            <div className={styles.left}>
+              <div className={styles.header}>{__i18n('语雀浏览器插件')}</div>
+              <div className={styles.menu}>
+                {menus.map(item => {
+                  return (
+                    <div
+                      className={classnames(styles.menuItem, {
+                        [styles.menuItemSelect]: page === item.key,
+                      })}
+                      onClick={() => setPage(item.key)}
+                      key={item.key}
+                    >
+                      {item.name}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-          <div className={styles.right}>
-            <div className={styles.title}>{title}</div>
-            <div
-              className={classnames({
-                [styles.hidden]: page !== Page.general,
-              })}
-            >
-              <General />
-            </div>
-            <div
-              className={classnames({
-                [styles.hidden]: page !== Page.wordMark,
-              })}
-            >
-              <WordMark />
+            <div className={styles.right}>
+              <div className={styles.title}>{title}</div>
+              <div
+                className={classnames({
+                  [styles.hidden]: page !== Page.general,
+                })}
+              >
+                <General />
+              </div>
+              <div
+                className={classnames({
+                  [styles.hidden]: page !== Page.wordMark,
+                })}
+              >
+                <WordMark />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </AccountLayout>
     </ConfigProvider>
   );
 }

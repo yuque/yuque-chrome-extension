@@ -7,7 +7,7 @@ import {
   WordMarkConfigKey,
 } from '@/core/account';
 import proxy from '@/core/proxy';
-import BookWithIcon from '@/components/book-with-icon';
+import BookWithIcon from '@/components/common/book-with-icon';
 import { Book } from '@/core/interface';
 import styles from './index.module.less';
 

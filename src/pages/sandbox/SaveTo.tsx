@@ -18,7 +18,7 @@ import { GLOBAL_EVENTS } from '@/events';
 import { EditorValueContext } from './EditorValueContext';
 import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
-import BookWithIcon from '@/components/book-with-icon';
+import BookWithIcon from '@/components/common/book-with-icon';
 import {
   extractSummaryRaw,
   getBookmarkHTMLs,

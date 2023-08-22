@@ -2,8 +2,7 @@ import React from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { pkg, VERSION } from '@/config';
-
-import styles from './FeedBack.module.less';
+import styles from './index.module.less';
 
 interface FeedBackProps {
   showVersion?: boolean;
