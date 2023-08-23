@@ -7,6 +7,7 @@ import {
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
 import { noteProxy, NoteCreateParams } from '@/core/proxy/note';
+import { wordMarkProxy } from '@/core/proxy/word-mark';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -55,7 +56,7 @@ export const initBackGroundActionListener = () => {
         }
         case BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND: {
           const { selectText } = request.data;
-          proxy.wordMark.translate([ selectText ]).then(res => {
+          wordMarkProxy.translate([ selectText ]).then(res => {
             sendResponse(res.data);
           });
           break;

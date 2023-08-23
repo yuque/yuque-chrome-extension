@@ -93,19 +93,6 @@ const RequestProxy = {
       throw new Error(`Error uploading image: ${(data as any).statusText}`);
     },
   },
-  wordMark: {
-    async translate(srcTextList: string[]) {
-      const isChinese = !!srcTextList[0].match(/[一-龥]/);
-      return await request('/api/services/translate/text', {
-        method: 'POST',
-        data: {
-          srcLanguage: isChinese ? 'zh' : 'en',
-          srcTextList,
-          tgtLanguage: isChinese ? 'en' : 'zh',
-        },
-      });
-    },
-  },
 };
 
 export default RequestProxy;

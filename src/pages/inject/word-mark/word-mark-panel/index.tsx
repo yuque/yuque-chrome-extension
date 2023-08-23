@@ -22,7 +22,7 @@ interface WordMarkPanelProps {
 }
 
 enum StepMessage {
-  onStart = '雀雀正在快马加鞭生成中…',
+  onStart = '雀雀正在快马加鞭翻译中…',
 }
 
 function WordMarkPanel(props: WordMarkPanelProps) {
