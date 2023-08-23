@@ -442,11 +442,8 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       srcDoc={templateHtml}
       allow="*"
       style={{
-        position: 'absolute',
         background: 'transparent',
         border: 'none',
-        height: '100%',
-        width: '100%',
       }}
     />
   );

@@ -1,3 +1,5 @@
+import { YUQUE_DOMAIN } from "@/config";
+
 export const SandboxMessageType = {
   SHOW_BOARD: 'SHOW_BOARD',
 };
@@ -34,4 +36,10 @@ export const YQ_SELECTION_CONTAINER = 'yq-selection-container';
 export const YQ_SANDBOX_BOARD_IFRAME = 'yq-sandbox-board-iframe';
 
 // 划词容器 class
-export const YQ_INJECT_WORD_MARK_CONTAINER = 'yq-inject-word-mark-container'
+export const YQ_INJECT_WORD_MARK_CONTAINER = 'yq-inject-word-mark-container';
+
+export const SERVER_URLS = {
+  LOGOUT: `${YUQUE_DOMAIN}/logout`,
+  LOGIN: `${YUQUE_DOMAIN}/api/accounts/login`,
+  DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
+};

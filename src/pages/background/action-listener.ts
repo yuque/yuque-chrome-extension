@@ -5,9 +5,9 @@ import {
   updateWordMarkConfig,
 } from '@/core/account';
 import Chrome from '@/core/chrome';
-import proxy from '@/core/proxy';
 import { noteProxy, NoteCreateParams } from '@/core/proxy/note';
 import { wordMarkProxy } from '@/core/proxy/word-mark';
+import { docProxy, ICreateDocParams } from '@/core/proxy/doc';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -52,7 +52,6 @@ export const initBackGroundActionListener = () => {
             sendResponse(res);
           });
           break;
-
         }
         case BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND: {
           const { selectText } = request.data;
@@ -73,8 +72,8 @@ export const initBackGroundActionListener = () => {
           break;
         }
         case BACKGROUND_EVENTS.SAVE_TO_BOOK: {
-          const data = request.data;
-          proxy.doc
+          const data = request.data as ICreateDocParams;
+          docProxy
             .create({
               ...data,
             })

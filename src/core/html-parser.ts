@@ -1,5 +1,5 @@
 import { get as safeGet } from 'lodash';
-import proxy from './proxy';
+import { uploadProxy } from './proxy/upload';
 
 async function urlToFile(url: string, filename: string) {
   try {
@@ -38,7 +38,7 @@ async function uploadImage(imageUrl: string) {
   }
 
   const file = await urlToFile(imageUrl, 'image.jpg');
-  const response = await proxy.upload.attach(file);
+  const response = await uploadProxy.attach(file);
   const uploadedImageUrl = safeGet(response, 'data.url');
   return uploadedImageUrl;
 }
@@ -61,7 +61,7 @@ export async function urlOrFileUpload(data: string | File): Promise<{
 
   console.info(data, file);
 
-  const response = await proxy.upload.attach(file);
+  const response = await uploadProxy.attach(file);
   return response.data;
 }
 

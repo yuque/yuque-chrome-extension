@@ -1,6 +1,4 @@
 import Chrome from '@/core/chrome';
-import { get as safeGet } from 'lodash';
-import proxy from '@/core/proxy';
 import { GLOBAL_EVENTS } from '@/events';
 
 /**
@@ -56,14 +54,6 @@ export const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
     });
   });
 
-/**
- * 获取小记的id
- */
-export const getNoteId = async (): Promise<string> => {
-  const noteStatusResponse = await proxy.note.getStatus();
-  const noteId = safeGet(noteStatusResponse, 'data.mirror.id');
-  return noteId;
-};
 
 /**
  * 开始选择需要剪藏的内容
