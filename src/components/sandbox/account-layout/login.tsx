@@ -23,7 +23,7 @@ const Login = props => {
         </div>
       </div>
       <Button type="primary" block onClick={onConfirm} disabled={false}>
-        {__i18n('登录验证')}
+        {__i18n('立即登录')}
       </Button>
       <FeedBack className={styles.feedback} />
     </div>

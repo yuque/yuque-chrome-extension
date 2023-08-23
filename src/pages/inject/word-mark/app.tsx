@@ -103,7 +103,11 @@ function App() {
         )
           .map((v: any) => v?.outerHTML || v?.nodeValue)
           .join('');
-        await editorRef.current?.setContent('text/html', html);
+
+        await editorRef.current?.setContent(
+          'text/html',
+          `${html}<p><br></p><blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote><p><br/></p>`,
+        );
         await save();
         return;
       }
@@ -147,7 +151,7 @@ function App() {
         x: e.clientX,
         y: e.clientY,
       };
-    }
+    };
 
     document.addEventListener('mouseup', onMouseUp);
     return () => {
@@ -167,7 +171,7 @@ function App() {
   }, [ selectText, initPosition, type ]);
 
   return (
-    <ConfigProvider prefixCls='yq-word-mark'>
+    <ConfigProvider prefixCls="yq-word-mark">
       <div>
         <div
           style={{
