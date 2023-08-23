@@ -72,7 +72,7 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
     id: 0,
     name: '小记',
   },
-  [WordMarkConfigKey.innerPinList]: [WordMarkOptionTypeEnum.translate],
+  [WordMarkConfigKey.innerPinList]: [WordMarkOptionTypeEnum.translate, WordMarkOptionTypeEnum.clipping],
 }
 
 export const updateWordMarkConfig = (key: WordMarkConfigKey, value: any) => new Promise(resolve => {

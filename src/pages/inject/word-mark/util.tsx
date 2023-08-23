@@ -29,10 +29,17 @@ export const saveToNote = async (params: SaveToNoteParams) => {
     res => {
       const url = LinkHelper.goMyNote();
       message.success(
-        <span>
+        <span style={{ fontSize: '14px' }}>
           {i18n('保存成功')}
           &nbsp;&nbsp;
-          <a target="_blank" href={url}>
+          <a
+            target="_blank"
+            href={url}
+            style={{
+              color: '#1677ff',
+              textDecoration: 'none',
+            }}
+          >
             {i18n('去小记查看')}
           </a>
         </span>,
@@ -60,10 +67,17 @@ export const saveToBook = async (params: SaveToBookParams) => {
     res => {
       const url = LinkHelper.goDoc(res);
       message.success(
-        <span>
+        <span style={{ fontSize: '14px' }}>
           {i18n('保存成功！')}
           &nbsp;&nbsp;
-          <a target="_blank" href={url}>
+          <a
+            target="_blank"
+            href={url}
+            style={{
+              color: '#1677ff',
+              textDecoration: 'none',
+            }}
+          >
             {i18n('立即查看')}
           </a>
         </span>,
