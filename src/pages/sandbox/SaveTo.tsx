@@ -260,8 +260,7 @@ const useViewModel = (props: ISaveToProps) => {
   }, [ editorRef, currentBookId ]);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-    const noteId = await getNoteId();
-    return urlOrFileUpload(params.data, noteId);
+    return urlOrFileUpload(params.data);
   }, []);
 
   return {

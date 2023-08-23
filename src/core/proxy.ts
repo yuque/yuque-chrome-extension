@@ -81,11 +81,10 @@ const RequestProxy = {
     }
   },
   upload: {
-    async attach(file, attachableId) {
+    async attach(file) {
       const { status, data } = await uploadFile(
         '/api/upload/attach',
         file,
-        attachableId,
       );
       if (status === 200) {
         return data;

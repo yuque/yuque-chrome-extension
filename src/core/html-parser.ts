@@ -27,7 +27,7 @@ function isRelativePath(url: string) {
   }
 }
 
-async function uploadImage(imageUrl: string, noteId: string) {
+async function uploadImage(imageUrl: string) {
   const pathMatch = imageUrl.match(/\/static[^\s]+/);
   if (pathMatch) {
     imageUrl = pathMatch[0];
@@ -38,12 +38,12 @@ async function uploadImage(imageUrl: string, noteId: string) {
   }
 
   const file = await urlToFile(imageUrl, 'image.jpg');
-  const response = await proxy.upload.attach(file, noteId);
+  const response = await proxy.upload.attach(file);
   const uploadedImageUrl = safeGet(response, 'data.url');
   return uploadedImageUrl;
 }
 
-export async function urlOrFileUpload(data: string | File, noteId: string): Promise<{
+export async function urlOrFileUpload(data: string | File): Promise<{
   url: string;
   size: number;
   filename: string;
@@ -61,26 +61,26 @@ export async function urlOrFileUpload(data: string | File, noteId: string): Prom
 
   console.info(data, file);
 
-  const response = await proxy.upload.attach(file, noteId);
+  const response = await proxy.upload.attach(file);
   return response.data;
 }
 
-async function processHtmlString(htmlString: string, noteId: string) {
+async function processHtmlString(htmlString: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, 'text/html');
   const images = doc.querySelectorAll('img');
   for (const img of images) {
     const originalSrc = img.src;
-    const newSrc = await uploadImage(originalSrc, noteId);
+    const newSrc = await uploadImage(originalSrc);
     img.src = newSrc;
   }
 
   return doc.documentElement.innerHTML;
 }
 
-export default async function processHtmls(htmls: string[], noteId: string) {
+export default async function processHtmls(htmls: string[]) {
   const processedHtmlPromises = htmls.map(html =>
-    processHtmlString(html, noteId),
+    processHtmlString(html),
   );
   const processedHtmls = await Promise.all(processedHtmlPromises);
   return processedHtmls;

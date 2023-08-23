@@ -10,6 +10,7 @@ import {
 import { PAGE_EVENTS } from '@/events';
 import eventManager from './event/eventManager';
 import { AppEvents } from './event/events';
+import { getCurrentAccount } from './account';
 
 export class CsrfTokenError extends Error {
   constructor(message) {
@@ -19,15 +20,7 @@ export class CsrfTokenError extends Error {
 }
 
 const generateQuery = (params: {[key: string]: any}) => {
-  let queryString = '';
-  const paramsArray = [];
-  Object.keys(params).forEach(key =>
-    paramsArray.push(`${key}=${params[key]}`),
-  );
-  if (paramsArray.length > 0) {
-    queryString = `?${paramsArray.join('&')}`;
-  }
-  return queryString;
+  return `?${new URLSearchParams(params).toString()}`;
 }
 
 const setCsrfToken = (
@@ -163,16 +156,16 @@ async function request<T>(
 export async function uploadFile(
   url: string,
   file: File,
-  attachableId: number,
-  attachableType = 'Note',
+  attachableType = 'User',
   fileType = 'image',
 ) {
   const formData = new FormData();
   formData.append('file', file);
   const csrfToken = await getCsrfToken(YUQUE_DOMAIN, YUQUE_CSRF_COOKIE_NAME);
+  const user = await getCurrentAccount()
   const query = generateQuery({
     attachable_type: attachableType,
-    attachable_id: attachableId,
+    attachable_id: user.id,
     type: fileType,
     ctoken: csrfToken,
   });

@@ -8,6 +8,7 @@ export interface NoteCreateParams {
   has_bookmark?: boolean;
   has_attachment?: boolean;
   word_count?: number;
+  tag_meta_ids?: number[];
 }
 
 export const noteProxy = {
