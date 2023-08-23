@@ -1,5 +1,30 @@
-const { KernelFactory, Plugins } = window.Doc;
+const { KernelFactory, Plugins, KernelPlugin } = window.Doc;
 const CoreKernelFactory = new KernelFactory();
+
+class CustomKernelPlugin extends KernelPlugin {
+  init(kernel) {
+    const htmlService = kernel.getService({ value: 'IHTMLKernelService' });
+
+    if (htmlService) {
+      htmlService.registerHTMLNodeReader(
+        [ 'blockquote' ],
+        {
+          readNode(context) {
+            context.setNode({
+              id: '',
+              type: 'element',
+              name: 'quote',
+              attrs: {},
+            });
+          },
+          leaveNode() {
+          },
+        }
+      );
+    }
+  }
+}
+CustomKernelPlugin.PluginName = 'CustomEditorPlugin';
 
 const OpenKernelPlugins = [
   Plugins.Alert.AlertPlugin,
@@ -61,6 +86,7 @@ const OpenKernelPlugins = [
   Plugins.Thirdparty.ThirdpartyPlugin,
   Plugins.KernelAssistant.KernelAssistantPlugin,
   Plugins.Summary.SummaryPlugin,
+  CustomKernelPlugin,
 ];
 CoreKernelFactory.registerKernelPlugin(OpenKernelPlugins);
 
