@@ -8,21 +8,20 @@ import React, {
 } from 'react';
 import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
-import { get as safeGet } from 'lodash';
+import { noteProxy } from '@/core/proxy/note';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import Icon from '@ant-design/icons';
 import proxy from '@/core/proxy';
 import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
 import { EditorValueContext } from './EditorValueContext';
-import BookLogoSvg from '@/assets/svg/book-logo.svg';
-import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import styles from './SaveTo.module.less';
 import { ActionListener } from '@/core/action-listener';
+import BookWithIcon from '@/components/common/book-with-icon';
+import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
+import { VIEW_MORE_TAG } from '@/isomorphic/constants';
 import {
-  extractSummaryRaw,
   getBookmarkHTMLs,
   getBookmarkHtml,
   getCitation,
@@ -36,7 +35,6 @@ import {
   SELECT_TYPE_BOOKMARK,
   SELECT_TYPE_SELECTION,
 } from './constants/select-types';
-import { VIEW_MORE_TAG } from '@/isomorphic/constants';
 
 const NODE_DATA_ID = 0;
 
@@ -49,16 +47,6 @@ const BOOKS_DATA = [
     },
   },
 ];
-
-function BookWithIcon({ book }) {
-  const iconSvg = book.type === 'note' ? NoteLogoSvg : BookLogoSvg;
-  return (
-    <>
-      <Icon style={{ marginRight: 4, color: '#888' }} component={iconSvg} />
-      {book.name}
-    </>
-  );
-}
 
 export interface ISaveToProps {
   className?: string;
@@ -97,7 +85,9 @@ const useViewModel = (props: ISaveToProps) => {
             // 如果是空的则插入初始内容
             if (isEmpty) {
               const isNote = currentBookId === NODE_DATA_ID;
-              const { heading, quote } = getBookmarkHTMLs(await getCurrentTab());
+              const { heading, quote } = getBookmarkHTMLs(
+                await getCurrentTab(),
+              );
               editorRef.current?.appendContent(quote);
               // 回到文档开头
               editorRef.current?.focusToStart();
@@ -228,26 +218,21 @@ const useViewModel = (props: ISaveToProps) => {
       if (!isFull) {
         description += VIEW_MORE_TAG;
       }
-      console.log(currentBookId, '我是啥');
       if (currentBookId === NODE_DATA_ID) {
-        proxy.note.getStatus().then(({ data }) => {
-          const noteId = safeGet(data, 'mirror.id');
-          proxy.note
-            .update({
-              id: noteId,
-              source: serializedAsiContent,
-              html: serializedHtmlContent,
-              abstract: description,
-              has_image,
-              has_bookmark,
-              has_attachment,
-              word_count: wordCount,
-            })
-            .then(() => {
-              onSuccess('note', data);
-            })
-            .catch(onError);
-        });
+        noteProxy
+          .create({
+            source: serializedAsiContent,
+            html: serializedHtmlContent,
+            abstract: description,
+            has_image,
+            has_bookmark,
+            has_attachment,
+            word_count: wordCount,
+          })
+          .then((data) => {
+            onSuccess('note', data);
+          })
+          .catch(onError);
       } else {
         getCurrentTab().then(tab => {
           proxy.doc
@@ -275,8 +260,7 @@ const useViewModel = (props: ISaveToProps) => {
   }, [ editorRef, currentBookId ]);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-    const noteId = await getNoteId();
-    return urlOrFileUpload(params.data, noteId);
+    return urlOrFileUpload(params.data);
   }, []);
 
   return {

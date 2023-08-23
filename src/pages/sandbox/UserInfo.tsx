@@ -6,26 +6,12 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import SemverCompare from 'semver-compare';
 import { VERSION, pkg } from '@/config';
 import { useCheckVersion } from './CheckVersion';
+import { IUser } from '@/core/account';
 
 import styles from './UserInfo.module.less';
 
-export interface IYuqueAccountError {
-  code: number | string;
-}
-
-export interface IYuqueAccount {
-  id: number;
-  login: string;
-  name: string;
-  avatar_url: string;
-
-  protocol?: string;
-  hostname?: string;
-  error?: IYuqueAccountError;
-}
-
 interface Props {
-  user: IYuqueAccount;
+  user: IUser;
   onLogout: () => void;
 }
 

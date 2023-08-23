@@ -1,0 +1,32 @@
+@import '~@/styles/parameters.less';
+
+.loginWrapper {
+  position: fixed;
+  background: @white;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.4);
+  width: 300px;
+  box-sizing: border-box;
+  color: #585A5A;
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 20px 24px 24px;
+}
+
+.rightTop {
+  right: 16px;
+  top: 16px;
+}
+
+.center {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.closeWrapper {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  cursor: pointer;
+}

@@ -3,12 +3,14 @@ import { YUQUE_DOMAIN } from '@/config';
 import { initI18N } from '@/isomorphic/i18n';
 import { listenBrowserActionEvent } from './browser-action';
 import { createContextMenu, listenContextMenuEvents } from './context-menu';
+import { initBackGroundActionListener } from './action-listener';
 
 console.log('-- in background.js');
 
 initI18N();
 listenContextMenuEvents();
 listenBrowserActionEvent();
+initBackGroundActionListener();
 
 Chrome.runtime.onInstalled.addListener(async () => {
   console.log('-- runtime installed');
