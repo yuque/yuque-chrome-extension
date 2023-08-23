@@ -1,11 +1,11 @@
 import React, {
   forwardRef,
   useEffect,
-  useState,
   useRef,
   useImperativeHandle,
 } from 'react';
 import classnames from 'classnames';
+import { useForceUpdate } from '@/hooks/useForceUpdate';
 import styles from './Selector.module.less';
 
 type Rect = Pick<DOMRect, 'width' | 'height' | 'left' | 'top'>;
@@ -19,7 +19,7 @@ export interface ISelectorRef {
 }
 
 export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
-  const [ _, forceUpdate ] = useState(0);
+  const { forceUpdate } = useForceUpdate();
   const targetRectListRef = useRef<Rect[]>([]);
   const targetRectRef = useRef<Rect | null>();
   const targetRef = useRef<Element>();
@@ -59,7 +59,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         left: left + scrollbarWidth,
         top: top + scrollbarHeight,
       };
-      forceUpdate(state => state + 1);
+      forceUpdate();
     }
 
     const onToggleSelect = (e: MouseEvent) => {
@@ -92,7 +92,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         targetRef.current = null;
         targetRectRef.current = null;
       }
-      forceUpdate(state => state + 1);
+      forceUpdate();
     };
 
     window.addEventListener('mouseover', handleMouseOver);

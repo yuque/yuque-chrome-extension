@@ -15,6 +15,7 @@ import KernelEditor, {
 } from '@/components/lake-editor/kernel-editor';
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
 import { WordMarkContext } from '@/context/word-mark-context';
+import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { saveToNote, saveToBook } from './util';
 import WordMarkPanel from './word-mark-panel';
 import InnerWordMark from './inner-word-mark';
@@ -36,7 +37,7 @@ function App() {
   const [ showWordMark, setShowWordMark ] = useState(false);
   const [ type, setType ] = useState<WordMarkOptionTypeEnum>(null);
   const [ selectText, setSelectText ] = useState<string>('');
-  const [ _, forceUpdate ] = useState(0);
+  const { forceUpdate } = useForceUpdate();
   const editorRef = useRef<IKernelEditorRef>();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wordMarkPositionRef = useRef({
@@ -122,7 +123,7 @@ function App() {
       left: Math.min(Math.max(left, 0), maxLeft),
       top: Math.min(Math.max(top, 0), maxTop),
     };
-    forceUpdate(state => state + 1);
+    forceUpdate();
   }, []);
 
   const closeWordMark = useCallback(() => {
