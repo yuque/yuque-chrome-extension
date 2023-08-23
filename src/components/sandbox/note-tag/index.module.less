@@ -1,0 +1,60 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  padding: 0 16px;
+  padding-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 128px;
+  overflow-y: auto;
+}
+
+.addTagWrapper {
+  display: flex;
+  border: 1px solid @border-light-color;
+  padding: 0 12px;
+  border-radius: 15px;
+  line-height: 30px;
+  height: 30px;
+  gap: 4px;
+  cursor: pointer;
+  color: @grey-8;
+}
+
+.selectTag {
+  display: flex;
+  border: 1px solid @border-light-color;
+  padding: 0 12px;
+  border-radius: 15px;
+  line-height: 30px;
+  gap: 4px;
+  color: @grey-8;
+  font-size: @font-size;
+
+  .tagName {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .close {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    svg {
+      font-size: @font-size-sm;
+    }
+  }
+}
+
+.overlayClassName {
+  :global {
+    .ant-popover-inner {
+      padding: 0;
+      width: 296px;
+    }
+  }
+}

@@ -10,7 +10,6 @@ import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
 import { noteProxy } from '@/core/proxy/note';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import proxy from '@/core/proxy';
 import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
@@ -21,12 +20,18 @@ import { ActionListener } from '@/core/action-listener';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
 import { VIEW_MORE_TAG } from '@/isomorphic/constants';
+import NoteTag from '@/components/sandbox/note-tag';
+import {
+  getSelectTag,
+  saveSelectTag,
+} from '@/components/sandbox/note-tag/util';
+import { docProxy } from '@/core/proxy/doc';
+import { mineProxy } from '@/core/proxy/mine';
 import {
   getBookmarkHTMLs,
   getBookmarkHtml,
   getCitation,
   getCurrentTab,
-  getNoteId,
   startSelect,
 } from './helper';
 import {
@@ -65,7 +70,7 @@ const useViewModel = (props: ISaveToProps) => {
    * 获取知识库的数据
    */
   useEffect(() => {
-    proxy.book.getBooks().then(bookList => {
+    mineProxy.getBooks().then(bookList => {
       setBooks([ ...BOOKS_DATA, ...bookList ]);
     });
   }, []);
@@ -219,6 +224,7 @@ const useViewModel = (props: ISaveToProps) => {
         description += VIEW_MORE_TAG;
       }
       if (currentBookId === NODE_DATA_ID) {
+        const tagIds = await getSelectTag();
         noteProxy
           .create({
             source: serializedAsiContent,
@@ -228,14 +234,16 @@ const useViewModel = (props: ISaveToProps) => {
             has_bookmark,
             has_attachment,
             word_count: wordCount,
+            tag_meta_ids: tagIds,
           })
-          .then((data) => {
+          .then(data => {
             onSuccess('note', data);
+            saveSelectTag([]);
           })
           .catch(onError);
       } else {
         getCurrentTab().then(tab => {
-          proxy.doc
+          docProxy
             .create({
               title: __i18n('[来自剪藏] {title}', {
                 title: tab.title,
@@ -368,6 +376,13 @@ export default function SaveTo(props: ISaveToProps) {
                 {__i18n('继续选取')}
               </Button>
             </LakeEditor>
+            <div
+              className={classnames({
+                [styles.hidden]: currentBookId !== NODE_DATA_ID,
+              })}
+            >
+              <NoteTag />
+            </div>
           </div>
         )}
       </div>

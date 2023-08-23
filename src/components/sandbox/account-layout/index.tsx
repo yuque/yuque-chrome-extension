@@ -10,7 +10,6 @@ import {
   setCurrentAccount,
 } from '@/core/account';
 import Chrome from '@/core/chrome';
-import proxy, { SERVER_URLS } from '@/core/proxy';
 import {
   REQUEST_HEADER_VERSION,
   EXTENSION_ID,
@@ -20,6 +19,8 @@ import {
 } from '@/config';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
+import { mineProxy } from '@/core/proxy/mine';
+import { SERVER_URLS } from '@/isomorphic/constants';
 import Login from './login';
 import styles from './index.module.less';
 
@@ -82,7 +83,7 @@ function AccountLayout(props: IAccountLayoutProps) {
     const windowId = await createLoginWindow();
     await waitForWindowLogined(windowId);
     await removeWindow(windowId);
-    const accountInfo = await proxy.getMineInfo();
+    const accountInfo = await mineProxy.getUserInfo();
     if (!accountInfo) {
       message.error(__i18n('登录失败'));
       return;

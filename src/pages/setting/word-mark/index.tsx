@@ -6,7 +6,7 @@ import {
   IWordMarkConfig,
   WordMarkConfigKey,
 } from '@/core/account';
-import proxy from '@/core/proxy';
+import { mineProxy } from '@/core/proxy/mine';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { Book } from '@/core/interface';
 import styles from './index.module.less';
@@ -53,7 +53,7 @@ function WordMark() {
       setEnable(res.enable);
       setSavePosition(res.defaultSavePosition);
     });
-    proxy.book.getBooks().then(res => {
+    mineProxy.getBooks().then(res => {
       setBooks(bs => [ ...bs, ...res ]);
     });
   }, []);
