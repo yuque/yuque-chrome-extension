@@ -6,6 +6,7 @@ import React, {
   useLayoutEffect,
   useContext,
 } from 'react';
+import throttle from 'lodash/throttle';
 import { ConfigProvider, message } from 'antd';
 import classnames from 'classnames';
 import { VIEW_MORE_TAG, WordMarkOptionTypeEnum } from '@/isomorphic/constants';
@@ -48,7 +49,7 @@ function App() {
 
   const wordMarkContext = useContext(WordMarkContext);
 
-  const save = useCallback(async () => {
+  const save = useCallback(throttle(async () => {
     try {
       const serializedAsiContent =
         (await editorRef.current?.getContent('lake')) || '';
@@ -89,10 +90,11 @@ function App() {
           body: serializedHtmlContent,
         });
       }
+      setShowWordMark(false);
     } catch (e) {
       message.error(i18n('保存失败，请重试！'));
     }
-  }, [ wordMarkContext ]);
+  }, 300), [ wordMarkContext ]);
 
 
   const executeCommand = useCallback(
@@ -161,7 +163,7 @@ function App() {
 
   useEffect(() => {
     setType(null);
-  }, [ selectText ]);
+  }, [ selectText, showWordMark ]);
 
   useLayoutEffect(() => {
     if (!selectText) {

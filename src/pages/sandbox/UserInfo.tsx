@@ -5,8 +5,9 @@ import { DownOutlined } from '@ant-design/icons';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import SemverCompare from 'semver-compare';
 import { VERSION, pkg } from '@/config';
-import { useCheckVersion } from './CheckVersion';
 import { IUser } from '@/core/account';
+import Chrome from '@/core/chrome';
+import { useCheckVersion } from './CheckVersion';
 
 import styles from './UserInfo.module.less';
 
@@ -41,6 +42,9 @@ const UserInfo = (props: Props) => {
       case 'feedback':
         window.open(pkg.issues, '_blank');
         break;
+      case 'user-setting':
+        window.open(Chrome.runtime.getURL('setting.html') ,'_blank')
+        break;
       case 'upgrade-version':
         Modal.confirm({
           content: (
@@ -74,6 +78,10 @@ const UserInfo = (props: Props) => {
       {
         key: 'user-profile',
         label: __i18n('访问主页'),
+      },
+      {
+        key: 'user-setting',
+        label: __i18n('偏好设置')
       },
       {
         key: 'upgrade-version',
