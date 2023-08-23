@@ -1,15 +1,16 @@
 import request from '@/core/request';
-import { isChinese } from '../uitl';
+import { detect } from '../uitl';
 
 export const wordMarkProxy = {
   async translate(srcTextList: string[]) {
-    const ch = isChinese(srcTextList[0])
+    const srcLanguage = detect(srcTextList[0]);
+    const tgtLanguage = srcLanguage === 'zh' ? 'en' : 'zh';
     return await request('/api/services/translate/text', {
       method: 'POST',
       data: {
-        srcLanguage: ch ? 'zh' : 'en',
+        srcLanguage,
         srcTextList,
-        tgtLanguage: ch ? 'en' : 'zh',
+        tgtLanguage,
       },
     });
   },

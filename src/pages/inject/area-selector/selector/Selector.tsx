@@ -93,6 +93,9 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         targetRectRef.current = null;
       }
       forceUpdate();
+      setTimeout(() => {
+        window.focus();
+      }, 200)
     };
 
     window.addEventListener('mouseover', handleMouseOver);
