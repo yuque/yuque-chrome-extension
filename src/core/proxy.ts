@@ -8,20 +8,6 @@ export const SERVER_URLS = {
   DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
 };
 
-interface NoteUpdateParams {
-  id: number;
-  html: string;
-  source: string;
-  abstract: string;
-  real_save_type?: number;
-  has_image?: boolean;
-  has_bookmark?: boolean;
-  has_attachment?: boolean;
-  sync_dynamic_data?: boolean;
-  latest_update_user_uuid?: string;
-  word_count?: number;
-}
-
 const RequestProxy = {
   async getMineInfo(options = {}) {
     const { data, status } = await request<any>('/api/mine', {
@@ -67,23 +53,6 @@ const RequestProxy = {
     },
   },
   note: {
-    async getStatus() {
-      return await request('/api/modules/note/notes/NoteController/status', {
-        method: 'GET',
-      });
-    },
-    async update(params: NoteUpdateParams) {
-      const time = new Date().getTime();
-      return await request('/api/modules/note/notes/NoteController/update', {
-        method: 'PUT',
-        data: {
-          save_type: 'user',
-          published_at: time,
-          content_updated_at: time,
-          ...params,
-        },
-      });
-    },
     async create(params) {
       return await request('/api/modules/note/notes/NoteController/create', {
         method: 'POST',
@@ -94,6 +63,22 @@ const RequestProxy = {
         },
       });
     },
+  },
+  tag: {
+    async index() {
+      return await request('/api/modules/note/tags/TagController/index', {
+        method: 'GET',
+      })
+    },
+    async create(params: { name: string }) {
+      return await request('/api/modules/note/tags/TagController/create', {
+        method: 'POST',
+        data: {
+          ...params,
+          create_or_find: true,
+        }
+      })
+    }
   },
   upload: {
     async attach(file, attachableId) {

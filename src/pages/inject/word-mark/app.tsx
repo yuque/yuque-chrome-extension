@@ -95,8 +95,8 @@ function App() {
 
 
   const executeCommand = useCallback(
-    async (type: WordMarkOptionTypeEnum) => {
-      if (type === WordMarkOptionTypeEnum.clipping) {
+    async (t: WordMarkOptionTypeEnum) => {
+      if (t === WordMarkOptionTypeEnum.clipping) {
         const html = Array.from(
           document.getSelection().getRangeAt(0).cloneContents().childNodes,
         )
@@ -106,7 +106,7 @@ function App() {
         await save();
         return;
       }
-      setType(type);
+      setType(t);
     },
     [ selectText ],
   );

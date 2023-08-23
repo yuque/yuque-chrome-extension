@@ -11,7 +11,6 @@ import BookWithIcon from '@/components/common/book-with-icon';
 import { Book } from '@/core/interface';
 import styles from './index.module.less';
 
-
 function WordMark() {
   const [ enable, setEnable ] = useState(false);
   const [ books, setBooks ] = useState<Array<Book>>([
@@ -39,7 +38,7 @@ function WordMark() {
   };
 
   const onChangeSavePosition = async (id: number) => {
-    const item = books.find(item => item.id === id);
+    const item = books.find(i => i.id === id);
     await updateWordMarkConfig(WordMarkConfigKey.defaultSavePosition, {
       id: item.id,
       type: item.type,
@@ -55,7 +54,7 @@ function WordMark() {
       setSavePosition(res.defaultSavePosition);
     });
     proxy.book.getBooks().then(res => {
-      setBooks(books => [ ...books, ...res ]);
+      setBooks(bs => [ ...bs, ...res ]);
     });
   }, []);
 

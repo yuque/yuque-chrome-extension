@@ -11,6 +11,9 @@ export const STORAGE_KEYS = {
   CURRENT_ACCOUNT: 'storage/current-account',
   SETTINGS: {
     WORD_MARK_CONFIG: 'settings/word-mark-config',
+  },
+  NOTE: {
+    SELECT_TAGS: 'note/select-tags',
   }
 };
 export const YUQUE_DOMAIN = 'https://www.yuque.com';

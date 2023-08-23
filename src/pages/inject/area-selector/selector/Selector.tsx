@@ -71,10 +71,10 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       } else if (target?.closest('.select-inner')) {
         const key = parseInt(target.getAttribute('data-select-index'));
         targetRectListRef.current = targetRectListRef.current.filter(
-          (_, index) => key !== index,
+          (__, index) => key !== index,
         );
         targetListRef.current = targetListRef.current.filter(
-          (_, index) => key !== index,
+          (__, index) => key !== index,
         );
       } else {
         targetRectListRef.current = [

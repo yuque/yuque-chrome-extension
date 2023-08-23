@@ -6,6 +6,7 @@ import {
 } from '@/core/account';
 import Chrome from '@/core/chrome';
 import proxy from '@/core/proxy';
+import { noteProxy, NoteCreateParams } from '@/core/proxy/note';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -24,12 +25,13 @@ export const initBackGroundActionListener = () => {
       sendResponse: SendResponse,
     ) => {
       switch (request.action) {
-        case BACKGROUND_EVENTS.GET_WORD_MARK_CONFIG:
+        case BACKGROUND_EVENTS.GET_WORD_MARK_CONFIG: {
           getWordMarkConfig().then(res => {
             sendResponse(res);
           });
           break;
-        case BACKGROUND_EVENTS.UPDATE_WORD_MARK_CONFIG:
+        }
+        case BACKGROUND_EVENTS.UPDATE_WORD_MARK_CONFIG: {
           const { key, value } = request.data;
           updateWordMarkConfig(key, value).then(res => {
             if (key === WordMarkConfigKey.enable && !false) {
@@ -49,6 +51,8 @@ export const initBackGroundActionListener = () => {
             sendResponse(res);
           });
           break;
+
+        }
         case BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND: {
           const { selectText } = request.data;
           proxy.wordMark.translate([ selectText ]).then(res => {
@@ -57,8 +61,8 @@ export const initBackGroundActionListener = () => {
           break;
         }
         case BACKGROUND_EVENTS.SAVE_TO_NOTE: {
-          const data = request.data;
-          proxy.note
+          const data = request.data as NoteCreateParams;
+          noteProxy
             .create({
               ...data,
             })
@@ -83,6 +87,9 @@ export const initBackGroundActionListener = () => {
           sendResponse(true);
           break;
         }
+        default:
+          sendResponse(true);
+          break;
       }
       return true;
     },

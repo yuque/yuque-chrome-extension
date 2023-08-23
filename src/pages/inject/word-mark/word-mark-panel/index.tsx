@@ -36,8 +36,8 @@ function WordMarkPanel(props: WordMarkPanelProps) {
   const [ result, setResult ] = useState<string>(StepMessage.onStart);
   const [ type, setType ] = useState(defaultType);
   const [ loading, setLoading ] = useState(true);
-  const handClick = (type: WordMarkOptionTypeEnum) => {
-    setType(type);
+  const handClick = (t: WordMarkOptionTypeEnum) => {
+    setType(t);
   };
 
   const onSave = async () => {

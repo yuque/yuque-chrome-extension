@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
-import { get as safeGet } from 'lodash';
+import { noteProxy } from '@/core/proxy/note';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import proxy from '@/core/proxy';
 import { urlOrFileUpload } from '@/core/html-parser';
@@ -85,7 +85,9 @@ const useViewModel = (props: ISaveToProps) => {
             // 如果是空的则插入初始内容
             if (isEmpty) {
               const isNote = currentBookId === NODE_DATA_ID;
-              const { heading, quote } = getBookmarkHTMLs(await getCurrentTab());
+              const { heading, quote } = getBookmarkHTMLs(
+                await getCurrentTab(),
+              );
               editorRef.current?.appendContent(quote);
               // 回到文档开头
               editorRef.current?.focusToStart();
@@ -217,24 +219,20 @@ const useViewModel = (props: ISaveToProps) => {
         description += VIEW_MORE_TAG;
       }
       if (currentBookId === NODE_DATA_ID) {
-        proxy.note.getStatus().then(({ data }) => {
-          const noteId = safeGet(data, 'mirror.id');
-          proxy.note
-            .update({
-              id: noteId,
-              source: serializedAsiContent,
-              html: serializedHtmlContent,
-              abstract: description,
-              has_image,
-              has_bookmark,
-              has_attachment,
-              word_count: wordCount,
-            })
-            .then(() => {
-              onSuccess('note', data);
-            })
-            .catch(onError);
-        });
+        noteProxy
+          .create({
+            source: serializedAsiContent,
+            html: serializedHtmlContent,
+            abstract: description,
+            has_image,
+            has_bookmark,
+            has_attachment,
+            word_count: wordCount,
+          })
+          .then((data) => {
+            onSuccess('note', data);
+          })
+          .catch(onError);
       } else {
         getCurrentTab().then(tab => {
           proxy.doc
