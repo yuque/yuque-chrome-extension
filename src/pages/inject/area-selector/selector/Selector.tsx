@@ -78,13 +78,13 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         );
       } else {
         targetRectListRef.current = [
-          ...targetRectListRef.current.filter((_, index) => {
+          ...targetRectListRef.current.filter((__, index) => {
             return !targetRef.current?.contains(targetListRef.current[index]);
           }),
           targetRectRef.current,
         ];
         targetListRef.current = [
-          ...targetListRef.current.filter((_, index) => {
+          ...targetListRef.current.filter((__, index) => {
             return !targetRef.current?.contains(targetListRef.current[index]);
           }),
           targetRef.current,
