@@ -61,7 +61,7 @@ export const initBackGroundActionListener = () => {
           break;
         }
         case BACKGROUND_EVENTS.OPEN_SETTING_PAGE: {
-          Chrome.tabs.create({ url: Chrome.runtime.getURL('/setting.html') });
+          Chrome.tabs.create({ url: `${Chrome.runtime.getURL('/setting.html')}?page=wordMark` });
           sendResponse(true);
           break;
         }

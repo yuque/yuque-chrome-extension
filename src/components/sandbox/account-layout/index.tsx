@@ -112,10 +112,8 @@ function AccountLayout(props: IAccountLayoutProps) {
   const onLogout = (data = {}) => {
     clearCurrentAccount().then(() => {
       setUser(undefined);
-      // @ts-ignore
-      if (data.html) {
-        // @ts-ignore
-        setForceUpgradeInfo(data.html);
+      if ((data as any).html) {
+        setForceUpgradeInfo((data as any)?.html);
       }
     });
   };
