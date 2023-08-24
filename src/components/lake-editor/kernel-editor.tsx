@@ -6,14 +6,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import Chrome from '@/core/chrome';
 
 export interface KernelEditorProps {
   value: string;
   onLoad?: () => void;
-  resource: {
-    docJS: string;
-    kernelEditorJS: string;
-  };
 }
 
 const key = 'kernel-editor';
@@ -78,12 +75,12 @@ export default forwardRef<IKernelEditorRef, KernelEditorProps>((props, ref) => {
      <title></title>
    </head>
    <body>
-     <script src="${props.resource.docJS}"></script>
-     <script src="${props.resource.kernelEditorJS}"></script>
+     <script src="${Chrome.runtime.getURL('doc.umd.js')}"></script>
+     <script src="${Chrome.runtime.getURL('kernel-editor.js')}"></script>
    </body>
    </html>
    `;
-  }, [props.resource]);
+  }, []);
 
   useEffect(() => {
     const resolveCache: Map<number, ((data: any) => void)> = new Map();

@@ -4,6 +4,7 @@ import { i18n } from '@/isomorphic/i18n';
 import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS } from '@/events';
 import LinkHelper from '@/core/link-helper';
+import { IWordMarkConfig } from '@/core/account';
 
 interface SaveToNoteParams {
   source: string;
@@ -54,6 +55,7 @@ interface SaveToBookParams {
   body_asl: string;
   body: string;
 }
+
 export const saveToBook = async (params: SaveToBookParams) => {
   Chrome.runtime.sendMessage(
     {
@@ -85,3 +87,15 @@ export const saveToBook = async (params: SaveToBookParams) => {
     },
   );
 };
+
+export const getPageUrl = () => {
+  return `${window.location.origin}${window.location.pathname}`;
+}
+
+export const isEnableWordMark = (config: IWordMarkConfig | null) => {
+  const url = getPageUrl();
+  if (!config?.enable || config.disableUrl?.includes(url)) {
+    return false;
+  }
+  return true;
+}

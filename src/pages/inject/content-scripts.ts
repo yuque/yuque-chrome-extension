@@ -7,11 +7,6 @@ import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
 import { initSelectArea } from './area-selector';
 import { initWordMark, destroyWordMark } from './word-mark';
 
-const wordMarkResource = {
-  kernelEditorJS: Chrome.runtime.getURL('kernel-editor.js'),
-  docJS: Chrome.runtime.getURL('doc.umd.js'),
-}
-
 class App {
   private sandboxURL: string;
   private iframeClassName: string;
@@ -76,7 +71,7 @@ class App {
   removeIframe() {
     const { sandboxURL } = this;
     $(`iframe[src="${sandboxURL}"]`).remove();
-    initWordMark({ resource: wordMarkResource });
+    initWordMark();
   }
 
   getPageHTML() {
@@ -174,6 +169,4 @@ function initSandbox() {
 initSandbox();
 
 
-initWordMark({
-  resource: wordMarkResource,
-});
+initWordMark();

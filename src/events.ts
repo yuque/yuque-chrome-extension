@@ -11,7 +11,7 @@ export const GLOBAL_EVENTS = {
 
 export const PAGE_EVENTS = {
   AREA_SELECTED: 'page/area-selected',
-  DISABLE_WORD_MARK: 'page/disable-word-mark',
+  ENABLE_WORD_MARK_STATUE_CHANGE: 'page/enable-word-mark-statue-change',
   FORCE_UPGRADE_VERSION: 'background/force-upgrade-version',
 };
 

@@ -7,6 +7,7 @@ import {
   CSRF_HEADER_NAME,
   EXTENSION_ID,
 } from '@/config';
+import 'whatwg-fetch';
 import { PAGE_EVENTS } from '@/events';
 import eventManager from './event/eventManager';
 import { AppEvents } from './event/events';

@@ -10,8 +10,7 @@ function App() {
   const onSave = useCallback(() => {
     const selectAreaElements = selectorRef.current.getSelections();
     const HTMLs = Array.from(selectAreaElements).map(elem => {
-      console.log(elem)
-      if (elem.nodeName === 'CANVAS') {
+      if (elem?.nodeName === 'CANVAS') {
         try {
           return `<img src="${(elem as HTMLCanvasElement).toDataURL()}">`;
         } catch (e) {
