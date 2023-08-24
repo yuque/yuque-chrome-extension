@@ -43,7 +43,7 @@ const UserInfo = (props: Props) => {
         window.open(pkg.issues, '_blank');
         break;
       case 'user-setting':
-        window.open(Chrome.runtime.getURL('setting.html') ,'_blank')
+        window.open(`${Chrome.runtime.getURL('/setting.html')}?page=wordMark`, '_blank')
         break;
       case 'upgrade-version':
         Modal.confirm({

@@ -12,7 +12,8 @@ export const GLOBAL_EVENTS = {
 export const PAGE_EVENTS = {
   AREA_SELECTED: 'page/area-selected',
   ENABLE_WORD_MARK_STATUE_CHANGE: 'page/enable-word-mark-statue-change',
-  FORCE_UPGRADE_VERSION: 'background/force-upgrade-version',
+  FORCE_UPGRADE_VERSION: 'page/force-upgrade-version',
+  WORD_MARK_CLIP: 'page/word-mark-clip',
 };
 
 // 在 background.js 里面监听的事件

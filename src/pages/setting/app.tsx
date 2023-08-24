@@ -28,7 +28,14 @@ const menus = [
 ];
 
 function App() {
-  const [ page, setPage ] = useState<Page>(Page.general);
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const queryPage = urlParams.get('page') as Page;
+  const defaultPage = Object.values(Page).includes(queryPage)
+    ? queryPage
+    : Page.general;
+
+  const [ page, setPage ] = useState<Page>(defaultPage);
   const title = useMemo(() => {
     return menus.find(item => item.key === page).name;
   }, [ page ]);
@@ -41,7 +48,7 @@ function App() {
         },
       }}
     >
-      <AccountLayout position='center'>
+      <AccountLayout position="center">
         <div className={styles.pageWrapper}>
           <div className={styles.page}>
             <div className={styles.left}>

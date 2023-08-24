@@ -3,7 +3,7 @@ import Icon from '@ant-design/icons';
 import { Input, message, Tooltip } from 'antd';
 import classnames from 'classnames';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
-import { i18n } from '@/isomorphic/i18n';
+import { __i18n } from '@/isomorphic/i18n';
 import { BACKGROUND_EVENTS } from '@/events';
 import Chrome from '@/core/chrome';
 import { CloseOutlined } from '@ant-design/icons';
@@ -18,11 +18,11 @@ interface WordMarkPanelProps {
   type: WordMarkOptionTypeEnum;
   closeWordMark: () => void;
   editorRef: React.MutableRefObject<IKernelEditorRef>;
-  save: () => void;
+  save: (text: string) => void;
 }
 
-enum StepMessage {
-  onStart = '雀雀正在快马加鞭翻译中…',
+const StepMessage = {
+  onStart: __i18n('雀雀正在快马加鞭翻译中…'),
 }
 
 function WordMarkPanel(props: WordMarkPanelProps) {
@@ -42,12 +42,12 @@ function WordMarkPanel(props: WordMarkPanelProps) {
 
   const onSave = async () => {
     await editorRef.current?.setContent('text/html', result);
-    save();
+    save(result);
   };
 
   const onCopyText = async () => {
     await navigator.clipboard.writeText(result);
-    message.success(i18n('复制成功'));
+    message.success(__i18n('复制成功'));
   };
 
   const executeCommand = () => {
@@ -113,7 +113,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
             <div className={styles.feedbackOperate} />
             <div className={styles.saveOperate}>
               <Tooltip
-                title={i18n('保存到小记')}
+                title={__i18n('保存到小记')}
                 trigger="hover"
                 placement="bottom"
                 getPopupContainer={node => node.parentElement}
@@ -125,7 +125,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
               </Tooltip>
               <div className={styles.line} />
               <Tooltip
-                title={i18n('复制到剪切板')}
+                title={__i18n('复制到剪切板')}
                 trigger="hover"
                 placement="bottom"
                 getPopupContainer={node => node.parentElement}

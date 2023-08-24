@@ -3,11 +3,11 @@ import { RefObject, useEffect, useRef } from 'react';
 
 export function on<T extends Window | Document | HTMLElement | EventTarget>(
   obj: T | null,
-  ...args: Parameters<T['addEventListener']> | [string, Function | null, ...any]
+  ...args: Parameters<T['addEventListener']> | [string, () => any | null, ...any]
 ): void {
   if (obj?.addEventListener) {
     obj.addEventListener(
-      ...(args as Parameters<HTMLElement['addEventListener']>)
+      ...(args as Parameters<HTMLElement['addEventListener']>),
     );
   }
 }
@@ -15,12 +15,12 @@ export function on<T extends Window | Document | HTMLElement | EventTarget>(
 export function off<T extends Window | Document | HTMLElement | EventTarget>(
   obj: T | null,
   ...args:
-    | Parameters<T['removeEventListener']>
-    | [string, Function | null, ...any]
+  | Parameters<T['removeEventListener']>
+  | [string, () => void | null, ...any]
 ): void {
   if (obj?.removeEventListener) {
     obj.removeEventListener(
-      ...(args as Parameters<HTMLElement['removeEventListener']>)
+      ...(args as Parameters<HTMLElement['removeEventListener']>),
     );
   }
 }
@@ -30,7 +30,7 @@ const defaultEvents = [ 'mousedown', 'touchstart' ];
 const useClickAway = <E extends Event = Event>(
   ref: RefObject<HTMLElement | null>,
   onClickAway: (event: E) => void,
-  events: string[] = defaultEvents
+  events: string[] = defaultEvents,
 ) => {
   const savedCallback = useRef(onClickAway);
   useEffect(() => {
