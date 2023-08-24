@@ -6,7 +6,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import SemverCompare from 'semver-compare';
 import { VERSION, pkg } from '@/config';
 import { IUser } from '@/core/account';
-import Chrome from '@/core/chrome';
+import { wordMarkSettingUrl } from '@/isomorphic/word-mark';
 import { useCheckVersion } from './CheckVersion';
 
 import styles from './UserInfo.module.less';
@@ -43,7 +43,7 @@ const UserInfo = (props: Props) => {
         window.open(pkg.issues, '_blank');
         break;
       case 'user-setting':
-        window.open(`${Chrome.runtime.getURL('/setting.html')}?page=wordMark`, '_blank')
+        window.open(wordMarkSettingUrl, '_blank')
         break;
       case 'upgrade-version':
         Modal.confirm({

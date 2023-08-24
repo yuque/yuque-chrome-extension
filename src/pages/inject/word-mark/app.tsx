@@ -140,7 +140,7 @@ function App() {
     const left = mouseupPositionRef.current.x - width / 2;
     const top = mouseupPositionRef.current.y + window.scrollY + 26;
     const maxLeft = document.body.clientWidth - width;
-    const maxTop = window.innerHeight + window.scrollY - height;
+    const maxTop = window.innerHeight + window.scrollY - height - 28;
     wordMarkPositionRef.current = {
       left: Math.min(Math.max(left, 0), maxLeft),
       top: Math.min(Math.max(top, 0), maxTop),

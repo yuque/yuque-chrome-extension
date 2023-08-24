@@ -20,7 +20,6 @@ function WordMark() {
   ]);
 
   const onConfigChange = async (key: WordMarkConfigKey, value: any) => {
-    console.log(key, value);
     await wordMarkConfigManager.update(key, value, { notice: true });
     setConfig({
       ...config,
@@ -72,7 +71,7 @@ function WordMark() {
           value={config.defaultSavePosition.id}
           options={books?.map(book => ({
             value: book.id,
-            label: <BookWithIcon book={book} />,
+            label: <BookWithIcon book={book} key={book.id}/>,
           }))}
           onChange={value => onChangeSavePosition(value)}
         />
