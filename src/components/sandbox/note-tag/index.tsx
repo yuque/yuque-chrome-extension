@@ -4,7 +4,7 @@ import { tagProxy, ITag } from '@/core/proxy/tag';
 import { TagContext } from './tag-context';
 import TagMenu from './tag-menu';
 import Popover from './popover';
-import { getSelectTag, saveSelectTag } from './util';
+import { saveSelectTag } from './util';
 import styles from './index.module.less';
 
 function NoteTag() {
@@ -20,7 +20,7 @@ function NoteTag() {
 
   const updateTags = useCallback((items: ITag[]) => {
     setTags(items);
-  }, [])
+  }, []);
 
   const deleteTag = (item: ITag) => {
     updateSelectTags(selectIds.filter(id => id !== item.id));
@@ -37,27 +37,36 @@ function NoteTag() {
   }, [ tags, selectIds ]);
 
   useEffect(() => {
+    const onBlur = () => {
+      setOpen(false);
+    };
+    // 因为编辑器是 iframe useClickAway 监听不到，所以需要给页面加一个失焦监听
+    window.addEventListener('blur', onBlur);
     tagProxy.index().then(res => {
       setTags(res.data?.data);
     });
-    getSelectTag().then(setSelectIds);
+    return () => {
+      window.removeEventListener('blur', onBlur);
+    };
   }, []);
 
   return (
-    <TagContext.Provider value={{ tags, selectTags, updateSelectTags, updateTags }}>
-       <Popover
-            content={<TagMenu selectIds={selectIds} open={open} />}
-            open={open}
-            onOpenChange={setOpen}
-          >
-      <div className={styles.wrapper}>
-        <div>
-         
+    <TagContext.Provider
+      value={{ tags, selectTags, updateSelectTags, updateTags }}
+    >
+      <div className={styles.noteTagWrapper}>
+        <Popover
+          content={<TagMenu selectIds={selectIds} open={open} />}
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <div onClick={() => setOpen(!open)}>
             <div className={styles.addTagWrapper}>
               <PlusOutlined />
               {!selectTags.length && __i18n('添加标签')}
             </div>
-        </div>
+          </div>
+        </Popover>
         {selectTags.map(item => {
           return (
             <div className={styles.selectTag} key={item.id}>
@@ -69,8 +78,6 @@ function NoteTag() {
           );
         })}
       </div>
-      </Popover>
-
     </TagContext.Provider>
   );
 }

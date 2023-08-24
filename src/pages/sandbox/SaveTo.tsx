@@ -156,11 +156,11 @@ const useViewModel = (props: ISaveToProps) => {
     } else if (currentType === SELECT_TYPE_BOOKMARK) {
       // 如果选择的是剪藏网址则插入bookmark
       getCurrentTab().then(tab => {
-        const html = getBookmarkHtml(tab);
+        const html = getBookmarkHtml(tab, false, currentBookId !== NODE_DATA_ID);
         editorRef.current?.setContent(html);
       });
     }
-  }, [ currentType ]);
+  }, [ currentType, currentBookId ]);
 
   const onSave = useCallback(async () => {
     if (!editorRef.current) return;
@@ -372,9 +372,9 @@ export default function SaveTo(props: ISaveToProps) {
               onSave={onSave}
               uploadImage={onUploadImage}
             >
-              <Button onClick={onContinue}>
-                {__i18n('继续选取')}
-              </Button>
+              {currentType !== SELECT_TYPE_BOOKMARK && (
+                <Button onClick={onContinue}>{__i18n('继续选取')}</Button>
+              )}
             </LakeEditor>
             <div
               className={classnames({

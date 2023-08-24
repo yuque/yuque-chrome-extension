@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
+import useClickAway from '@/hooks/useClickAway';
 import styles from './popover.module.less';
 
 interface IPopoverProps {
@@ -12,12 +13,17 @@ interface IPopoverProps {
 function Popover(props: IPopoverProps) {
   const { content, open, onOpenChange } = props;
   const renderRef = useRef(open);
+  const ref = useRef();
 
   useEffect(() => {
     if (open) {
       renderRef.current = true;
     }
   }, [ open ]);
+
+  useClickAway(ref ,() => {
+    onOpenChange(false);
+  });
 
   const renderPopover = () => {
     return (
@@ -32,9 +38,9 @@ function Popover(props: IPopoverProps) {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={ref}>
       {renderPopover()}
-      <div onClick={() => onOpenChange(!open)}>{props.children}</div>
+      <div>{props.children}</div>
     </div>
   );
 }
