@@ -7,18 +7,14 @@ import { YQ_INJECT_WORD_MARK_CONTAINER } from '@/isomorphic/constants';
 import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS, PAGE_EVENTS } from '@/events';
 import { IWordMarkConfig } from '@/core/account';
-import { IWordMarkContext, WordMarkContext } from '@/context/word-mark-context';
+import { WordMarkContext } from '@/context/word-mark-context';
 import { RequestMessage } from '@/core/action-listener';
-import { disableWordMarkKey } from './constants';
 import App from './app';
+import { isEnableWordMark } from './util';
 
 let root: Root;
 
-interface AppContextProps {
-  resource: IWordMarkContext['resource'];
-}
-
-function AppContext(props: AppContextProps) {
+function AppContext() {
   const [ defaultConfig, setDefaultConfig ] = useState<IWordMarkConfig>(null);
   useEffect(() => {
     Chrome.runtime.sendMessage(
@@ -31,10 +27,7 @@ function AppContext(props: AppContextProps) {
     );
   }, []);
 
-  if (
-    !defaultConfig?.enable ||
-    window.sessionStorage.getItem(disableWordMarkKey) === 'true'
-  ) {
+  if (!isEnableWordMark(defaultConfig)) {
     return;
   }
 
@@ -43,7 +36,6 @@ function AppContext(props: AppContextProps) {
       value={{
         ...defaultConfig,
         destroyWordMark,
-        resource: props.resource,
       }}
     >
       <App />
@@ -51,7 +43,10 @@ function AppContext(props: AppContextProps) {
   );
 }
 
-export function initWordMark(props: AppContextProps) {
+export function initWordMark() {
+  if (root) {
+    return;
+  }
   let wrapper = document.querySelector(`.${YQ_INJECT_WORD_MARK_CONTAINER}`);
   if (!wrapper) {
     wrapper = document.createElement('div');
@@ -59,7 +54,7 @@ export function initWordMark(props: AppContextProps) {
     document.documentElement.appendChild(wrapper);
   }
   root = createRoot(wrapper);
-  root.render(<AppContext {...props} />);
+  root.render(<AppContext />);
 }
 
 export function destroyWordMark() {
@@ -68,6 +63,7 @@ export function destroyWordMark() {
   }
   const wrapper = document.querySelector(`.${YQ_INJECT_WORD_MARK_CONTAINER}`);
   root.unmount();
+  root = null;
   wrapper?.remove();
 }
 
@@ -78,10 +74,18 @@ Chrome.runtime.onMessage.addListener(
     sendResponse: (response: boolean) => void,
   ) => {
     switch (request.action) {
-      case PAGE_EVENTS.DISABLE_WORD_MARK:
-        destroyWordMark();
+      case PAGE_EVENTS.ENABLE_WORD_MARK_STATUE_CHANGE: {
+        const { disableUrl = [], enable = false } = request?.data || {};
+        const url = `${window.location.origin}${window.location.pathname}`;
+        const isDisable = disableUrl.includes(url) || !enable;
+        if (isDisable) {
+          destroyWordMark();
+        } else {
+          initWordMark();
+        }
         sendResponse(true);
         break;
+      }
       case PAGE_EVENTS.FORCE_UPGRADE_VERSION:
         message.error({
           content: (

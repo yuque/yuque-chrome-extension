@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Icon from '@ant-design/icons';
-import { Input, message } from 'antd';
+import { Input, message, Tooltip } from 'antd';
 import classnames from 'classnames';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { i18n } from '@/isomorphic/i18n';
@@ -112,13 +112,29 @@ function WordMarkPanel(props: WordMarkPanelProps) {
           <div className={styles.resultFooter}>
             <div className={styles.feedbackOperate} />
             <div className={styles.saveOperate}>
-              <div className={styles.saveOperateItem} onClick={onSave}>
-                <Icon component={NoteLogoSvg} />
-              </div>
+              <Tooltip
+                title={i18n('保存到小记')}
+                trigger="hover"
+                placement="bottom"
+                getPopupContainer={node => node.parentElement}
+                mouseEnterDelay={0.5}
+              >
+                <div className={styles.saveOperateItem} onClick={onSave}>
+                  <Icon component={NoteLogoSvg} />
+                </div>
+              </Tooltip>
               <div className={styles.line} />
-              <div className={styles.saveOperateItem} onClick={onCopyText}>
-                <Icon component={CopySvg} />
-              </div>
+              <Tooltip
+                title={i18n('复制到剪切板')}
+                trigger="hover"
+                placement="bottom"
+                getPopupContainer={node => node.parentElement}
+                mouseEnterDelay={0.5}
+              >
+                <div className={styles.saveOperateItem} onClick={onCopyText}>
+                  <Icon component={CopySvg} />
+                </div>
+              </Tooltip>
             </div>
           </div>
         )}

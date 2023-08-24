@@ -8,6 +8,7 @@ type SendResponse = (response: boolean) => void;
 export interface RequestMessage {
   action: keyof typeof GLOBAL_EVENTS;
   HTMLs?: string[];
+  data: any;
 }
 
 export const ActionListener: {

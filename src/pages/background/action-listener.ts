@@ -1,6 +1,5 @@
-import { BACKGROUND_EVENTS, PAGE_EVENTS } from '@/events';
+import { BACKGROUND_EVENTS } from '@/events';
 import {
-  WordMarkConfigKey,
   getWordMarkConfig,
   updateWordMarkConfig,
 } from '@/core/account';
@@ -35,20 +34,6 @@ export const initBackGroundActionListener = () => {
         case BACKGROUND_EVENTS.UPDATE_WORD_MARK_CONFIG: {
           const { key, value } = request.data;
           updateWordMarkConfig(key, value).then(res => {
-            if (key === WordMarkConfigKey.enable && !false) {
-              Chrome.runtime.sendMessage({
-                action: PAGE_EVENTS.DISABLE_WORD_MARK,
-              });
-            }
-            if (key === WordMarkConfigKey.enable && !value) {
-              Chrome.tabs.query({}, tabs => {
-                for (const tab of tabs) {
-                  Chrome.tabs.sendMessage(tab.id, {
-                    action: PAGE_EVENTS.DISABLE_WORD_MARK,
-                  });
-                }
-              });
-            }
             sendResponse(res);
           });
           break;

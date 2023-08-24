@@ -205,7 +205,6 @@ function App() {
           <KernelEditor
             ref={editorRef}
             value=""
-            resource={wordMarkContext.resource}
           />
         </div>
       </div>
