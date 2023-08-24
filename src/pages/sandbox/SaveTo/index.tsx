@@ -14,8 +14,7 @@ import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { GLOBAL_EVENTS } from '@/events';
-import { EditorValueContext } from './EditorValueContext';
-import styles from './SaveTo.module.less';
+import { EditorValueContext } from '../EditorValueContext';
 import { ActionListener } from '@/core/action-listener';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
@@ -25,6 +24,7 @@ import {
   getSelectTag,
   saveSelectTag,
 } from '@/components/sandbox/note-tag/util';
+import { AccountContext } from '@/context/account-context';
 import { docProxy } from '@/core/proxy/doc';
 import { mineProxy } from '@/core/proxy/mine';
 import {
@@ -33,13 +33,14 @@ import {
   getCitation,
   getCurrentTab,
   startSelect,
-} from './helper';
+} from '../helper';
 import {
   SELECT_TYPES,
   SELECT_TYPE_AREA,
   SELECT_TYPE_BOOKMARK,
   SELECT_TYPE_SELECTION,
-} from './constants/select-types';
+} from '../constants/select-types';
+import styles from './index.module.less';
 
 const NODE_DATA_ID = 0;
 
@@ -63,6 +64,7 @@ const useViewModel = (props: ISaveToProps) => {
   const [ books, setBooks ] = useState(BOOKS_DATA);
   const [ currentBookId, setCurrentBookId ] = useState(NODE_DATA_ID);
   const { currentType, setCurrentType } = useContext(EditorValueContext);
+
 
   const editorRef = useRef<IEditorRef>(null);
 
@@ -300,6 +302,7 @@ export default function SaveTo(props: ISaveToProps) {
     onUploadImage,
     onSelectBookId,
   } = useViewModel(props);
+  const accountContext = useContext(AccountContext);
 
   const handleTypeSelect = useCallback((info: MenuInfo) => {
     onSelectType(info.key);

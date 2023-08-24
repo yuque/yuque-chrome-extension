@@ -1,4 +1,5 @@
 import { Book } from "@/core/interface";
+import Chrome from '@/core/chrome';
 import { WordMarkOptionTypeEnum } from "./constants";
 
 export enum WordMarkConfigKey {
@@ -52,3 +53,5 @@ export const isEnableWordMark = (config: IWordMarkConfig | null) => {
   }
   return true;
 }
+
+export const wordMarkSettingUrl = `${Chrome.runtime.getURL('setting.html')}?page=wordMark`;

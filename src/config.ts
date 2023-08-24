@@ -20,6 +20,7 @@ export const YUQUE_DOMAIN = 'https://www.yuque.com';
 export const YUQUE_CSRF_COOKIE_NAME = 'yuque_ctoken';
 export const EXTENSION_ID = 'extension-id';
 export const VERSION = pkgJSON.version;
+export const RELEASE_NOTES = pkgJSON.releaseNotes;
 export const REFERER_URL = 'referer_url';
 export const TRACERT_CONFIG = {
   spmAPos: 'a385',

@@ -3,6 +3,13 @@
   "version": "0.4.0",
   "description": "语雀浏览器插件",
   "private": true,
+  "releaseNotes": [
+    "[特性] 支持划词操作",
+    "[特性] 优化选取方案",
+    "[特性] 剪藏选中父元素时自动取消子元素",
+    "[修复] 选取元素时选取光标意外被遮挡问题",
+    "[修复] 登录异常问题"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/yuque/yuque-chrome-extension.git"

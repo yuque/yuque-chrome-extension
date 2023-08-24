@@ -4,6 +4,7 @@ import { noteProxy, NoteCreateParams } from '@/core/proxy/note';
 import { wordMarkProxy } from '@/core/proxy/word-mark';
 import { docProxy, ICreateDocParams } from '@/core/proxy/doc';
 import { wordMarkConfigManager } from '@/core/manager/word-mark-config';
+import { wordMarkSettingUrl } from '@/isomorphic/word-mark';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -61,7 +62,7 @@ export const initBackGroundActionListener = () => {
           break;
         }
         case BACKGROUND_EVENTS.OPEN_SETTING_PAGE: {
-          Chrome.tabs.create({ url: `${Chrome.runtime.getURL('/setting.html')}?page=wordMark` });
+          Chrome.tabs.create({ url: wordMarkSettingUrl });
           sendResponse(true);
           break;
         }

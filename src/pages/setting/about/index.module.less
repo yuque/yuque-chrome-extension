@@ -1,0 +1,33 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .title {
+    color: @grey-9;
+    font-size: @font-size;
+    margin-bottom: 6px;
+  }
+
+  .item {
+    font-size: @font-size;
+    color: @grey-9;
+  }
+}
+
+.link {
+  color: #1677ff;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  font-size: 14px;
+  margin-top: 8px;
+
+  &:hover {
+    color: #69b1ff;
+  }
+}
