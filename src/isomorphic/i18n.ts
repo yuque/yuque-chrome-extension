@@ -17,7 +17,8 @@ export function initI18N(globalOrWindow?: any) {
 }
 
 // 有些地方不态好注入 __i18n，将其暴露出来
-export const i18n = locale({
+export const __i18n: (text: string, params?: {[key: string]: string}) => string = locale({
   en: {},
-  useEn: () => false,
-});
+  useEn: () => true,
+})
+

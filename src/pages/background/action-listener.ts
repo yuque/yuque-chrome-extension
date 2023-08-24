@@ -1,12 +1,9 @@
 import { BACKGROUND_EVENTS } from '@/events';
-import {
-  getWordMarkConfig,
-  updateWordMarkConfig,
-} from '@/core/account';
 import Chrome from '@/core/chrome';
 import { noteProxy, NoteCreateParams } from '@/core/proxy/note';
 import { wordMarkProxy } from '@/core/proxy/word-mark';
 import { docProxy, ICreateDocParams } from '@/core/proxy/doc';
+import { wordMarkConfigManager } from '@/core/manager/word-mark-config';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -26,16 +23,12 @@ export const initBackGroundActionListener = () => {
     ) => {
       switch (request.action) {
         case BACKGROUND_EVENTS.GET_WORD_MARK_CONFIG: {
-          getWordMarkConfig().then(res => {
-            sendResponse(res);
-          });
+          wordMarkConfigManager.get().then(sendResponse);
           break;
         }
         case BACKGROUND_EVENTS.UPDATE_WORD_MARK_CONFIG: {
-          const { key, value } = request.data;
-          updateWordMarkConfig(key, value).then(res => {
-            sendResponse(res);
-          });
+          const { key, value, option = {} } = request.data;
+          wordMarkConfigManager.update(key, value, option).then(sendResponse);
           break;
         }
         case BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND: {

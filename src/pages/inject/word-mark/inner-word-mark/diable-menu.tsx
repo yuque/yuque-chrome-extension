@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS } from '@/events';
-import { WordMarkConfigKey } from '@/core/account';
 import { WordMarkContext } from '@/context/word-mark-context';
-import { i18n } from '@/isomorphic/i18n';
-import { getPageUrl } from '../util';
+import { WordMarkConfigKey, getPageUrl } from '@/isomorphic/word-mark';
+import { __i18n } from '@/isomorphic/i18n';
 import styles from './disable-menu.module.less';
 
 function DisableMenu() {
@@ -15,6 +14,9 @@ function DisableMenu() {
       data: {
         key: WordMarkConfigKey.enable,
         value: false,
+        option: {
+          notice: true,
+        },
       },
     });
   };
@@ -25,6 +27,9 @@ function DisableMenu() {
       data: {
         key: WordMarkConfigKey.disableUrl,
         value: getPageUrl(),
+        option: {
+          notice: true,
+        },
       },
     })
   }
@@ -43,19 +48,19 @@ function DisableMenu() {
     <>
       <div className={styles.menus}>
         <div className={styles.menuItem} onClick={disableOnce}>
-          {i18n('在本次访问关闭')}
+          {__i18n('在本次访问关闭')}
         </div>
         <div className={styles.menuItem} onClick={disableForPage}>
-          {i18n('在本页关闭')}
+          {__i18n('在本页关闭')}
         </div>
         <div className={styles.menuItem} onClick={disableForever}>
-          {i18n('全部关闭')}
+          {__i18n('全部关闭')}
         </div>
       </div>
       <div className={styles.footer}>
-        {i18n('可在')}
-        <div onClick={openSetting} className={styles.link}>{i18n('设置')}</div>
-        {i18n('中开启')}
+        {__i18n('可在')}
+        <div onClick={openSetting} className={styles.link}>{__i18n('设置')}</div>
+        {__i18n('中开启')}
       </div>
     </>
   );

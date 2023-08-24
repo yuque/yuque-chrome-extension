@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Switch, Select } from 'antd';
-import {
-  updateWordMarkConfig,
-  getWordMarkConfig,
-  IWordMarkConfig,
-  WordMarkConfigKey,
-} from '@/core/account';
+import { wordMarkConfigManager } from '@/core/manager/word-mark-config';
+import { IWordMarkConfig, WordMarkConfigKey } from '@/isomorphic/word-mark';
 import { mineProxy } from '@/core/proxy/mine';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { Book } from '@/core/interface';
 import styles from './index.module.less';
 
 function WordMark() {
-  const [ enable, setEnable ] = useState(false);
+  const [ config, setConfig ] = useState<IWordMarkConfig>(null);
   const [ books, setBooks ] = useState<Array<Book>>([
     {
       type: 'Note',
@@ -22,41 +18,38 @@ function WordMark() {
       },
     },
   ]);
-  const [ savePosition, setSavePosition ] = useState<
-  IWordMarkConfig['defaultSavePosition']
-  >({
-    type: 'Note',
-    id: 0,
-    get name() {
-      return __i18n('小记');
-    },
-  });
 
-  const onEnableWordMarkChange = async () => {
-    await updateWordMarkConfig(WordMarkConfigKey.enable, !enable);
-    setEnable(!enable);
+  const onConfigChange = async (key: WordMarkConfigKey, value: any) => {
+    console.log(key, value);
+    await wordMarkConfigManager.update(key, value, { notice: true });
+    setConfig({
+      ...config,
+      [key]: value,
+    });
   };
 
   const onChangeSavePosition = async (id: number) => {
     const item = books.find(i => i.id === id);
-    await updateWordMarkConfig(WordMarkConfigKey.defaultSavePosition, {
+    await onConfigChange(WordMarkConfigKey.defaultSavePosition, {
       id: item.id,
       type: item.type,
       name: item.name,
       creator_id: item.creator_id,
     });
-    setSavePosition(item);
-  }
+  };
 
   useEffect(() => {
-    getWordMarkConfig().then(res => {
-      setEnable(res.enable);
-      setSavePosition(res.defaultSavePosition);
+    wordMarkConfigManager.get().then(res => {
+      setConfig(res);
     });
     mineProxy.getBooks().then(res => {
       setBooks(bs => [ ...bs, ...res ]);
     });
   }, []);
+
+  if (!config) {
+    return null;
+  }
 
   return (
     <div className={styles.configWrapper}>
@@ -64,18 +57,36 @@ function WordMark() {
         <p className={styles.configDesc}>
           {__i18n('选中文本时，展示划词快捷指令功能')}
         </p>
-        <Switch checked={enable} onChange={onEnableWordMarkChange} />
+        <Switch
+          checked={config.enable}
+          onChange={() =>
+            onConfigChange(WordMarkConfigKey.enable, !config.enable)
+          }
+        />
       </div>
+      <div className={styles.subMenuTitle}>{__i18n('划词剪藏')}</div>
       <div className={styles.configItem}>
         <p className={styles.configDesc}>{__i18n('划词剪藏默认保存位置')}</p>
         <Select
           className={styles.list}
-          value={savePosition.id}
+          value={config.defaultSavePosition.id}
           options={books?.map(book => ({
             value: book.id,
             label: <BookWithIcon book={book} />,
           }))}
-          onChange={(value) => onChangeSavePosition(value)}
+          onChange={value => onChangeSavePosition(value)}
+        />
+      </div>
+      <div className={styles.configItem}>
+        <p className={styles.configDesc}>{__i18n('每次剪藏后唤起剪藏面板')}</p>
+        <Switch
+          checked={config.evokePanelWhenClip}
+          onChange={() =>
+            onConfigChange(
+              WordMarkConfigKey.evokePanelWhenClip,
+              !config.evokePanelWhenClip,
+            )
+          }
         />
       </div>
     </div>

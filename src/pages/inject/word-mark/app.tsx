@@ -10,7 +10,7 @@ import throttle from 'lodash/throttle';
 import { ConfigProvider, message } from 'antd';
 import classnames from 'classnames';
 import { VIEW_MORE_TAG, WordMarkOptionTypeEnum } from '@/isomorphic/constants';
-import { i18n } from '@/isomorphic/i18n';
+import { __i18n } from '@/isomorphic/i18n';
 import KernelEditor, {
   IKernelEditorRef,
 } from '@/components/lake-editor/kernel-editor';
@@ -21,6 +21,7 @@ import { saveToNote, saveToBook } from './util';
 import WordMarkPanel from './word-mark-panel';
 import InnerWordMark from './inner-word-mark';
 import styles from './app.module.less';
+import { PAGE_EVENTS } from '@/events';
 
 export enum WordMarkType {
   /**
@@ -49,53 +50,68 @@ function App() {
 
   const wordMarkContext = useContext(WordMarkContext);
 
-  const save = useCallback(throttle(async () => {
-    try {
-      const serializedAsiContent =
-        (await editorRef.current?.getContent('lake')) || '';
-      const serializedHtmlContent =
-        (await editorRef.current?.getContent('text/html')) || '';
-      const summary = await editorRef.current.getSummaryContent();
-      const wordCount = await editorRef.current.wordCount();
-      const extractRes = extractSummaryRaw(serializedAsiContent, {
-        summary,
-      });
-      const {
-        hasImage: has_image,
-        hasBookmark: has_bookmark,
-        hasAttachment: has_attachment,
-        isFull,
-      } = extractRes;
-      let description = extractRes.html;
-      // 摘要与内容不相等，展示更多标记
-      if (!isFull) {
-        description += VIEW_MORE_TAG;
+  const save = useCallback(
+    throttle(async (text: string) => {
+      if (wordMarkContext.evokePanelWhenClip) {
+        window.postMessage(
+          {
+            action: PAGE_EVENTS.WORD_MARK_CLIP,
+            data: {
+              selectionText: text,
+            },
+          },
+          '*',
+        );
+        setShowWordMark(false);
+        return;
       }
-      // 存到小记
-      if (wordMarkContext.defaultSavePosition.id === 0) {
-        await saveToNote({
-          has_attachment,
-          has_bookmark,
-          has_image,
-          source: serializedAsiContent,
-          html: serializedHtmlContent,
-          abstract: description,
-          word_count: wordCount,
+      try {
+        const serializedAsiContent =
+          (await editorRef.current?.getContent('lake')) || '';
+        const serializedHtmlContent =
+          (await editorRef.current?.getContent('text/html')) || '';
+        const summary = await editorRef.current.getSummaryContent();
+        const wordCount = await editorRef.current.wordCount();
+        const extractRes = extractSummaryRaw(serializedAsiContent, {
+          summary,
         });
-      } else {
-        await saveToBook({
-          book_id: wordMarkContext.defaultSavePosition.id,
-          body_draft_asl: serializedAsiContent,
-          body_asl: serializedAsiContent,
-          body: serializedHtmlContent,
-        });
+        const {
+          hasImage: has_image,
+          hasBookmark: has_bookmark,
+          hasAttachment: has_attachment,
+          isFull,
+        } = extractRes;
+        let description = extractRes.html;
+        // 摘要与内容不相等，展示更多标记
+        if (!isFull) {
+          description += VIEW_MORE_TAG;
+        }
+        // 存到小记
+        if (wordMarkContext.defaultSavePosition.id === 0) {
+          await saveToNote({
+            has_attachment,
+            has_bookmark,
+            has_image,
+            source: serializedAsiContent,
+            html: serializedHtmlContent,
+            abstract: description,
+            word_count: wordCount,
+          });
+        } else {
+          await saveToBook({
+            book_id: wordMarkContext.defaultSavePosition.id,
+            body_draft_asl: serializedAsiContent,
+            body_asl: serializedAsiContent,
+            body: serializedHtmlContent,
+          });
+        }
+        setShowWordMark(false);
+      } catch (e) {
+        message.error(__i18n('保存失败，请重试！'));
       }
-      setShowWordMark(false);
-    } catch (e) {
-      message.error(i18n('保存失败，请重试！'));
-    }
-  }, 300), [ wordMarkContext ]);
-
+    }, 300),
+    [ wordMarkContext ],
+  );
 
   const executeCommand = useCallback(
     async (t: WordMarkOptionTypeEnum) => {
@@ -110,7 +126,7 @@ function App() {
           'text/html',
           `${html}<p><br></p><blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote><p><br/></p>`,
         );
-        await save();
+        await save(html);
         return;
       }
       setType(t);
@@ -202,10 +218,7 @@ function App() {
           )}
         </div>
         <div style={{ display: 'none' }}>
-          <KernelEditor
-            ref={editorRef}
-            value=""
-          />
+          <KernelEditor ref={editorRef} value="" />
         </div>
       </div>
     </ConfigProvider>

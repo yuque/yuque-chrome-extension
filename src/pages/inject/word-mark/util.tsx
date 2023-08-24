@@ -1,10 +1,9 @@
 import React from 'react';
 import { message } from 'antd';
-import { i18n } from '@/isomorphic/i18n';
+import { __i18n } from '@/isomorphic/i18n';
 import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS } from '@/events';
 import LinkHelper from '@/core/link-helper';
-import { IWordMarkConfig } from '@/core/account';
 
 interface SaveToNoteParams {
   source: string;
@@ -31,7 +30,7 @@ export const saveToNote = async (params: SaveToNoteParams) => {
       const url = LinkHelper.goMyNote();
       message.success(
         <span style={{ fontSize: '14px' }}>
-          {i18n('保存成功')}
+          {__i18n('保存成功')}
           &nbsp;&nbsp;
           <a
             target="_blank"
@@ -41,7 +40,7 @@ export const saveToNote = async (params: SaveToNoteParams) => {
               textDecoration: 'none',
             }}
           >
-            {i18n('去小记查看')}
+            {__i18n('去小记查看')}
           </a>
         </span>,
       );
@@ -63,14 +62,14 @@ export const saveToBook = async (params: SaveToBookParams) => {
       data: {
         ...params,
         insert_to_catalog: true,
-        title: i18n('[来自剪藏] {title}', { title: document.title }),
+        title: __i18n('[来自剪藏] {title}', { title: document.title }),
       },
     },
     res => {
       const url = LinkHelper.goDoc(res);
       message.success(
         <span style={{ fontSize: '14px' }}>
-          {i18n('保存成功！')}
+          {__i18n('保存成功！')}
           &nbsp;&nbsp;
           <a
             target="_blank"
@@ -80,7 +79,7 @@ export const saveToBook = async (params: SaveToBookParams) => {
               textDecoration: 'none',
             }}
           >
-            {i18n('立即查看')}
+            {__i18n('立即查看')}
           </a>
         </span>,
       );
@@ -88,14 +87,3 @@ export const saveToBook = async (params: SaveToBookParams) => {
   );
 };
 
-export const getPageUrl = () => {
-  return `${window.location.origin}${window.location.pathname}`;
-}
-
-export const isEnableWordMark = (config: IWordMarkConfig | null) => {
-  const url = getPageUrl();
-  if (!config?.enable || config.disableUrl?.includes(url)) {
-    return false;
-  }
-  return true;
-}
