@@ -74,7 +74,7 @@ function AppContext() {
   }, [])
 
   if (!isEnableWordMark(defaultConfig)) {
-    return null;
+    return <div className='disable' data-config={JSON.stringify(defaultConfig)} />;
   }
 
   return (

@@ -9,7 +9,6 @@ import { ActionListener } from '@/core/action-listener';
 import { SELECT_TYPE_SELECTION } from './constants/select-types';
 import { AccountContext } from '@/context/account-context';
 import AccountLayout from '@/components/sandbox/account-layout';
-import FeedBack from '@/components/sandbox/feedback';
 import { __i18n } from '@/isomorphic/i18n';
 import { wordMarkSettingUrl } from '@/isomorphic/word-mark';
 import UserInfo from './UserInfo';
@@ -64,7 +63,7 @@ const App = () => {
           <Radio.Group
             value={tab}
             onChange={handleTabChange}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 16, padding: '0 24px' }}
           >
             <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
             <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
@@ -80,21 +79,17 @@ const App = () => {
             })}
           />
           <div className={styles.account}>
-            {tab === 'save-to' ? (
-              <FeedBack showVersion={false} />
-            ) : (
-              <div
-                className={styles.settings}
-                onClick={() => {
-                  Chrome.tabs.create({
-                    url: wordMarkSettingUrl,
-                  });
-                }}
-              >
-                <SettingOutlined />
-                {__i18n('偏好设置')}
-              </div>
-            )}
+            <div
+              className={styles.settings}
+              onClick={() => {
+                Chrome.tabs.create({
+                  url: wordMarkSettingUrl,
+                });
+              }}
+            >
+              <SettingOutlined />
+              {__i18n('偏好设置')}
+            </div>
             <UserInfo
               user={accountContext.user}
               onLogout={accountContext.onLogout}

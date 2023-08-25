@@ -24,7 +24,6 @@ import {
   getSelectTag,
   saveSelectTag,
 } from '@/components/sandbox/note-tag/util';
-import { AccountContext } from '@/context/account-context';
 import { docProxy } from '@/core/proxy/doc';
 import { mineProxy } from '@/core/proxy/mine';
 import {
@@ -47,7 +46,7 @@ const NODE_DATA_ID = 0;
 const BOOKS_DATA = [
   {
     id: NODE_DATA_ID,
-    type: 'note',
+    type: 'Note',
     get name() {
       return __i18n('小记');
     },
@@ -64,6 +63,7 @@ const useViewModel = (props: ISaveToProps) => {
   const [ books, setBooks ] = useState(BOOKS_DATA);
   const [ currentBookId, setCurrentBookId ] = useState(NODE_DATA_ID);
   const { currentType, setCurrentType } = useContext(EditorValueContext);
+  const areaSelectRef = useRef('');
 
 
   const editorRef = useRef<IEditorRef>(null);
@@ -104,9 +104,13 @@ const useViewModel = (props: ISaveToProps) => {
                 editorRef.current?.focusToStart(1);
               }
             }
+            if (areaSelectRef.current) {
+              editorRef.current?.focusToStart();
+            }
             // 追加当前选取的html
             editorRef.current?.appendContent(HTMLs.join(''));
           } finally {
+            areaSelectRef.current = await editorRef.current.getContent('text/html') || '';
             setEditorLoading(false);
           }
           return;
@@ -123,7 +127,7 @@ const useViewModel = (props: ISaveToProps) => {
   useEffect(() => {
     if (currentType === SELECT_TYPE_AREA) {
       // 重新开始剪藏的时候需要清空内容
-      editorRef.current?.setContent('');
+      editorRef.current?.setContent(areaSelectRef.current || '');
       startSelect();
     } else if (currentType === SELECT_TYPE_BOOKMARK) {
       // 选择了剪藏了网址，将编辑器的内容设置成bookmark
@@ -146,11 +150,13 @@ const useViewModel = (props: ISaveToProps) => {
       (async () => {
         setEditorLoading(true);
         try {
-          editorRef.current?.appendContent(HTMLs.join(''));
-          editorRef.current?.appendContent(
-            getCitation(await getCurrentTab()),
-            true,
+          const { quote } = getBookmarkHTMLs(
+            await getCurrentTab(),
           );
+          editorRef.current?.appendContent(quote);
+          // 回到文档开头
+          editorRef.current?.focusToStart();
+          editorRef.current?.appendContent(HTMLs.join(''));
         } finally {
           setEditorLoading(false);
         }
@@ -338,6 +344,7 @@ export default function SaveTo(props: ISaveToProps) {
           activeKey={currentType}
           onClick={handleTypeSelect}
           items={SELECT_MENU_DATA}
+          className={styles.menu}
         />
         <div className={classnames(styles.actionTip, styles.clipTarget)}>
           {__i18n('剪藏到')}

@@ -2,11 +2,14 @@
 
 .wrapper {
   .button {
-    margin-top: @base-padding * 2;
+    width: calc(100% - @base-padding * 6);
+    margin: @base-padding * 2 @base-padding * 3 0;
   }
 
   .actionTip {
     margin-bottom: @base-padding;
+    color: rgba(0, 0, 0, 0.45);
+    padding: 0 @base-padding * 3;
   }
 
   .clipTarget {
@@ -14,7 +17,8 @@
   }
 
   .list {
-    width: 100%;
+    width: calc(100% - @base-padding * 6);
+    margin: 0 @base-padding * 3;
   }
 
   .editor, .lake-editor {
@@ -24,7 +28,7 @@
     padding: @base-padding * 2;
     background: #fff;
     border-radius: @base-padding;
-    box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 40%);
+    box-shadow: @panel-default-box-shadow;
     color: @text-color;
     width: @main-editor-width;
     min-height: @main-editor-width;
@@ -56,6 +60,16 @@
       border: none;
       border-radius: 8px;
       flex: 1 1 auto;
+    }
+  }
+}
+
+
+.menu {
+  padding: 0 16px;
+  :global {
+    .ant-menu-item {
+      height: 32px;
     }
   }
 }
