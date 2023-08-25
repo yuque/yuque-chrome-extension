@@ -120,24 +120,24 @@ function AccountLayout(props: IAccountLayoutProps) {
 
   useEffect(() => {
     getCurrentAccount()
-    .then(async info => {
-      setUser(info);
-      const tabInfo = await Chrome.getCurrentTab();
-      // 上报埋点
-      Tracert.start({
-        spmAPos: TRACERT_CONFIG.spmAPos,
-        spmBPos: TRACERT_CONFIG.spmBPos,
-        role_id: (info as IUser)?.id,
-        mdata: {
-          [REQUEST_HEADER_VERSION]: VERSION,
-          [EXTENSION_ID]: Chrome.runtime.id,
-          [REFERER_URL]: tabInfo?.url,
-        },
+      .then(async info => {
+        setUser(info);
+        const tabInfo = await Chrome.getCurrentTab();
+        // 上报埋点
+        Tracert.start({
+          spmAPos: TRACERT_CONFIG.spmAPos,
+          spmBPos: TRACERT_CONFIG.spmBPos,
+          role_id: (info as IUser)?.id,
+          mdata: {
+            [REQUEST_HEADER_VERSION]: VERSION,
+            [EXTENSION_ID]: Chrome.runtime.id,
+            [REFERER_URL]: tabInfo?.url,
+          },
+        });
+      })
+      .finally(() => {
+        setAppReady(true);
       });
-    })
-    .finally(() => {
-      setAppReady(true);
-    });
   }, []);
 
   useEffect(() => {
