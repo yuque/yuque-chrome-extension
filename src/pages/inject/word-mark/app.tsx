@@ -157,9 +157,10 @@ function App() {
       const selection = window.getSelection();
       const selectionText = selection.toString();
       if (selection.rangeCount <= 0) {
+        setShowWordMark(false);
         return;
       }
-      if (!selectionText.trim()) {
+      if (!selectionText.trim().length) {
         setShowWordMark(false);
         return;
       }
