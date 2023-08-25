@@ -13,7 +13,7 @@ function BookWithIcon(props: IBookWithIconProps) {
   const iconSvg = book.type === 'Note' ? NoteLogoSvg : BookLogoSvg;
   return (
     <>
-      <Icon style={{ marginRight: 4, color: '#888' }} component={iconSvg} />
+      <Icon style={{ marginRight: 4, color: '#262626' }} component={iconSvg} />
       {book.name}
     </>
   );

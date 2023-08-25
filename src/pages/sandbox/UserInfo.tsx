@@ -6,7 +6,6 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import SemverCompare from 'semver-compare';
 import { VERSION, pkg } from '@/config';
 import { IUser } from '@/core/account';
-import { wordMarkSettingUrl } from '@/isomorphic/word-mark';
 import { useCheckVersion } from './CheckVersion';
 
 import styles from './UserInfo.module.less';
@@ -41,9 +40,6 @@ const UserInfo = (props: Props) => {
         break;
       case 'feedback':
         window.open(pkg.issues, '_blank');
-        break;
-      case 'user-setting':
-        window.open(wordMarkSettingUrl, '_blank')
         break;
       case 'upgrade-version':
         Modal.confirm({
@@ -80,10 +76,6 @@ const UserInfo = (props: Props) => {
         label: __i18n('访问主页'),
       },
       {
-        key: 'user-setting',
-        label: __i18n('偏好设置')
-      },
-      {
         key: 'upgrade-version',
         label: (
           <div className={styles.upgradeVersionItem}>
@@ -98,6 +90,10 @@ const UserInfo = (props: Props) => {
             <span className={styles.version}>&nbsp;v{newVersion}</span>
           </div>
         ),
+      },
+      {
+        key: 'feedback',
+        label: __i18n('问题反馈'),
       },
       {
         key: 'logout',

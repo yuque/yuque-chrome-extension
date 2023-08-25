@@ -91,6 +91,12 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
           /*eslint no-self-assign: "error"*/
           item.src = item.src;
         });
+        const aArray = cloneNode.querySelectorAll('a');
+        // 有些路由也是相对路由，更改一次 dom 等 href 属性
+        aArray.forEach(item => {
+          /*eslint no-self-assign: "error"*/
+          item.href = item.href;
+        })
         targetListRef.current = [
           ...targetListRef.current.filter((__, index) => {
             return !targetRef.current?.contains(targetListRef.current[index]);

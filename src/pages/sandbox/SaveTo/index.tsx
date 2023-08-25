@@ -24,7 +24,6 @@ import {
   getSelectTag,
   saveSelectTag,
 } from '@/components/sandbox/note-tag/util';
-import { AccountContext } from '@/context/account-context';
 import { docProxy } from '@/core/proxy/doc';
 import { mineProxy } from '@/core/proxy/mine';
 import {
@@ -47,7 +46,7 @@ const NODE_DATA_ID = 0;
 const BOOKS_DATA = [
   {
     id: NODE_DATA_ID,
-    type: 'note',
+    type: 'Note',
     get name() {
       return __i18n('小记');
     },
@@ -343,6 +342,7 @@ export default function SaveTo(props: ISaveToProps) {
           activeKey={currentType}
           onClick={handleTypeSelect}
           items={SELECT_MENU_DATA}
+          className={styles.menu}
         />
         <div className={classnames(styles.actionTip, styles.clipTarget)}>
           {__i18n('剪藏到')}

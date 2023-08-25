@@ -63,7 +63,7 @@ const App = () => {
           <Radio.Group
             value={tab}
             onChange={handleTabChange}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 16, padding: '0 24px' }}
           >
             <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
             <Radio.Button value="other">{__i18n('其他')}</Radio.Button>

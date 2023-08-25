@@ -4,9 +4,9 @@
   position: fixed;
   right: @base-padding * 2;
   top: @base-padding * 2;
-  background: white;
+  background: @white;
   border-radius: @base-padding;
-  box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: @panel-default-box-shadow;
 
   width: @main-board-width;
   box-sizing: border-box;
@@ -14,12 +14,14 @@
   color: @text-color;
   display: flex;
   flex-flow: column nowrap;
-  padding: 20px @base-padding * 3 @base-padding * 8;
+  padding: 20px 0 @base-padding * 8;
 
   .header {
     margin-bottom: @base-padding;
     font-size: @font-size-lg;
-    font-weight: bold;
+    font-weight: 500;
+    color: @text-primary;
+    padding: 0 @base-padding * 3;
   }
 
   .close {
