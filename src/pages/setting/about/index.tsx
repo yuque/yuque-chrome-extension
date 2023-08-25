@@ -20,7 +20,7 @@ function About() {
         target="_blank"
         className={styles.link}
       >
-        -{__i18n('查看更多')}
+        {__i18n('查看更多')}
       </a>
     </div>
   );

@@ -11,14 +11,14 @@ export interface ToolbarItem {
 
 export const toolbars: ToolbarItem[] = [
   {
-    type: WordMarkOptionTypeEnum.translate,
-    name: __i18n('翻译'),
-    icon: Translate,
-  },
-  {
     type: WordMarkOptionTypeEnum.clipping,
     name: __i18n('剪藏'),
     icon: Clipping,
+  },
+  {
+    type: WordMarkOptionTypeEnum.translate,
+    name: __i18n('翻译'),
+    icon: Translate,
   },
 ];
 
