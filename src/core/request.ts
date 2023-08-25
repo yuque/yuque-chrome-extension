@@ -20,9 +20,9 @@ export class CsrfTokenError extends Error {
   }
 }
 
-const generateQuery = (params: {[key: string]: any}) => {
+const generateQuery = (params: { [key: string]: any }) => {
   return `?${new URLSearchParams(params).toString()}`;
-}
+};
 
 const setCsrfToken = (
   domain: string,
@@ -131,17 +131,33 @@ async function request<T>(
       ...options,
     });
     const responseJson = await response.json();
-    if (responseJson.status === 400 && responseJson.code === 'force_upgrade_version') {
+    if (
+      responseJson.status === 400 &&
+      responseJson.code === 'force_upgrade_version'
+    ) {
       if (typeof window !== 'undefined') {
         eventManager.notify(AppEvents.FORCE_UPGRADE_VERSION, {
           html: responseJson?.html,
         });
       } else {
-        Chrome.tabs.query({ active: true }, (tabs) => {
+        Chrome.tabs.query({ active: true }, tabs => {
           Chrome.tabs.sendMessage(tabs[0].id, {
             action: PAGE_EVENTS.FORCE_UPGRADE_VERSION,
           });
-        })
+        });
+      }
+      throw response;
+    }
+    // 登录过期
+    if (response.status === 401 && responseJson.message === 'Unauthorized') {
+      if (typeof window !== 'undefined') {
+        eventManager.notify(AppEvents.LOGIN_EXPIRED);
+      } else {
+        Chrome.tabs.query({ active: true }, tabs => {
+          Chrome.tabs.sendMessage(tabs[0].id, {
+            action: PAGE_EVENTS.LOGIN_EXPIRED,
+          });
+        });
       }
       throw response;
     }
@@ -163,7 +179,7 @@ export async function uploadFile(
   const formData = new FormData();
   formData.append('file', file);
   const csrfToken = await getCsrfToken(YUQUE_DOMAIN, YUQUE_CSRF_COOKIE_NAME);
-  const user = await getCurrentAccount()
+  const user = await getCurrentAccount();
   const query = generateQuery({
     attachable_type: attachableType,
     attachable_id: user.id,

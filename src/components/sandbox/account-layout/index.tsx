@@ -120,30 +120,36 @@ function AccountLayout(props: IAccountLayoutProps) {
 
   useEffect(() => {
     getCurrentAccount()
-      .then(async info => {
-        setUser(info);
-        const tabInfo = await Chrome.getCurrentTab();
-        // 上报埋点
-        Tracert.start({
-          spmAPos: TRACERT_CONFIG.spmAPos,
-          spmBPos: TRACERT_CONFIG.spmBPos,
-          role_id: (info as IUser)?.id,
-          mdata: {
-            [REQUEST_HEADER_VERSION]: VERSION,
-            [EXTENSION_ID]: Chrome.runtime.id,
-            [REFERER_URL]: tabInfo?.url,
-          },
-        });
-      })
-      .finally(() => {
-        setAppReady(true);
+    .then(async info => {
+      setUser(info);
+      const tabInfo = await Chrome.getCurrentTab();
+      // 上报埋点
+      Tracert.start({
+        spmAPos: TRACERT_CONFIG.spmAPos,
+        spmBPos: TRACERT_CONFIG.spmBPos,
+        role_id: (info as IUser)?.id,
+        mdata: {
+          [REQUEST_HEADER_VERSION]: VERSION,
+          [EXTENSION_ID]: Chrome.runtime.id,
+          [REFERER_URL]: tabInfo?.url,
+        },
       });
+    })
+    .finally(() => {
+      setAppReady(true);
+    });
   }, []);
 
   useEffect(() => {
-    eventManager.listen(AppEvents.FORCE_UPGRADE_VERSION, data => {
+    const logout = data => {
       onLogout(data);
-    });
+    };
+    eventManager.listen(AppEvents.FORCE_UPGRADE_VERSION, logout);
+    eventManager.listen(AppEvents.LOGIN_EXPIRED, logout);
+    return () => {
+      eventManager.remove(AppEvents.FORCE_UPGRADE_VERSION, logout);
+      eventManager.remove(AppEvents.LOGIN_EXPIRED, logout);
+    };
   }, []);
 
   if (!ready) {
