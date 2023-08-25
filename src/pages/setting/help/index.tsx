@@ -8,7 +8,7 @@ const links = [
     title: __i18n('查看帮助文档'),
   },
   {
-    url: 'https://www.yuque.com/feedbacks/list',
+    url: 'https://www.yuque.com/feedbacks/new',
     title: __i18n('提交反馈与建议'),
   },
   {

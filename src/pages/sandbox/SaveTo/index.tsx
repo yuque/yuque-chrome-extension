@@ -64,6 +64,7 @@ const useViewModel = (props: ISaveToProps) => {
   const [ books, setBooks ] = useState(BOOKS_DATA);
   const [ currentBookId, setCurrentBookId ] = useState(NODE_DATA_ID);
   const { currentType, setCurrentType } = useContext(EditorValueContext);
+  const areaSelectRef = useRef('');
 
 
   const editorRef = useRef<IEditorRef>(null);
@@ -104,9 +105,13 @@ const useViewModel = (props: ISaveToProps) => {
                 editorRef.current?.focusToStart(1);
               }
             }
+            if (areaSelectRef.current) {
+              editorRef.current?.focusToStart();
+            }
             // 追加当前选取的html
             editorRef.current?.appendContent(HTMLs.join(''));
           } finally {
+            areaSelectRef.current = await editorRef.current.getContent('text/html') || '';
             setEditorLoading(false);
           }
           return;
@@ -123,7 +128,7 @@ const useViewModel = (props: ISaveToProps) => {
   useEffect(() => {
     if (currentType === SELECT_TYPE_AREA) {
       // 重新开始剪藏的时候需要清空内容
-      editorRef.current?.setContent('');
+      editorRef.current?.setContent(areaSelectRef.current || '');
       startSelect();
     } else if (currentType === SELECT_TYPE_BOOKMARK) {
       // 选择了剪藏了网址，将编辑器的内容设置成bookmark
