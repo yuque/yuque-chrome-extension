@@ -85,34 +85,25 @@ const useViewModel = (props: ISaveToProps) => {
       switch (request.action) {
         case GLOBAL_EVENTS.GET_SELECTED_HTML: {
           const { HTMLs } = request;
-          setEditorLoading(true);
-          try {
-            const isEmpty = editorRef.current.isEmpty();
-            // 判断当前文档是否是空的
-            // 如果是空的则插入初始内容
-            if (isEmpty) {
-              const isNote = currentBookId === NODE_DATA_ID;
-              const { heading, quote } = getBookmarkHTMLs(
-                await getCurrentTab(),
-              );
-              editorRef.current?.appendContent(quote);
-              // 回到文档开头
-              editorRef.current?.focusToStart();
-              // 非小记插入标题
-              if (!isNote) {
-                editorRef.current?.appendContent(heading);
-                editorRef.current?.focusToStart(1);
-              }
+          const isEmpty = editorRef.current.isEmpty();
+          // 判断当前文档是否是空的
+          // 如果是空的则插入初始内容
+          if (isEmpty) {
+            const isNote = currentBookId === NODE_DATA_ID;
+            const { heading, quote } = getBookmarkHTMLs(
+              await getCurrentTab(),
+            );
+            editorRef.current?.appendContent(quote);
+            // 回到文档开头
+            editorRef.current?.focusToStart();
+            // 非小记插入标题
+            if (!isNote) {
+              editorRef.current?.appendContent(heading);
+              editorRef.current?.focusToStart(1);
             }
-            if (areaSelectRef.current) {
-              editorRef.current?.focusToStart();
-            }
-            // 追加当前选取的html
-            editorRef.current?.appendContent(HTMLs.join(''));
-          } finally {
-            areaSelectRef.current = await editorRef.current.getContent('text/html') || '';
-            setEditorLoading(false);
           }
+          // 追加当前选取的html
+          editorRef.current?.appendContent(HTMLs.join(''));
           return;
         }
         default:
@@ -127,14 +118,21 @@ const useViewModel = (props: ISaveToProps) => {
   useEffect(() => {
     if (currentType === SELECT_TYPE_AREA) {
       // 重新开始剪藏的时候需要清空内容
-      editorRef.current?.setContent(areaSelectRef.current || '');
+      editorRef.current?.setContent(areaSelectRef.current || '', 'text/lake');
+      // 清空记录上一次的剪藏内容
+      areaSelectRef.current = '';
       startSelect();
     } else if (currentType === SELECT_TYPE_BOOKMARK) {
       // 选择了剪藏了网址，将编辑器的内容设置成bookmark
-      getCurrentTab().then(tab => {
-        const html = getBookmarkHtml(tab);
-        editorRef.current?.setContent(html);
+      // 并存储上一次剪藏的内容
+      editorRef.current.getContent('lake').then(content => {
+        areaSelectRef.current = content || '';
+        getCurrentTab().then(tab => {
+          const html = getBookmarkHtml(tab);
+          editorRef.current?.setContent(html);
+        });
       });
+
     }
   }, [ currentType ]);
 
