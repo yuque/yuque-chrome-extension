@@ -27,50 +27,50 @@ function AppContext() {
   }, []);
 
   useEffect(() => {
-    Chrome.runtime.onMessage.addListener(
-      (
-        request: RequestMessage,
-        _sender: chrome.runtime.MessageSender,
-        sendResponse: (response: boolean) => void,
-      ) => {
-        switch (request.action) {
-          case PAGE_EVENTS.ENABLE_WORD_MARK_STATUE_CHANGE: {
-            const config = request?.data || {};
-            const isEnable = isEnableWordMark(config);
-            if (isEnable) {
-              initWordMark();
-            } else {
-              destroyWordMark();
-            }
-            setDefaultConfig(config);
-            sendResponse(true);
-            break;
+    const listener =  (
+      request: RequestMessage,
+      _sender: chrome.runtime.MessageSender,
+      sendResponse: (response: boolean) => void,
+    ) => {
+      switch (request.action) {
+        case PAGE_EVENTS.ENABLE_WORD_MARK_STATUE_CHANGE: {
+          const config = request?.data || {};
+          const isEnable = isEnableWordMark(config);
+          if (isEnable) {
+            initWordMark();
+          } else {
+            destroyWordMark();
           }
-          case PAGE_EVENTS.FORCE_UPGRADE_VERSION:
-            message.error({
-              content: (
-                <span>
-                  {__i18n('当前浏览器插件版本过低')}
-                  <a
-                    href={`${YUQUE_DOMAIN}/download`}
-                    target={'_blank'}
-                    style={{
-                      color: '#00B96B',
-                      marginLeft: '8px',
-                    }}
-                  >
-                    {__i18n('前往升级')}
-                  </a>
-                </span>
-              ),
-            });
-            break;
-          default:
-            sendResponse(true);
+          setDefaultConfig(config);
+          sendResponse(true);
+          break;
         }
-        return true;
-      },
-    );
+        case PAGE_EVENTS.FORCE_UPGRADE_VERSION:
+          message.error({
+            content: (
+              <span>
+                {__i18n('当前浏览器插件版本过低')}
+                <a
+                  href={`${YUQUE_DOMAIN}/download`}
+                  target={'_blank'}
+                  style={{
+                    color: '#00B96B',
+                    marginLeft: '8px',
+                  }}
+                >
+                  {__i18n('前往升级')}
+                </a>
+              </span>
+            ),
+          });
+          break;
+        default:
+          sendResponse(true);
+      }
+      return true;
+    }
+    Chrome.runtime.onMessage.addListener(listener);
+    return () => Chrome.runtime.onMessage.removeListener(listener);
   }, [])
 
   if (!isEnableWordMark(defaultConfig)) {
@@ -90,9 +90,6 @@ function AppContext() {
 }
 
 export function initWordMark() {
-  if (root) {
-    return;
-  }
   let wrapper = document.querySelector(`.${YQ_INJECT_WORD_MARK_CONTAINER}`);
   if (!wrapper) {
     wrapper = document.createElement('div');

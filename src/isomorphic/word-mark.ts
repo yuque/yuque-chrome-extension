@@ -35,8 +35,8 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
     name: '小记',
   },
   innerPinList: [
-    WordMarkOptionTypeEnum.translate,
     WordMarkOptionTypeEnum.clipping,
+    WordMarkOptionTypeEnum.translate,
   ],
   disableUrl: [],
   evokePanelWhenClip: false,
