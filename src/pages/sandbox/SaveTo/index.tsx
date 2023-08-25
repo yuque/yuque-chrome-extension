@@ -302,7 +302,6 @@ export default function SaveTo(props: ISaveToProps) {
     onUploadImage,
     onSelectBookId,
   } = useViewModel(props);
-  const accountContext = useContext(AccountContext);
 
   const handleTypeSelect = useCallback((info: MenuInfo) => {
     onSelectType(info.key);

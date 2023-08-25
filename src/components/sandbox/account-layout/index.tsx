@@ -141,9 +141,15 @@ function AccountLayout(props: IAccountLayoutProps) {
   }, []);
 
   useEffect(() => {
-    eventManager.listen(AppEvents.FORCE_UPGRADE_VERSION, data => {
+    const logout = data => {
       onLogout(data);
-    });
+    };
+    eventManager.listen(AppEvents.FORCE_UPGRADE_VERSION, logout);
+    eventManager.listen(AppEvents.LOGIN_EXPIRED, logout);
+    return () => {
+      eventManager.remove(AppEvents.FORCE_UPGRADE_VERSION, logout);
+      eventManager.remove(AppEvents.LOGIN_EXPIRED, logout);
+    };
   }, []);
 
   if (!ready) {

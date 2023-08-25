@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import classnames from 'classnames';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
+import { __i18n } from '@/isomorphic/i18n';
 import styles from './Selector.module.less';
 
 type Rect = Pick<DOMRect, 'width' | 'height' | 'left' | 'top'>;
@@ -83,11 +84,18 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
           }),
           targetRectRef.current,
         ];
+        const cloneNode = targetRef.current.cloneNode(true) as Element;
+        const imgArray = cloneNode.querySelectorAll('img');
+        // 有些图片路径是相对路径，更改一次 dom 等 src 属性
+        imgArray.forEach(item => {
+          /*eslint no-self-assign: "error"*/
+          item.src = item.src;
+        });
         targetListRef.current = [
           ...targetListRef.current.filter((__, index) => {
             return !targetRef.current?.contains(targetListRef.current[index]);
           }),
-          targetRef.current,
+          cloneNode,
         ];
         targetRef.current = null;
         targetRectRef.current = null;
@@ -95,7 +103,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       forceUpdate();
       setTimeout(() => {
         window.focus();
-      }, 200)
+      }, 200);
     };
 
     window.addEventListener('mouseover', handleMouseOver);
@@ -104,7 +112,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       window.removeEventListener('mouseover', handleMouseOver);
       window.removeEventListener('click', onToggleSelect, true);
     };
-  }, [props.onSave]);
+  }, [ props.onSave ]);
 
   useImperativeHandle(
     propsRef,
@@ -116,14 +124,16 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
     [],
   );
 
-
   return (
     <>
       <div className={classnames(styles.mask, 'select-inner')}>
-        单击区域以选中，再次单击取消选中。ESC 退出， ↲ 完成
+        {__i18n('单击区域以选中，再次单击取消选中。ESC 退出， ↲ 完成')}
         {!!targetRectListRef.current.length && (
-          <div className={classnames(styles.confirm, 'select-confirm')} onClick={props.onSave}>
-            确认选取({targetRectListRef.current.length})
+          <div
+            className={classnames(styles.confirm, 'select-confirm')}
+            onClick={props.onSave}
+          >
+            {__i18n('确认选取')}({targetRectListRef.current.length})
           </div>
         )}
       </div>

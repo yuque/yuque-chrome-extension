@@ -14,6 +14,7 @@ export const PAGE_EVENTS = {
   ENABLE_WORD_MARK_STATUE_CHANGE: 'page/enable-word-mark-statue-change',
   FORCE_UPGRADE_VERSION: 'page/force-upgrade-version',
   WORD_MARK_CLIP: 'page/word-mark-clip',
+  LOGIN_EXPIRED: 'page/LOGIN_EXPIRED',
 };
 
 // 在 background.js 里面监听的事件
