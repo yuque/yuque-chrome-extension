@@ -88,6 +88,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         const imgArray = cloneNode.querySelectorAll('img');
         // 有些图片路径是相对路径，更改一次 dom 等 src 属性
         imgArray.forEach(item => {
+          /*eslint no-self-assign: "error"*/
           item.src = item.src;
         });
         targetListRef.current = [
