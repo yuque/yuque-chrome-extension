@@ -150,11 +150,13 @@ const useViewModel = (props: ISaveToProps) => {
       (async () => {
         setEditorLoading(true);
         try {
-          editorRef.current?.appendContent(HTMLs.join(''));
-          editorRef.current?.appendContent(
-            getCitation(await getCurrentTab()),
-            true,
+          const { quote } = getBookmarkHTMLs(
+            await getCurrentTab(),
           );
+          editorRef.current?.appendContent(quote);
+          // 回到文档开头
+          editorRef.current?.focusToStart();
+          editorRef.current?.appendContent(HTMLs.join(''));
         } finally {
           setEditorLoading(false);
         }
