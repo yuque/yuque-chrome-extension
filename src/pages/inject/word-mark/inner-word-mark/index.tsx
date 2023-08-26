@@ -4,7 +4,7 @@ import Icon, { CloseOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { WordMarkConfigKey } from '@/isomorphic/word-mark';
-import { BACKGROUND_EVENTS } from '@/events';
+import { BACKGROUND_EVENTS, GLOBAL_EVENTS } from '@/events';
 import YuqueLogo from '@/assets/svg/yuque-logo.svg';
 import More from '@/assets/svg/more.svg';
 import { WordMarkContext } from '@/context/word-mark-context';
@@ -20,7 +20,9 @@ interface InnerWordMarkProps {
 function InnerWordMark(props: InnerWordMarkProps) {
   const { executeCommand } = props;
   const wordMarkContext = useContext(WordMarkContext);
-  const [ pinedTools, setPinedTools ] = useState<WordMarkOptionTypeEnum[]>(wordMarkContext.innerPinList);
+  const [ pinedTools, setPinedTools ] = useState<WordMarkOptionTypeEnum[]>(
+    wordMarkContext.innerPinList,
+  );
 
   const handlePin = useCallback((type: WordMarkOptionTypeEnum) => {
     setPinedTools(tools => {
@@ -46,7 +48,18 @@ function InnerWordMark(props: InnerWordMarkProps) {
         width: `${pinedTools.length * 62 + 66 + 34}px`,
       }}
     >
-      <Icon component={YuqueLogo} className={styles.yuqueLogo} />
+      <Icon
+        component={YuqueLogo}
+        className={styles.yuqueLogo}
+        onClick={() => {
+          window.postMessage(
+            {
+              action: GLOBAL_EVENTS.SHOW_BOARD,
+            },
+            '*',
+          );
+        }}
+      />
       <div className={styles.pinList}>
         {toolbars.map(item => {
           const pinned = pinedTools.includes(item.type);
@@ -80,7 +93,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
           <Icon component={More} />
         </div>
       </Popover>
-      <Popover 
+      <Popover
         content={<DisableMenu />}
         overlayClassName={styles.overlayClassName}
         placement="bottomRight"

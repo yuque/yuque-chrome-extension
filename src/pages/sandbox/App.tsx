@@ -10,7 +10,7 @@ import { SELECT_TYPE_SELECTION } from './constants/select-types';
 import { AccountContext } from '@/context/account-context';
 import AccountLayout from '@/components/sandbox/account-layout';
 import { __i18n } from '@/isomorphic/i18n';
-import { wordMarkSettingUrl } from '@/isomorphic/word-mark';
+import { preferencesUrl } from '@/isomorphic/word-mark';
 import UserInfo from './UserInfo';
 import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
@@ -83,7 +83,7 @@ const App = () => {
               className={styles.settings}
               onClick={() => {
                 Chrome.tabs.create({
-                  url: wordMarkSettingUrl,
+                  url: preferencesUrl,
                 });
               }}
             >

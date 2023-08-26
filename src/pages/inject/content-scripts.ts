@@ -24,6 +24,9 @@ class App {
         case PAGE_EVENTS.WORD_MARK_CLIP:
           this.saveToNote(data.data);
           break;
+        case GLOBAL_EVENTS.SHOW_BOARD:
+          this.showBoard();
+          break;
         default:
           break;
       }

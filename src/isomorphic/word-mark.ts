@@ -1,6 +1,6 @@
-import { Book } from "@/core/interface";
+import { Book } from '@/core/interface';
 import Chrome from '@/core/chrome';
-import { WordMarkOptionTypeEnum } from "./constants";
+import { WordMarkOptionTypeEnum } from './constants';
 
 export enum WordMarkConfigKey {
   // 是否开启
@@ -44,7 +44,7 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
 
 export const getPageUrl = () => {
   return `${window.location.origin}${window.location.pathname}`;
-}
+};
 
 export const isEnableWordMark = (config: IWordMarkConfig | null) => {
   const url = getPageUrl();
@@ -52,6 +52,8 @@ export const isEnableWordMark = (config: IWordMarkConfig | null) => {
     return false;
   }
   return true;
-}
+};
 
-export const wordMarkSettingUrl = `${Chrome.runtime.getURL('setting.html')}?page=wordMark`;
+export const preferencesUrl = `${Chrome.runtime.getURL('setting.html')}`;
+
+export const wordMarkSettingUrl = `${preferencesUrl}?page=wordMark`;
