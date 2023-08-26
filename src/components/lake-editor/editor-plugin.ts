@@ -93,7 +93,7 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEd
           {
             readNode(context: any, node: any) {
               context.setNode({
-                id: '',
+                id: node.attrs.id || '',
                 type: 'element',
                 name: 'quote',
                 attrs: {},

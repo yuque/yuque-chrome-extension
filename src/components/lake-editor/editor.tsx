@@ -10,6 +10,8 @@ import bowser from 'bowser';
 import loadLakeEditor from './load';
 import { InjectEditorPlugin } from './editor-plugin';
 
+const blockquoteID = 'yqextensionblockquoteid';
+
 export interface EditorProps {
   value: string;
   children?: React.ReactElement;
@@ -38,7 +40,7 @@ export interface IEditorRef {
    * 设置文档内容，将清空旧的内容
    * @param html html内容
    */
-  setContent: (html: string) => void;
+  setContent: (content: string, type?: 'text/lake' | 'text/html') => void;
   /**
    * 获取文档内容
    * @param type 内容的格式
@@ -362,11 +364,30 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       editor.execCommand('focus');
       editor.renderer.scrollToCurrentSelection();
     },
-    setContent: (html: string) => {
+    setContent: (content: string, type: 'text/lake' | 'text/html' = 'text/html') => {
       if (!editor) return;
       iframeRef.current?.focus();
-      editor.setDocument('text/html', html);
+      editor.setDocument(type, content);
       editor.execCommand('focus', 'end');
+      // 寻找定位的block 插入到block上方
+      const node = editor.kernel.model.document.getNodeById(blockquoteID);
+      if (node) {
+        const rootNode = editor.kernel.model.document.rootNode;
+        if (rootNode.firstNode === node) {
+          return;
+        }
+        editor.kernel.execCommand('selection', {
+          ranges: [
+            {
+              start: {
+                node: rootNode.children[node.offset - 1],
+                offset: rootNode.children[node.offset - 1].childCount,
+              },
+            },
+          ],
+        });
+        editor.execCommand('focus');
+      }
     },
     isEmpty: () => {
       if (!editor) return true;

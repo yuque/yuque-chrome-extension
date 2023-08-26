@@ -1,6 +1,8 @@
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
 
+const blockquoteID = 'yqextensionblockquoteid';
+
 /**
  * 获取文档开头的html片段
  * @param tab 浏览器当前的tab
@@ -24,11 +26,11 @@ export const getBookmarkHtml = (tab: chrome.tabs.Tab, useQuote = false, needHead
 /**
  * 获取文档开头的html片段
  * @param tab 浏览器当前的tab
- * @returns {heading: string, quote: string} html片段
+ * @return {heading: string, quote: string} html片段
  */
 export const getBookmarkHTMLs = (tab: chrome.tabs.Tab) => {
   const heading = `<h2>${tab.title}</h2>`;
-  const quote = `<p><br></p><blockquote data-lake-id="srcquote"><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote><p><br/></p>`;
+  const quote = `<p><br></p><blockquote id="${blockquoteID}"><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote><p><br/></p>`;
   return {
     heading,
     quote,
