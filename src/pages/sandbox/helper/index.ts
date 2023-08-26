@@ -16,7 +16,7 @@ export const getBookmarkHtml = (tab: chrome.tabs.Tab, useQuote = false, needHead
     ret.push(`<h2>${tab.title}</h2>`);
   }
   if (useQuote) {
-    ret.push(`<blockquote><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote><p><br/></p>`);
+    ret.push(`<blockquote><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote>`);
   } else {
     ret.push(`<p><a href="${tab.url}">${tab.title}</a></p>`);
   }
@@ -30,7 +30,7 @@ export const getBookmarkHtml = (tab: chrome.tabs.Tab, useQuote = false, needHead
  */
 export const getBookmarkHTMLs = (tab: chrome.tabs.Tab) => {
   const heading = `<h2>${tab.title}</h2>`;
-  const quote = `<p><br></p><blockquote id="${blockquoteID}"><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote><p><br/></p>`;
+  const quote = `<p><br></p><blockquote id="${blockquoteID}"><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote>`;
   return {
     heading,
     quote,
