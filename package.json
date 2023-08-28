@@ -6,9 +6,9 @@
   "releaseNotes": [
     "[特性] 支持划词操作",
     "[特性] 优化选取方案",
+    "[特性] 支持偏好设置",
     "[特性] 剪藏选中父元素时自动取消子元素",
-    "[修复] 选取元素时选取光标意外被遮挡问题",
-    "[修复] 登录异常问题"
+    "[修复] 选取元素时选取光标意外被遮挡问题"
   ],
   "repository": {
     "type": "git",
@@ -36,22 +36,18 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
     "antd": "^5.7.3",
-    "axios": "^0.21.1",
     "bowser": "^1.7.1",
     "classnames": "^2.2.6",
-    "escape-html": "^1.0.3",
     "eventemitter3": "^4.0.7",
     "jquery": "^3.6.0",
     "katex": "0.16.8",
     "less": "^4.1.2",
     "lodash": "^4.17.21",
-    "marked": "^2.0.7",
     "moment": "^2.29.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "semver-compare": "^1.0.0",
-    "turndown": "^7.0.0",
     "whatwg-fetch": "^3.6.17"
   },
   "devDependencies": {
