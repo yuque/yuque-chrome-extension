@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import ReactDOM from 'react-dom';
+import { Root, createRoot } from 'react-dom/client';
 import bowser from 'bowser';
 import loadLakeEditor from './load';
 import { InjectEditorPlugin } from './editor-plugin';
@@ -148,7 +148,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
     onChange: props.onChange,
     onLoad: props.onLoad,
   });
-  const rootNodeRef = useRef<{ div: HTMLDivElement | null }>({
+  const rootNodeRef = useRef<{ div: Root | null }>({
     div: null,
   });
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -163,12 +163,11 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       // 加载编辑器
       loadLakeEditor(win).then(() => {
         setLoading(false);
-        rootNodeRef.current.div = doc.getElementById('child') as HTMLDivElement;
+        const root = createRoot(doc.getElementById('child'));
+        rootNodeRef.current.div = root;
+
         if (rootNodeRef.current.div) {
-          ReactDOM.render(
-            props.children,
-            rootNodeRef.current.div,
-          );
+          rootNodeRef.current.div.render(props.children);
         }
         const { createOpenEditor } = win.Doc;
         // 注入插件
@@ -226,11 +225,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                       'alert',
                       {
                         name: 'columns',
-                        childMenus: [
-                          'columns2',
-                          'columns3',
-                          'columns4',
-                        ],
+                        childMenus: [ 'columns2', 'columns3', 'columns4' ],
                       },
                       'collapse',
                     ],
@@ -271,10 +266,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                     },
                     name: 'group-base',
                     type: 'normal',
-                    items: [
-                      'label',
-                      'math',
-                    ],
+                    items: [ 'label', 'math' ],
                   },
                 ],
               },
@@ -348,110 +340,112 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   }, [ onChange, onLoad ]);
 
   // 导出ref
-  useImperativeHandle(ref, () => ({
-    appendContent: (html: string, breakLine = false) => {
-      if (!editor) return;
-      if (breakLine) {
+  useImperativeHandle(
+    ref,
+    () => ({
+      appendContent: (html: string, breakLine = false) => {
+        if (!editor) return;
+        if (breakLine) {
+          editor.execCommand('breakLine');
+        }
+        editor.kernel.execCommand('paste', {
+          types: [ 'text/html' ],
+          getData() {
+            return html;
+          },
+        });
+        iframeRef.current?.focus();
+        editor.execCommand('focus');
+        editor.renderer.scrollToCurrentSelection();
+      },
+      setContent: (
+        content: string,
+        type: 'text/lake' | 'text/html' = 'text/html',
+      ) => {
+        if (!editor) return;
+        iframeRef.current?.focus();
+        editor.setDocument(type, content);
+        editor.execCommand('focus', 'end');
+        // 寻找定位的block 插入到block上方
+        const node = editor.kernel.model.document.getNodeById(blockquoteID);
+        if (node) {
+          const rootNode = editor.kernel.model.document.rootNode;
+          if (rootNode.firstNode === node) {
+            return;
+          }
+          editor.kernel.execCommand('selection', {
+            ranges: [
+              {
+                start: {
+                  node: rootNode.children[node.offset - 1],
+                  offset: rootNode.children[node.offset - 1].childCount,
+                },
+              },
+            ],
+          });
+          editor.execCommand('focus');
+        }
+      },
+      isEmpty: () => {
+        if (!editor) return true;
+        return editor.queryCommandValue('isEmpty');
+      },
+      getContent: async (type: 'lake' | 'text/html' | 'description') => {
+        if (!editor) return '';
+        let times = 0;
+        while (!editor.canGetDocument()) {
+          // 10s 后返回超时
+          if (times > 100) {
+            throw new Error('文档上传未结束! 请删除未上传成功的图片');
+          }
+          times++;
+          await sleep(100);
+        }
+        if (type === 'lake') {
+          return editor.getDocument('text/lake');
+        } else if (type === 'text/html') {
+          return editor.getDocument('text/html');
+        }
+        return editor.getDocument('description');
+      },
+      getSummaryContent: () => {
+        if (!editor) return '';
+        return editor.queryCommandValue('getSummary', 'lake');
+      },
+      wordCount: () => {
+        if (!editor) return 0;
+        return editor.queryCommandValue('wordCount');
+      },
+      focusToStart: (offset = 0) => {
+        if (!editor) return;
+        iframeRef.current?.focus();
+        if (offset) {
+          editor.kernel.execCommand('selection', {
+            ranges: [
+              {
+                start: {
+                  node: editor.kernel.model.document.rootNode.children[offset],
+                  offset: 0,
+                },
+              },
+            ],
+          });
+          editor.execCommand('focus');
+        } else {
+          editor.execCommand('focus', 'start');
+        }
+      },
+      insertBreakLine: () => {
+        if (!editor) return;
         editor.execCommand('breakLine');
-      }
-      editor.kernel.execCommand('paste', {
-        types: [ 'text/html' ],
-        getData() {
-          return html;
-        },
-      });
-      iframeRef.current?.focus();
-      editor.execCommand('focus');
-      editor.renderer.scrollToCurrentSelection();
-    },
-    setContent: (content: string, type: 'text/lake' | 'text/html' = 'text/html') => {
-      if (!editor) return;
-      iframeRef.current?.focus();
-      editor.setDocument(type, content);
-      editor.execCommand('focus', 'end');
-      // 寻找定位的block 插入到block上方
-      const node = editor.kernel.model.document.getNodeById(blockquoteID);
-      if (node) {
-        const rootNode = editor.kernel.model.document.rootNode;
-        if (rootNode.firstNode === node) {
-          return;
-        }
-        editor.kernel.execCommand('selection', {
-          ranges: [
-            {
-              start: {
-                node: rootNode.children[node.offset - 1],
-                offset: rootNode.children[node.offset - 1].childCount,
-              },
-            },
-          ],
-        });
-        editor.execCommand('focus');
-      }
-    },
-    isEmpty: () => {
-      if (!editor) return true;
-      return editor.queryCommandValue('isEmpty');
-    },
-    getContent: async (type: 'lake' | 'text/html' | 'description') => {
-      if (!editor) return '';
-      let times = 0;
-      while (!editor.canGetDocument()) {
-        // 10s 后返回超时
-        if (times > 100) {
-          throw new Error('文档上传未结束! 请删除未上传成功的图片');
-        }
-        times++;
-        await sleep(100);
-      }
-      if (type === 'lake') {
-        return editor.getDocument('text/lake');
-      } else if (type === 'text/html') {
-        return editor.getDocument('text/html');
-      }
-      return editor.getDocument('description');
-    },
-    getSummaryContent: () => {
-      if (!editor) return '';
-      return editor.queryCommandValue('getSummary', 'lake');
-    },
-    wordCount: () => {
-      if (!editor) return 0;
-      return editor.queryCommandValue('wordCount');
-    },
-    focusToStart: (offset = 0) => {
-      if (!editor) return;
-      iframeRef.current?.focus();
-      if (offset) {
-        editor.kernel.execCommand('selection', {
-          ranges: [
-            {
-              start: {
-                node: editor.kernel.model.document.rootNode.children[offset],
-                offset: 0,
-              },
-            },
-          ],
-        });
-        editor.execCommand('focus');
-      } else {
-        editor.execCommand('focus', 'start');
-      }
-    },
-    insertBreakLine: () => {
-      if (!editor) return;
-      editor.execCommand('breakLine');
-    },
-  }),
-  [ editor ],
+      },
+    }),
+    [ editor ],
   );
 
   useEffect(() => {
     if (!rootNodeRef.current.div) return;
-    ReactDOM.render(
-      props.children,
-      rootNodeRef.current.div,
-    );
+    rootNodeRef.current.div.render(props.children);
   }, [ props.children ]);
 
   // 渲染iframe

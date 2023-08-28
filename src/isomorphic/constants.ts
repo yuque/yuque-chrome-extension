@@ -1,8 +1,4 @@
-import { YUQUE_DOMAIN } from "@/config";
-
-export const SandboxMessageType = {
-  SHOW_BOARD: 'SHOW_BOARD',
-};
+import { YUQUE_DOMAIN } from '@/config';
 
 export const SUMMARY_PARAGRAPH_MAX_COUNT = 10;
 export const BIG_DOCUMENT_BLOCK_COUNT = 200;

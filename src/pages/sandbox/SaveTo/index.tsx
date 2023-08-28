@@ -13,9 +13,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
-import { GLOBAL_EVENTS } from '@/events';
 import { EditorValueContext } from '../EditorValueContext';
-import { ActionListener } from '@/core/action-listener';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
 import { VIEW_MORE_TAG } from '@/isomorphic/constants';
@@ -26,10 +24,12 @@ import {
 } from '@/components/sandbox/note-tag/util';
 import { docProxy } from '@/core/proxy/doc';
 import { mineProxy } from '@/core/proxy/mine';
+import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
+import eventManager from '@/core/event/eventManager';
+import { AppEvents } from '@/core/event/events';
 import {
   getBookmarkHTMLs,
   getBookmarkHtml,
-  getCitation,
   getCurrentTab,
   startSelect,
 } from '../helper';
@@ -80,18 +80,36 @@ const useViewModel = (props: ISaveToProps) => {
    * 对新选取的内容做出响应
    */
   useEffect(() => {
-    return ActionListener.addListener(async request => {
-      switch (request.action) {
-        case GLOBAL_EVENTS.GET_SELECTED_HTML: {
-          const { HTMLs } = request;
+    const listener = async (e: MessageEvent<any>) => {
+      if (e.data?.key !== SandBoxMessageKey) {
+        return;
+      }
+      const { action, data } = e.data || {};
+      switch (action) {
+        case SandBoxMessageType.getSelectText: {
+          const { HTMLs } = data;
+          setEditorLoading(true);
+          setCurrentType(SELECT_TYPE_SELECTION);
+          try {
+            const { quote } = getBookmarkHTMLs(await getCurrentTab());
+            editorRef.current?.appendContent(quote);
+            // 回到文档开头
+            editorRef.current?.focusToStart();
+            editorRef.current?.appendContent(HTMLs.join(''));
+          } finally {
+            setEditorLoading(false);
+          }
+          editorRef.current.appendContent(data.HTMLs.join(''));
+          break;
+        }
+        case SandBoxMessageType.getSelectedHtml: {
+          const { HTMLs } = data;
           const isEmpty = editorRef.current.isEmpty();
           // 判断当前文档是否是空的
           // 如果是空的则插入初始内容
           if (isEmpty) {
             const isNote = currentBookId === NODE_DATA_ID;
-            const { heading, quote } = getBookmarkHTMLs(
-              await getCurrentTab(),
-            );
+            const { heading, quote } = getBookmarkHTMLs(await getCurrentTab());
             editorRef.current?.appendContent(quote);
             // 回到文档开头
             editorRef.current?.focusToStart();
@@ -108,8 +126,17 @@ const useViewModel = (props: ISaveToProps) => {
         default:
           break;
       }
-    });
-  }, [ currentBookId ]);
+    };
+    window.addEventListener('message', listener);
+    const onClose = () => {
+      editorRef.current?.setContent('');
+    };
+    eventManager.listen(AppEvents.CLOSE_BOARD, onClose);
+    return () => {
+      window.removeEventListener('message', listener);
+      eventManager.removeListener(AppEvents.CLOSE_BOARD, onClose);
+    };
+  }, []);
 
   /**
    * 监听currentType的变化，做出不同的响应
@@ -133,41 +160,8 @@ const useViewModel = (props: ISaveToProps) => {
           editorRef.current?.setContent(html);
         });
       });
-
     }
   }, [ currentType ]);
-
-  /**
-   * 文档加载成功后根据currentType做出不同的内容初始化
-   */
-  const onLoad = useCallback(() => {
-    if (!editorRef.current) return;
-
-    if (currentType === SELECT_TYPE_SELECTION) {
-      // 如果使用的是右键剪藏 则插入对应的内容
-      const HTMLs = ActionListener.getSelectHTMLs();
-      (async () => {
-        setEditorLoading(true);
-        try {
-          const { quote } = getBookmarkHTMLs(
-            await getCurrentTab(),
-          );
-          editorRef.current?.appendContent(quote);
-          // 回到文档开头
-          editorRef.current?.focusToStart();
-          editorRef.current?.appendContent(HTMLs.join(''));
-        } finally {
-          setEditorLoading(false);
-        }
-      })();
-    } else if (currentType === SELECT_TYPE_BOOKMARK) {
-      // 如果选择的是剪藏网址则插入bookmark
-      getCurrentTab().then(tab => {
-        const html = getBookmarkHtml(tab, false, currentBookId !== NODE_DATA_ID);
-        editorRef.current?.setContent(html);
-      });
-    }
-  }, [ currentType, currentBookId ]);
 
   const onSave = useCallback(async () => {
     if (!editorRef.current) return;
@@ -212,8 +206,10 @@ const useViewModel = (props: ISaveToProps) => {
     setEditorLoading(true);
 
     try {
-      const serializedAsiContent = await editorRef.current?.getContent('lake') || '';
-      const serializedHtmlContent = await editorRef.current?.getContent('text/html') || '';
+      const serializedAsiContent =
+        (await editorRef.current?.getContent('lake')) || '';
+      const serializedHtmlContent =
+        (await editorRef.current?.getContent('text/html')) || '';
       const summary = editorRef.current.getSummaryContent();
       const wordCount = editorRef.current.wordCount();
       const extractRes = extractSummaryRaw(serializedAsiContent, {
@@ -288,7 +284,6 @@ const useViewModel = (props: ISaveToProps) => {
       editorLoading,
     },
     onSave,
-    onLoad,
     onUploadImage,
     onContinue: startSelect,
     onSelectType: setCurrentType,
@@ -301,7 +296,6 @@ export default function SaveTo(props: ISaveToProps) {
   const {
     state: { books, currentBookId, loading, editorRef, editorLoading },
     onSave,
-    onLoad,
     onContinue,
     onSelectType,
     onUploadImage,
@@ -334,9 +328,7 @@ export default function SaveTo(props: ISaveToProps) {
       }}
     >
       <div className={classnames(styles.wrapper, props.className)}>
-        <div className={styles.actionTip}>
-          {__i18n('选择剪藏方式')}
-        </div>
+        <div className={styles.actionTip}>{__i18n('选择剪藏方式')}</div>
         <Menu
           mode="inline"
           inlineIndent={8}
@@ -368,31 +360,30 @@ export default function SaveTo(props: ISaveToProps) {
           {__i18n('保存到')}
           {currentBookId === NODE_DATA_ID ? __i18n('小记') : __i18n('知识库')}
         </Button>
-        {currentType && (
-          <div className={styles['lake-editor']}>
-            {editorLoading ? (
-              <Spin className={styles.loading} spinning />
-            ) : null}
-            <LakeEditor
-              ref={editorRef}
-              value=""
-              onLoad={onLoad}
-              onSave={onSave}
-              uploadImage={onUploadImage}
-            >
-              {currentType !== SELECT_TYPE_BOOKMARK && (
-                <Button onClick={onContinue}>{__i18n('继续选取')}</Button>
-              )}
-            </LakeEditor>
-            <div
-              className={classnames({
-                [styles.hidden]: currentBookId !== NODE_DATA_ID,
-              })}
-            >
-              <NoteTag />
-            </div>
+        <div
+          className={classnames(styles['lake-editor'], {
+            [styles.hidden]: !currentType,
+          })}
+        >
+          {editorLoading ? <Spin className={styles.loading} spinning /> : null}
+          <LakeEditor
+            ref={editorRef}
+            value=""
+            onSave={onSave}
+            uploadImage={onUploadImage}
+          >
+            {currentType !== SELECT_TYPE_BOOKMARK && (
+              <Button onClick={onContinue}>{__i18n('继续选取')}</Button>
+            )}
+          </LakeEditor>
+          <div
+            className={classnames({
+              [styles.hidden]: currentBookId !== NODE_DATA_ID,
+            })}
+          >
+            <NoteTag />
           </div>
-        )}
+        </div>
       </div>
     </ConfigProvider>
   );

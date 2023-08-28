@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { ConfigProvider, Radio, RadioChangeEvent } from 'antd';
 import { CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
-import { ActionListener } from '@/core/action-listener';
-import { SELECT_TYPE_SELECTION } from './constants/select-types';
 import { AccountContext } from '@/context/account-context';
 import AccountLayout from '@/components/sandbox/account-layout';
 import { __i18n } from '@/isomorphic/i18n';
 import { preferencesUrl } from '@/isomorphic/word-mark';
+import eventManager from '@/core/event/eventManager';
+import { AppEvents } from '@/core/event/events';
 import UserInfo from './UserInfo';
 import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
@@ -26,31 +26,18 @@ const onClose = () => {
       action: GLOBAL_EVENTS.CLOSE_BOARD,
     });
   });
+  eventManager.notify(AppEvents.CLOSE_BOARD);
 };
 
 const App = () => {
   const [ editorValue, setEditorValue ] = useState([]);
-  const [ currentType, setCurrentType ] = useState(ActionListener.currentType);
+  const [ currentType, setCurrentType ] = useState(null);
   const accountContext = useContext(AccountContext);
   const [ tab, setTab ] = React.useState<TabName>('save-to');
 
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);
   };
-
-  useEffect(() => {
-    if (currentType === null && ActionListener.currentType) {
-      setCurrentType(ActionListener.currentType);
-    }
-    return ActionListener.addListener(request => {
-      if (
-        currentType === null &&
-        request.action === GLOBAL_EVENTS.GET_SELECTED_TEXT
-      ) {
-        setCurrentType(SELECT_TYPE_SELECTION);
-      }
-    });
-  }, []);
 
   return (
     <EditorValueContext.Provider

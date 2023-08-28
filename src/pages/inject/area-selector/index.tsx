@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Root, createRoot } from 'react-dom/client';
-import Chrome from '@/core/chrome';
 import Selector, { ISelectorRef } from './selector/Selector';
-import { YQ_SANDBOX_BOARD_IFRAME, YQ_SELECTION_CONTAINER } from '@/isomorphic/constants';
-import { GLOBAL_EVENTS } from '@/events';
+import {
+  YQ_SANDBOX_BOARD_IFRAME,
+  YQ_SELECTION_CONTAINER,
+} from '@/isomorphic/constants';
+import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
 
 function App() {
   const selectorRef = useRef<ISelectorRef>();
@@ -17,21 +19,26 @@ function App() {
           return '';
         }
       }
-      return elem?.outerHTML
-    }
+      return elem?.outerHTML;
+    });
+
+    const iframe: HTMLIFrameElement = document.querySelector(
+      `#${YQ_SANDBOX_BOARD_IFRAME}`,
     );
-    Chrome.runtime.sendMessage(
+
+    iframe.contentWindow.postMessage(
       {
-        action: GLOBAL_EVENTS.GET_SELECTED_HTML,
-        HTMLs,
+        key: SandBoxMessageKey,
+        action: SandBoxMessageType.getSelectedHtml,
+        data: {
+          HTMLs,
+        },
       },
-      () => {
-        const iframe =  document.querySelector(`#${YQ_SANDBOX_BOARD_IFRAME}`) as HTMLDivElement;
-        iframe.classList.add('show');
-        iframe.focus();
-        destroySelectArea();
-      },
+      '*',
     );
+    iframe.classList.add('show');
+    iframe.focus();
+    destroySelectArea();
   }, []);
 
   useEffect(() => {
