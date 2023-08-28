@@ -8,4 +8,9 @@ export enum AppEvents {
    * 登录过期
    */
   LOGIN_EXPIRED = 'LOGIN_EXPIRED',
+
+  /**
+   * 关闭面板
+   */
+  CLOSE_BOARD = 'CLOSE_BOARD',
 }

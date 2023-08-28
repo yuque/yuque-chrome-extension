@@ -1,6 +1,5 @@
-import { IUser } from '@/core/account';
 import { createContext } from 'react';
-
+import { IUser } from '@/core/account';
 
 export interface IAccountContext {
   user: IUser;

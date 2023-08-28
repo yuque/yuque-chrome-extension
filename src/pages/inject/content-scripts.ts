@@ -2,22 +2,20 @@ import $ from 'jquery';
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS, PAGE_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
-import {
-  SandboxMessageType,
-  YQ_SANDBOX_BOARD_IFRAME,
-} from '@/isomorphic/constants';
+import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
 import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
 import { initSelectArea } from './area-selector';
 import { initWordMark, destroyWordMark } from './word-mark';
+import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
 
 class App {
-  private sandboxURL: string;
   private iframeClassName: string;
+  private iframe: HTMLIFrameElement;
 
   constructor() {
-    this.sandboxURL = Chrome.runtime.getURL('sandbox.html');
     this.iframeClassName = `sandbox-iframe-${Date.now()}`;
     this.bindEvent();
+    this.initBoard();
     window.addEventListener('message', e => {
       const data = e.data as { action: string; data: any };
       switch (data.action) {
@@ -72,21 +70,26 @@ class App {
     `;
   }
 
-  showBoard() {
-    const { sandboxURL, iframeClassName } = this;
-    this.injectStyleIfNeeded(iframeClassName, this.iframeCSSFieldContent);
-    const iframe = $(`iframe[src="${sandboxURL}"]`);
-    if (!iframe[0]) {
-      $('body').append(
-        `<iframe src="${sandboxURL}" class="${iframeClassName} show" id="${YQ_SANDBOX_BOARD_IFRAME}"/>`,
-      );
+  initBoard() {
+    if (document.querySelector(`#${YQ_SANDBOX_BOARD_IFRAME}`)) {
+      return;
     }
+    const { iframeClassName } = this;
+    this.injectStyleIfNeeded(iframeClassName, this.iframeCSSFieldContent);
+    this.iframe = document.createElement('iframe');
+    this.iframe.src = Chrome.runtime.getURL('sandbox.html');
+    this.iframe.classList.add(iframeClassName);
+    this.iframe.id = YQ_SANDBOX_BOARD_IFRAME;
+    document.body.append(this.iframe);
+  }
+
+  showBoard() {
+    this.iframe.classList.add('show');
     destroyWordMark();
   }
 
   removeIframe() {
-    const { sandboxURL } = this;
-    $(`iframe[src="${sandboxURL}"]`).remove();
+    this.iframe.classList.remove('show');
     initWordMark();
   }
 
@@ -99,34 +102,23 @@ class App {
   }
 
   startSelect() {
-    const { sandboxURL } = this;
-    const iframe = $(`iframe[src="${sandboxURL}"]`);
     initSelectArea();
-    if (!iframe[0]) {
-      return;
-    }
-    iframe.removeClass('show');
+    this.iframe.classList.remove('show');
   }
 
   saveToNote(data: any) {
-    const { sandboxURL, iframeClassName } = this;
-    this.injectStyleIfNeeded(iframeClassName, this.iframeCSSFieldContent);
-    const iframe = $(`iframe[src="${sandboxURL}"]`);
-    if (!iframe[0]) {
-      const iframeToLoad = $(
-        `<iframe src="${sandboxURL}" class="${iframeClassName} show" />`,
-      );
-
-      iframeToLoad.on('load', () => {
-        const { selectionText } = data;
-        Chrome.runtime.sendMessage({
-          action: GLOBAL_EVENTS.GET_SELECTED_TEXT,
+    const { selectionText } = data;
+    this.showBoard();
+    this.iframe.contentWindow.postMessage(
+      {
+        key: SandBoxMessageKey,
+        action: SandBoxMessageType.getSelectText,
+        data: {
           HTMLs: [ selectionText ],
-        });
-      });
-
-      $('body').append(iframeToLoad);
-    }
+        },
+      },
+      '*',
+    );
   }
 
   bindEvent() {
@@ -170,9 +162,6 @@ class App {
 
 function initBridge() {
   contentExtensionBridge.connect();
-  contentExtensionBridge.onMessage(SandboxMessageType.SHOW_BOARD, () => {
-    window._yuque_ext_app.showBoard();
-  });
 }
 
 function initSandbox() {
