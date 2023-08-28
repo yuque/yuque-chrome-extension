@@ -29,4 +29,8 @@ This project follows the git-contributor [spec](https://github.com/xudafeng/git-
 
 <!-- GITCONTRIBUTOR_END -->
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yuque/yuque-chrome-extension)](https://star-history.com/#yuque/yuque-chrome-extension)
+
 [![Chrome Web Store](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/mPGKYBIR2uCP0ApchDXE.png)](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
