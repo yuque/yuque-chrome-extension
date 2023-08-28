@@ -1,5 +1,5 @@
 import Chrome from '@/core/chrome';
-import { GLOBAL_EVENTS } from '@/events';
+import { GLOBAL_EVENTS, PAGE_EVENTS } from '@/events';
 
 interface MenuItem {
   id: string;
@@ -41,17 +41,18 @@ export function listenContextMenuEvents() {
 
     switch (info.menuItemId) {
       case menuList[0].id: {
-        const { pageUrl, selectionText } = info;
+        const { selectionText } = info;
         Chrome.tabs.sendMessage(tab.id, {
-          action: GLOBAL_EVENTS.SAVE_TO_NOTE,
-          pageUrl,
-          selectionText,
+          action: PAGE_EVENTS.GET_SELECTED_TEXT,
+          data: {
+            HTMLs: [ selectionText ],
+          }
         });
         break;
       }
       case menuList[1].id:
         Chrome.tabs.sendMessage(tab.id, {
-          action: GLOBAL_EVENTS.SHOW_BOARD,
+          action: PAGE_EVENTS.SHOW_CLIPPING_BOARD,
         });
         break;
       case menuList[2].id: {

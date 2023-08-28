@@ -1,0 +1,79 @@
+@import '~@/styles/parameters.less';
+
+.innerWordMarkWrapper {
+  background-color: @white;
+  border: 1px solid @border-color;
+  box-shadow: 0 8px 16px #919eab29;
+  border-radius: 5px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+
+  .yuqueLogo {
+    font-size: 16px;
+    padding: 0 6px;
+    cursor: pointer;
+  }
+
+  .moreActions {
+    padding: 0 6px;
+    color: @text-color-secondary;
+  }
+
+  .closeActions {
+    height: 30px;
+    border-left: 1px solid @border-color;
+    display: flex;
+    align-items: center;
+    width: 34px;
+    font-size: @font-size;
+    justify-content: center;
+    margin-left: 6px;
+    color: @text-color-secondary;
+    cursor: pointer;
+  }
+
+  .pinList {
+    display: flex;
+    flex: 0 0 auto;
+
+    .pinToolbarItem {
+      display: flex;
+      cursor: pointer;
+      gap: 4px;
+      padding: 2px 8px;
+      align-items: center;
+      color: @text-primary;
+
+      .name {
+        font-size: @font-size;
+        line-height: 20px;
+      }
+
+      &:hover {
+        background-color: @bg-primary-hover;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
+.overlayClassName {
+  // 禁止选中，不然会触发 mousedown 事件
+  user-select: none;
+
+  :global {
+    .yuque-chrome-extension-popover-inner, .yuque-chrome-extension-popover-inner-content {
+      padding: 0;
+    }
+
+    .yuque-chrome-extension-popover-arrow {
+      display: none;
+    }
+
+    div {
+      box-sizing: border-box;
+    }
+  }
+}

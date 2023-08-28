@@ -1,0 +1,37 @@
+@import '~@/styles/parameters.less';
+
+.editorWrapper {
+  z-index: 999999;
+  position: fixed;
+  right: 332px;
+  top: 16px;
+  width: 640px;
+  height: 640px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  background: @white;
+  box-shadow: @panel-default-box-shadow;
+  border: 1px solid @border-color;
+}
+
+.iframe {
+  border: none;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  min-width: 0;
+  transition: initial;
+  color-scheme: none;
+}
+
+.continueButton {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+.tagWrapper {
+  flex: 0 0 auto;
+}

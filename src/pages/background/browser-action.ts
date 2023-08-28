@@ -1,5 +1,5 @@
 import Chrome from '@/core/chrome';
-import { GLOBAL_EVENTS } from '@/events';
+import { PAGE_EVENTS } from '@/events';
 
 function remindToRefreshPage(tabId: number) {
   const msg = __i18n('你需要重新加载该页面才能剪藏。请重新加载页面后再试一次');
@@ -15,7 +15,7 @@ function remindToRefreshPage(tabId: number) {
 export function listenBrowserActionEvent() {
   Chrome.action.onClicked.addListener(tab => {
     Chrome.tabs.sendMessage(tab.id, {
-      action: GLOBAL_EVENTS.SHOW_BOARD,
+      action: PAGE_EVENTS.SHOW_CLIPPING_BOARD,
     }, () => {
       /**
        * 插件更新后会断链接，需要提醒用户手动刷新下页面

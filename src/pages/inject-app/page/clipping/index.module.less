@@ -1,0 +1,64 @@
+@import '~@/styles/parameters.less';
+
+.clippingPanel {
+  z-index: @app-zIndex;
+  position: fixed;
+  right: @base-padding * 2;
+  top: @base-padding * 2;
+  background: @white;
+  border-radius: @base-padding;
+  box-shadow: @panel-default-box-shadow;
+  width: @main-board-width;
+  box-sizing: border-box;
+  color: @text-color;
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 20px 0 @base-padding * 3;
+  border: 1px solid @border-color;
+}
+
+.panelTitle {
+  margin-bottom: @base-padding * 2;
+  font-size: @font-size-lg;
+  font-weight: 500;
+  color: @text-primary;
+  padding: 0 @base-padding * 3;
+}
+
+.closeWrapper {
+  position: absolute;
+  right: @base-padding * 3;
+  top: @base-padding * 3;
+  cursor: pointer;
+  font-size: @font-size-lg;
+}
+
+.radioGroup {
+  margin-bottom: @base-padding * 2;
+  padding: 0 @base-padding * 3;
+}
+
+.body {
+  height: 292px;
+}
+
+.footer {
+  display: flex;
+  padding: 0 3 * @base-padding;
+  justify-content: space-between;
+  margin-top: 3 * @base-padding;
+
+  .settingWrapper {
+    display: flex;
+    gap: 4px;
+    color: rgba(0, 0, 0, .45);
+    text-decoration: none;
+    align-items: center;
+    cursor: pointer;
+    .icon {
+      font-size: @font-size;
+      margin-right: 4px;
+    }
+  }
+}
+

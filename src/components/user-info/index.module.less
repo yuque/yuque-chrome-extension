@@ -1,0 +1,131 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+
+  .name {
+    margin-left: 8px;
+    margin-right: 8px;
+    font-size: 14px;
+    color: @grey-8;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100px;
+    font-weight: 400;
+  }
+
+  .switch {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.upgradeVersionItem {
+  display: flex;
+
+  .name {
+    flex: 1;
+  }
+
+  .version {
+    flex: 0 0 auto;
+    color: rgba(0, 0, 0, 0.45);
+  }
+}
+
+.popover {
+  :global {
+    .ant-popover-inner {
+      padding: 8px !important;
+    }
+
+    .ant-popover-title {
+      margin-bottom: 4px !important;
+    }
+  }
+
+
+  .title {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .04);
+    padding: 8px @base-padding 14px;
+    font-weight: 400;
+
+    .userInfo {
+      margin-left: @base-padding;
+    }
+
+    .login {
+      font-size: @font-size-sm;
+      color: rgba(0, 0, 0, .45);
+    }
+
+  }
+
+  .info {
+    padding-left: 12px;
+    padding-right: 12px;
+    border-bottom: 1px solid @border-color;
+
+    .login {
+      font-size: @font-size-sm;
+      color: @text-color-secondary;
+      a {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .logout {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 8px;
+    cursor: pointer;
+  }
+}
+
+.userMenu {
+  :global {
+    .yuque-chrome-extension-menu-item {
+      height: 30px;
+      line-height: 30px;
+    }
+  }
+}
+
+.updateModal {
+  display: flex;
+  align-items: center;
+
+  .updateIframe {
+    height: 90vh;
+    vertical-align: top;
+    border: none;
+    width: 100%;
+  }
+
+  :global {
+    .yuque-chrome-extension-modal-content {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .yuque-chrome-extension-modal-confirm-confirm {
+      top: 0;
+    }
+
+    .anticon-exclamation-circle {
+      display: none;
+    }
+
+    .yuque-chrome-extension-modal-confirm-content {
+      width: 100%;
+    }
+  }
+}
+

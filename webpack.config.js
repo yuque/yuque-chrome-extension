@@ -34,7 +34,7 @@ const fileExtensions = [
 const entries = {
   contentScript: 'content-scripts',
   background: 'background',
-  extensionPage: [ 'sandbox', 'setting' ],
+  extensionPage: [ 'setting', 'editor' ],
 };
 
 const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({

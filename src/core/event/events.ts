@@ -8,4 +8,14 @@ export enum AppEvents {
    * 登录过期
    */
   LOGIN_EXPIRED = 'LOGIN_EXPIRED',
+
+  /**
+   * 选取选中了 dom
+   */
+  GET_SELECTED_HTML = 'GET_SELECTED_HTML',
+
+  /**
+   *  login
+   */
+  LOGIN_SUCCESS = 'LOGIN_SUCCESS',
 }

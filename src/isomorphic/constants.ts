@@ -1,8 +1,4 @@
-import { YUQUE_DOMAIN } from "@/config";
-
-export const SandboxMessageType = {
-  SHOW_BOARD: 'SHOW_BOARD',
-};
+import { YUQUE_DOMAIN } from '@/config';
 
 export const SUMMARY_PARAGRAPH_MAX_COUNT = 10;
 export const BIG_DOCUMENT_BLOCK_COUNT = 200;
@@ -29,6 +25,9 @@ export enum WordMarkOptionTypeEnum {
   clipping = 'clipping',
 }
 
+// 剪藏容器的id
+export const YQ_CLIPPING_APP_CONTAINER = 'yq-clipping-app-container';
+
 // 剪藏容器 id
 export const YQ_SELECTION_CONTAINER = 'yq-selection-container';
 
@@ -43,3 +42,18 @@ export const SERVER_URLS = {
   LOGIN: `${YUQUE_DOMAIN}/api/accounts/login`,
   DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
 };
+
+export enum InjectAppType {
+  /**
+   * 剪藏主面板
+   */
+  clipping = 'clipping',
+  /**
+   * 划词面板
+   */
+  wordMark = 'wordMark',
+  /**
+   * 选区面板
+   */
+  selectArea = 'selectArea',
+}
