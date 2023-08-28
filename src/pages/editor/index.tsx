@@ -95,6 +95,7 @@ function Editor() {
       <LakeEditor
         ref={editorRef}
         value=""
+        // eslint-disable-next-line no-empty-function
         onLoad={() => {}}
         onSave={() => {
           window.parent.postMessage(

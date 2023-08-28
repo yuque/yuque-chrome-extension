@@ -20,6 +20,7 @@ function useAsyncEffect(
     let cancelled = false;
     async function execute() {
       if (isAsyncGenerator(e)) {
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           const result = await e.next();
           if (result.done || cancelled) {

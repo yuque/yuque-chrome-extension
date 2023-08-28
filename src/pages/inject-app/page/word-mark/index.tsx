@@ -44,7 +44,7 @@ function WordMark() {
   const { wordMarkConfig, editorRef, updateInjectAppType } =
     useContext(InjectAppContext);
 
-  const save = useCallback(async (text) => {
+  const save = useCallback(async text => {
     if (wordMarkConfig.evokePanelWhenClip) {
       updateInjectAppType(InjectAppType.clipping);
       return;
@@ -65,7 +65,9 @@ function WordMark() {
       setShowWordMark(false);
       // 保存完后清空配置
       await editorRef.current.setContent('');
-    } catch (error) {}
+    } catch (error) {
+      // 
+    }
     isSaving.current = false;
   }, [ wordMarkConfig ]);
 
