@@ -8,8 +8,12 @@ import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS, PAGE_EVENTS } from '@/events';
 import { IWordMarkConfig, isEnableWordMark } from '@/isomorphic/word-mark';
 import { WordMarkContext } from '@/context/word-mark-context';
-import { RequestMessage } from '@/core/action-listener';
 import App from './app';
+
+interface RequestMessage {
+  action: string;
+  data: any;
+}
 
 let root: Root;
 
@@ -27,7 +31,7 @@ function AppContext() {
   }, []);
 
   useEffect(() => {
-    const listener =  (
+    const listener = (
       request: RequestMessage,
       _sender: chrome.runtime.MessageSender,
       sendResponse: (response: boolean) => void,
@@ -68,10 +72,10 @@ function AppContext() {
           sendResponse(true);
       }
       return true;
-    }
+    };
     Chrome.runtime.onMessage.addListener(listener);
     return () => Chrome.runtime.onMessage.removeListener(listener);
-  }, [])
+  }, []);
 
   if (!isEnableWordMark(defaultConfig)) {
     return <div className='disable' data-config={JSON.stringify(defaultConfig)} />;
