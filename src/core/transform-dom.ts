@@ -23,7 +23,7 @@ export function transformDOM(domArray: Element[]) {
     // 移除 pre code 下的兄弟
     const preElements = clonedDOM.querySelectorAll('pre');
     preElements.forEach(pre => {
-      const codeElement = pre.querySelectorAll('code')[0];
+      const codeElement = pre.querySelector('code');
       if (codeElement) {
         const childNodes = pre.childNodes;
         childNodes.forEach(item => {
@@ -46,19 +46,27 @@ export function transformDOM(domArray: Element[]) {
        */
       if (originalCanvasElements.length < canvasElements.length) {
         canvasElements.forEach((canvas, index) => {
-          const originCanvas =
-            index === 0
-              ? (originDom as HTMLCanvasElement)
-              : originalCanvasElements[index - 1];
-          const imageElement = document.createElement('img');
-          imageElement.src = originCanvas.toDataURL();
-          canvas.parentNode.replaceChild(imageElement, canvas);
+          try {
+            const originCanvas =
+              index === 0
+                ? (originDom as HTMLCanvasElement)
+                : originalCanvasElements[index - 1];
+            const imageElement = document.createElement('img');
+            imageElement.src = originCanvas.toDataURL();
+            canvas.parentNode.replaceChild(imageElement, canvas);
+          } catch (e) {
+            //
+          }
         });
       } else {
         canvasElements.forEach(canvas => {
-          const imageElement = document.createElement('img');
-          imageElement.src = canvas.toDataURL();
-          canvas.parentNode.replaceChild(imageElement, canvas);
+          try {
+            const imageElement = document.createElement('img');
+            imageElement.src = canvas.toDataURL();
+            canvas.parentNode.replaceChild(imageElement, canvas);
+          } catch (e) {
+            //
+          }
         });
       }
     }
