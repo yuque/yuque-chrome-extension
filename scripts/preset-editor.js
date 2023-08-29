@@ -23,7 +23,6 @@ const remoteAssetsUrls = {
 
 const localAssetsPaths = {
   katex: require.resolve('katex/dist/katex.min.js'),
-  kernelEditor: path.join(__dirname, './kernel-editor/kernel-editor.js'),
 };
 
 async function downloadFile(remoteURL, localFilename) {
