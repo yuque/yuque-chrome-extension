@@ -1,7 +1,14 @@
 export function transformDOM(domArray: Element[]) {
   const clonedDOMArray: Element[] = domArray.map(dom => {
+    const cloneDom = dom.cloneNode(true) as Element;
     const div = document.createElement('div');
-    div.appendChild(dom.cloneNode(true) as Element);
+    if (cloneDom.tagName === 'CODE') {
+      const pre = document.createElement('pre');
+      pre.appendChild(cloneDom);
+      div.appendChild(pre);
+    } else {
+      div.appendChild(cloneDom);
+    }
     return div;
   });
 
