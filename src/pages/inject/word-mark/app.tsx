@@ -6,22 +6,20 @@ import React, {
   useLayoutEffect,
   useContext,
 } from 'react';
-import throttle from 'lodash/throttle';
 import { ConfigProvider, message } from 'antd';
 import classnames from 'classnames';
 import { VIEW_MORE_TAG, WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { __i18n } from '@/isomorphic/i18n';
-import KernelEditor, {
-  IKernelEditorRef,
-} from '@/components/lake-editor/kernel-editor';
+
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
 import { WordMarkContext } from '@/context/word-mark-context';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
+import { PAGE_EVENTS } from '@/events';
 import { saveToNote, saveToBook } from './util';
 import WordMarkPanel from './word-mark-panel';
 import InnerWordMark from './inner-word-mark';
+import Editor, { IEditorRef } from './editor';
 import styles from './app.module.less';
-import { PAGE_EVENTS } from '@/events';
 
 export enum WordMarkType {
   /**
@@ -40,18 +38,19 @@ function App() {
   const [ type, setType ] = useState<WordMarkOptionTypeEnum>(null);
   const [ selectText, setSelectText ] = useState<string>('');
   const { forceUpdate } = useForceUpdate();
-  const editorRef = useRef<IKernelEditorRef>();
+  const editorRef = useRef<IEditorRef>();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wordMarkPositionRef = useRef({
     left: 0,
     top: 0,
   });
   const mouseupPositionRef = useRef({ x: 0, y: 0 });
+  const isSaving = useRef(false);
 
   const wordMarkContext = useContext(WordMarkContext);
 
   const save = useCallback(
-    throttle(async (text: string) => {
+    async (text: string) => {
       if (wordMarkContext.evokePanelWhenClip) {
         window.postMessage(
           {
@@ -65,7 +64,11 @@ function App() {
         setShowWordMark(false);
         return;
       }
+      if (isSaving.current) {
+        return;
+      }
       try {
+        isSaving.current = true;
         const serializedAsiContent =
           (await editorRef.current?.getContent('lake')) || '';
         const serializedHtmlContent =
@@ -109,7 +112,8 @@ function App() {
       } catch (e) {
         message.error(__i18n('保存失败，请重试！'));
       }
-    }, 300),
+      isSaving.current = false;
+    },
     [ wordMarkContext ],
   );
 
@@ -123,8 +127,8 @@ function App() {
           .join('');
 
         await editorRef.current?.setContent(
+          `${html}<p><br></p><blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote>`,
           'text/html',
-          `${html}<p><br></p><blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote><p><br/></p>`,
         );
         await save(html);
         return;
@@ -153,7 +157,21 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const getIsEditing = () => {
+      const element = document.activeElement;
+      if ([ 'INPUT', 'TEXTAREA' ].includes(element.tagName)) {
+        return true;
+      }
+      return element.getAttribute('contenteditable') === 'true';
+    };
+
     const onMouseUp = (e: MouseEvent) => {
+      const isEdit = getIsEditing();
+      // 如果选中区域可编辑，那么不展示划词
+      if (isEdit) {
+        setShowWordMark(false);
+        return;
+      }
       const selection = window.getSelection();
       const selectionText = selection.toString();
       if (selection.rangeCount <= 0) {
@@ -218,9 +236,7 @@ function App() {
             <InnerWordMark executeCommand={executeCommand} />
           )}
         </div>
-        <div style={{ display: 'none' }}>
-          <KernelEditor ref={editorRef} value="" />
-        </div>
+        <Editor ref={editorRef} />
       </div>
     </ConfigProvider>
   );

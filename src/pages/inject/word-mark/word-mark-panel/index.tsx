@@ -9,21 +9,21 @@ import Chrome from '@/core/chrome';
 import { CloseOutlined } from '@ant-design/icons';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import CopySvg from '@/assets/svg/copy.svg';
-import { IKernelEditorRef } from '@/components/lake-editor/kernel-editor';
 import { toolbars } from '../constants';
+import { IEditorRef } from '../editor';
 import styles from './index.module.less';
 
 interface WordMarkPanelProps {
   selectText: string;
   type: WordMarkOptionTypeEnum;
   closeWordMark: () => void;
-  editorRef: React.MutableRefObject<IKernelEditorRef>;
+  editorRef: React.MutableRefObject<IEditorRef>;
   save: (text: string) => void;
 }
 
 const StepMessage = {
   onStart: __i18n('雀雀正在快马加鞭翻译中…'),
-}
+};
 
 function WordMarkPanel(props: WordMarkPanelProps) {
   const {
@@ -41,7 +41,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
   };
 
   const onSave = async () => {
-    await editorRef.current?.setContent('text/html', result);
+    await editorRef.current?.setContent(result, 'text/html');
     save(result);
   };
 
