@@ -130,6 +130,7 @@ const useViewModel = (props: ISaveToProps) => {
     window.addEventListener('message', listener);
     const onClose = () => {
       editorRef.current?.setContent('');
+      setCurrentType(null);
     };
     eventManager.listen(AppEvents.CLOSE_BOARD, onClose);
     return () => {

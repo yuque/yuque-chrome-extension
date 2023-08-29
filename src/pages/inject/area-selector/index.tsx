@@ -6,22 +6,15 @@ import {
   YQ_SELECTION_CONTAINER,
 } from '@/isomorphic/constants';
 import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
+import { transformDOM } from '@/core/transform-dom';
 
 function App() {
   const selectorRef = useRef<ISelectorRef>();
   const onSave = useCallback(() => {
-    const selectAreaElements = selectorRef.current.getSelections();
-    const HTMLs = Array.from(selectAreaElements).map(elem => {
-      if (elem?.nodeName === 'CANVAS') {
-        try {
-          return `<img src="${(elem as HTMLCanvasElement).toDataURL()}">`;
-        } catch (e) {
-          return '';
-        }
-      }
-      return elem?.outerHTML;
-    });
-
+    const selectAreaElements = transformDOM(
+      selectorRef.current.getSelections(),
+    );
+    const HTMLs = Array.from(selectAreaElements);
     const iframe: HTMLIFrameElement = document.querySelector(
       `#${YQ_SANDBOX_BOARD_IFRAME}`,
     );
