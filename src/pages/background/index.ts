@@ -1,4 +1,5 @@
 import Chrome from '@/core/chrome';
+import LinkHelper from '@/core/link-helper';
 import { YUQUE_DOMAIN } from '@/config';
 import { initI18N } from '@/isomorphic/i18n';
 import { listenBrowserActionEvent } from './browser-action';
@@ -17,7 +18,7 @@ Chrome.runtime.onInstalled.addListener(async details => {
 
   if (details.reason === 'install') {
     Chrome.tabs.create({
-      url: 'https://www.yuque.com/yuque/yuque-browser-extension/welcome#acYWK',
+      url: LinkHelper.introduceExtension,
     });
   }
 
@@ -25,9 +26,7 @@ Chrome.runtime.onInstalled.addListener(async details => {
   updateDynamicRules();
 });
 
-Chrome.runtime.setUninstallURL(
-  'https://www.yuque.com/forms/share/c454d5b2-8b2f-4a73-851b-0f3d2ae585fb',
-);
+Chrome.runtime.setUninstallURL(LinkHelper.unInstallFeedback);
 
 function updateDynamicRules() {
   const rules = [
