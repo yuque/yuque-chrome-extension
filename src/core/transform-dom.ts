@@ -66,10 +66,11 @@ export function transformDOM(domArray: Element[]) {
           }
         });
       } else {
-        canvasElements.forEach(canvas => {
+        canvasElements.forEach((canvas, index) => {
           try {
+            const originCanvas = originalCanvasElements[index];
             const imageElement = document.createElement('img');
-            imageElement.src = canvas.toDataURL();
+            imageElement.src = originCanvas.toDataURL();
             canvas.parentNode.replaceChild(imageElement, canvas);
           } catch (e) {
             //
