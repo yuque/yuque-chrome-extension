@@ -26,7 +26,7 @@ Chrome.runtime.onInstalled.addListener(async details => {
 });
 
 Chrome.runtime.setUninstallURL(
-  'https://klab.yuque.com/forms/share/0d4aa665-38bf-4343-9867-b93507ebb5c0',
+  'https://www.yuque.com/forms/share/c454d5b2-8b2f-4a73-851b-0f3d2ae585fb',
 );
 
 function updateDynamicRules() {
