@@ -68,6 +68,10 @@ export function initSelectArea() {
   root.render(<App />);
 }
 
+export function selectAreaExisting() {
+  return document.querySelector(`#${YQ_SELECTION_CONTAINER}`);
+}
+
 export function destroySelectArea() {
   const wrapper = document.querySelector(`#${YQ_SELECTION_CONTAINER}`);
   root.unmount();

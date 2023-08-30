@@ -4,7 +4,7 @@ import { GLOBAL_EVENTS, PAGE_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
 import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
 import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
-import { initSelectArea } from './area-selector';
+import { initSelectArea, selectAreaExisting } from './area-selector';
 import { initWordMark, destroyWordMark } from './word-mark';
 import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
 
@@ -88,6 +88,25 @@ class App {
     destroyWordMark();
   }
 
+  showBoardWithSelection(type?: string) {
+    if (!selectAreaExisting()) {
+      this.iframe.classList.add('show');
+      if (type) {
+        this.iframe.contentWindow.postMessage(
+          {
+            key: SandBoxMessageKey,
+            action: SandBoxMessageType.tryStartSelect,
+            data: {
+              type,
+            },
+          },
+          '*',
+        );
+      }
+      destroyWordMark();
+    }
+  }
+
   removeIframe() {
     this.iframe.classList.remove('show');
     initWordMark();
@@ -104,6 +123,7 @@ class App {
   startSelect() {
     initSelectArea();
     this.iframe.classList.remove('show');
+    this.iframe.blur();
   }
 
   saveToNote(data: any) {
@@ -126,6 +146,11 @@ class App {
       switch (request.action) {
         case GLOBAL_EVENTS.SHOW_BOARD: {
           this.showBoard();
+          sendResponse(true);
+          return;
+        }
+        case GLOBAL_EVENTS.TRY_START_SELECT: {
+          this.showBoardWithSelection(request.payload?.type);
           sendResponse(true);
           return;
         }

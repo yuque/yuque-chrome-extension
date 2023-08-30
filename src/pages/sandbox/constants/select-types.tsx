@@ -2,10 +2,20 @@ import React from 'react';
 import Icon, { LinkOutlined } from '@ant-design/icons';
 
 import ClipperSvg from '@/assets/svg/clipper.svg';
+import { isMac } from '@/utils/getPlatformInfo';
 
 export const SELECT_TYPE_AREA = 'area-select';
 export const SELECT_TYPE_BOOKMARK = 'bookmark';
 export const SELECT_TYPE_SELECTION = 'selection';
+
+export const SHORTCUT_MAP = {
+  get [SELECT_TYPE_AREA]() {
+    return isMac() ? '⌘+⌥+X' : 'Ctrl+Alt+X';
+  },
+  get [SELECT_TYPE_BOOKMARK]() {
+    return isMac() ? '⌘+⌥+V' : 'Ctrl+Alt+V';
+  },
+} as const;
 
 export const SELECT_TYPES = [
   {
@@ -24,4 +34,4 @@ export const SELECT_TYPES = [
     },
     icon: <LinkOutlined />,
   },
-];
+] as const;

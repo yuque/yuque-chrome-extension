@@ -2,6 +2,7 @@ const _globalThis = typeof window !== 'undefined' ? window : global;
 
 const {
   action,
+  commands,
   cookies,
   contextMenus,
   runtime,
@@ -16,6 +17,7 @@ const {
 
 export default {
   action,
+  commands,
   cookies,
   contextMenus,
   runtime,

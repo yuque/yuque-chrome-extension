@@ -38,8 +38,10 @@ import {
   SELECT_TYPE_AREA,
   SELECT_TYPE_BOOKMARK,
   SELECT_TYPE_SELECTION,
+  SHORTCUT_MAP,
 } from '../constants/select-types';
 import styles from './index.module.less';
+import useShortCut from '../bizHooks/useShortCut';
 
 const NODE_DATA_ID = 0;
 
@@ -66,6 +68,8 @@ const useViewModel = (props: ISaveToProps) => {
   const areaSelectRef = useRef('');
 
   const editorRef = useRef<IEditorRef>(null);
+
+  useShortCut(currentType, setCurrentType);
 
   /**
    * 获取知识库的数据
@@ -309,11 +313,19 @@ export default function SaveTo(props: ISaveToProps) {
 
   const SELECT_MENU_DATA = useMemo(
     () =>
-      SELECT_TYPES.map(item => ({
-        key: item.key,
-        icon: item.icon,
-        label: item.text,
-      })),
+      SELECT_TYPES.map(item => {
+        const shortcut = SHORTCUT_MAP[item.key];
+        return {
+          key: item.key,
+          icon: item.icon,
+          label: (
+            <div className={classnames(styles['menu-item-container'])}>
+              <span>{item.text}</span>
+              <span className={classnames(styles.shortcut)}>{shortcut}</span>
+            </div>
+          ),
+        };
+      }),
     [],
   );
 

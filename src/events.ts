@@ -5,6 +5,7 @@ export const GLOBAL_EVENTS = {
   GET_SELECTED_HTML: 'global/get-selected-html',
   GET_SELECTED_TEXT: 'global/get-selected-text',
   START_SELECT: 'global/start-select',
+  TRY_START_SELECT: 'global/try-start-select',
   SAVE_TO_NOTE: 'global/save-to-note',
 };
 
