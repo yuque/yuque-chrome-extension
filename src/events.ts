@@ -6,7 +6,6 @@ export const GLOBAL_EVENTS = {
   GET_SELECTED_TEXT: 'global/get-selected-text',
   START_SELECT: 'global/start-select',
   SAVE_TO_NOTE: 'global/save-to-note',
-  SAVE_TO_NOTE_IMAGE: 'global/save-to-note-image',
 };
 
 export const PAGE_EVENTS = {

@@ -1,5 +1,6 @@
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
+import { __i18n } from '@/isomorphic/i18n';
 
 interface MenuItem {
   id: string;
@@ -25,7 +26,7 @@ const menuList: MenuItem[] = [
   {
     id: 'save-to-yuque-image',
     get title() {
-      return __i18n('语雀插件');
+      return __i18n('保存到语雀小记');
     },
     contexts: [ 'image' ],
   },
@@ -57,8 +58,8 @@ export function listenContextMenuEvents() {
       case menuList[2].id: {
         const { srcUrl } = info;
         Chrome.tabs.sendMessage(tab.id, {
-          action: GLOBAL_EVENTS.SAVE_TO_NOTE_IMAGE,
-          srcUrl,
+          action: GLOBAL_EVENTS.SAVE_TO_NOTE,
+          selectionText: `<img src=${srcUrl} />`,
         });
         break;
       }
