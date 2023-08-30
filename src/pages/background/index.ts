@@ -12,12 +12,22 @@ listenContextMenuEvents();
 listenBrowserActionEvent();
 initBackGroundActionListener();
 
-Chrome.runtime.onInstalled.addListener(async () => {
+Chrome.runtime.onInstalled.addListener(async details => {
   console.log('-- runtime installed');
+
+  if (details.reason === 'install') {
+    Chrome.tabs.create({
+      url: 'https://www.yuque.com/yuque/yuque-browser-extension/welcome#acYWK',
+    });
+  }
 
   createContextMenu();
   updateDynamicRules();
 });
+
+Chrome.runtime.setUninstallURL(
+  'https://klab.yuque.com/forms/share/0d4aa665-38bf-4343-9867-b93507ebb5c0',
+);
 
 function updateDynamicRules() {
   const rules = [
@@ -39,9 +49,7 @@ function updateDynamicRules() {
         ],
       },
       condition: {
-        domains: [
-          chrome.runtime.id,
-        ],
+        domains: [ chrome.runtime.id ],
         urlFilter: `${YUQUE_DOMAIN}/api/upload/attach`,
         resourceTypes: [
           chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
