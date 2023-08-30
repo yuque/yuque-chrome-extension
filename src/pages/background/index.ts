@@ -1,4 +1,5 @@
 import Chrome from '@/core/chrome';
+import LinkHelper from '@/core/link-helper';
 import { YUQUE_DOMAIN } from '@/config';
 import { initI18N } from '@/isomorphic/i18n';
 import { listenBrowserActionEvent } from './browser-action';
@@ -12,12 +13,20 @@ listenContextMenuEvents();
 listenBrowserActionEvent();
 initBackGroundActionListener();
 
-Chrome.runtime.onInstalled.addListener(async () => {
+Chrome.runtime.onInstalled.addListener(async details => {
   console.log('-- runtime installed');
+
+  if (details.reason === 'install') {
+    Chrome.tabs.create({
+      url: LinkHelper.introduceExtension,
+    });
+  }
 
   createContextMenu();
   updateDynamicRules();
 });
+
+Chrome.runtime.setUninstallURL(LinkHelper.unInstallFeedback);
 
 function updateDynamicRules() {
   const rules = [
@@ -39,9 +48,7 @@ function updateDynamicRules() {
         ],
       },
       condition: {
-        domains: [
-          chrome.runtime.id,
-        ],
+        domains: [ chrome.runtime.id ],
         urlFilter: `${YUQUE_DOMAIN}/api/upload/attach`,
         resourceTypes: [
           chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
