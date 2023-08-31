@@ -182,11 +182,15 @@ function App() {
         setShowWordMark(false);
         return;
       }
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const x = (rect.left + rect.right) / 2;
+      const y = rect.bottom;
       setShowWordMark(true);
       setSelectText(selectionText);
       mouseupPositionRef.current = {
-        x: e.clientX,
-        y: e.clientY,
+        x,
+        y,
       };
     };
 
