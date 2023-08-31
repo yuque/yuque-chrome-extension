@@ -14,16 +14,36 @@ declare class IRendererPlugin {
   init(): void;
 }
 
-export type IEditorPluginCls = new () => IEditorPlugin;
-export type IKernelPluginCls = new () => IKernelPlugin;
-export type IRendererPluginCls = new () => IRendererPlugin;
+declare class CommandClass {
+  static UNAVAILABLE: string;
+  static EXECUTED: string;
+  static NOT_EXECUTED: string;
+  static UNKNOWN: string;
 
-export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEditorFactory, toolbarItems }: {
+  public readonly kernel: any;
+  public readonly editing: any;
+
+  destroy(): void;
+
+  execute(editing: any, ...args: any[]): any;
+
+  getValue(job: any, ...args: any[]): any;
+}
+
+export type IEditorPluginCls = new () => IEditorPlugin;
+export type IKernelPluginCls = (new () => IKernelPlugin) & {PluginName: string};
+export type IRendererPluginCls = new () => IRendererPlugin;
+export type ICommandCls = new () => CommandClass;
+
+export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEditorFactory, toolbarItems, Command, SelectionUtil }: {
   EditorPlugin: IEditorPluginCls;
   KernelPlugin: IKernelPluginCls;
   Plugins: Record<string, any>;
+  Command: ICommandCls;
+  SelectionUtil: any;
   OpenEditorFactory: {
     editorPlugins: IEditorPluginCls[];
+    kernelPlugins: IKernelPluginCls[];
     registerEditorPlugin: (plugins: IEditorPluginCls[]) => void;
     registerRenderPlugin: (plugins: IRendererPluginCls[]) => void;
     registerKernelPlugin: (plugins: IKernelPluginCls[]) => void;
@@ -81,10 +101,35 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEd
     }
   }
 
+  class InsertHTMLCommand extends Command {
+    override execute(editing: any, html: string) {
+      const job = editing.newJob();
+      const { kernel } = this;
+
+      let inode = kernel.readData('text/html', html, {
+        from: 'insert',
+        self: false,
+        forceText: false,
+      });
+      if (!inode) {
+        return false;
+      }
+
+      inode = kernel.getExtendMethod('normalizeINodeTree')?.(job, inode) || inode;
+
+      job.setSelection(SelectionUtil.insertINode(job, job.getSelection(), inode));
+
+      editing.commitJob(job);
+
+      return true;
+    }
+  }
+
   class CustomKernelPlugin extends KernelPlugin {
     static PluginName = 'CustomEditorPlugin';
 
     override init(kernel: any) {
+      kernel.registerCommand('insertHTML', new InsertHTMLCommand());
       const htmlService = kernel.getService({ value: 'IHTMLKernelService' });
 
       if (htmlService) {
@@ -112,5 +157,5 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEd
   OpenEditorFactory.editorPlugins.unshift(CustomEditorPlugin);
   OpenEditorFactory.editorPlugins[CustomEditorPlugin.PluginName] = CustomEditorPlugin;
   OpenEditorFactory.registerKernelPlugin([ CustomKernelPlugin ]);
-  OpenEditorFactory.registerRenderPlugin([ Plugins.AutoScroll.AutoScrollRenderPlugin ]);
+  // OpenEditorFactory.registerRenderPlugin([ Plugins.AutoScroll.AutoScrollRenderPlugin ]);
 }

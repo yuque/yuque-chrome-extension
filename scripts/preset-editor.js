@@ -12,7 +12,7 @@ const {
 
 const { distFolder, sleep } = require('./common');
 
-const LAKE_EDITOR_VERSION = '1.0.1-dev5';
+const LAKE_EDITOR_VERSION = '1.0.1-dev6';
 
 const remoteAssetsUrls = {
   lakejs: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.umd.js`,
