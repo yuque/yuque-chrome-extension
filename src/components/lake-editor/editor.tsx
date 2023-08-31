@@ -348,12 +348,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
         if (breakLine) {
           editor.execCommand('breakLine');
         }
-        editor.kernel.execCommand('paste', {
-          types: [ 'text/html' ],
-          getData() {
-            return html;
-          },
-        });
+        editor.kernel.execCommand('insertHTML', html);
         iframeRef.current?.focus();
         editor.execCommand('focus');
         editor.renderer.scrollToCurrentSelection();
