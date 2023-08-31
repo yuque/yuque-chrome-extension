@@ -1,6 +1,7 @@
 import React from 'react';
 import { __i18n } from '@/isomorphic/i18n';
 import { RELEASE_NOTES, VERSION } from '@/config';
+import LinkHelper from '@/core/link-helper';
 import styles from './index.module.less';
 
 function About() {
@@ -16,7 +17,7 @@ function About() {
         );
       })}
       <a
-        href="https://www.yuque.com/yuque/yuque-browser-extension/changelog"
+        href={LinkHelper.changelog}
         target="_blank"
         className={styles.link}
       >

@@ -1,18 +1,19 @@
 import React from 'react';
 import { __i18n } from '@/isomorphic/i18n';
+import LinkHelper from '@/core/link-helper';
 import styles from './index.module.less';
 
 const links = [
   {
-    url: 'https://www.yuque.com/yuque/yuque-browser-extension/welcome',
+    url: LinkHelper.helpDoc,
     title: __i18n('查看帮助文档'),
   },
   {
-    url: 'https://www.yuque.com/feedbacks/new',
+    url: LinkHelper.feedback,
     title: __i18n('提交反馈与建议'),
   },
   {
-    url: 'https://www.yuque.com/yuque/yuque-browser-extension/welcome#BQrrd',
+    url: LinkHelper.joinGroup,
     title: __i18n('加入交流群'),
   },
 ];

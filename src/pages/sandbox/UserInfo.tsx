@@ -45,7 +45,7 @@ const UserInfo = (props: Props) => {
         Modal.confirm({
           content: (
             <iframe
-              src="https://www.yuque.com/yuque/yuque-browser-extension/install?view=doc_embed"
+              src={LinkHelper.updateIframe}
               className={styles.updateIframe}
             />
           ),
