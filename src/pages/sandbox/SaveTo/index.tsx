@@ -99,7 +99,6 @@ const useViewModel = (props: ISaveToProps) => {
           } finally {
             setEditorLoading(false);
           }
-          editorRef.current.appendContent(data.HTMLs.join(''));
           break;
         }
         case SandBoxMessageType.getSelectedHtml: {
@@ -157,7 +156,11 @@ const useViewModel = (props: ISaveToProps) => {
       editorRef.current.getContent('lake').then(content => {
         areaSelectRef.current = content || '';
         getCurrentTab().then(tab => {
-          const html = getBookmarkHtml(tab);
+          const html = getBookmarkHtml(
+            tab,
+            false,
+            currentBookId !== NODE_DATA_ID,
+          );
           editorRef.current?.setContent(html);
         });
       });

@@ -1,3 +1,41 @@
+function hexoCodeBlock(cloneNode: Element) {
+  const figures = cloneNode.querySelectorAll('figure');
+  const processingCodeBlock = (node: HTMLElement) => {
+    const gutter = node.querySelector('td.gutter');
+    const code = node.querySelector('td.code');
+    if (!gutter || !code) {
+      return;
+    }
+    const codeElement = code.querySelector('pre');
+    node.parentNode.appendChild(codeElement);
+    node.parentNode.removeChild(node);
+  };
+  figures.forEach(figure => {
+    processingCodeBlock(figure);
+  });
+  if (figures.length === 0) {
+    const tables = cloneNode.querySelectorAll('table');
+    tables.forEach(table => {
+      processingCodeBlock(table);
+    });
+  }
+}
+
+function commonCodeBlock(node: Element) {
+  const preElements = node.querySelectorAll('pre');
+  preElements.forEach(pre => {
+    const codeElement = pre.querySelector('code');
+    if (codeElement) {
+      const childNodes = pre.childNodes;
+      childNodes.forEach(item => {
+        if (item !== codeElement) {
+          pre.removeChild(item);
+        }
+      });
+    }
+  });
+}
+
 export function transformDOM(domArray: Element[]) {
   const clonedDOMArray: Element[] = domArray.map(dom => {
     const cloneDom = dom.cloneNode(true) as Element;
@@ -28,18 +66,10 @@ export function transformDOM(domArray: Element[]) {
     });
 
     // 移除 pre code 下的兄弟
-    const preElements = clonedDOM.querySelectorAll('pre');
-    preElements.forEach(pre => {
-      const codeElement = pre.querySelector('code');
-      if (codeElement) {
-        const childNodes = pre.childNodes;
-        childNodes.forEach(item => {
-          if (item !== codeElement) {
-            pre.removeChild(item);
-          }
-        });
-      }
-    });
+    commonCodeBlock(clonedDOM);
+
+    // 处理 hexo 代码
+    hexoCodeBlock(clonedDOM);
 
     // 转化canvas为img
     const canvasElements = clonedDOM.querySelectorAll('canvas');
