@@ -12,10 +12,9 @@
 [ci-url]: https://github.com/yuque/yuque-chrome-extension/actions/workflows/ci.yml
 
 ## Install
+
 * [Chrome Web Store](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
 * [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/yuque-extension/mnfokalcidkmaadmfmdmhiamdnjljhgj)
-
-
 
 <!-- GITCONTRIBUTOR_START -->
 
@@ -25,8 +24,6 @@
 | :---: | :---: | :---: | :---: | :---: | :---: |
 
 
-This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Mon Aug 28 2023 21:18:59 GMT+0800`.
+This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Sat Sep 02 2023 15:58:42 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->
-
-[![Chrome Web Store](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/mPGKYBIR2uCP0ApchDXE.png)](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)

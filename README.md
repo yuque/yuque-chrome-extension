@@ -21,9 +21,15 @@
   </a>
 </p>
 
+## 介绍
+
+- [工具说明](https://www.yuque.com/yuque/yuque-browser-extension/welcome)
+- [版本日志](https://www.yuque.com/yuque/yuque-browser-extension/changelog)
+
 ## 安装
-* [Chrome Web Store](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
-* [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/yuque-extension/mnfokalcidkmaadmfmdmhiamdnjljhgj)
+
+* [Chrome 插件市场](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
+* [Edge 插件市场](https://microsoftedge.microsoft.com/addons/detail/yuque-extension/mnfokalcidkmaadmfmdmhiamdnjljhgj)
 
 ## 插件说明
 
@@ -43,8 +49,6 @@
   />
 </p>
 
-文档说明：https://www.yuque.com/yuque/yuque-browser-extension/welcome
-
 ## 如何开发
 
 ```bash
@@ -53,9 +57,6 @@ $ npm install
 
 # 启动开发环境
 $ npm run dev
-
-# 发布版本
-$ npm run release
 ```
 
 <img
@@ -78,9 +79,6 @@ $ npm run release
 | :---: | :---: | :---: | :---: | :---: | :---: |
 
 
-This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Mon Aug 28 2023 21:18:59 GMT+0800`.
+This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Sat Sep 02 2023 15:58:42 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->
-
-[![Chrome Web Store](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/mPGKYBIR2uCP0ApchDXE.png)](https://chrome.google.com/webstore/detail/yuque-browser-extension-f/hnbdgfongnkfgnbpamndfiiedhapfecn)
-

@@ -21,7 +21,7 @@ function Popover(props: IPopoverProps) {
     }
   }, [ open ]);
 
-  useClickAway(ref ,() => {
+  useClickAway(ref, () => {
     onOpenChange(false);
   });
 

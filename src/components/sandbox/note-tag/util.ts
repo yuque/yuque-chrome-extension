@@ -1,5 +1,5 @@
-import { STORAGE_KEYS } from "@/config";
-import Chrome from "@/core/chrome";
+import { STORAGE_KEYS } from '@/config';
+import Chrome from '@/core/chrome';
 
 export async function getSelectTag(): Promise<number[]> {
   const config = await Chrome.storage.local.get(STORAGE_KEYS.NOTE.SELECT_TAGS);
