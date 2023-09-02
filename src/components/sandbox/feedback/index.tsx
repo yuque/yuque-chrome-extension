@@ -1,7 +1,8 @@
 import React from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
-import { pkg, VERSION } from '@/config';
+import { VERSION } from '@/config';
+import LinkHelper from '@/core/link-helper';
 import styles from './index.module.less';
 
 interface FeedBackProps {
@@ -16,7 +17,7 @@ const FeedBack = (props: FeedBackProps) => {
       className={classnames(styles.wrapper, props.className)}
       target="_blank"
       rel="noopener noreferrer"
-      href={pkg.issues}
+      href={LinkHelper.helpDoc}
     >
       <QuestionCircleOutlined className={styles.icon} />
       {__i18n('问题反馈')}

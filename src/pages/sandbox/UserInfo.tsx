@@ -4,7 +4,7 @@ import LinkHelper from '@/core/link-helper';
 import { DownOutlined } from '@ant-design/icons';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import SemverCompare from 'semver-compare';
-import { VERSION, pkg } from '@/config';
+import { VERSION } from '@/config';
 import { IUser } from '@/core/account';
 import { useCheckVersion } from './CheckVersion';
 
@@ -39,7 +39,7 @@ const UserInfo = (props: Props) => {
         onLogout?.();
         break;
       case 'feedback':
-        window.open(pkg.issues, '_blank');
+        window.open(LinkHelper.helpDoc, '_blank');
         break;
       case 'upgrade-version':
         Modal.confirm({
