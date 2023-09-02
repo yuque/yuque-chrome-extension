@@ -31,8 +31,8 @@ function DisableMenu() {
           notice: true,
         },
       },
-    })
-  }
+    });
+  };
 
   const disableOnce = () => {
     context.destroyWordMark();

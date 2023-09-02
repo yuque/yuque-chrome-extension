@@ -58,7 +58,7 @@ function TagInput(props: TagInputProps) {
         }
         await onConfirm(tagName);
       }, 300),
-    [onConfirm],
+    [ onConfirm ],
   );
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

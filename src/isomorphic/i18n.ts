@@ -20,5 +20,5 @@ export function initI18N(globalOrWindow?: any) {
 export const __i18n: (text: string, params?: {[key: string]: string}) => string = locale({
   en: {},
   useEn: () => true,
-})
+});
 
