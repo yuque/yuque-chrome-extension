@@ -71,7 +71,7 @@ const tslintConfig = {
   },
   rules: {
     ...eslintConfig.rules,
-    'no-unused-vars': 'off',
+    'no-unused-vars': 1,
     'no-undef': 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
