@@ -122,7 +122,7 @@ function AccountLayout(props: IAccountLayoutProps) {
   useEffectAsync(async () => {
     const info = await getCurrentAccount();
     const accountInfo = await mineProxy.getUserInfo();
-    if (!accountInfo && accountInfo?.id === info.id) {
+    if (accountInfo && accountInfo?.id === info.id) {
       setUser(info);
       const tabInfo = await Chrome.getCurrentTab();
       // 上报埋点
