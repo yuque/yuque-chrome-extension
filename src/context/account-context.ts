@@ -6,4 +6,9 @@ export interface IAccountContext {
   onLogout: () => void;
 }
 
-export const AccountContext = createContext<IAccountContext | null>(null);
+export const AccountContext = createContext<IAccountContext>({
+  user: {} as IUser,
+  onLogout: () => {
+    //
+  },
+});

@@ -52,7 +52,7 @@ export const getCitation = (tab: chrome.tabs.Tab) => {
 export const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
   new Promise(resolve => {
     Chrome.tabs.getCurrent(tab => {
-      resolve(tab);
+      resolve(tab as chrome.tabs.Tab);
     });
   });
 
@@ -62,7 +62,7 @@ export const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
  */
 export const startSelect = () => {
   getCurrentTab().then(tab => {
-    Chrome.tabs.sendMessage(tab.id, {
+    Chrome.tabs.sendMessage(tab.id as number, {
       action: GLOBAL_EVENTS.START_SELECT,
     });
   });

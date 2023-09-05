@@ -136,7 +136,7 @@ const UserInfo = (props: Props) => {
         placement="bottomLeft"
         open={open}
         onOpenChange={handleOpenChange}
-        getPopupContainer={node => node.parentElement}
+        getPopupContainer={node => node.parentElement as HTMLElement}
         destroyTooltipOnHide
       >
         <div className={styles.wrapper}>

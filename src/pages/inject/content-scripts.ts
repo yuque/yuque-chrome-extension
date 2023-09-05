@@ -1,34 +1,25 @@
 import $ from 'jquery';
 import Chrome from '@/core/chrome';
-import { GLOBAL_EVENTS, PAGE_EVENTS } from '@/events';
+import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
 import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
 import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
+import {
+  ClippingTypeEnum,
+  SandBoxMessageKey,
+  SandBoxMessageType,
+} from '@/isomorphic/sandbox';
 import { initSelectArea } from './area-selector';
 import { initWordMark, destroyWordMark } from './word-mark';
-import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
 
 class App {
   private iframeClassName: string;
-  private iframe: HTMLIFrameElement;
+  private iframe: HTMLIFrameElement | null = null;
 
   constructor() {
     this.iframeClassName = `sandbox-iframe-${Date.now()}`;
     this.bindEvent();
     this.initBoard();
-    window.addEventListener('message', e => {
-      const data = e.data as { action: string; data: any };
-      switch (data.action) {
-        case PAGE_EVENTS.WORD_MARK_CLIP:
-          this.saveToNote(data.data);
-          break;
-        case GLOBAL_EVENTS.SHOW_BOARD:
-          this.showBoard();
-          break;
-        default:
-          break;
-      }
-    });
   }
 
   injectStyleIfNeeded(className: string, css: string) {
@@ -71,7 +62,7 @@ class App {
   }
 
   initBoard() {
-    if (document.querySelector(`#${YQ_SANDBOX_BOARD_IFRAME}`)) {
+    if (this.iframe) {
       return;
     }
     const { iframeClassName } = this;
@@ -84,12 +75,22 @@ class App {
   }
 
   showBoard() {
-    this.iframe.classList.add('show');
+    if (!this.iframe) {
+      return;
+    }
+    this.iframe?.classList.add('show');
+    this.iframe?.contentWindow?.postMessage(
+      {
+        key: SandBoxMessageKey,
+        action: SandBoxMessageType.initSandbox,
+      },
+      '*',
+    );
     destroyWordMark();
   }
 
   removeIframe() {
-    this.iframe.classList.remove('show');
+    this.iframe?.classList.remove('show');
     initWordMark();
   }
 
@@ -103,22 +104,23 @@ class App {
 
   startSelect() {
     initSelectArea();
-    this.iframe.classList.remove('show');
+    this.iframe?.classList.remove('show');
   }
 
   saveToNote(data: any) {
     const { selectionText } = data;
-    this.showBoard();
-    this.iframe.contentWindow.postMessage(
+    this.iframe?.contentWindow?.postMessage(
       {
         key: SandBoxMessageKey,
-        action: SandBoxMessageType.getSelectText,
+        action: SandBoxMessageType.getSelectedHtml,
         data: {
-          HTMLs: [ selectionText ],
+          HTMLs: [selectionText],
+          type: ClippingTypeEnum.area,
         },
       },
       '*',
     );
+    this.showBoard();
   }
 
   bindEvent() {

@@ -7,5 +7,5 @@ import App from './App';
 const importAll = (r: any) => r.keys().forEach(r);
 importAll(require.context('@/assets/icons', false, /\.png$/));
 
-const root = createRoot(document.getElementById('ReactApp'));
+const root = createRoot(document.getElementById('ReactApp') as HTMLElement);
 root.render(<App />);

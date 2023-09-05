@@ -116,7 +116,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 title={__i18n('保存到小记')}
                 trigger="hover"
                 placement="bottom"
-                getPopupContainer={node => node.parentElement}
+                getPopupContainer={node => node.parentElement as HTMLElement}
                 mouseEnterDelay={0.5}
               >
                 <div className={styles.saveOperateItem} onClick={onSave}>
@@ -128,7 +128,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 title={__i18n('复制到剪切板')}
                 trigger="hover"
                 placement="bottom"
-                getPopupContainer={node => node.parentElement}
+                getPopupContainer={node => node.parentElement as HTMLElement}
                 mouseEnterDelay={0.5}
               >
                 <div className={styles.saveOperateItem} onClick={onCopyText}>

@@ -14,14 +14,14 @@ function remindToRefreshPage(tabId: number) {
 
 export function listenBrowserActionEvent() {
   Chrome.action.onClicked.addListener(tab => {
-    Chrome.tabs.sendMessage(tab.id, {
+    Chrome.tabs.sendMessage(tab.id as number, {
       action: GLOBAL_EVENTS.SHOW_BOARD,
     }, () => {
       /**
        * 插件更新后会断链接，需要提醒用户手动刷新下页面
        */
       if (Chrome.runtime.lastError?.message === 'Could not establish connection. Receiving end does not exist.') {
-        remindToRefreshPage(tab.id);
+        remindToRefreshPage(tab.id as number);
       }
     });
   });

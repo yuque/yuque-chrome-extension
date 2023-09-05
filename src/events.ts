@@ -2,8 +2,6 @@ export const GLOBAL_EVENTS = {
   SHOW_BOARD: 'global/show-board',
   CLOSE_BOARD: 'global/close-board',
   GET_PAGE_HTML: 'global/get-page-html',
-  GET_SELECTED_HTML: 'global/get-selected-html',
-  GET_SELECTED_TEXT: 'global/get-selected-text',
   START_SELECT: 'global/start-select',
   SAVE_TO_NOTE: 'global/save-to-note',
 };
@@ -12,7 +10,6 @@ export const PAGE_EVENTS = {
   AREA_SELECTED: 'page/area-selected',
   ENABLE_WORD_MARK_STATUE_CHANGE: 'page/enable-word-mark-statue-change',
   FORCE_UPGRADE_VERSION: 'page/force-upgrade-version',
-  WORD_MARK_CLIP: 'page/word-mark-clip',
   LOGIN_EXPIRED: 'page/LOGIN_EXPIRED',
 };
 

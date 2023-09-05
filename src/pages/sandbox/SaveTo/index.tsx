@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
 import classnames from 'classnames';
 import { noteProxy } from '@/core/proxy/note';
@@ -13,7 +6,6 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import { urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
-import { EditorValueContext } from '../EditorValueContext';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
 import { VIEW_MORE_TAG } from '@/isomorphic/constants';
@@ -24,21 +16,16 @@ import {
 } from '@/components/sandbox/note-tag/util';
 import { docProxy } from '@/core/proxy/doc';
 import { mineProxy } from '@/core/proxy/mine';
-import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
-import eventManager from '@/core/event/eventManager';
-import { AppEvents } from '@/core/event/events';
+import { ClippingTypeEnum } from '@/isomorphic/sandbox';
+import { useUpdateEffect } from '@/hooks/useUpdateEffect';
 import {
   getBookmarkHTMLs,
   getBookmarkHtml,
   getCurrentTab,
   startSelect,
 } from '../helper';
-import {
-  SELECT_TYPES,
-  SELECT_TYPE_AREA,
-  SELECT_TYPE_BOOKMARK,
-  SELECT_TYPE_SELECTION,
-} from '../constants/select-types';
+import { SELECT_TYPES } from '../constants/select-types';
+import { useSandboxContext } from '../provider/sandBoxProvider';
 import styles from './index.module.less';
 
 const NODE_DATA_ID = 0;
@@ -58,120 +45,77 @@ export interface ISaveToProps {
 }
 
 const useViewModel = (props: ISaveToProps) => {
-  const [ loading, setLoading ] = useState(false);
-  const [ editorLoading, setEditorLoading ] = useState(false);
-  const [ books, setBooks ] = useState(BOOKS_DATA);
-  const [ currentBookId, setCurrentBookId ] = useState(NODE_DATA_ID);
-  const { currentType, setCurrentType } = useContext(EditorValueContext);
+  const [loading, setLoading] = useState(false);
+  const [editorLoading, setEditorLoading] = useState(false);
+  const [books, setBooks] = useState(BOOKS_DATA);
+  const [currentBookId, setCurrentBookId] = useState(NODE_DATA_ID);
   const areaSelectRef = useRef('');
+  const { defaultSelectHTML, updateClippingType } = useSandboxContext();
 
   const editorRef = useRef<IEditorRef>(null);
+
+  const onLoad = useCallback(async () => {
+    setEditorLoading(true);
+    const isEmpty = editorRef.current?.isEmpty();
+    if (isEmpty) {
+      const isNote = currentBookId === NODE_DATA_ID;
+      const { heading, quote } = getBookmarkHTMLs(await getCurrentTab());
+      editorRef.current?.appendContent(quote);
+      // 回到文档开头
+      editorRef.current?.focusToStart();
+      // 非小记插入标题
+      if (!isNote) {
+        editorRef.current?.appendContent(heading);
+        editorRef.current?.focusToStart(1);
+      }
+    }
+    // 追加当前选取的html
+    editorRef.current?.appendContent(defaultSelectHTML.join(''));
+    setEditorLoading(false);
+  }, [defaultSelectHTML]);
+
+  const startAreaClipping = useCallback(() => {
+    // 重新开始剪藏的时候需要清空内容
+    editorRef.current?.setContent(areaSelectRef.current || '', 'text/lake');
+    if (!areaSelectRef.current) {
+      startSelect();
+    }
+    // 清空记录上一次的剪藏内容
+    areaSelectRef.current = '';
+  }, []);
+
+  const startWebsiteClipping = useCallback(() => {
+    editorRef.current?.getContent('lake').then(content => {
+      areaSelectRef.current = content || '';
+      getCurrentTab().then(tab => {
+        const html = getBookmarkHtml(
+          tab,
+          false,
+          currentBookId !== NODE_DATA_ID,
+        );
+        editorRef.current?.setContent(html);
+      });
+    });
+  }, []);
 
   /**
    * 获取知识库的数据
    */
   useEffect(() => {
     mineProxy.getBooks().then(bookList => {
-      setBooks([ ...BOOKS_DATA, ...bookList ]);
+      setBooks([...BOOKS_DATA, ...bookList]);
     });
   }, []);
 
-  /**
-   * 对新选取的内容做出响应
-   */
-  useEffect(() => {
-    const listener = async (e: MessageEvent<any>) => {
-      if (e.data?.key !== SandBoxMessageKey) {
-        return;
-      }
-      const { action, data } = e.data || {};
-      switch (action) {
-        case SandBoxMessageType.getSelectText: {
-          const { HTMLs } = data;
-          setEditorLoading(true);
-          setCurrentType(SELECT_TYPE_SELECTION);
-          try {
-            const { quote } = getBookmarkHTMLs(await getCurrentTab());
-            editorRef.current?.appendContent(quote);
-            // 回到文档开头
-            editorRef.current?.focusToStart();
-            editorRef.current?.appendContent(HTMLs.join(''));
-          } finally {
-            setEditorLoading(false);
-          }
-          break;
-        }
-        case SandBoxMessageType.getSelectedHtml: {
-          const { HTMLs } = data;
-          const isEmpty = editorRef.current.isEmpty();
-          // 判断当前文档是否是空的
-          // 如果是空的则插入初始内容
-          if (isEmpty) {
-            const isNote = currentBookId === NODE_DATA_ID;
-            const { heading, quote } = getBookmarkHTMLs(await getCurrentTab());
-            editorRef.current?.appendContent(quote);
-            // 回到文档开头
-            editorRef.current?.focusToStart();
-            // 非小记插入标题
-            if (!isNote) {
-              editorRef.current?.appendContent(heading);
-              editorRef.current?.focusToStart(1);
-            }
-          }
-          // 追加当前选取的html
-          editorRef.current?.appendContent(HTMLs.join(''));
-          return;
-        }
-        default:
-          break;
-      }
-    };
-    window.addEventListener('message', listener);
-    const onClose = () => {
-      editorRef.current?.setContent('');
-      setCurrentType(null);
-    };
-    eventManager.listen(AppEvents.CLOSE_BOARD, onClose);
-    return () => {
-      window.removeEventListener('message', listener);
-      eventManager.removeListener(AppEvents.CLOSE_BOARD, onClose);
-    };
-  }, []);
-
-  /**
-   * 监听currentType的变化，做出不同的响应
-   */
-  useEffect(() => {
-    if (currentType === SELECT_TYPE_AREA) {
-      // 重新开始剪藏的时候需要清空内容
-      editorRef.current?.setContent(areaSelectRef.current || '', 'text/lake');
-      if (!areaSelectRef.current) {
-        startSelect();
-      }
-      // 清空记录上一次的剪藏内容
-      areaSelectRef.current = '';
-    } else if (currentType === SELECT_TYPE_BOOKMARK) {
-      // 选择了剪藏了网址，将编辑器的内容设置成bookmark
-      // 并存储上一次剪藏的内容
-      editorRef.current.getContent('lake').then(content => {
-        areaSelectRef.current = content || '';
-        getCurrentTab().then(tab => {
-          const html = getBookmarkHtml(
-            tab,
-            false,
-            currentBookId !== NODE_DATA_ID,
-          );
-          editorRef.current?.setContent(html);
-        });
-      });
-    }
-  }, [ currentType ]);
+  useUpdateEffect(() => {
+    onLoad();
+  }, [defaultSelectHTML]);
 
   const onSave = useCallback(async () => {
     if (!editorRef.current) return;
 
     const onSuccess = (type: 'doc' | 'note', noteOrDoc: { id: string }) => {
-      setCurrentType(null);
+      updateClippingType(null);
       setLoading(false);
       setEditorLoading(false);
 
@@ -272,7 +216,7 @@ const useViewModel = (props: ISaveToProps) => {
       setLoading(false);
       setEditorLoading(false);
     }
-  }, [ editorRef, currentBookId ]);
+  }, [editorRef, currentBookId]);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
     return urlOrFileUpload(params.data);
@@ -282,7 +226,6 @@ const useViewModel = (props: ISaveToProps) => {
     state: {
       books,
       currentBookId,
-      currentType,
       loading,
       editorRef,
       editorLoading,
@@ -290,35 +233,43 @@ const useViewModel = (props: ISaveToProps) => {
     onSave,
     onUploadImage,
     onContinue: startSelect,
-    onSelectType: setCurrentType,
     onSelectBookId: setCurrentBookId,
+    onLoad,
+    startAreaClipping,
+    startWebsiteClipping,
   };
 };
 
 export default function SaveTo(props: ISaveToProps) {
-  const { currentType } = useContext(EditorValueContext);
+  const { updateClippingType, clippingType } = useSandboxContext();
   const {
     state: { books, currentBookId, loading, editorRef, editorLoading },
     onSave,
     onContinue,
-    onSelectType,
     onUploadImage,
     onSelectBookId,
+    onLoad,
+    startAreaClipping,
+    startWebsiteClipping,
   } = useViewModel(props);
 
   const handleTypeSelect = useCallback((info: MenuInfo) => {
-    onSelectType(info.key);
+    updateClippingType(oldKey => {
+      if (oldKey !== info.key) {
+        switch (info.key) {
+          case ClippingTypeEnum.area:
+            startAreaClipping();
+            break;
+          case ClippingTypeEnum.website:
+            startWebsiteClipping();
+            break;
+          default:
+            break;
+        }
+      }
+      return info.key as ClippingTypeEnum;
+    });
   }, []);
-
-  const SELECT_MENU_DATA = useMemo(
-    () =>
-      SELECT_TYPES.map(item => ({
-        key: item.key,
-        icon: item.icon,
-        label: item.text,
-      })),
-    [],
-  );
 
   return (
     <ConfigProvider
@@ -336,9 +287,9 @@ export default function SaveTo(props: ISaveToProps) {
         <Menu
           mode="inline"
           inlineIndent={8}
-          activeKey={currentType}
+          selectedKeys={[clippingType as string]}
           onClick={handleTypeSelect}
-          items={SELECT_MENU_DATA}
+          items={SELECT_TYPES}
           className={styles.menu}
         />
         <div className={classnames(styles.actionTip, styles.clipTarget)}>
@@ -358,7 +309,7 @@ export default function SaveTo(props: ISaveToProps) {
           type="primary"
           block
           loading={loading}
-          disabled={!currentType}
+          disabled={!clippingType}
           onClick={onSave}
         >
           {__i18n('保存到')}
@@ -366,7 +317,7 @@ export default function SaveTo(props: ISaveToProps) {
         </Button>
         <div
           className={classnames(styles['lake-editor'], {
-            [styles.hidden]: !currentType,
+            [styles.hidden]: !clippingType,
           })}
         >
           {editorLoading ? <Spin className={styles.loading} spinning /> : null}
@@ -374,9 +325,10 @@ export default function SaveTo(props: ISaveToProps) {
             ref={editorRef}
             value=""
             onSave={onSave}
+            onLoad={onLoad}
             uploadImage={onUploadImage}
           >
-            {currentType !== SELECT_TYPE_BOOKMARK && (
+            {clippingType === ClippingTypeEnum.area && (
               <Button onClick={onContinue}>{__i18n('继续选取')}</Button>
             )}
           </LakeEditor>

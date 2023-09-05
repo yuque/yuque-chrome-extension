@@ -10,11 +10,11 @@ import { ConfigProvider, message } from 'antd';
 import classnames from 'classnames';
 import { VIEW_MORE_TAG, WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { __i18n } from '@/isomorphic/i18n';
-
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
 import { WordMarkContext } from '@/context/word-mark-context';
+import { SandBoxMessageType, ClippingTypeEnum } from '@/isomorphic/sandbox';
+import { sendMessageToSandBox } from '@/core/bridge/sendMessageToSandbox';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
-import { PAGE_EVENTS } from '@/events';
 import { saveToNote, saveToBook } from './util';
 import WordMarkPanel from './word-mark-panel';
 import InnerWordMark from './inner-word-mark';
@@ -34,11 +34,11 @@ export enum WordMarkType {
 }
 
 function App() {
-  const [ showWordMark, setShowWordMark ] = useState(false);
-  const [ type, setType ] = useState<WordMarkOptionTypeEnum>(null);
-  const [ selectText, setSelectText ] = useState<string>('');
+  const [showWordMark, setShowWordMark] = useState(false);
+  const [type, setType] = useState<WordMarkOptionTypeEnum | null>(null);
+  const [selectText, setSelectText] = useState<string>('');
   const { forceUpdate } = useForceUpdate();
-  const editorRef = useRef<IEditorRef>();
+  const editorRef = useRef<IEditorRef>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wordMarkPositionRef = useRef({
     left: 0,
@@ -52,15 +52,10 @@ function App() {
   const save = useCallback(
     async (text: string) => {
       if (wordMarkContext.evokePanelWhenClip) {
-        window.postMessage(
-          {
-            action: PAGE_EVENTS.WORD_MARK_CLIP,
-            data: {
-              selectionText: text,
-            },
-          },
-          '*',
-        );
+        sendMessageToSandBox(SandBoxMessageType.getSelectedHtml, {
+          HTMLs: [text],
+          type: ClippingTypeEnum.area,
+        });
         setShowWordMark(false);
         return;
       }
@@ -73,8 +68,8 @@ function App() {
           (await editorRef.current?.getContent('lake')) || '';
         const serializedHtmlContent =
           (await editorRef.current?.getContent('text/html')) || '';
-        const summary = await editorRef.current.getSummaryContent();
-        const wordCount = await editorRef.current.wordCount();
+        const summary = await editorRef.current?.getSummaryContent();
+        const wordCount = await editorRef.current?.wordCount();
         const extractRes = extractSummaryRaw(serializedAsiContent, {
           summary,
         });
@@ -114,18 +109,19 @@ function App() {
       }
       isSaving.current = false;
     },
-    [ wordMarkContext ],
+    [wordMarkContext],
   );
 
   const executeCommand = useCallback(
     async (t: WordMarkOptionTypeEnum) => {
       if (t === WordMarkOptionTypeEnum.clipping) {
-        const html = Array.from(
-          document.getSelection().getRangeAt(0).cloneContents().childNodes,
-        )
-          .map((v: any) => v?.outerHTML || v?.nodeValue)
-          .join('');
-
+        const selection = document.getSelection();
+        let html = '';
+        if (selection) {
+          html = Array.from(selection.getRangeAt(0).cloneContents().childNodes)
+            .map((v: any) => v?.outerHTML || v?.nodeValue)
+            .join('');
+        }
         await editorRef.current?.setContent(
           `${html}<p><br></p><blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote>`,
           'text/html',
@@ -135,7 +131,7 @@ function App() {
       }
       setType(t);
     },
-    [ selectText ],
+    [selectText],
   );
 
   const initPosition = useCallback(() => {
@@ -159,39 +155,44 @@ function App() {
   useEffect(() => {
     const getIsEditing = () => {
       const element = document.activeElement;
-      if ([ 'INPUT', 'TEXTAREA' ].includes(element.tagName)) {
+      if (!element) {
+        return false;
+      }
+      if (['INPUT', 'TEXTAREA'].includes(element.tagName)) {
         return true;
       }
       return element.getAttribute('contenteditable') === 'true';
     };
 
     const onMouseUp = (e: MouseEvent) => {
-      const isEdit = getIsEditing();
-      // 如果选中区域可编辑，那么不展示划词
-      if (isEdit) {
-        setShowWordMark(false);
-        return;
-      }
-      const selection = window.getSelection();
-      const selectionText = selection.toString();
-      if (selection.rangeCount <= 0) {
-        setShowWordMark(false);
-        return;
-      }
-      if (!selectionText.trim().length) {
-        setShowWordMark(false);
-        return;
-      }
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      const x = (rect.left + rect.right) / 2;
-      const y = rect.bottom;
-      setShowWordMark(true);
-      setSelectText(selectionText);
-      mouseupPositionRef.current = {
-        x,
-        y,
-      };
+      setTimeout(() => {
+        const isEdit = getIsEditing();
+        const selection = window.getSelection();
+        // 如果选中区域可编辑，那么不展示划词
+        if (isEdit || !selection) {
+          setShowWordMark(false);
+          return;
+        }
+        const selectionText = selection.toString();
+        if (selection.rangeCount <= 0) {
+          setShowWordMark(false);
+          return;
+        }
+        if (!selectionText.trim().length) {
+          setShowWordMark(false);
+          return;
+        }
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        const x = (rect.left + rect.right) / 2;
+        const y = rect.bottom;
+        setShowWordMark(true);
+        setSelectText(selectionText);
+        mouseupPositionRef.current = {
+          x,
+          y,
+        };
+      }, 10);
     };
 
     document.addEventListener('mouseup', onMouseUp);
@@ -202,14 +203,14 @@ function App() {
 
   useEffect(() => {
     setType(null);
-  }, [ selectText, showWordMark ]);
+  }, [selectText, showWordMark]);
 
   useLayoutEffect(() => {
     if (!selectText) {
       return;
     }
     initPosition();
-  }, [ selectText, initPosition, type ]);
+  }, [selectText, initPosition, type]);
 
   return (
     <ConfigProvider prefixCls="yq-word-mark">
