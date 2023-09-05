@@ -14,7 +14,7 @@ const blockquoteID = 'yqextensionblockquoteid';
 
 export interface EditorProps {
   value: string;
-  children?: React.ReactElement;
+  children?: React.ReactNode;
   onChange?: (value: string) => void;
   onLoad?: () => void;
   onSave: () => void;
@@ -25,7 +25,7 @@ export interface EditorProps {
   }>;
 }
 
-function sleep(ms) {
+function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -158,12 +158,15 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
    */
   useEffect(() => {
     function loadFunc() {
-      const doc = iframeRef.current.contentDocument;
-      const win = iframeRef.current.contentWindow;
+      const doc = iframeRef.current?.contentDocument;
+      const win = iframeRef.current?.contentWindow;
+      if (!doc || !win) {
+        return;
+      }
       // 加载编辑器
       loadLakeEditor(win).then(() => {
         setLoading(false);
-        const root = createRoot(doc.getElementById('child'));
+        const root = createRoot(doc.getElementById('child') as HTMLDivElement);
         rootNodeRef.current.div = root;
 
         if (rootNodeRef.current.div) {
@@ -319,14 +322,14 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       }
     };
     document.addEventListener('keydown', onKeyDown, true);
-    iframeRef.current?.contentDocument.addEventListener(
+    iframeRef.current?.contentDocument?.addEventListener(
       'keydown',
       onKeyDown,
       true,
     );
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      iframeRef.current?.contentDocument.removeEventListener(
+      iframeRef.current?.contentDocument?.removeEventListener(
         'keydown',
         onKeyDown,
       );

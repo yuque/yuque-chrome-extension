@@ -23,9 +23,9 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
   const { forceUpdate } = useForceUpdate();
   const targetRectListRef = useRef<Rect[]>([]);
   const targetRectRef = useRef<Rect | null>();
-  const targetRef = useRef<Element>();
+  const targetRef = useRef<Element | null>();
   const targetListRef = useRef<Array<Element>>([]);
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleMouseOver(e: MouseEvent) {
@@ -70,7 +70,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       if (target.closest('.select-confirm')) {
         props.onSave();
       } else if (target?.closest('.select-inner')) {
-        const key = parseInt(target.getAttribute('data-select-index'));
+        const key = parseInt(target.getAttribute('data-select-index') as string);
         targetRectListRef.current = targetRectListRef.current.filter(
           (__, index) => key !== index,
         );
@@ -78,6 +78,9 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
           (__, index) => key !== index,
         );
       } else {
+        if (!targetRectRef.current || !targetRef.current) {
+          return;
+        }
         targetRectListRef.current = [
           ...targetRectListRef.current.filter((__, index) => {
             return !targetRef.current?.contains(targetListRef.current[index]);
@@ -105,13 +108,13 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       window.removeEventListener('mouseover', handleMouseOver);
       window.removeEventListener('click', onToggleSelect, true);
     };
-  }, [ props.onSave ]);
+  }, [props.onSave]);
 
   useImperativeHandle(
     propsRef,
     () => ({
       getSelections: () => {
-        return targetListRef.current;
+        return targetListRef.current.filter(item => item);
       },
     }),
     [],

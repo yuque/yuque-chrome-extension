@@ -9,17 +9,15 @@ import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
 import { transformDOM } from '@/core/transform-dom';
 
 function App() {
-  const selectorRef = useRef<ISelectorRef>();
+  const selectorRef = useRef<ISelectorRef>(null);
   const onSave = useCallback(() => {
-    const selectAreaElements = transformDOM(
-      selectorRef.current.getSelections(),
-    );
+    const selections = selectorRef.current?.getSelections() || [];
+    const selectAreaElements = transformDOM(selections);
     const HTMLs = Array.from(selectAreaElements);
-    const iframe: HTMLIFrameElement = document.querySelector(
+    const iframe = document.querySelector(
       `#${YQ_SANDBOX_BOARD_IFRAME}`,
-    );
-
-    iframe.contentWindow.postMessage(
+    ) as HTMLIFrameElement;
+    iframe.contentWindow?.postMessage(
       {
         key: SandBoxMessageKey,
         action: SandBoxMessageType.getSelectedHtml,
@@ -50,7 +48,7 @@ function App() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [ onSave ]);
+  }, [onSave]);
 
   return <Selector onSave={onSave} ref={selectorRef} />;
 }

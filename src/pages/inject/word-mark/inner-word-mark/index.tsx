@@ -4,7 +4,9 @@ import Icon, { CloseOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { WordMarkConfigKey } from '@/isomorphic/word-mark';
-import { BACKGROUND_EVENTS, GLOBAL_EVENTS } from '@/events';
+import { BACKGROUND_EVENTS } from '@/events';
+import { SandBoxMessageType } from '@/isomorphic/sandbox';
+import { sendMessageToSandBox } from '@/core/bridge/sendMessageToSandbox';
 import YuqueLogo from '@/assets/svg/yuque-logo.svg';
 import More from '@/assets/svg/more.svg';
 import { WordMarkContext } from '@/context/word-mark-context';
@@ -20,7 +22,7 @@ interface InnerWordMarkProps {
 function InnerWordMark(props: InnerWordMarkProps) {
   const { executeCommand } = props;
   const wordMarkContext = useContext(WordMarkContext);
-  const [ pinedTools, setPinedTools ] = useState<WordMarkOptionTypeEnum[]>(
+  const [pinedTools, setPinedTools] = useState<WordMarkOptionTypeEnum[]>(
     wordMarkContext.innerPinList,
   );
 
@@ -28,7 +30,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
     setPinedTools(tools => {
       const result = tools.includes(type)
         ? tools.filter(t => t !== type)
-        : [ type, ...tools ];
+        : [type, ...tools];
 
       Chrome.runtime.sendMessage({
         action: BACKGROUND_EVENTS.UPDATE_WORD_MARK_CONFIG,
@@ -52,12 +54,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
         component={YuqueLogo}
         className={styles.yuqueLogo}
         onClick={() => {
-          window.postMessage(
-            {
-              action: GLOBAL_EVENTS.SHOW_BOARD,
-            },
-            '*',
-          );
+          sendMessageToSandBox(SandBoxMessageType.initSandbox);
         }}
       />
       <div className={styles.pinList}>

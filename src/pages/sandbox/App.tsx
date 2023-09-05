@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { ConfigProvider, Radio, RadioChangeEvent } from 'antd';
 import { CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
@@ -11,8 +11,8 @@ import { __i18n } from '@/isomorphic/i18n';
 import { preferencesUrl } from '@/isomorphic/word-mark';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
+import { SandboxProvider } from './provider/sandBoxProvider';
 import UserInfo from './UserInfo';
-import { EditorValueContext } from './EditorValueContext';
 import { Other } from './Other';
 import SaveTo from './SaveTo';
 import styles from './App.module.less';
@@ -30,61 +30,55 @@ const onClose = () => {
 };
 
 const App = () => {
-  const [ editorValue, setEditorValue ] = useState([]);
-  const [ currentType, setCurrentType ] = useState(null);
   const accountContext = useContext(AccountContext);
-  const [ tab, setTab ] = React.useState<TabName>('save-to');
+  const [tab, setTab] = React.useState<TabName>('save-to');
 
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);
   };
 
   return (
-    <EditorValueContext.Provider
-      value={{ editorValue, currentType, setEditorValue, setCurrentType }}
-    >
-      <div className={styles.wrapper}>
-        <div className={styles.header}>{__i18n('语雀剪藏')}</div>
-        <CloseOutlined className={styles.close} onClick={onClose} />
-        <div className={styles.items}>
-          <Radio.Group
-            value={tab}
-            onChange={handleTabChange}
-            style={{ marginBottom: 16, padding: '0 24px' }}
+    <div className={styles.wrapper}>
+      <div className={styles.header}>{__i18n('语雀剪藏')}</div>
+      <CloseOutlined className={styles.close} onClick={onClose} />
+      <div className={styles.items}>
+        <Radio.Group
+          value={tab}
+          onChange={handleTabChange}
+          style={{ marginBottom: 16, padding: '0 24px' }}
+        >
+          <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
+          <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
+        </Radio.Group>
+        <SaveTo
+          className={classnames({
+            [styles.hidden]: tab !== 'save-to',
+          })}
+        />
+        <Other
+          className={classnames({
+            [styles.hidden]: tab !== 'other',
+          })}
+        />
+        <div className={styles.account}>
+          <div
+            className={styles.settings}
+            onClick={() => {
+              Chrome.tabs.create({
+                url: preferencesUrl,
+              });
+            }}
           >
-            <Radio.Button value="save-to">{__i18n('剪藏')}</Radio.Button>
-            <Radio.Button value="other">{__i18n('其他')}</Radio.Button>
-          </Radio.Group>
-          <SaveTo
-            className={classnames({
-              [styles.hidden]: tab !== 'save-to',
-            })}
-          />
-          <Other
-            className={classnames({
-              [styles.hidden]: tab !== 'other',
-            })}
-          />
-          <div className={styles.account}>
-            <div
-              className={styles.settings}
-              onClick={() => {
-                Chrome.tabs.create({
-                  url: preferencesUrl,
-                });
-              }}
-            >
-              <SettingOutlined />
-              {__i18n('偏好设置')}
-            </div>
-            <UserInfo
-              user={accountContext.user}
-              onLogout={accountContext.onLogout}
-            />
+            <SettingOutlined />
+            {__i18n('偏好设置')}
           </div>
+          <UserInfo
+            user={accountContext.user}
+            onLogout={accountContext.onLogout}
+          />
         </div>
       </div>
-    </EditorValueContext.Provider>
+    </div>
   );
 };
 
@@ -97,9 +91,11 @@ function ContextApp() {
         },
       }}
     >
-      <AccountLayout close={onClose}>
-        <App />
-      </AccountLayout>
+      <SandboxProvider>
+        <AccountLayout close={onClose}>
+          <App />
+        </AccountLayout>
+      </SandboxProvider>
     </ConfigProvider>
   );
 }

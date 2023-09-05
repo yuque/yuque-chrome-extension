@@ -43,7 +43,7 @@ export function listenContextMenuEvents() {
     switch (info.menuItemId) {
       case menuList[0].id: {
         const { pageUrl, selectionText } = info;
-        Chrome.tabs.sendMessage(tab.id, {
+        Chrome.tabs.sendMessage(tab.id as number, {
           action: GLOBAL_EVENTS.SAVE_TO_NOTE,
           pageUrl,
           selectionText,
@@ -51,13 +51,13 @@ export function listenContextMenuEvents() {
         break;
       }
       case menuList[1].id:
-        Chrome.tabs.sendMessage(tab.id, {
+        Chrome.tabs.sendMessage(tab.id as number, {
           action: GLOBAL_EVENTS.SHOW_BOARD,
         });
         break;
       case menuList[2].id: {
         const { srcUrl } = info;
-        Chrome.tabs.sendMessage(tab.id, {
+        Chrome.tabs.sendMessage(tab.id as number, {
           action: GLOBAL_EVENTS.SAVE_TO_NOTE,
           selectionText: `<img src=${srcUrl} />`,
         });
