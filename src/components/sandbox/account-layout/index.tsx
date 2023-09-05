@@ -21,6 +21,7 @@ import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
 import { mineProxy } from '@/core/proxy/mine';
 import { SERVER_URLS } from '@/isomorphic/constants';
+import { useEffectAsync } from '@/hooks/useAsyncEffect';
 import Login from './login';
 import styles from './index.module.less';
 
@@ -34,7 +35,7 @@ interface IAccountLayoutProps {
 
 function AccountLayout(props: IAccountLayoutProps) {
   const { position = 'rightTop', close } = props;
-  const [ user, setUser ] = useState(null);
+  const [ user, setUser ] = useState<IUser | null>(null);
   const [ ready, setAppReady ] = useState(false);
   const [ forceUpgradeInfo, setForceUpgradeInfo ] = useState<string>();
 
@@ -118,27 +119,26 @@ function AccountLayout(props: IAccountLayoutProps) {
     });
   };
 
-  useEffect(() => {
-    getCurrentAccount()
-      .then(async info => {
-        setUser(info);
-        const tabInfo = await Chrome.getCurrentTab();
-        // 上报埋点
-        Tracert.start({
-          spmAPos: TRACERT_CONFIG.spmAPos,
-          spmBPos: TRACERT_CONFIG.spmBPos,
-          role_id: (info as IUser)?.id,
-          mdata: {
-            [REQUEST_HEADER_VERSION]: VERSION,
-            [EXTENSION_ID]: Chrome.runtime.id,
-            [REFERER_URL]: tabInfo?.url,
-          },
-        });
-      })
-      .finally(() => {
-        setAppReady(true);
+  useEffectAsync(async () => {
+    const info = await getCurrentAccount();
+    const accountInfo = await mineProxy.getUserInfo();
+    if (!accountInfo && accountInfo?.id === info.id) {
+      setUser(info);
+      const tabInfo = await Chrome.getCurrentTab();
+      // 上报埋点
+      Tracert.start({
+        spmAPos: TRACERT_CONFIG.spmAPos,
+        spmBPos: TRACERT_CONFIG.spmBPos,
+        role_id: (info as IUser)?.id,
+        mdata: {
+          [REQUEST_HEADER_VERSION]: VERSION,
+          [EXTENSION_ID]: Chrome.runtime.id,
+          [REFERER_URL]: tabInfo?.url,
+        },
       });
-  }, []);
+    }
+    setAppReady(true);
+  }, [])
 
   useEffect(() => {
     const logout = data => {
