@@ -86,11 +86,13 @@ class App {
       },
       '*',
     );
+    this.iframe?.focus()
     destroyWordMark();
   }
 
   removeIframe() {
     this.iframe?.classList.remove('show');
+    this.iframe?.blur();
     initWordMark();
   }
 
