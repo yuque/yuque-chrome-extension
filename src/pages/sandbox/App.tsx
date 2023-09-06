@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ConfigProvider, Radio, RadioChangeEvent } from 'antd';
 import { CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
@@ -36,6 +36,19 @@ const App = () => {
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);
   };
+
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        onClose();
+      }
+    }
+    
+    document.addEventListener('keydown', listener)
+    return () => {
+      document.removeEventListener('keydown', listener)
+    };
+  }, [])
 
   return (
     <div className={styles.wrapper}>
