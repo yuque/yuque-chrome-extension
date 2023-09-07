@@ -72,6 +72,9 @@ export function initSelectArea(params: { type: StartSelectEnum }) {
 }
 
 export function destroySelectArea() {
+  if (!root) {
+    return;
+  }
   const wrapper = document.querySelector(`#${YQ_SELECTION_CONTAINER}`);
   root.unmount();
   wrapper?.remove();

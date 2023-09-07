@@ -7,8 +7,10 @@ function hexoCodeBlock(cloneNode: Element) {
       return;
     }
     const codeElement = code.querySelector('pre');
-    node.parentNode.appendChild(codeElement);
-    node.parentNode.removeChild(node);
+    if (codeElement) {
+      node.parentNode?.appendChild(codeElement);
+    }
+    node.parentNode?.removeChild(node);
   };
   figures.forEach(figure => {
     processingCodeBlock(figure);
@@ -27,10 +29,14 @@ function commonCodeBlock(node: Element) {
     const codeElement = pre.querySelector('code');
     if (codeElement) {
       const childNodes = pre.childNodes;
+      const needRemoveNodes: ChildNode[] = [];
       childNodes.forEach(item => {
         if (item !== codeElement) {
-          pre.removeChild(item);
+          needRemoveNodes.push(item);
         }
+      });
+      needRemoveNodes.forEach(item => {
+        pre.removeChild(item);
       });
     }
   });
@@ -90,7 +96,7 @@ export function transformDOM(domArray: Element[]) {
                 : originalCanvasElements[index - 1];
             const imageElement = document.createElement('img');
             imageElement.src = originCanvas.toDataURL();
-            canvas.parentNode.replaceChild(imageElement, canvas);
+            canvas.parentNode?.replaceChild(imageElement, canvas);
           } catch (e) {
             //
           }
@@ -101,7 +107,7 @@ export function transformDOM(domArray: Element[]) {
             const originCanvas = originalCanvasElements[index];
             const imageElement = document.createElement('img');
             imageElement.src = originCanvas.toDataURL();
-            canvas.parentNode.replaceChild(imageElement, canvas);
+            canvas.parentNode?.replaceChild(imageElement, canvas);
           } catch (e) {
             //
           }
