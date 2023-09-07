@@ -8,7 +8,7 @@ import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import BookWithIcon from '@/components/common/book-with-icon';
 import { extractSummaryRaw } from '@/components/editor/extract-summary-raw';
-import { VIEW_MORE_TAG } from '@/isomorphic/constants';
+import { StartSelectEnum, VIEW_MORE_TAG } from '@/isomorphic/constants';
 import NoteTag from '@/components/sandbox/note-tag';
 import {
   getSelectTag,
@@ -49,8 +49,17 @@ const useViewModel = (props: ISaveToProps) => {
   const [editorLoading, setEditorLoading] = useState(false);
   const [books, setBooks] = useState(BOOKS_DATA);
   const [currentBookId, setCurrentBookId] = useState(NODE_DATA_ID);
-  const areaSelectRef = useRef('');
-  const { defaultSelectHTML, updateClippingType } = useSandboxContext();
+  const contentRef = useRef({
+    // 剪藏选取内容
+    [ClippingTypeEnum.area]: '',
+    // 屏幕截屏内容
+    [ClippingTypeEnum.screenShot]: '',
+    // 剪藏网址内容
+    [ClippingTypeEnum.website]: '',
+  });
+  const { defaultSelectHTML, updateClippingType, clippingType } =
+    useSandboxContext();
+  const clippingTypeRef = useRef<ClippingTypeEnum | null>(null);
 
   const editorRef = useRef<IEditorRef>(null);
 
@@ -76,25 +85,35 @@ const useViewModel = (props: ISaveToProps) => {
 
   const startAreaClipping = useCallback(() => {
     // 重新开始剪藏的时候需要清空内容
-    editorRef.current?.setContent(areaSelectRef.current || '', 'text/lake');
-    if (!areaSelectRef.current) {
-      startSelect();
+    editorRef.current?.setContent(
+      contentRef.current[ClippingTypeEnum.area] || '',
+      'text/lake',
+    );
+    if (!contentRef.current[ClippingTypeEnum.area]) {
+      startSelect(StartSelectEnum.areaSelect);
     }
     // 清空记录上一次的剪藏内容
-    areaSelectRef.current = '';
+    contentRef.current[ClippingTypeEnum.area] = '';
+  }, []);
+
+  const startScreenShot = useCallback(() => {
+    console.log(contentRef.current.screenShot, '我啥话');
+    // 重新开始剪藏的时候需要清空内容
+    editorRef.current?.setContent(
+      contentRef.current.screenShot || '',
+      'text/lake',
+    );
+    if (!contentRef.current.screenShot) {
+      startSelect(StartSelectEnum.screenShot);
+    }
+    // 清空记录上一次的剪藏内容
+    contentRef.current.screenShot = '';
   }, []);
 
   const startWebsiteClipping = useCallback(() => {
-    editorRef.current?.getContent('lake').then(content => {
-      areaSelectRef.current = content || '';
-      getCurrentTab().then(tab => {
-        const html = getBookmarkHtml(
-          tab,
-          false,
-          currentBookId !== NODE_DATA_ID,
-        );
-        editorRef.current?.setContent(html);
-      });
+    getCurrentTab().then(tab => {
+      const html = getBookmarkHtml(tab, false, currentBookId !== NODE_DATA_ID);
+      editorRef.current?.setContent(html);
     });
   }, []);
 
@@ -222,6 +241,35 @@ const useViewModel = (props: ISaveToProps) => {
     return urlOrFileUpload(params.data);
   }, []);
 
+  const handleTypeSelect = async (info: MenuInfo) => {
+    const oldType = clippingType;
+    const newType = info.key as ClippingTypeEnum;
+    const content = await editorRef.current?.getContent('lake');
+    if (oldType) {
+      contentRef.current[oldType] = content as any;
+    }
+    if (oldType !== newType) {
+      switch (newType) {
+        case ClippingTypeEnum.area:
+          startAreaClipping();
+          break;
+        case ClippingTypeEnum.website:
+          startWebsiteClipping();
+          break;
+        case ClippingTypeEnum.screenShot:
+          startScreenShot();
+          break;
+        default:
+          break;
+      }
+    }
+    updateClippingType(newType);
+  };
+
+  useEffect(() => {
+    clippingTypeRef.current = clippingType;
+  }, [clippingType]);
+
   return {
     state: {
       books,
@@ -232,44 +280,40 @@ const useViewModel = (props: ISaveToProps) => {
     },
     onSave,
     onUploadImage,
-    onContinue: startSelect,
     onSelectBookId: setCurrentBookId,
     onLoad,
-    startAreaClipping,
-    startWebsiteClipping,
+    handleTypeSelect,
   };
 };
 
 export default function SaveTo(props: ISaveToProps) {
-  const { updateClippingType, clippingType } = useSandboxContext();
+  const { clippingType, editorLoading: ocrEditorLoading } = useSandboxContext();
   const {
     state: { books, currentBookId, loading, editorRef, editorLoading },
     onSave,
-    onContinue,
     onUploadImage,
     onSelectBookId,
     onLoad,
-    startAreaClipping,
-    startWebsiteClipping,
+    handleTypeSelect,
   } = useViewModel(props);
 
-  const handleTypeSelect = useCallback((info: MenuInfo) => {
-    updateClippingType(oldKey => {
-      if (oldKey !== info.key) {
-        switch (info.key) {
-          case ClippingTypeEnum.area:
-            startAreaClipping();
-            break;
-          case ClippingTypeEnum.website:
-            startWebsiteClipping();
-            break;
-          default:
-            break;
-        }
-      }
-      return info.key as ClippingTypeEnum;
-    });
-  }, []);
+  const renderContinue = () => {
+    if (clippingType === ClippingTypeEnum.area) {
+      return (
+        <Button onClick={() => startSelect(StartSelectEnum.areaSelect)}>
+          {__i18n('继续选取')}
+        </Button>
+      );
+    }
+    if (clippingType === ClippingTypeEnum.screenShot) {
+      return (
+        <Button onClick={() => startSelect(StartSelectEnum.screenShot)}>
+          {__i18n('继续选取')}
+        </Button>
+      );
+    }
+    return null;
+  };
 
   return (
     <ConfigProvider
@@ -320,7 +364,9 @@ export default function SaveTo(props: ISaveToProps) {
             [styles.hidden]: !clippingType,
           })}
         >
-          {editorLoading ? <Spin className={styles.loading} spinning /> : null}
+          {editorLoading || ocrEditorLoading ? (
+            <Spin className={styles.loading} spinning />
+          ) : null}
           <LakeEditor
             ref={editorRef}
             value=""
@@ -328,9 +374,7 @@ export default function SaveTo(props: ISaveToProps) {
             onLoad={onLoad}
             uploadImage={onUploadImage}
           >
-            {clippingType === ClippingTypeEnum.area && (
-              <Button onClick={onContinue}>{__i18n('继续选取')}</Button>
-            )}
+            {renderContinue()}
           </LakeEditor>
           <div
             className={classnames({

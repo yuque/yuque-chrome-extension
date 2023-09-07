@@ -1,0 +1,83 @@
+@import '~@/styles/parameters.less';
+
+.loading {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: @z-index-max + 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screenShotWrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: @z-index-max;
+}
+
+.enableSelect {
+  cursor: crosshair;
+}
+
+.area {
+  position: absolute;
+  background-color: transparent;
+  border: 2px solid #00B96B;
+}
+
+.screenBackgroundLeft,
+.screenBackgroundTop,
+.screenBackgroundRight,
+.screenBackgroundBottom {
+  background-color: rgba(0, 0, 0, 0.27);
+  position: absolute;
+}
+
+.mask {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  height: 40px;
+  padding: 0 12px;
+  font-size: 14px;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: 10px;
+  text-align: center;
+  pointer-events: none; // 遮罩层不需要响应鼠标事件
+  color: #fff;
+  z-index: @z-index-max + 2;
+}
+
+.confirm {
+  height: 24px;
+  line-height: 24px;
+  margin-left: 42px;
+  background-color: #00b96b;
+  box-sizing: border-box;
+  border-color: #00b96b;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  color: #fff;
+  font-size: 2px;
+  font-weight: 400;
+  padding: 0 8px;
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  pointer-events: all;
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}

@@ -3,29 +3,55 @@ import React, {
   useEffect,
   useRef,
   useImperativeHandle,
+  useCallback,
 } from 'react';
 import classnames from 'classnames';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
+import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
+import { SandBoxMessageKey, SandBoxMessageType } from '@/isomorphic/sandbox';
+import { transformDOM } from '@/core/transform-dom';
 import { __i18n } from '@/isomorphic/i18n';
-import styles from './Selector.module.less';
+import styles from './index.module.less';
 
 type Rect = Pick<DOMRect, 'width' | 'height' | 'left' | 'top'>;
 
-export interface ISelectorProps {
+export interface ISelectorProps {}
+
+export interface ISelectorRef {
   onSave: () => void;
 }
 
-export interface ISelectorRef {
-  getSelections: () => Array<Element>;
-}
-
-export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
+export default forwardRef<ISelectorRef, ISelectorProps>((_, propsRef) => {
   const { forceUpdate } = useForceUpdate();
   const targetRectListRef = useRef<Rect[]>([]);
   const targetRectRef = useRef<Rect | null>();
   const targetRef = useRef<Element | null>();
   const targetListRef = useRef<Array<Element>>([]);
   const ref = useRef<HTMLDivElement>(null);
+
+  console.log('?????')
+  const onSave = useCallback(() => {
+    console.log("?????")
+    const selections = targetListRef.current.filter(item => item) || [];
+    const selectAreaElements = transformDOM(selections);
+    const HTMLs = Array.from(selectAreaElements);
+    const iframe = document.querySelector(
+      `#${YQ_SANDBOX_BOARD_IFRAME}`,
+    ) as HTMLIFrameElement;
+    console.log('我安全发送消息了？？？');
+    iframe.contentWindow?.postMessage(
+      {
+        key: SandBoxMessageKey,
+        action: SandBoxMessageType.getSelectedHtml,
+        data: {
+          HTMLs,
+        },
+      },
+      '*',
+    );
+    iframe.classList.add('show');
+    iframe.focus();
+  }, []);
 
   useEffect(() => {
     function handleMouseOver(e: MouseEvent) {
@@ -68,9 +94,11 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       e.preventDefault();
       const target = e.target as Element;
       if (target.closest('.select-confirm')) {
-        props.onSave();
+        onSave();
       } else if (target?.closest('.select-inner')) {
-        const key = parseInt(target.getAttribute('data-select-index') as string);
+        const key = parseInt(
+          target.getAttribute('data-select-index') as string,
+        );
         targetRectListRef.current = targetRectListRef.current.filter(
           (__, index) => key !== index,
         );
@@ -108,16 +136,16 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
       window.removeEventListener('mouseover', handleMouseOver);
       window.removeEventListener('click', onToggleSelect, true);
     };
-  }, [props.onSave]);
+  }, [onSave]);
 
   useImperativeHandle(
     propsRef,
     () => ({
-      getSelections: () => {
-        return targetListRef.current.filter(item => item);
+      onSave: () => {
+        onSave();
       },
     }),
-    [],
+    [onSave],
   );
 
   return (
@@ -127,7 +155,7 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
         {!!targetRectListRef.current.length && (
           <div
             className={classnames(styles.confirm, 'select-confirm')}
-            onClick={props.onSave}
+            onClick={onSave}
           >
             {__i18n('确认选取')}({targetRectListRef.current.length})
           </div>
