@@ -39,3 +39,12 @@ export const SERVER_URLS = {
   LOGIN: `${YUQUE_DOMAIN}/api/accounts/login`,
   DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
 };
+
+
+export enum StartSelectEnum {
+  // 选取
+  areaSelect = 'areaSelect',
+
+  // 截屏
+  screenShot = 'screenShot',
+}

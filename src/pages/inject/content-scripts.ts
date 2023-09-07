@@ -2,14 +2,14 @@ import $ from 'jquery';
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
-import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
+import { StartSelectEnum, YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
 import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
 import {
   ClippingTypeEnum,
   SandBoxMessageKey,
   SandBoxMessageType,
 } from '@/isomorphic/sandbox';
-import { initSelectArea } from './area-selector';
+import { initSelectArea, destroySelectArea } from './selector';
 import { initWordMark, destroyWordMark } from './word-mark';
 
 class App {
@@ -88,6 +88,7 @@ class App {
     );
     this.iframe?.focus()
     destroyWordMark();
+    destroySelectArea();
   }
 
   removeIframe() {
@@ -104,8 +105,8 @@ class App {
     return body.html();
   }
 
-  startSelect() {
-    initSelectArea();
+  startSelect(data: { type: StartSelectEnum }) {
+    initSelectArea(data);
     this.iframe?.classList.remove('show');
   }
 
@@ -134,7 +135,7 @@ class App {
           return;
         }
         case GLOBAL_EVENTS.START_SELECT: {
-          this.startSelect();
+          this.startSelect(request.data);
           sendResponse(true);
           return;
         }

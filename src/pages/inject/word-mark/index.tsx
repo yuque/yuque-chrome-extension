@@ -15,7 +15,7 @@ interface RequestMessage {
   data: any;
 }
 
-let root: Root;
+let root: Root | null;
 
 function AppContext() {
   const [ defaultConfig, setDefaultConfig ] = useState<IWordMarkConfig>(null);

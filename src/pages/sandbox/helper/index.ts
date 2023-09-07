@@ -1,5 +1,6 @@
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
+import { StartSelectEnum } from '@/isomorphic/constants';
 
 const blockquoteID = 'yqextensionblockquoteid';
 
@@ -60,10 +61,13 @@ export const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
 /**
  * 开始选择需要剪藏的内容
  */
-export const startSelect = () => {
+export const startSelect = (type: StartSelectEnum) => {
   getCurrentTab().then(tab => {
     Chrome.tabs.sendMessage(tab.id as number, {
       action: GLOBAL_EVENTS.START_SELECT,
+      data: {
+        type,
+      }
     });
   });
 };

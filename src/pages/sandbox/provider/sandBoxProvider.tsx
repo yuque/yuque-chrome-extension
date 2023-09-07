@@ -4,12 +4,15 @@ import {
   SandBoxMessageKey,
   SandBoxMessageType,
 } from '@/isomorphic/sandbox';
+import { message } from 'antd';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
+import { ocrManager } from '../ocr/ocr-manager';
 
 interface ISandboxContext {
   defaultSelectHTML: HTMLElement[];
   clippingType: ClippingTypeEnum | null;
+  editorLoading: boolean;
   updateClippingType: React.Dispatch<
     React.SetStateAction<ClippingTypeEnum | null>
   >;
@@ -18,6 +21,7 @@ interface ISandboxContext {
 export const SandboxContext = createContext<ISandboxContext>({
   defaultSelectHTML: [],
   clippingType: null,
+  editorLoading: false,
   updateClippingType: () => {
     //
   },
@@ -29,10 +33,11 @@ interface ISandboxProviderProps {
 
 export function SandboxProvider(props: ISandboxProviderProps) {
   const [isReady, setIsReady] = useState(false);
-  const [defaultSelectHTML, setDefaultSelectHTML] = useState([]);
+  const [defaultSelectHTML, setDefaultSelectHTML] = useState<any[]>([]);
   const [clippingType, updateClippingType] = useState<ClippingTypeEnum | null>(
     null,
   );
+  const [editorLoading, setEditorLoading] = useState(false);
 
   useEffect(() => {
     const listener = (e: MessageEvent<any>) => {
@@ -54,6 +59,19 @@ export function SandboxProvider(props: ISandboxProviderProps) {
           setIsReady(true);
           break;
         }
+        case SandBoxMessageType.startOcr: {
+          setIsReady(true);
+          if (!data.blob) {
+            message.error('图片不支持 ocr');
+            return;
+          }
+          setEditorLoading(true);
+          ocrManager.startOCR('blob', data.blob).then(res => {
+            setDefaultSelectHTML(res?.map(item => item.text) || []);
+            setEditorLoading(false);
+          });
+          break;
+        }
         default:
           break;
       }
@@ -61,7 +79,7 @@ export function SandboxProvider(props: ISandboxProviderProps) {
     const onClose = () => {
       setDefaultSelectHTML([]);
       updateClippingType(null);
-    }
+    };
     window.addEventListener('message', listener);
     eventManager.addListener(AppEvents.CLOSE_BOARD, onClose);
     return () => {
@@ -74,6 +92,7 @@ export function SandboxProvider(props: ISandboxProviderProps) {
       value={{
         defaultSelectHTML,
         clippingType,
+        editorLoading,
         updateClippingType,
       }}
     >
