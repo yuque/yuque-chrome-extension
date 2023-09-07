@@ -103,6 +103,8 @@ export default forwardRef<IScreenShotRef, {}>((_, propsRef) => {
           endRef.current.top = e.clientY || window.innerHeight;
           break;
         }
+        default:
+          break;
       }
       if (resetPosition) {
         // 计算完成后做一次 endRef 和 startRef 的数据订正

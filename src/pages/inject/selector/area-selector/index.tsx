@@ -15,13 +15,11 @@ import styles from './index.module.less';
 
 type Rect = Pick<DOMRect, 'width' | 'height' | 'left' | 'top'>;
 
-export interface ISelectorProps {}
-
 export interface ISelectorRef {
   onSave: () => void;
 }
 
-export default forwardRef<ISelectorRef, ISelectorProps>((_, propsRef) => {
+export default forwardRef<ISelectorRef, {}>((_, propsRef) => {
   const { forceUpdate } = useForceUpdate();
   const targetRectListRef = useRef<Rect[]>([]);
   const targetRectRef = useRef<Rect | null>();
@@ -29,16 +27,13 @@ export default forwardRef<ISelectorRef, ISelectorProps>((_, propsRef) => {
   const targetListRef = useRef<Array<Element>>([]);
   const ref = useRef<HTMLDivElement>(null);
 
-  console.log('?????')
   const onSave = useCallback(() => {
-    console.log("?????")
     const selections = targetListRef.current.filter(item => item) || [];
     const selectAreaElements = transformDOM(selections);
     const HTMLs = Array.from(selectAreaElements);
     const iframe = document.querySelector(
       `#${YQ_SANDBOX_BOARD_IFRAME}`,
     ) as HTMLIFrameElement;
-    console.log('我安全发送消息了？？？');
     iframe.contentWindow?.postMessage(
       {
         key: SandBoxMessageKey,
