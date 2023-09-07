@@ -97,7 +97,6 @@ const useViewModel = (props: ISaveToProps) => {
   }, []);
 
   const startScreenShot = useCallback(() => {
-    console.log(contentRef.current.screenShot, '我啥话');
     // 重新开始剪藏的时候需要清空内容
     editorRef.current?.setContent(
       contentRef.current.screenShot || '',
