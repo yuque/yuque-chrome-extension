@@ -142,7 +142,6 @@ export default forwardRef<IScreenShotRef, {}>((_, propsRef) => {
       width: Math.abs(endRef.current.left - startRef.current.left),
       height: Math.abs(endRef.current.top - startRef.current.top),
     });
-    document.body.append(canvas);
     try {
       canvas.toBlob(res => {
         sendMessageToSandBox(SandBoxMessageType.startOcr, {
