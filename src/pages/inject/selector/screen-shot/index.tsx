@@ -130,19 +130,19 @@ export default forwardRef<IScreenShotRef, {}>((_, propsRef) => {
     }
     loadingRef.current = true;
     forceUpdate();
-    const canvas = await html2canvas(document.body, {
-      useCORS: true,
-      allowTaint: false,
-      scrollX: -window.scrollX, // 水平滚动的偏移量
-      scrollY: -window.scrollY, // 垂直滚动的偏移量
-      windowWidth: document.documentElement.offsetWidth, // 窗口的宽度
-      windowHeight: document.documentElement.offsetHeight, // 窗口的高度
-      x: startRef.current.left + window.scrollX, // 选取范围的左上角横坐标
-      y: startRef.current.top + window.scrollY, // 选取范围的左上角纵坐标
-      width: Math.abs(endRef.current.left - startRef.current.left),
-      height: Math.abs(endRef.current.top - startRef.current.top),
-    });
     try {
+      const canvas = await html2canvas(document.body, {
+        useCORS: true,
+        allowTaint: false,
+        scrollX: -window.scrollX, // 水平滚动的偏移量
+        scrollY: -window.scrollY, // 垂直滚动的偏移量
+        windowWidth: document.documentElement.offsetWidth, // 窗口的宽度
+        windowHeight: document.documentElement.offsetHeight, // 窗口的高度
+        x: startRef.current.left + window.scrollX, // 选取范围的左上角横坐标
+        y: startRef.current.top + window.scrollY, // 选取范围的左上角纵坐标
+        width: Math.abs(endRef.current.left - startRef.current.left),
+        height: Math.abs(endRef.current.top - startRef.current.top),
+      });
       canvas.toBlob(res => {
         sendMessageToSandBox(SandBoxMessageType.startOcr, {
           blob: res,
