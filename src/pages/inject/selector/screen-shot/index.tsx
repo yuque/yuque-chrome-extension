@@ -21,7 +21,11 @@ export interface IScreenShotRef {
   onSave: () => Promise<void>;
 }
 
-export default forwardRef<IScreenShotRef, {}>((_, propsRef) => {
+interface IScreenShotProps {
+  destroySelectArea: () => void;
+}
+
+export default forwardRef<IScreenShotRef, IScreenShotProps>((props, propsRef) => {
   const isScreenshot = useRef(false);
   const loadingRef = useRef(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -149,6 +153,7 @@ export default forwardRef<IScreenShotRef, {}>((_, propsRef) => {
         });
         loadingRef.current = false;
         forceUpdate();
+        props.destroySelectArea();
       });
     } catch (error) {
       loadingRef.current = false;
@@ -156,6 +161,7 @@ export default forwardRef<IScreenShotRef, {}>((_, propsRef) => {
       sendMessageToSandBox(SandBoxMessageType.startOcr, {
         blob: '',
       });
+      props.destroySelectArea();
     }
   }, []);
 

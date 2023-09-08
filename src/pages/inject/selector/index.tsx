@@ -29,10 +29,8 @@ function App(props: IAppProps) {
       } else if (key === 'Enter') {
         if (type === StartSelectEnum.screenShot) {
           await screenShotRef.current?.onSave();
-          destroySelectArea();
         } else if (type === StartSelectEnum.areaSelect) {
           selectorRef.current?.onSave();
-          destroySelectArea();
         }
       }
     };
@@ -50,9 +48,11 @@ function App(props: IAppProps) {
         },
       }}
     >
-      {type === StartSelectEnum.areaSelect && <Selector ref={selectorRef} />}
+      {type === StartSelectEnum.areaSelect && (
+        <Selector ref={selectorRef} destroySelectArea={destroySelectArea} />
+      )}
       {type === StartSelectEnum.screenShot && (
-        <ScreenShot ref={screenShotRef} />
+        <ScreenShot ref={screenShotRef} destroySelectArea={destroySelectArea} />
       )}
     </ConfigProvider>
   );

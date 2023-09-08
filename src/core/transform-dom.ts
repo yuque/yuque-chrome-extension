@@ -30,13 +30,25 @@ function commonCodeBlock(node: Element) {
     if (codeElement) {
       const childNodes = pre.childNodes;
       const needRemoveNodes: ChildNode[] = [];
+      const needMergeNodes: ChildNode[] = [];
       childNodes.forEach(item => {
+        if ((item as Element)?.tagName === 'CODE' && item !== codeElement) {
+          needMergeNodes.push(item);
+        }
         if (item !== codeElement) {
           needRemoveNodes.push(item);
         }
       });
+      // 将非 code 移除掉
       needRemoveNodes.forEach(item => {
         pre.removeChild(item);
+      });
+      // 将多 code 合成一个 dom
+      needMergeNodes.forEach(item => {
+        codeElement.appendChild(document.createElement('br'));
+        item.childNodes.forEach(codeChild =>
+          codeElement.appendChild(codeChild),
+        );
       });
     }
   });

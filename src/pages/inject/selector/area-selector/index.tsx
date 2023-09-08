@@ -19,7 +19,11 @@ export interface ISelectorRef {
   onSave: () => void;
 }
 
-export default forwardRef<ISelectorRef, {}>((_, propsRef) => {
+interface ISelectorProps {
+  destroySelectArea: () => void;
+}
+
+export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
   const { forceUpdate } = useForceUpdate();
   const targetRectListRef = useRef<Rect[]>([]);
   const targetRectRef = useRef<Rect | null>();
@@ -46,6 +50,7 @@ export default forwardRef<ISelectorRef, {}>((_, propsRef) => {
     );
     iframe.classList.add('show');
     iframe.focus();
+    props.destroySelectArea();
   }, []);
 
   useEffect(() => {
