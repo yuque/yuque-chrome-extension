@@ -73,7 +73,7 @@ const UserInfo = (props: Props) => {
     return [
       {
         key: 'user-profile',
-        label: __i18n('访问主页'),
+        label: __i18n('打开语雀'),
       },
       {
         key: 'upgrade-version',
