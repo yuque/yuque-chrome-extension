@@ -2,7 +2,10 @@ import $ from 'jquery';
 import Chrome from '@/core/chrome';
 import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
-import { StartSelectEnum, YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
+import {
+  StartSelectEnum,
+  YQ_SANDBOX_BOARD_IFRAME,
+} from '@/isomorphic/constants';
 import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
 import {
   ClippingTypeEnum,
@@ -67,11 +70,14 @@ class App {
     }
     const { iframeClassName } = this;
     this.injectStyleIfNeeded(iframeClassName, this.iframeCSSFieldContent);
-    this.iframe = document.createElement('iframe');
-    this.iframe.src = Chrome.runtime.getURL('sandbox.html');
-    this.iframe.classList.add(iframeClassName);
-    this.iframe.id = YQ_SANDBOX_BOARD_IFRAME;
-    document.body.append(this.iframe);
+    const iframe = document.createElement('iframe');
+    iframe.src = Chrome.runtime.getURL('sandbox.html');
+    iframe.classList.add(iframeClassName);
+    iframe.id = YQ_SANDBOX_BOARD_IFRAME;
+    document.body.append(iframe);
+    iframe.onload = () => {
+      this.iframe = iframe;
+    };
   }
 
   showBoard() {
@@ -86,7 +92,7 @@ class App {
       },
       '*',
     );
-    this.iframe?.focus()
+    this.iframe?.focus();
     destroyWordMark();
     destroySelectArea();
   }

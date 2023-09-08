@@ -54,6 +54,11 @@ function commonCodeBlock(node: Element) {
   });
 }
 
+function transformHTML(html: string): string {
+  // 清洗掉 span 标签之间的标签
+  return html.replace(/<\/span>\s+<span/g, '</span>&nbsp;<span');
+}
+
 export function transformDOM(domArray: Element[]) {
   const clonedDOMArray: Element[] = domArray.map(dom => {
     const cloneDom = dom.cloneNode(true) as Element;
@@ -128,5 +133,5 @@ export function transformDOM(domArray: Element[]) {
     }
   });
 
-  return clonedDOMArray.map(item => item.innerHTML);
+  return clonedDOMArray.map(item => transformHTML(item.innerHTML));
 }
