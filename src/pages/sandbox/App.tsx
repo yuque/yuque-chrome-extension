@@ -31,7 +31,7 @@ const onClose = () => {
 
 const App = () => {
   const accountContext = useContext(AccountContext);
-  const [tab, setTab] = React.useState<TabName>('save-to');
+  const [tab, setTab] = useState<TabName>('save-to');
 
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);

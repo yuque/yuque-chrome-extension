@@ -43,6 +43,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: opacity 1s ease-in;
+    opacity: 1;
 
     .loading {
       width: 100%;
@@ -79,5 +81,6 @@
 }
 
 .hidden {
+  opacity: 0;
   display: none;
 }

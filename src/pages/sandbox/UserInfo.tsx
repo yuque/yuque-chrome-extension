@@ -33,7 +33,7 @@ const UserInfo = (props: Props) => {
     // eslint-disable-next-line default-case
     switch (info.key) {
       case 'user-profile':
-        window.open(LinkHelper.goMyPage(user), '_blank');
+        window.open(LinkHelper.dashboard, '_blank');
         break;
       case 'logout':
         onLogout?.();

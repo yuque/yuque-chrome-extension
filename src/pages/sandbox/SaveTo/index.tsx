@@ -243,9 +243,12 @@ const useViewModel = (props: ISaveToProps) => {
   const handleTypeSelect = async (info: MenuInfo) => {
     const oldType = clippingType;
     const newType = info.key as ClippingTypeEnum;
-    const content = await editorRef.current?.getContent('lake');
-    if (oldType) {
-      contentRef.current[oldType] = content as any;
+    const isEmpty = editorRef.current?.isEmpty();
+    if (!isEmpty) {
+      const content = await editorRef.current?.getContent('lake');
+      if (oldType) {
+        contentRef.current[oldType] = content as any;
+      }
     }
     if (oldType !== newType) {
       switch (newType) {
