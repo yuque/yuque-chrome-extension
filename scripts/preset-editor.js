@@ -65,4 +65,6 @@ module.exports.presetEditor = async function main() {
     console.log(`# copy file to ${chalk.cyan(localFilename)} from ${filePath}`);
     copyFileSync(filePath, localFilename);
   }
+
+  console.log('\n✅ preset editor success ...\n');
 };
