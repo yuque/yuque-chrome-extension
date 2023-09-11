@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const WebpackNotifierPlugin = require('webpack-notifier');
 
 const {
   presetEditor,
@@ -70,6 +71,12 @@ const plugins = [
     'process.env.VERSION': JSON.stringify(pkg.version),
     'process.env.BUILD_TIME': JSON.stringify(moment().format('MMDDHHmm')),
     'process.env.SERVER_HOST': JSON.stringify(SERVER_HOST),
+  }),
+  new WebpackNotifierPlugin({
+    title: pkg.name,
+    emoji: true,
+    alwaysNotify: true,
+    contentImage: path.join(__dirname, 'resources', 'logo.png'),
   }),
 ];
 
@@ -235,6 +242,5 @@ const options = {
 
 module.exports = async () => {
   await presetEditor();
-
   return options;
 };
