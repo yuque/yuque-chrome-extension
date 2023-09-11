@@ -1,4 +1,5 @@
 import LinkHelper from '@/core/link-helper';
+import { replaceTextPunc } from '@/core/uitl';
 
 interface IOcrResultItem {
   text: string;
@@ -18,12 +19,11 @@ const getRequestID = (() => {
 })();
 
 class OCRManager {
-  private iframe: HTMLIFrameElement;
+  private iframe: HTMLIFrameElement | undefined;
   private ocrIframeId = 'yq-ocr-iframe-id';
-  private sendMessageRef: (requestData: {
-    action: string;
-    data?: any;
-  }) => Promise<any>;
+  private sendMessageRef:
+    | ((requestData: { action: string; data?: any }) => Promise<any>)
+    | undefined;
 
   async init() {
     if (this.iframe) {
@@ -41,7 +41,7 @@ class OCRManager {
       const messageFunc = (event: MessageEvent<any>) => {
         if (event.data.key !== key) return;
         if (resolveCache.has(event.data.requestId)) {
-          resolveCache.get(event.data.requestId)(event.data);
+          resolveCache.get(event.data.requestId)?.(event.data);
           resolveCache.delete(event.data.requestId);
         }
         if (event.data.type === 'ocr-ready') {
@@ -94,7 +94,10 @@ class OCRManager {
         }
         return a.x - b.x; // 在 y 相等的情况下按照 x 排序
       });
-      return result;
+      return result.map(item => ({
+        ...item,
+        text: replaceTextPunc(item.text),
+      }));
     } catch (e) {
       //
     }
