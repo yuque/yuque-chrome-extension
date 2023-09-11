@@ -328,13 +328,14 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
       true,
     );
     return () => {
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keydown', onKeyDown, true);
       iframeRef.current?.contentDocument?.removeEventListener(
         'keydown',
         onKeyDown,
+        true,
       );
     };
-  }, [ editor, iframeRef ]);
+  }, [ editor, iframeRef, props.onSave ]);
 
   // 更新回调
   useEffect(() => {
