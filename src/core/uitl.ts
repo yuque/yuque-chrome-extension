@@ -16,3 +16,30 @@ export function detect(text: string) {
   // 其他情况暂时都返回 auto
   return 'auto';
 }
+
+const CHINESE_CHAR_REG = /[\u3400-\u9FBF]/;
+
+const punctuationMarks: Record<string, string> = {
+  '!': '！',
+  '?': '？',
+  ',': '，',
+  '.': '。',
+  ':': '：',
+  ';': '；',
+  '(': '（',
+  ')': '）',
+  '[': '【',
+  ']': '】',
+  '<': '《',
+  '>': '》',
+};
+
+export function replaceTextPunc(text: string) {
+  return text.replace(/[\!\?\,\.\:\;\(\)\[\]\<\>]/g, (punc, index) => {
+    const prevCh = text[index - 1];
+    if (prevCh && CHINESE_CHAR_REG.test(prevCh)) {
+      return punctuationMarks[punc] || punc;
+    }
+    return punc;
+  });
+}
