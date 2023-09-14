@@ -35,12 +35,13 @@ export type IKernelPluginCls = (new () => IKernelPlugin) & {PluginName: string};
 export type IRendererPluginCls = new () => IRendererPlugin;
 export type ICommandCls = new () => CommandClass;
 
-export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEditorFactory, toolbarItems, Command, SelectionUtil }: {
+export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, PositionUtil, OpenEditorFactory, toolbarItems, Command, SelectionUtil }: {
   EditorPlugin: IEditorPluginCls;
   KernelPlugin: IKernelPluginCls;
   Plugins: Record<string, any>;
   Command: ICommandCls;
   SelectionUtil: any;
+  PositionUtil: any;
   OpenEditorFactory: {
     editorPlugins: IEditorPluginCls[];
     kernelPlugins: IKernelPluginCls[];
@@ -124,12 +125,38 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEd
       return true;
     }
   }
+  class ImageInsertAfterCommand extends Command {
+
+    override execute(editing: any, cardNodeId: string, text: string) {
+      const job = editing.newJob();
+      const node = job.getNodeById(cardNodeId);
+
+      if (!node || !node.isConnected || !node.isCardNode() || !node.parentNode) {
+        editing.cancelJob(job);
+        return false;
+      }
+
+      let position = PositionUtil.breakLine(
+        job,
+        job.newPosition(node.parentNode, node.offset + 1),
+      );
+
+      position = PositionUtil.insertText(job, position, text);
+
+      job.setSelection([ job.newRange(position) ]);
+      editing.commitJob(job);
+
+      return true;
+    }
+  }
+
 
   class CustomKernelPlugin extends KernelPlugin {
     static PluginName = 'CustomEditorPlugin';
 
     override init(kernel: any) {
       kernel.registerCommand('insertHTML', new InsertHTMLCommand());
+      kernel.registerCommand('insertAfterImage', new ImageInsertAfterCommand());
       const htmlService = kernel.getService({ value: 'IHTMLKernelService' });
 
       if (htmlService) {
@@ -155,6 +182,7 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, Plugins, OpenEd
 
   // 优先加载
   OpenEditorFactory.editorPlugins.unshift(CustomEditorPlugin);
+  // @ts-expect-error not error
   OpenEditorFactory.editorPlugins[CustomEditorPlugin.PluginName] = CustomEditorPlugin;
   OpenEditorFactory.registerKernelPlugin([ CustomKernelPlugin ]);
   // OpenEditorFactory.registerRenderPlugin([ Plugins.AutoScroll.AutoScrollRenderPlugin ]);
