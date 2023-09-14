@@ -46,6 +46,10 @@ export const templateHtml = `
       color: #fff !important;
       background: #1677ff !important;
     }
+    .continue-button:hover, .continue-button:focus {
+      color: #00B96B;
+      border-color: #00B96B;
+    }
   </style>
 </head>
 <body>

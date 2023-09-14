@@ -286,13 +286,15 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
         </div>
         {!loadingRef.current && (
           <div className={styles.mask} onClick={onScreenshot}>
-            {__i18n('ESC 退出， ↲ 完成')}
-            <div
-              className={classnames(styles.confirm, 'select-confirm')}
-              onClick={onScreenshot}
-            >
-              {__i18n('确认截图')}
-            </div>
+            {__i18n('请鼠标选择需要识别的区域，ESC 退出，↲ 完成  ')}
+            {screenShowAreaIsInit && (
+              <div
+                className={classnames(styles.confirm, 'select-confirm')}
+                onClick={onScreenshot}
+              >
+                {__i18n('识别文本')}
+              </div>
+            )}
           </div>
         )}
         {loadingRef.current && <Spin className={styles.loading} spinning />}

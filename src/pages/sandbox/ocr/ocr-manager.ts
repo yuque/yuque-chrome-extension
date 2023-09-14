@@ -28,7 +28,7 @@ class OCRManager {
   async init() {
     if (this.iframe) {
       return;
-    }
+    } 
     return new Promise(resolve => {
       this.iframe = document.createElement('iframe');
       this.iframe.src = LinkHelper.ocrProxyPage;
@@ -45,6 +45,7 @@ class OCRManager {
           resolveCache.delete(event.data.requestId);
         }
         if (event.data.type === 'ocr-ready') {
+          console.log('ocr is ready');
           this.sendMessageRef = requestData =>
             new Promise(resolve1 => {
               const requestId = getRequestID();
@@ -104,7 +105,8 @@ class OCRManager {
   }
 
   async isWebOcrReady() {
-    return await this.sendMessage('isWebOcrReady');
+    const result = await this.sendMessage('isWebOcrReady');
+    return result.data;
   }
 
   private sendMessage(action: string, data?: any) {
