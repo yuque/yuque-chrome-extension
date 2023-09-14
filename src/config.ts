@@ -9,7 +9,7 @@ export const REQUEST_HEADER_VERSION = `${prefix}${hyphen}${pkgJSON.name}${hyphen
 export const CSRF_HEADER_NAME = [ 'x', 'csrf', 'token' ].join('-');
 export const STORAGE_KEYS = {
   CURRENT_ACCOUNT: 'storage/current-account',
-  ENABLE_OCR: 'storage/enable-ocr',
+  ENABLE_OCR_STATUS: 'storage/enable-ocr-status',
   SETTINGS: {
     WORD_MARK_CONFIG: 'settings/word-mark-config',
   },

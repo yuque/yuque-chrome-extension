@@ -18,6 +18,14 @@ const getRequestID = (() => {
   };
 })();
 
+export enum EnableOcrStatus {
+  enable = 'enable',
+
+  disable = 'disable',
+
+  unknown = 'unknown'
+}
+
 class OCRManager {
   private iframe: HTMLIFrameElement | undefined;
   private ocrIframeId = 'yq-ocr-iframe-id';
@@ -35,7 +43,7 @@ class OCRManager {
       this.iframe.id = this.ocrIframeId;
       this.iframe.style.display = 'none';
       document.body.appendChild(this.iframe);
-
+     
       const resolveCache: Map<number, (data: any) => void> = new Map();
 
       const messageFunc = (event: MessageEvent<any>) => {
@@ -77,8 +85,8 @@ class OCRManager {
   async startOCR(type: 'file' | 'blob' | 'url', content: File | Blob | string) {
     // 调用 ocr 时，开始 ocr 等预热
     await this.init();
-    const isReady = await ocrManager.isWebOcrReady();
-    if (!isReady) {
+    const enableOcrStatus = await ocrManager.isWebOcrReady();
+    if (enableOcrStatus !== EnableOcrStatus.enable) {
       console.log('ocr is not ready');
       return [];
     }
@@ -106,7 +114,10 @@ class OCRManager {
 
   async isWebOcrReady() {
     const result = await this.sendMessage('isWebOcrReady');
-    return result.data;
+    if (!result) {
+      return EnableOcrStatus.unknown;
+    }
+    return result.data ? EnableOcrStatus.enable : EnableOcrStatus.disable;
   }
 
   private sendMessage(action: string, data?: any) {
