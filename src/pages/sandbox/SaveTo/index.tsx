@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ConfigProvider, Button, Select, message, Menu, Spin } from 'antd';
+import {
+  ConfigProvider,
+  Button,
+  Select,
+  message,
+  Menu,
+  Spin,
+  Tooltip,
+} from 'antd';
+import Icon from '@ant-design/icons';
 import classnames from 'classnames';
 import { noteProxy } from '@/core/proxy/note';
 import type { MenuInfo } from 'rc-menu/lib/interface';
@@ -18,6 +27,7 @@ import { docProxy } from '@/core/proxy/doc';
 import { mineProxy } from '@/core/proxy/mine';
 import { ClippingTypeEnum } from '@/isomorphic/sandbox';
 import { useUpdateEffect } from '@/hooks/useUpdateEffect';
+import OcrIconSvg from '@/assets/svg/ocr-icon.svg';
 import {
   getBookmarkHTMLs,
   getBookmarkHtml,
@@ -53,8 +63,6 @@ const useViewModel = (props: ISaveToProps) => {
   const contentRef = useRef({
     // 剪藏选取内容
     [ClippingTypeEnum.area]: '',
-    // 屏幕截屏内容
-    [ClippingTypeEnum.screenShot]: '',
     // 剪藏网址内容
     [ClippingTypeEnum.website]: '',
   });
@@ -95,19 +103,6 @@ const useViewModel = (props: ISaveToProps) => {
     }
     // 清空记录上一次的剪藏内容
     contentRef.current[ClippingTypeEnum.area] = '';
-  }, []);
-
-  const startScreenShot = useCallback(() => {
-    // 重新开始剪藏的时候需要清空内容
-    editorRef.current?.setContent(
-      contentRef.current.screenShot || '',
-      'text/lake',
-    );
-    if (!contentRef.current.screenShot) {
-      startSelect(StartSelectEnum.screenShot);
-    }
-    // 清空记录上一次的剪藏内容
-    contentRef.current.screenShot = '';
   }, []);
 
   const startWebsiteClipping = useCallback(() => {
@@ -264,9 +259,6 @@ const useViewModel = (props: ISaveToProps) => {
         case ClippingTypeEnum.website:
           startWebsiteClipping();
           break;
-        case ClippingTypeEnum.screenShot:
-          startScreenShot();
-          break;
         default:
           break;
       }
@@ -295,7 +287,11 @@ const useViewModel = (props: ISaveToProps) => {
 };
 
 export default function SaveTo(props: ISaveToProps) {
-  const { clippingType, editorLoading: ocrEditorLoading } = useSandboxContext();
+  const {
+    clippingType,
+    editorLoading: ocrEditorLoading,
+    enableOcr,
+  } = useSandboxContext();
   const {
     state: { books, currentBookId, loading, editorRef, editorLoading },
     onSave,
@@ -308,15 +304,11 @@ export default function SaveTo(props: ISaveToProps) {
   const renderContinue = () => {
     if (clippingType === ClippingTypeEnum.area) {
       return (
-        <Button onClick={() => startSelect(StartSelectEnum.areaSelect)}>
+        <Button
+          onClick={() => startSelect(StartSelectEnum.areaSelect)}
+          className="continue-button"
+        >
           {__i18n('继续选取')}
-        </Button>
-      );
-    }
-    if (clippingType === ClippingTypeEnum.screenShot) {
-      return (
-        <Button onClick={() => startSelect(StartSelectEnum.screenShot)}>
-          {__i18n('继续截取')}
         </Button>
       );
     }
@@ -384,6 +376,16 @@ export default function SaveTo(props: ISaveToProps) {
           >
             {renderContinue()}
           </LakeEditor>
+          {enableOcr && (
+            <Tooltip title={__i18n('截图智能识别文本')}>
+              <div
+                onClick={() => startSelect(StartSelectEnum.screenShot)}
+                className={styles.ocrWrapper}
+              >
+                <Icon component={OcrIconSvg} />
+              </div>
+            </Tooltip>
+          )}
           <div
             className={classnames({
               [styles.hidden]: currentBookId !== NODE_DATA_ID,

@@ -141,7 +141,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                 title: 'OCR',
                 icon: <OcrIconSvg />,
                 enable: (cardUI: any) => {
-                  return cardUI.cardData.getOcrLocations().length > 0;
+                  return cardUI.cardData.getOcrLocations()?.length > 0;
                 },
                 execute: (cardUI: any) => {
                   cardUI.copyText = win.Doc.FrameworkUtils.copyText;

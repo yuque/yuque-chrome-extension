@@ -7,12 +7,17 @@ import {
 import { message } from 'antd';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
+import Chrome from '@/core/chrome';
+import { STORAGE_KEYS } from '@/config';
+import { useEffectAsync } from '@/hooks/useAsyncEffect';
+import { getCurrentAccount } from '@/core/account';
 import { ocrManager } from '../ocr/ocr-manager';
 
 interface ISandboxContext {
   defaultSelectHTML: HTMLElement[];
   clippingType: ClippingTypeEnum | null;
   editorLoading: boolean;
+  enableOcr: boolean;
   updateClippingType: React.Dispatch<
     React.SetStateAction<ClippingTypeEnum | null>
   >;
@@ -22,6 +27,7 @@ export const SandboxContext = createContext<ISandboxContext>({
   defaultSelectHTML: [],
   clippingType: null,
   editorLoading: false,
+  enableOcr: false,
   updateClippingType: () => {
     //
   },
@@ -38,6 +44,7 @@ export function SandboxProvider(props: ISandboxProviderProps) {
     null,
   );
   const [editorLoading, setEditorLoading] = useState(false);
+  const [enableOcr, setEnableOcr] = useState(false);
 
   useEffect(() => {
     const listener = (e: MessageEvent<any>) => {
@@ -87,12 +94,37 @@ export function SandboxProvider(props: ISandboxProviderProps) {
       eventManager.removeListener(AppEvents.CLOSE_BOARD, onClose);
     };
   }, []);
+
+  useEffectAsync(async () => {
+    // 做一次 ocr 预处理，判断用户能否 ocr
+    const account = await getCurrentAccount();
+    if (!account) {
+      return;
+    }
+    const storage = await Chrome.storage.local.get(STORAGE_KEYS.ENABLE_OCR);
+    const enable = storage[STORAGE_KEYS.ENABLE_OCR];
+    // 初始化一次 ocr
+    if (typeof enable === 'undefined') {
+      try {
+        await ocrManager.init();
+        const isEnable = await ocrManager.isWebOcrReady();
+        await Chrome.storage.local.set({
+          [STORAGE_KEYS.ENABLE_OCR]: isEnable,
+        });
+        setEnableOcr(isEnable);
+      } catch (error) {}
+    } else {
+      setEnableOcr(enable);
+    }
+  }, []);
+
   return (
     <SandboxContext.Provider
       value={{
         defaultSelectHTML,
         clippingType,
         editorLoading,
+        enableOcr,
         updateClippingType,
       }}
     >

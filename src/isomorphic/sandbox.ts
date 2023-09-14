@@ -14,7 +14,4 @@ export enum ClippingTypeEnum {
 
   // 剪藏网址
   website = 'website',
-
-  // 屏幕截取
-  screenShot = 'screenShot',
 }
