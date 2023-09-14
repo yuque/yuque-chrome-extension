@@ -1,6 +1,7 @@
-
 class WebpackLogPlugin {
-  isFirst = true;
+  constructor() {
+    this.isFirst = true;
+  }
 
   log(...args) {
     console.log(...args);
@@ -12,13 +13,13 @@ class WebpackLogPlugin {
       this.log('start compiling...');
     });
     compiler.hooks.done.tap('WebpackLogPlugin', () => {
-      if(this.isFirst) {
+      if (this.isFirst) {
         this.isFirst = false;
         setTimeout(() => {
           this.log();
           this.log('build success');
           this.log('open chrome://extensions select dist folder');
-        })
+        });
       } else {
         setTimeout(() => {
           this.log('updated success, use ctrl+r to refresh extension\n');
