@@ -73,12 +73,6 @@ const plugins = [
     'process.env.BUILD_TIME': JSON.stringify(moment().format('MMDDHHmm')),
     'process.env.SERVER_HOST': JSON.stringify(SERVER_HOST),
   }),
-  new WebpackNotifierPlugin({
-    title: pkg.name,
-    emoji: true,
-    alwaysNotify: true,
-    contentImage: path.join(__dirname, 'resources', 'logo.png'),
-  }),
 ];
 
 if (isProd) {
@@ -91,6 +85,12 @@ if (isProd) {
   }));
 } else {
   plugins.unshift(new WebpackLogPlugin());
+  plugins.push(new WebpackNotifierPlugin({
+    title: pkg.name,
+    emoji: true,
+    alwaysNotify: true,
+    contentImage: path.join(__dirname, 'resources', 'logo.png'),
+  }));
 }
 
 const entry = {
