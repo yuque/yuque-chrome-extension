@@ -21,5 +21,6 @@ export const BACKGROUND_EVENTS = {
   GET_WORD_MARK_CONFIG: 'background/get-word-mark-config',
   UPDATE_WORD_MARK_CONFIG: 'background/update-word-mark-config',
   OPEN_SETTING_PAGE: 'background/open-setting-page',
+  SCREEN_SHOT: 'background/screen-shot',
 };
 

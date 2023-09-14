@@ -66,6 +66,15 @@ export const initBackGroundActionListener = () => {
           sendResponse(true);
           break;
         }
+        case BACKGROUND_EVENTS.SCREEN_SHOT: {
+          Chrome.tabs.query({ lastFocusedWindow: true }, (res) => {
+            Chrome.tabs.captureVisibleTab(res[0].windowId as number, (url) => {
+              console.log(url);
+              sendResponse(url);
+            })
+          })
+          break;
+        }
         default:
           sendResponse(true);
           break;
