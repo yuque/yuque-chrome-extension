@@ -145,13 +145,12 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
           {
             action: BACKGROUND_EVENTS.SCREEN_SHOT,
           },
-          res => {
+          base64 => {
             const image = new Image();
-            image.src = res;
+            image.src = base64;
             image.onload = () => {
               const imageWidthRatio = image.width / window.innerWidth;
               const imageHeightRatio = image.height / window.innerHeight;
-
               const canvas = document.createElement('canvas');
               const context = canvas.getContext('2d');
               // 设置截取区域的坐标和宽高
@@ -166,17 +165,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
               // 在canvas上绘制截取区域
               canvas.width = width;
               canvas.height = height;
-              context?.drawImage(
-                image,
-                x,
-                y,
-                width,
-                height,
-                0,
-                0,
-                width,
-                height,
-              );
+              context?.drawImage(image, x, y, width, height, 0, 0, width, height);
               canvas.toBlob(res => {
                 sendMessageToSandBox(SandBoxMessageType.startOcr, {
                   blob: res,
