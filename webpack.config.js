@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
+const WebpackLogPlugin = require('./scripts/log-plugin');
 
 const {
   presetEditor,
@@ -88,6 +89,8 @@ if (isProd) {
       ...webpackCleanIgnorePatterns,
     ],
   }));
+} else {
+  plugins.unshift(new WebpackLogPlugin());
 }
 
 const entry = {
