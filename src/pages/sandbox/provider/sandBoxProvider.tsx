@@ -112,7 +112,12 @@ export function SandboxProvider(props: ISandboxProviderProps) {
           [STORAGE_KEYS.ENABLE_OCR]: isEnable,
         });
         setEnableOcr(isEnable);
-      } catch (error) {}
+      } catch (error) {
+        console.log('error:', error);
+        await Chrome.storage.local.set({
+          [STORAGE_KEYS.ENABLE_OCR]: false,
+        });
+      }
     } else {
       setEnableOcr(enable);
     }
