@@ -128,7 +128,7 @@ const useViewModel = (props: ISaveToProps) => {
   useUpdateEffect(() => {
     onLoad();
   }, [defaultSelectHTML]);
-
+  
   const onSave = useCallback(async () => {
     if (!editorRef.current) return;
 
@@ -310,7 +310,7 @@ export default function SaveTo(props: ISaveToProps) {
     if (clippingType === ClippingTypeEnum.screenShot) {
       return (
         <Button onClick={() => startSelect(StartSelectEnum.screenShot)}>
-          {__i18n('继续选取')}
+          {__i18n('继续截取')}
         </Button>
       );
     }
