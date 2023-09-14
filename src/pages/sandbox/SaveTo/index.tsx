@@ -24,6 +24,7 @@ import {
   getCurrentTab,
   startSelect,
 } from '../helper';
+import { ocrManager } from '../ocr/ocr-manager';
 import { SELECT_TYPES } from '../constants/select-types';
 import { useSandboxContext } from '../provider/sandBoxProvider';
 import styles from './index.module.less';
@@ -128,7 +129,7 @@ const useViewModel = (props: ISaveToProps) => {
   useUpdateEffect(() => {
     onLoad();
   }, [defaultSelectHTML]);
-  
+
   const onSave = useCallback(async () => {
     if (!editorRef.current) return;
 
@@ -237,7 +238,12 @@ const useViewModel = (props: ISaveToProps) => {
   }, [editorRef, currentBookId]);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-    return urlOrFileUpload(params.data);
+    const res = await urlOrFileUpload(params.data);
+    const ocrLocations = await ocrManager.startOCR('url', res.url);
+    return {
+      ...res,
+      ocrLocations,
+    };
   }, []);
 
   const handleTypeSelect = async (info: MenuInfo) => {
