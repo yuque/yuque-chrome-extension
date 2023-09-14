@@ -43,9 +43,7 @@ class OCRManager {
       this.iframe.id = this.ocrIframeId;
       this.iframe.style.display = 'none';
       document.body.appendChild(this.iframe);
-     
       const resolveCache: Map<number, (data: any) => void> = new Map();
-
       const messageFunc = (event: MessageEvent<any>) => {
         if (event.data.key !== key) return;
         if (resolveCache.has(event.data.requestId)) {
