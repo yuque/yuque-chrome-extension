@@ -7,8 +7,12 @@ import React, {
 } from 'react';
 import { Root, createRoot } from 'react-dom/client';
 import bowser from 'bowser';
+import OcrIconSvg from '@/assets/svg/ocr-icon.svg';
 import loadLakeEditor from './load';
 import { InjectEditorPlugin } from './editor-plugin';
+import { slash } from './slash-options';
+import { templateHtml } from './template-html';
+import { showEditorModal } from './modal-ocr';
 
 const blockquoteID = 'yqextensionblockquoteid';
 
@@ -79,67 +83,6 @@ export interface IEditorRef {
   insertBreakLine: () => void;
 }
 
-/**
- * iframe的内容
- */
-const templateHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title></title>
-  <link rel="stylesheet" type="text/css" href="./doc.css"/>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .toolbar-container {
-      display: flex;
-      padding: 0 0 0 24px;
-    }
-    #toolbar {
-      flex: 1;
-    }
-    #root {
-      flex: 1;
-      overflow: hidden;
-    }
-    #child {
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-    }
-    .ne-layout-mode-fixed .ne-engine, .ne-layout-mode-adapt .ne-engine {
-      padding-top: 16px;
-    }
-    .ne-layout-mode-fixed .ne-editor-body, .ne-layout-mode-adapt .ne-editor-body {
-      height: 100%;
-    }
-    .ne-ui-overlay-button {
-      width: 28px !important;
-      height: 28px !important;
-      padding: 0 !important;;
-      border: none !important;;
-    }
-    ::selection {
-      color: #fff !important;
-      background: #1677ff !important;
-    }
-  </style>
-</head>
-<body>
-  <div class="toolbar-container">
-    <div id="toolbar"></div>
-    <div id="child"></div>
-  </div>
-  <div id="root"></div>
-  <script src="./doc.umd.js"></script>
-</body>
-</html>
-`;
-
 export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   const { value, onChange, onLoad } = props;
   const [ _loading, setLoading ] = useState(true);
@@ -180,101 +123,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
           scrollNode: () => {
             return doc.querySelector('.ne-editor-wrap');
           },
-          slash: {
-            cardSelect: {
-              general: {
-                groups: [
-                  {
-                    type: 'icon',
-                    show: 'slash', // 只在斜杠面板中出现
-                    items: [
-                      'p',
-                      'h1',
-                      'h2',
-                      'h3',
-                      'h4',
-                      'h5',
-                      'h6',
-                      'unorderedList',
-                      'orderedList',
-                      'taskList',
-                      'link',
-                      'code',
-                    ],
-                  },
-                  {
-                    get title() {
-                      return '基础';
-                    },
-                    name: 'group-base',
-                    type: 'column',
-                    items: [
-                      'label',
-                      {
-                        name: 'table',
-                        allowSelector: true,
-                      },
-                    ],
-                  },
-                  {
-                    get title() {
-                      return '布局和样式';
-                    },
-                    name: 'group-layout',
-                    type: 'normal',
-                    items: [
-                      'quote',
-                      'hr',
-                      'alert',
-                      {
-                        name: 'columns',
-                        childMenus: [ 'columns2', 'columns3', 'columns4' ],
-                      },
-                      'collapse',
-                    ],
-                  },
-                  {
-                    get title() {
-                      return '程序员';
-                    },
-                    name: 'group-files',
-                    type: 'normal',
-                    items: [ 'codeblock', 'math' ],
-                  },
-                ],
-              },
-              table: {
-                groups: [
-                  {
-                    type: 'icon',
-                    show: 'slash', // 只在斜杠面板中出现
-                    items: [
-                      'p',
-                      'h1',
-                      'h2',
-                      'h3',
-                      'h4',
-                      'h5',
-                      'h6',
-                      'unorderedList',
-                      'orderedList',
-                      'taskList',
-                      'link',
-                      'code',
-                    ],
-                  },
-                  {
-                    get title() {
-                      return '基础';
-                    },
-                    name: 'group-base',
-                    type: 'normal',
-                    items: [ 'label', 'math' ],
-                  },
-                ],
-              },
-            },
-          },
+          slash,
           codeblock: {
             codemirrorURL: './CodeMirror.js',
           },
@@ -286,6 +135,25 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
               return !url?.startsWith('https://cdn.nlark.com/yuque');
             },
             createUploadPromise: props.uploadImage,
+            innerButtonWidgets: [
+              {
+                name: 'ocr',
+                title: 'OCR',
+                icon: <OcrIconSvg />,
+                enable: (cardUI: any) => {
+                  return cardUI.cardData.getOcrLocations().length > 0;
+                },
+                execute: (cardUI: any) => {
+                  cardUI.copyText = win.Doc.FrameworkUtils.copyText;
+                  cardUI.Icon = win.Doc.FrameworkUiLib.Icon;
+                  cardUI.insertTextAfterImage = (text: string) => {
+                    newEditor.execCommand('insertAfterImage', cardUI.cardNode.id, text);
+                    newEditor.execCommand('focus');
+                  };
+                  showEditorModal(cardUI);
+                },
+              },
+            ],
           },
         });
         newEditor.on('visitLink', (url: string) => {
