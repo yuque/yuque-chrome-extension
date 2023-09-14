@@ -205,9 +205,9 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
         <div
           className={styles.screenBackgroundLeft}
           style={{
-            left: `0px`,
-            top: `0px`,
-            bottom: `0px`,
+            left: `0`,
+            top: `0`,
+            bottom: `0`,
             width: `${selectAreaLeft}px`,
           }}
         />
@@ -215,7 +215,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
           className={styles.screenBackgroundTop}
           style={{
             left: `${selectAreaLeft}px`,
-            top: `0px`,
+            top: `0`,
             height: `${selectAreaTop}px`,
             width: `${selectAreaRight - selectAreaLeft}px`,
           }}
@@ -224,9 +224,9 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
           className={styles.screenBackgroundRight}
           style={{
             left: `${selectAreaRight}px`,
-            right: `0px`,
-            top: `0px`,
-            bottom: `0px`,
+            right: `0`,
+            top: `0`,
+            bottom: `0`,
           }}
         />
         <div
@@ -235,7 +235,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
             left: `${selectAreaLeft}px`,
             width: `${selectAreaRight - selectAreaLeft}px`,
             top: `${selectAreaBottom}px`,
-            bottom: `0px`,
+            bottom: `0`,
           }}
         />
         <div
