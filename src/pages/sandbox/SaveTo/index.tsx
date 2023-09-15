@@ -362,6 +362,7 @@ export default function SaveTo(props: ISaveToProps) {
         <div
           className={classnames(styles['lake-editor'], {
             [styles.hidden]: !clippingType,
+            [styles.areaLakeEditor]: clippingType === ClippingTypeEnum.area,
           })}
         >
           {editorLoading || ocrEditorLoading ? (
