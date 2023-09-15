@@ -35,9 +35,9 @@ interface IAccountLayoutProps {
 
 function AccountLayout(props: IAccountLayoutProps) {
   const { position = 'rightTop', close } = props;
-  const [ user, setUser ] = useState<IUser | null>(null);
-  const [ ready, setAppReady ] = useState(false);
-  const [ forceUpgradeInfo, setForceUpgradeInfo ] = useState<string>();
+  const [user, setUser] = useState<IUser | null>(null);
+  const [ready, setAppReady] = useState(false);
+  const [forceUpgradeInfo, setForceUpgradeInfo] = useState<string>();
 
   const createLoginWindow = (): Promise<number> => {
     return new Promise(resolve => {
@@ -121,24 +121,28 @@ function AccountLayout(props: IAccountLayoutProps) {
 
   useEffectAsync(async () => {
     const info = await getCurrentAccount();
-    const accountInfo = await mineProxy.getUserInfo();
-    if (accountInfo && accountInfo?.id === info.id) {
-      setUser(info);
-      const tabInfo = await Chrome.getCurrentTab();
-      // 上报埋点
-      Tracert.start({
-        spmAPos: TRACERT_CONFIG.spmAPos,
-        spmBPos: TRACERT_CONFIG.spmBPos,
-        role_id: (info as IUser)?.id,
-        mdata: {
-          [REQUEST_HEADER_VERSION]: VERSION,
-          [EXTENSION_ID]: Chrome.runtime.id,
-          [REFERER_URL]: tabInfo?.url,
-        },
-      });
+    try {
+      const accountInfo = await mineProxy.getUserInfo();
+      if (accountInfo && accountInfo?.id === info.id) {
+        setUser(info);
+        const tabInfo = await Chrome.getCurrentTab();
+        // 上报埋点
+        Tracert.start({
+          spmAPos: TRACERT_CONFIG.spmAPos,
+          spmBPos: TRACERT_CONFIG.spmBPos,
+          role_id: (info as IUser)?.id,
+          mdata: {
+            [REQUEST_HEADER_VERSION]: VERSION,
+            [EXTENSION_ID]: Chrome.runtime.id,
+            [REFERER_URL]: tabInfo?.url,
+          },
+        });
+      }
+    } catch (error) {
+      // 
     }
     setAppReady(true);
-  }, [])
+  }, []);
 
   useEffect(() => {
     const logout = data => {

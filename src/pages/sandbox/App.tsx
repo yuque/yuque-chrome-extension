@@ -11,7 +11,10 @@ import { __i18n } from '@/isomorphic/i18n';
 import { preferencesUrl } from '@/isomorphic/word-mark';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
-import { SandboxProvider } from './provider/sandBoxProvider';
+import { useEffectAsync } from '@/hooks/useAsyncEffect';
+import { STORAGE_KEYS } from '@/config';
+import { EnableOcrStatus, ocrManager } from './ocr/ocr-manager';
+import { SandboxProvider, useSandboxContext } from './provider/sandBoxProvider';
 import UserInfo from './UserInfo';
 import { Other } from './Other';
 import SaveTo from './SaveTo';
@@ -31,6 +34,7 @@ const onClose = () => {
 
 const App = () => {
   const accountContext = useContext(AccountContext);
+  const { updateEnableOcr } = useSandboxContext();
   const [tab, setTab] = useState<TabName>('save-to');
 
   const handleTabChange = (e: RadioChangeEvent) => {
@@ -42,13 +46,36 @@ const App = () => {
       if (e.key === 'Escape' || e.key === 'Esc') {
         onClose();
       }
-    }
-    
-    document.addEventListener('keydown', listener)
-    return () => {
-      document.removeEventListener('keydown', listener)
     };
-  }, [])
+
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  }, []);
+
+  useEffectAsync(async () => {
+    const storage = await Chrome.storage.local.get(STORAGE_KEYS.ENABLE_OCR_STATUS);
+    const enableStatus = storage[STORAGE_KEYS.ENABLE_OCR_STATUS];
+    // 对于没有明确原因的 ocr 进行一次预热
+    if ([EnableOcrStatus.disable, EnableOcrStatus.enable].includes(enableStatus)) {
+      try {
+        await ocrManager.init();
+        const enableOcrStatus = await ocrManager.isWebOcrReady();
+        await Chrome.storage.local.set({
+          [STORAGE_KEYS.ENABLE_OCR_STATUS]: enableOcrStatus,
+        });
+        updateEnableOcr(enableOcrStatus === EnableOcrStatus.enable);
+      } catch (error) {
+        console.log('error:', error);
+        await Chrome.storage.local.set({
+          [STORAGE_KEYS.ENABLE_OCR_STATUS]: EnableOcrStatus.unknown,
+        });
+      }
+    } else {
+      updateEnableOcr(enableStatus === EnableOcrStatus.enable);
+    }
+  }, []);
 
   return (
     <div className={styles.wrapper}>
