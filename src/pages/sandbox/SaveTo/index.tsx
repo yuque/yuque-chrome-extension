@@ -233,16 +233,16 @@ const useViewModel = (props: ISaveToProps) => {
   }, [editorRef, currentBookId]);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-      const file = await transformUrlToFile(params.data);
-      const res = await Promise.all(
-        [urlOrFileUpload(file), ocrManager.startOCR('file', file)].map(p =>
-          p.catch(e => e),
-        ),
-      );
-      return {
-        ...(res[0] || {}),
-        ocrLocations: res[1],
-      };
+    const file = await transformUrlToFile(params.data);
+    const res = await Promise.all(
+      [urlOrFileUpload(file), ocrManager.startOCR('file', file)].map(p =>
+        p.catch(e => e),
+      ),
+    );
+    return {
+      ...(res[0] || {}),
+      ocrLocations: res[1],
+    };
   }, []);
 
   const handleTypeSelect = async (info: MenuInfo) => {
@@ -370,7 +370,14 @@ export default function SaveTo(props: ISaveToProps) {
           })}
         >
           {editorLoading || ocrEditorLoading ? (
-            <Spin className={styles.loading} spinning />
+            <>
+              <div className={styles.loading}>
+                <Spin className={styles.spin} />
+                {ocrEditorLoading && (
+                  <div className={styles.tip}>{__i18n('正在识别中')}</div>
+                )}
+              </div>
+            </>
           ) : null}
           <LakeEditor
             ref={editorRef}
