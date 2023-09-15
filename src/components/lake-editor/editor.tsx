@@ -141,6 +141,20 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                 title: 'OCR',
                 icon: <OcrIconSvg />,
                 enable: (cardUI: any) => {
+                  cardUI.on('uploadSuccess', () => {
+                    cardUI.uiViewProxy.rerender({
+                      innerButtonWidgets: cardUI.pluginOption.innerButtonWidgets.map((widget: any) => ({
+                        ...widget,
+                        execute: () => {
+                          widget.execute(cardUI);
+                        },
+                        enable:
+                          typeof widget.enable === 'function'
+                            ? () => (widget.enable as (ui: any) => boolean)(cardUI)
+                            : () => !!widget.enable,
+                      }))
+                    });
+                  });
                   return cardUI.cardData.getOcrLocations()?.length > 0;
                 },
                 execute: (cardUI: any) => {
