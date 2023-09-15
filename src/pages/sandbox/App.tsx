@@ -3,14 +3,11 @@ import { ConfigProvider, Radio, RadioChangeEvent } from 'antd';
 import { CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import Chrome from '@/core/chrome';
-import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
 import { AccountContext } from '@/context/account-context';
 import AccountLayout from '@/components/sandbox/account-layout';
 import { __i18n } from '@/isomorphic/i18n';
 import { preferencesUrl } from '@/isomorphic/word-mark';
-import eventManager from '@/core/event/eventManager';
-import { AppEvents } from '@/core/event/events';
 import { useEffectAsync } from '@/hooks/useAsyncEffect';
 import { STORAGE_KEYS } from '@/config';
 import { EnableOcrStatus, ocrManager } from './ocr/ocr-manager';
@@ -18,19 +15,12 @@ import { SandboxProvider, useSandboxContext } from './provider/sandBoxProvider';
 import UserInfo from './UserInfo';
 import { Other } from './Other';
 import SaveTo from './SaveTo';
+import { onSandboxClose } from './helper';
 import styles from './App.module.less';
 
 initI18N();
 type TabName = 'save-to' | 'other';
 
-const onClose = () => {
-  Chrome.tabs.getCurrent((tab: any) => {
-    Chrome.tabs.sendMessage(tab.id, {
-      action: GLOBAL_EVENTS.CLOSE_BOARD,
-    });
-  });
-  eventManager.notify(AppEvents.CLOSE_BOARD);
-};
 
 const App = () => {
   const accountContext = useContext(AccountContext);
@@ -44,7 +34,7 @@ const App = () => {
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === 'Esc') {
-        onClose();
+        onSandboxClose();
       }
     };
 
@@ -80,7 +70,7 @@ const App = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>{__i18n('语雀剪藏')}</div>
-      <CloseOutlined className={styles.close} onClick={onClose} />
+      <CloseOutlined className={styles.close} onClick={onSandboxClose} />
       <div className={styles.items}>
         <Radio.Group
           value={tab}
@@ -132,7 +122,7 @@ function ContextApp() {
       }}
     >
       <SandboxProvider>
-        <AccountLayout close={onClose}>
+        <AccountLayout close={onSandboxClose}>
           <App />
         </AccountLayout>
       </SandboxProvider>
