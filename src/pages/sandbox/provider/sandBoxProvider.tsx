@@ -7,11 +7,7 @@ import {
 import { message } from 'antd';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
-import Chrome from '@/core/chrome';
-import { STORAGE_KEYS } from '@/config';
-import { useEffectAsync } from '@/hooks/useAsyncEffect';
-import { getCurrentAccount } from '@/core/account';
-import { EnableOcrStatus, ocrManager } from '../ocr/ocr-manager';
+import { ocrManager } from '../ocr/ocr-manager';
 
 interface ISandboxContext {
   defaultSelectHTML: HTMLElement[];
