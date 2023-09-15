@@ -58,7 +58,7 @@ const App = () => {
     const storage = await Chrome.storage.local.get(STORAGE_KEYS.ENABLE_OCR_STATUS);
     const enableStatus = storage[STORAGE_KEYS.ENABLE_OCR_STATUS];
     // 对于没有明确原因的 ocr 进行一次预热
-    if ([EnableOcrStatus.disable, EnableOcrStatus.enable].includes(enableStatus)) {
+    if (![EnableOcrStatus.disable, EnableOcrStatus.enable].includes(enableStatus)) {
       try {
         await ocrManager.init();
         const enableOcrStatus = await ocrManager.isWebOcrReady();
