@@ -12,7 +12,7 @@ import Icon from '@ant-design/icons';
 import classnames from 'classnames';
 import { noteProxy } from '@/core/proxy/note';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import { urlOrFileUpload } from '@/core/html-parser';
+import { transformUrlToFile, urlOrFileUpload } from '@/core/html-parser';
 import LinkHelper from '@/core/link-helper';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import BookWithIcon from '@/components/common/book-with-icon';
@@ -233,12 +233,16 @@ const useViewModel = (props: ISaveToProps) => {
   }, [editorRef, currentBookId]);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-    const res = await urlOrFileUpload(params.data);
-    const ocrLocations = await ocrManager.startOCR('url', res.url);
-    return {
-      ...res,
-      ocrLocations,
-    };
+      const file = await transformUrlToFile(params.data);
+      const res = await Promise.all(
+        [urlOrFileUpload(file), ocrManager.startOCR('file', file)].map(p =>
+          p.catch(e => e),
+        ),
+      );
+      return {
+        ...(res[0] || {}),
+        ocrLocations: res[1],
+      };
   }, []);
 
   const handleTypeSelect = async (info: MenuInfo) => {

@@ -43,11 +43,7 @@ async function uploadImage(imageUrl: string) {
   return uploadedImageUrl;
 }
 
-export async function urlOrFileUpload(data: string | File): Promise<{
-  url: string;
-  size: number;
-  filename: string;
-}> {
+export async function transformUrlToFile(data: string | File) {
   let file:File | undefined;
   if (typeof data === 'string') {
     if (isRelativePath(data)) {
@@ -58,6 +54,15 @@ export async function urlOrFileUpload(data: string | File): Promise<{
   } else {
     file = data;
   }
+  return file;
+}
+
+export async function urlOrFileUpload(data: string | File): Promise<{
+  url: string;
+  size: number;
+  filename: string;
+}> {
+  const file = await transformUrlToFile(data);
 
   console.info(data, file);
 
