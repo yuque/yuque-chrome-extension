@@ -39,7 +39,7 @@ class App {
   get iframeCSSFieldContent() {
     const { iframeClassName } = this;
     return `
-      .${iframeClassName} {
+      #${YQ_SANDBOX_BOARD_IFRAME}.${iframeClassName} {
         display: none;
         border: none;
         margin: 0;
@@ -49,15 +49,17 @@ class App {
         overflow: hidden;
         position: fixed;
         transition: initial;
-        width: 100%;
-        height: 100%;
+        max-width: 100vw;
+        max-height: 100vh;
+        width: 100vw;
+        height: 100vh;
         right: 0;
         top: 0;
         z-index: 999999;
         background: rgba(0, 0, 0, 0.2);
         color-scheme: none;
       }
-      .${iframeClassName}.show {
+      #${YQ_SANDBOX_BOARD_IFRAME}.${iframeClassName}.show {
         display: block;
         color-scheme: auto;
       }
