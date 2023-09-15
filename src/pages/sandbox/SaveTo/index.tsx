@@ -377,6 +377,7 @@ export default function SaveTo(props: ISaveToProps) {
             onSave={onSave}
             onLoad={onLoad}
             uploadImage={onUploadImage}
+            enableEsc={true}
           >
             {renderContinue()}
           </LakeEditor>

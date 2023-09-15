@@ -1,4 +1,6 @@
 import Chrome from '@/core/chrome';
+import eventManager from '@/core/event/eventManager';
+import { AppEvents } from '@/core/event/events';
 import { GLOBAL_EVENTS } from '@/events';
 import { StartSelectEnum } from '@/isomorphic/constants';
 
@@ -11,13 +13,19 @@ const blockquoteID = 'yqextensionblockquoteid';
  * @param needHeading 是否添加标题
  * @return {string} html片段
  */
-export const getBookmarkHtml = (tab: chrome.tabs.Tab, useQuote = false, needHeading = true) => {
+export const getBookmarkHtml = (
+  tab: chrome.tabs.Tab,
+  useQuote = false,
+  needHeading = true,
+) => {
   const ret = [];
   if (needHeading) {
     ret.push(`<h2>${tab.title}</h2>`);
   }
   if (useQuote) {
-    ret.push(`<blockquote><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote>`);
+    ret.push(
+      `<blockquote><p>来自: <a href="${tab.url}">${tab.title}</a></p></blockquote>`,
+    );
   } else {
     ret.push(`<p><a href="${tab.url}">${tab.title}</a></p>`);
   }
@@ -57,7 +65,6 @@ export const getCurrentTab = (): Promise<chrome.tabs.Tab> =>
     });
   });
 
-
 /**
  * 开始选择需要剪藏的内容
  */
@@ -67,7 +74,19 @@ export const startSelect = (type: StartSelectEnum) => {
       action: GLOBAL_EVENTS.START_SELECT,
       data: {
         type,
-      }
+      },
     });
   });
+};
+
+/**
+ * 关闭 sandbox
+ */
+export const onSandboxClose = () => {
+  Chrome.tabs.getCurrent((tab: any) => {
+    Chrome.tabs.sendMessage(tab.id, {
+      action: GLOBAL_EVENTS.CLOSE_BOARD,
+    });
+  });
+  eventManager.notify(AppEvents.CLOSE_BOARD);
 };
