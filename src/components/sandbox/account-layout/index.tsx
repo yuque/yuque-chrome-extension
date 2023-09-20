@@ -60,7 +60,7 @@ function AccountLayout(props: IAccountLayoutProps) {
     return new Promise<void>(resolve => {
       Chrome.webRequest.onCompleted.addListener(
         data => {
-          if (data.url === SERVER_URLS.DASHBOARD) {
+          if ([SERVER_URLS.DASHBOARD, SERVER_URLS.LOGIN].includes(data.url)) {
             if (data.statusCode === 200) {
               resolve();
             }
@@ -139,7 +139,7 @@ function AccountLayout(props: IAccountLayoutProps) {
         });
       }
     } catch (error) {
-      // 
+      //
     }
     setAppReady(true);
   }, []);
