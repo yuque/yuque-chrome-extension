@@ -146,7 +146,7 @@ async function request<T>(
           });
         });
       }
-      throw response;
+      throw responseJson;
     }
     // 登录过期
     if (response.status === 401 && responseJson.message === 'Unauthorized') {
@@ -159,10 +159,10 @@ async function request<T>(
           });
         });
       }
-      throw response;
+      throw responseJson;
     }
     if (!(response.status >= 200 && response.status < 300)) {
-      throw response;
+      throw responseJson;
     }
     return { status: response.status, data: responseJson };
   } catch (e) {

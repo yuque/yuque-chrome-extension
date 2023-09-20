@@ -34,9 +34,19 @@ export const initBackGroundActionListener = () => {
         }
         case BACKGROUND_EVENTS.WORD_MARK_EXECUTE_COMMAND: {
           const { selectText } = request.data;
-          wordMarkProxy.translate([ selectText ]).then(res => {
-            sendResponse(res.data);
-          });
+          wordMarkProxy
+            .translate(selectText)
+            .then(res => {
+              sendResponse(res.data);
+            })
+            .catch(error => {
+              console.log(error.message)
+              sendResponse({
+                errMessage: error.message,
+                status: error.status,
+                error: error,
+              });
+            });
           break;
         }
         case BACKGROUND_EVENTS.SAVE_TO_NOTE: {
@@ -67,12 +77,12 @@ export const initBackGroundActionListener = () => {
           break;
         }
         case BACKGROUND_EVENTS.SCREEN_SHOT: {
-          Chrome.tabs.query({ lastFocusedWindow: true }, (res) => {
-            Chrome.tabs.captureVisibleTab(res[0].windowId as number, (url) => {
+          Chrome.tabs.query({ lastFocusedWindow: true }, res => {
+            Chrome.tabs.captureVisibleTab(res[0].windowId as number, url => {
               console.log(url);
               sendResponse(url);
-            })
-          })
+            });
+          });
           break;
         }
         default:
