@@ -46,7 +46,7 @@ export function replaceTextPunc(text: string) {
 }
 
 export function findCookieSettingPage() {
-  if (navigator.userAgent.indexOf('Edg')) {
+  if (navigator.userAgent.indexOf('Edg') !== -1) {
     return 'edge://settings/content';
   }
 
