@@ -33,9 +33,9 @@ function WordMarkPanel(props: WordMarkPanelProps) {
     save,
     editorRef,
   } = props;
-  const [ result, setResult ] = useState<string>(StepMessage.onStart);
-  const [ type, setType ] = useState(defaultType);
-  const [ loading, setLoading ] = useState(true);
+  const [result, setResult] = useState<string>(StepMessage.onStart);
+  const [type, setType] = useState(defaultType);
+  const [loading, setLoading] = useState(true);
   const handClick = (t: WordMarkOptionTypeEnum) => {
     setType(t);
   };
@@ -62,7 +62,11 @@ function WordMarkPanel(props: WordMarkPanelProps) {
         },
       },
       res => {
-        const { data } = res;
+        const { data = [], errMessage, error } = res;
+        if (errMessage) {
+          message.error(errMessage);
+          console.log('translate error: ', error);
+        }
         setResult(data.join(''));
         setLoading(false);
       },
@@ -71,17 +75,17 @@ function WordMarkPanel(props: WordMarkPanelProps) {
 
   useEffect(() => {
     executeCommand();
-  }, [ type ]);
+  }, [type]);
 
   useEffect(() => {
     setType(defaultType);
-  }, [ defaultType ]);
+  }, [defaultType]);
 
   return (
     <div className={styles.panelWrapper}>
       <div className={styles.execCommandWrapper}>
         {toolbars.map(item => {
-          if ([ WordMarkOptionTypeEnum.clipping ].includes(item.type)) {
+          if ([WordMarkOptionTypeEnum.clipping].includes(item.type)) {
             return null;
           }
           return (

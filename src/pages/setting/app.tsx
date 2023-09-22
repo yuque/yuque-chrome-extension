@@ -14,7 +14,7 @@ initI18N();
 enum Page {
   // 通用设置
   general = 'general',
-  // 划词快捷指令
+  // 划词工具栏
   wordMark = 'wordMark',
   // 帮助页面
   help = 'help',
@@ -29,7 +29,7 @@ const menus = [
     page: <General />,
   },
   {
-    name: __i18n('划词快捷指令'),
+    name: __i18n('划词工具栏'),
     key: Page.wordMark,
     page: <WordMark />,
   },

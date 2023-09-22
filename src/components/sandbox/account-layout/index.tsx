@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { message } from 'antd';
+import { Modal, message } from 'antd';
 import classnames from 'classnames';
 import { CloseOutlined } from '@ant-design/icons';
 import { AccountContext } from '@/context/account-context';
@@ -22,6 +22,7 @@ import { AppEvents } from '@/core/event/events';
 import { mineProxy } from '@/core/proxy/mine';
 import { SERVER_URLS } from '@/isomorphic/constants';
 import { useEffectAsync } from '@/hooks/useAsyncEffect';
+import { findCookieSettingPage } from '@/core/uitl';
 import Login from './login';
 import styles from './index.module.less';
 
@@ -122,6 +123,27 @@ function AccountLayout(props: IAccountLayoutProps) {
   useEffectAsync(async () => {
     const info = await getCurrentAccount();
     try {
+      if (!navigator.cookieEnabled) {
+        await new Promise(resolve => {
+          const pageUrl = findCookieSettingPage();
+          Modal.info({
+            content: __i18n(
+              __i18n('请前往「隐私和安全」打开「允许第三方cookies」，避免登录失败'),
+            ),
+            title: __i18n('使用提示'),
+            closable: true,
+            icon: null,
+            okText: pageUrl ? __i18n('打开隐私和安全') : __i18n('确定'),
+            autoFocusButton: null,
+            onOk: () => {
+              if (pageUrl) {
+                Chrome.tabs.create({ url: pageUrl });
+              }
+              resolve(true);
+            },
+          });
+        });
+      }
       const accountInfo = await mineProxy.getUserInfo();
       if (accountInfo && accountInfo?.id === info.id) {
         setUser(info);

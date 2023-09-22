@@ -1,3 +1,4 @@
+import Bowser from "bowser";
 
 const rChineseChar = /\p{Script=Han}+/ug;
 
@@ -42,4 +43,16 @@ export function replaceTextPunc(text: string) {
     }
     return punc;
   });
+}
+
+export function findCookieSettingPage() {
+  const browserName = Bowser.getParser(navigator.userAgent).getBrowserName();
+  if (browserName === 'Microsoft Edge') {
+    return 'edge://settings/content';
+  }
+
+  if (browserName === 'Chrome') {
+    return 'chrome://settings/cookies';
+  }
+  return '';
 }
