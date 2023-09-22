@@ -58,6 +58,7 @@ class App {
         z-index: 999999;
         background: rgba(0, 0, 0, 0.2);
         color-scheme: none;
+        user-select: none;
       }
       #${YQ_SANDBOX_BOARD_IFRAME}.${iframeClassName}.show {
         display: block;

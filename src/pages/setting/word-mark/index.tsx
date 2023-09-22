@@ -54,7 +54,7 @@ function WordMark() {
     <div className={styles.configWrapper}>
       <div className={styles.configItem}>
         <p className={styles.configDesc}>
-          {__i18n('选中文本时，展示划词快捷指令功能')}
+          {__i18n('选中文本时，展示划词工具栏功能')}
         </p>
         <Switch
           checked={config.enable}

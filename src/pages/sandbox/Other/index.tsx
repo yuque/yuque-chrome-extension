@@ -33,7 +33,7 @@ export const Other = (props: OtherProps) => {
     <div className={classnames(styles.wrapper, props.className)}>
       <div className={styles.menu}>
         <div className={styles.item}>
-          <div>{__i18n('划词快捷指令')}</div>
+          <div>{__i18n('划词工具栏')}</div>
           <Switch
             checked={config.enable}
             onChange={() =>

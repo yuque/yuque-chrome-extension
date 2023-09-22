@@ -55,8 +55,8 @@ function commonCodeBlock(node: Element) {
 }
 
 function transformHTML(html: string): string {
-  // 清洗掉 span 标签之间的标签
-  return html.replace(/<\/span>\s+<span/g, '</span>&nbsp;<span');
+  // 清洗掉 span 标签之间的空格标签
+  return html.replace(/<\/span> +<span/g, '</span>&nbsp;<span');
 }
 
 export function transformDOM(domArray: Element[]) {
