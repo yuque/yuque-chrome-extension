@@ -141,6 +141,9 @@ function AccountLayout(props: IAccountLayoutProps) {
               }
               resolve(true);
             },
+            afterClose: () => {
+              resolve(true);
+            },
           });
         });
       }
