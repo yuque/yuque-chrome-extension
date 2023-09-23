@@ -22,7 +22,6 @@ import styles from './App.module.less';
 initI18N();
 type TabName = 'save-to' | 'other';
 
-
 const App = React.memo(() => {
   const accountContext = useContext(AccountContext);
   const { updateEnableOcr } = useSandboxContext();
@@ -69,7 +68,11 @@ const App = React.memo(() => {
     }
   }, []);
 
-  useClickAway(ref, () => {
+  useClickAway(ref, event => {
+    // 如果点击元素不在这个 iframe 内，则不触发
+    if (!(event.target as HTMLElement)?.querySelector(`.${styles.wrapper}`)) {
+      return;
+    }
     onSandboxClose();
   });
 

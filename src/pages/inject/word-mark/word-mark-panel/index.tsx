@@ -64,8 +64,13 @@ function WordMarkPanel(props: WordMarkPanelProps) {
       res => {
         const { data = [], errMessage, error } = res;
         if (errMessage) {
-          message.error(errMessage);
+          message.error(
+            error.status === 400
+              ? __i18n('超出可翻译的字数上限，请减少选中内容')
+              : errMessage,
+          );
           console.log('translate error: ', error);
+          closeWordMark();
         }
         setResult(data.join(''));
         setLoading(false);
