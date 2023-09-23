@@ -1,12 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  useMemo,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   ClippingTypeEnum,
   SandBoxMessageKey,
   SandBoxMessageType,
 } from '@/isomorphic/sandbox';
 import { message } from 'antd';
-import eventManager from '@/core/event/eventManager';
-import { AppEvents } from '@/core/event/events';
 import { ocrManager } from '../ocr/ocr-manager';
 
 interface ISandboxContext {
@@ -22,7 +26,7 @@ interface ISandboxContext {
 
 const noop = () => {
   //
-}
+};
 
 export const SandboxContext = createContext<ISandboxContext>({
   defaultSelectHTML: [],
@@ -45,6 +49,25 @@ export function SandboxProvider(props: ISandboxProviderProps) {
   );
   const [editorLoading, setEditorLoading] = useState(false);
   const [enableOcr, updateEnableOcr] = useState(false);
+
+  const providerValues = useMemo(
+    () => ({
+      defaultSelectHTML,
+      clippingType,
+      editorLoading,
+      enableOcr,
+      updateClippingType,
+      updateEnableOcr,
+    }),
+    [
+      defaultSelectHTML,
+      clippingType,
+      editorLoading,
+      enableOcr,
+      updateClippingType,
+      updateEnableOcr,
+    ],
+  );
 
   useEffect(() => {
     const listener = (e: MessageEvent<any>) => {
@@ -83,30 +106,14 @@ export function SandboxProvider(props: ISandboxProviderProps) {
           break;
       }
     };
-    const onClose = () => {
-      setDefaultSelectHTML([]);
-      updateClippingType(null);
-    };
     window.addEventListener('message', listener);
-    eventManager.addListener(AppEvents.CLOSE_BOARD, onClose);
     return () => {
       window.addEventListener('message', listener);
-      eventManager.removeListener(AppEvents.CLOSE_BOARD, onClose);
     };
   }, []);
 
-
   return (
-    <SandboxContext.Provider
-      value={{
-        defaultSelectHTML,
-        clippingType,
-        editorLoading,
-        enableOcr,
-        updateClippingType,
-        updateEnableOcr,
-      }}
-    >
+    <SandboxContext.Provider value={providerValues}>
       {isReady && props.children}
     </SandboxContext.Provider>
   );

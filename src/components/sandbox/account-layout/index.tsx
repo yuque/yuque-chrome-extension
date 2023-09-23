@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Modal, message } from 'antd';
 import classnames from 'classnames';
 import { CloseOutlined } from '@ant-design/icons';
@@ -23,6 +23,8 @@ import { mineProxy } from '@/core/proxy/mine';
 import { SERVER_URLS } from '@/isomorphic/constants';
 import { useEffectAsync } from '@/hooks/useAsyncEffect';
 import { findCookieSettingPage } from '@/core/uitl';
+import useClickAway from '@/hooks/useClickAway';
+import { onSandboxClose } from '@/pages/sandbox/helper';
 import Login from './login';
 import styles from './index.module.less';
 
@@ -39,6 +41,11 @@ function AccountLayout(props: IAccountLayoutProps) {
   const [user, setUser] = useState<IUser | null>(null);
   const [ready, setAppReady] = useState(false);
   const [forceUpgradeInfo, setForceUpgradeInfo] = useState<string>();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useClickAway(ref, () => {
+    onSandboxClose();
+  });
 
   const createLoginWindow = (): Promise<number> => {
     return new Promise(resolve => {
@@ -96,7 +103,10 @@ function AccountLayout(props: IAccountLayoutProps) {
 
   const renderUnLogin = () => {
     return (
-      <div className={classnames(styles[position], styles.loginWrapper)}>
+      <div
+        className={classnames(styles[position], styles.loginWrapper)}
+        ref={ref}
+      >
         {forceUpgradeInfo ? (
           <div dangerouslySetInnerHTML={{ __html: forceUpgradeInfo }} />
         ) : (
@@ -127,9 +137,7 @@ function AccountLayout(props: IAccountLayoutProps) {
         await new Promise(resolve => {
           const pageUrl = findCookieSettingPage();
           Modal.info({
-            content: __i18n(
-              __i18n('请前往「隐私和安全」打开「允许第三方cookies」，避免登录失败'),
-            ),
+            content: __i18n('请前往「隐私和安全」打开「允许第三方cookies」，避免登录失败'),
             title: __i18n('使用提示'),
             closable: true,
             icon: null,

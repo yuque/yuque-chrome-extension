@@ -390,7 +390,10 @@ export default function SaveTo(props: ISaveToProps) {
             {renderContinue()}
           </LakeEditor>
           {enableOcr && (
-            <Tooltip title={__i18n('截图智能识别文本')}>
+            <Tooltip
+              title={__i18n('截图智能识别文本')}
+              getPopupContainer={node => node.parentNode as HTMLElement}
+            >
               <div
                 onClick={() => startSelect(StartSelectEnum.screenShot)}
                 className={styles.ocrWrapper}

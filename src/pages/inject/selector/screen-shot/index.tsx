@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { Spin } from 'antd';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import Chrome from '@/core/chrome';
 import { BACKGROUND_EVENTS } from '@/events';
 import classnames from 'classnames';
@@ -35,6 +36,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
     const startRef = useRef({ left: 0, top: 0 });
     const endRef = useRef({ left: 0, top: 0 });
     const { forceUpdate } = useForceUpdate();
+    const [isDragging, setIsDragging] = useState(false);
     const selectAreaWidth = Math.abs(
       endRef.current.left - startRef.current.left,
     );
@@ -45,6 +47,13 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
     const selectAreaTop = Math.min(startRef.current.top, endRef.current.top);
     const selectAreaRight = selectAreaLeft + selectAreaWidth;
     const selectAreaBottom = selectAreaTop + selectAreaHeight;
+    const operatePosition = {
+      left: Math.max(selectAreaRight - 72, 0),
+      top:
+        selectAreaBottom + 40 > window.innerHeight
+          ? selectAreaTop + 8
+          : selectAreaBottom + 8,
+    };
 
     useEffect(() => {
       if (screenShowAreaIsInit) {
@@ -96,6 +105,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
         direction: DragDirection,
         resetPosition?: boolean,
       ) => {
+        setIsDragging(true);
         switch (direction) {
           case 'left': {
             startRef.current.left = e.clientX;
@@ -134,12 +144,22 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
       [],
     );
 
+    const handleDragEnd = () => {
+      setIsDragging(false);
+    };
+
     const onScreenshot = useCallback(async () => {
       if (loadingRef.current) {
         return;
       }
       loadingRef.current = true;
       forceUpdate();
+      // 延迟 100ms 将提示给隐藏掉，避免截屏是截上
+      await new Promise(resolve => {
+        setTimeout(() => {
+          resolve(true);
+        }, 100);
+      });
       try {
         Chrome.runtime.sendMessage(
           {
@@ -255,6 +275,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
               onDrag(e, 'top', resetPosition)
             }
             direction="top"
+            handleDragEnd={handleDragEnd}
           />
           <DragLine
             width={selectAreaWidth}
@@ -263,6 +284,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
               onDrag(e, 'bottom', resetPosition)
             }
             direction="bottom"
+            handleDragEnd={handleDragEnd}
           />
 
           <DragLine
@@ -273,6 +295,7 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
             }
             direction="left"
             key="left"
+            handleDragEnd={handleDragEnd}
           />
           <DragLine
             width={2}
@@ -282,19 +305,26 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
             }
             direction="right"
             key="right"
+            handleDragEnd={handleDragEnd}
           />
         </div>
-        {!loadingRef.current && (
-          <div className={styles.mask} onClick={onScreenshot}>
-            {__i18n('请鼠标选择需要识别的区域，ESC 退出，↲ 完成  ')}
-            {screenShowAreaIsInit && (
-              <div
-                className={classnames(styles.confirm, 'select-confirm')}
-                onClick={onScreenshot}
-              >
-                {__i18n('识别文本')}
-              </div>
-            )}
+        {!isDragging && screenShowAreaIsInit && (
+          <div
+            className={styles.operateBar}
+            style={{
+              left: `${operatePosition.left}px`,
+              top: `${operatePosition.top}px`,
+            }}
+          >
+            <div
+              className={styles.operateItem}
+              onClick={props.destroySelectArea}
+            >
+              <CloseOutlined />
+            </div>
+            <div className={styles.operateItem} onClick={onScreenshot}>
+              <CheckOutlined />
+            </div>
           </div>
         )}
         {loadingRef.current && <Spin className={styles.loading} spinning />}

@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import useClickAway from '@/hooks/useClickAway';
 import { ConfigProvider, Radio, RadioChangeEvent } from 'antd';
 import { CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
@@ -22,10 +23,11 @@ initI18N();
 type TabName = 'save-to' | 'other';
 
 
-const App = () => {
+const App = React.memo(() => {
   const accountContext = useContext(AccountContext);
   const { updateEnableOcr } = useSandboxContext();
   const [tab, setTab] = useState<TabName>('save-to');
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleTabChange = (e: RadioChangeEvent) => {
     setTab(e.target.value as unknown as TabName);
@@ -67,8 +69,12 @@ const App = () => {
     }
   }, []);
 
+  useClickAway(ref, () => {
+    onSandboxClose();
+  });
+
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={ref}>
       <div className={styles.header}>{__i18n('语雀剪藏')}</div>
       <CloseOutlined className={styles.close} onClick={onSandboxClose} />
       <div className={styles.items}>
@@ -110,7 +116,7 @@ const App = () => {
       </div>
     </div>
   );
-};
+});
 
 function ContextApp() {
   return (
