@@ -8,6 +8,7 @@ interface IDragLineProps {
   width: number;
   height: number;
   updatePosition: (event: React.DragEvent<HTMLDivElement>, resetPosition?: boolean) => void;
+  handleDragEnd: () => void;
 }
 
 const DragLine = (props: IDragLineProps) => {
@@ -26,6 +27,7 @@ const DragLine = (props: IDragLineProps) => {
   const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
     setDragging(false);
     updatePosition(event, true);
+    props.handleDragEnd?.();
   };
 
   return (
@@ -48,6 +50,7 @@ const DragLine = (props: IDragLineProps) => {
           className={styles.dragBarMask}
           onMouseLeave={() => {
             setDragging(false);
+            props.handleDragEnd?.();
           }}
         />
       )}
