@@ -17,6 +17,9 @@ export enum WordMarkConfigKey {
 
   // 剪藏时唤起面板
   evokePanelWhenClip = 'evokePanelWhenClip',
+
+  // 剪藏面板的排序规则
+  toolbars = 'toolbars',
 }
 
 export interface IWordMarkConfig {
@@ -25,6 +28,7 @@ export interface IWordMarkConfig {
   [WordMarkConfigKey.innerPinList]: Array<WordMarkOptionTypeEnum>;
   [WordMarkConfigKey.disableUrl]: Array<string>;
   [WordMarkConfigKey.evokePanelWhenClip]: boolean;
+  [WordMarkConfigKey.toolbars]: Array<WordMarkOptionTypeEnum>;
 }
 
 export const defaultWordMarkConfig: IWordMarkConfig = {
@@ -40,6 +44,10 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
   ],
   disableUrl: [],
   evokePanelWhenClip: false,
+  toolbars: [
+    WordMarkOptionTypeEnum.clipping,
+    WordMarkOptionTypeEnum.translate,
+  ],
 };
 
 export const getPageUrl = () => {

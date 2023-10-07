@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { YUQUE_DOMAIN } from '@/config';
-import styles from './index.module.less';
 import { AccountContext } from '@/context/account-context';
+import styles from './index.module.less';
 
 function General() {
   const accountContext = useContext(AccountContext);
