@@ -32,7 +32,9 @@ import {
   getBookmarkHTMLs,
   getBookmarkHtml,
   getCurrentTab,
+  getUserSavePosition,
   startSelect,
+  updateUserSavePosition,
 } from '../helper';
 import { ocrManager } from '../ocr/ocr-manager';
 import { SELECT_TYPES } from '../constants/select-types';
@@ -116,9 +118,13 @@ const useViewModel = (props: ISaveToProps) => {
    * 获取知识库的数据
    */
   useEffect(() => {
-    mineProxy.getBooks().then(bookList => {
-      setBooks([...BOOKS_DATA, ...bookList]);
+    getUserSavePosition().then(res => {
+      if (res.id !== 0) {
+        setBooks([...BOOKS_DATA, res]);
+      }
+      setCurrentBookId(res?.id);
     });
+    updateBookList();
   }, []);
 
   useUpdateEffect(() => {
@@ -270,6 +276,17 @@ const useViewModel = (props: ISaveToProps) => {
     updateClippingType(newType);
   };
 
+  const onSelectBookId = (id: number) => {
+    setCurrentBookId(id);
+    const position = books.find(item => item.id === id);
+    updateUserSavePosition(position);
+  };
+
+  const updateBookList = async () => {
+    const bookList = await mineProxy.getBooks();
+    setBooks([...BOOKS_DATA, ...bookList]);
+  };
+
   useEffect(() => {
     clippingTypeRef.current = clippingType;
   }, [clippingType]);
@@ -284,9 +301,10 @@ const useViewModel = (props: ISaveToProps) => {
     },
     onSave,
     onUploadImage,
-    onSelectBookId: setCurrentBookId,
+    onSelectBookId,
     onLoad,
     handleTypeSelect,
+    updateBookList,
   };
 };
 
@@ -303,6 +321,7 @@ export default function SaveTo(props: ISaveToProps) {
     onSelectBookId,
     onLoad,
     handleTypeSelect,
+    updateBookList,
   } = useViewModel(props);
 
   const renderContinue = () => {
@@ -346,11 +365,12 @@ export default function SaveTo(props: ISaveToProps) {
         <Select<number>
           className={styles.list}
           onChange={(value: number) => onSelectBookId(Number(value))}
-          defaultValue={currentBookId}
+          value={currentBookId}
           options={books.map(book => ({
             value: book.id,
             label: <BookWithIcon book={book} />,
           }))}
+          onClick={updateBookList}
         />
         <Button
           className={styles.button}

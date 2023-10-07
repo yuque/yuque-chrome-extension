@@ -10,6 +10,9 @@ export const CSRF_HEADER_NAME = [ 'x', 'csrf', 'token' ].join('-');
 export const STORAGE_KEYS = {
   CURRENT_ACCOUNT: 'storage/current-account',
   ENABLE_OCR_STATUS: 'storage/enable-ocr-status',
+  USER: {
+    CLIPPING_SAVE_POSITION: 'user/clipping_save_position',
+  },
   SETTINGS: {
     WORD_MARK_CONFIG: 'settings/word-mark-config',
   },

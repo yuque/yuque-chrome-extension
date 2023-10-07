@@ -9,9 +9,9 @@ function About() {
     <div className={styles.wrapper}>
       <div className={styles.title}>{__i18n('更新日志')}</div>
       <div className={styles.version}>v{VERSION}</div>
-      {RELEASE_NOTES.map(item => {
+      {RELEASE_NOTES.map((item, index) => {
         return (
-          <div className={styles.item}>
+          <div className={styles.item} key={index}>
             <span>{item}</span>
           </div>
         );

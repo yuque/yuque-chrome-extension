@@ -1,3 +1,4 @@
+import { STORAGE_KEYS } from '@/config';
 import Chrome from '@/core/chrome';
 import eventManager from '@/core/event/eventManager';
 import { AppEvents } from '@/core/event/events';
@@ -89,4 +90,25 @@ export const onSandboxClose = () => {
     });
   });
   eventManager.notify(AppEvents.CLOSE_BOARD);
+};
+
+export const updateUserSavePosition = async (book: any) => {
+  await Chrome.storage.local.set({
+    [STORAGE_KEYS.USER.CLIPPING_SAVE_POSITION]: book,
+  });
+};
+
+export const getUserSavePosition = async () => {
+  const storage = await Chrome.storage.local.get(
+    STORAGE_KEYS.USER.CLIPPING_SAVE_POSITION,
+  );
+  return (
+    storage[STORAGE_KEYS.USER.CLIPPING_SAVE_POSITION] || {
+      id: 0,
+      type: 'Note',
+      get name() {
+        return __i18n('小记');
+      },
+    }
+  );
 };
