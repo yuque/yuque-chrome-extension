@@ -74,7 +74,6 @@ function DragList(props: IDragListProps) {
       const overIndex = dataSource.findIndex(i => i.id === over?.id);
       const list = arrayMove(dataSource, activeIndex, overIndex);
       props.onDragEnd?.(list);
-      console.log(list);
     }
   };
 
