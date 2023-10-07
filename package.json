@@ -4,7 +4,7 @@
   "description": "语雀浏览器插件",
   "private": true,
   "releaseNotes": [
-    "[特性] 剪藏到支持记住上次一保存位置",
+    "[特性] 剪藏到支持记住上次保存位置",
     "[特性] 划词支持拖拽排序"
   ],
   "repository": {
