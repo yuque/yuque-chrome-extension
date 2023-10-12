@@ -31,9 +31,9 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
   const targetListRef = useRef<Array<Element>>([]);
   const ref = useRef<HTMLDivElement>(null);
 
-  const onSave = useCallback(() => {
+  const onSave = useCallback(async () => {
     const selections = targetListRef.current.filter(item => item) || [];
-    const selectAreaElements = transformDOM(selections);
+    const selectAreaElements = await transformDOM(selections);
     const HTMLs = Array.from(selectAreaElements);
     const iframe = document.querySelector(
       `#${YQ_SANDBOX_BOARD_IFRAME}`,

@@ -1,3 +1,5 @@
+import Chrome from '@/core/chrome';
+
 function hexoCodeBlock(cloneNode: Element) {
   const figures = cloneNode.querySelectorAll('figure');
   const processingCodeBlock = (node: HTMLElement) => {
@@ -46,9 +48,7 @@ function commonCodeBlock(node: Element) {
       // 将多 code 合成一个 dom
       needMergeNodes.forEach(item => {
         codeElement.appendChild(document.createElement('br'));
-        item.childNodes.forEach(codeChild =>
-          codeElement.appendChild(codeChild),
-        );
+        item.childNodes.forEach(codeChild => codeElement.appendChild(codeChild));
       });
     }
   });
@@ -59,8 +59,109 @@ function transformHTML(html: string): string {
   return html.replace(/<\/span> +<span/g, '</span>&nbsp;<span');
 }
 
-export function transformDOM(domArray: Element[]) {
+function findYuqueNeTag(element: Element) {
+  // 检查当前元素是否以 "ne" 开头的标签
+  if (element.tagName.toLowerCase().startsWith('ne')) {
+    return element;
+  }
+
+  // 递归查找父元素
+  if (element.parentNode) {
+    return findYuqueNeTag(element.parentNode as Element);
+  }
+
+  // 如果没有找到匹配的标签，则返回 null
+  return null;
+}
+
+function isYuqueContent(element: Element) {
+  if (element.closest('.ne-viewer-body') || document.querySelector('.ne-viewer-body')) {
+    return true;
+  }
+  return false;
+}
+
+async function transformYuqueContent(element: Element) {
+  return new Promise(async (resolve, rejected) => {
+    const onMessage = (e: MessageEvent<any>) => {
+      if (e.data?.key !== 'tarnsfromYuqueContentValue') {
+        return;
+      }
+      window.removeEventListener('message', onMessage);
+      const result = e.data?.data?.result;
+      if (!result || !result?.length) {
+        transformError('result is empty');
+      }
+      const title = element.querySelector('#article-title')?.outerHTML;
+      resolve(`${title || ''}${e.data?.data?.result?.join('\n')}`);
+    };
+
+    // 监听消息
+    window.addEventListener('message', onMessage);
+
+    const transformError = (params: any) => {
+      window.removeEventListener('message', onMessage);
+      rejected(params);
+    };
+
+    setTimeout(() => {
+      transformError('transform timeout');
+    }, 3000);
+
+    await new Promise(resolve1 => {
+      let script = document.querySelector('#yuque-content-transform-script') as HTMLScriptElement;
+      if (script) {
+        return resolve1(true);
+      }
+      script = document.createElement('script') as HTMLScriptElement;
+      const file = Chrome.runtime.getURL('yuque-transform-script.js');
+      script.id = 'yuque-content-transform-script';
+      script.setAttribute('src', file);
+      document.body.append(script);
+      script.onload = () => {
+        resolve1(true);
+      };
+    });
+
+    const ids: string[] = [];
+    if (element.classList.contains('.ne-viewer-body')) {
+      element.childNodes.forEach(item => {
+        const id = (item as Element).id;
+        if (id) {
+          ids.push(id);
+        }
+      });
+    } else if (element.closest('.ne-viewer-body')) {
+      const id = findYuqueNeTag(element)?.id;
+      if (id) {
+        ids.push(id);
+      }
+    } else if (element.querySelector('.ne-viewer-body')) {
+      element.querySelector('.ne-viewer-body')?.childNodes.forEach(item => {
+        const id = (item as Element).id;
+        if (id) {
+          ids.push(id);
+        }
+      });
+    }
+
+    window.postMessage(
+      {
+        key: 'tarnsfromYuqueContent',
+        data: { ids },
+      },
+      '*',
+    );
+  });
+}
+
+export async function transformDOM(domArray: Element[]) {
+  const yuqueDOMIndex: number[] = [];
+
   const clonedDOMArray: Element[] = domArray.map(dom => {
+    if (isYuqueContent(dom)) {
+      return dom;
+    }
     const cloneDom = dom.cloneNode(true) as Element;
     const div = document.createElement('div');
     if (cloneDom.tagName === 'CODE') {
@@ -73,9 +174,22 @@ export function transformDOM(domArray: Element[]) {
     return div;
   });
 
-  // 处理克隆的 DOM
-  clonedDOMArray.forEach((clonedDOM, clonedDOMIndex) => {
-    // const original = originDomArray[clonedDOMIndex];
+  for (let clonedDOMIndex = 0; clonedDOMIndex < clonedDOMArray.length; clonedDOMIndex++) {
+    let clonedDOM = clonedDOMArray[clonedDOMIndex];
+
+    if (isYuqueContent(clonedDOM)) {
+      try {
+        clonedDOMArray[clonedDOMIndex] = (await transformYuqueContent(clonedDOM)) as Element;
+        yuqueDOMIndex.push(clonedDOMIndex);
+        continue;
+      } catch (error) {
+        // 解析失败兜底走默认处理
+        const div = document.createElement('div');
+        div.appendChild(clonedDOM.cloneNode(true));
+        clonedDOM = div;
+      }
+    }
+
     // 替换 a 标签的链接
     const linkElements = clonedDOM.querySelectorAll('a');
     linkElements.forEach(a => {
@@ -131,7 +245,12 @@ export function transformDOM(domArray: Element[]) {
         });
       }
     }
-  });
+  }
 
-  return clonedDOMArray.map(item => transformHTML(item.innerHTML));
+  return clonedDOMArray.map((item, index) => {
+    if (yuqueDOMIndex.includes(index)) {
+      return item;
+    }
+    return transformHTML(item.innerHTML);
+  });
 }
