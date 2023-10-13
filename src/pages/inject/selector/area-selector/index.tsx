@@ -4,6 +4,7 @@ import React, {
   useRef,
   useImperativeHandle,
   useCallback,
+  useState,
 } from 'react';
 import classnames from 'classnames';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
@@ -29,9 +30,11 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
   const targetRectRef = useRef<Rect | null>();
   const targetRef = useRef<Element | null>();
   const targetListRef = useRef<Array<Element>>([]);
+  const [saving, setSaving] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const onSave = useCallback(async () => {
+    setSaving(true);
     const selections = targetListRef.current.filter(item => item) || [];
     const selectAreaElements = await transformDOM(selections);
     const HTMLs = Array.from(selectAreaElements);
@@ -147,6 +150,10 @@ export default forwardRef<ISelectorRef, ISelectorProps>((props, propsRef) => {
     }),
     [onSave],
   );
+
+  if (saving) {
+    return null;
+  }
 
   return (
     <>

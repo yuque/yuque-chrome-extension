@@ -1,4 +1,5 @@
 import Chrome from '@/core/chrome';
+import { screenShot } from './screen-shot';
 
 function hexoCodeBlock(cloneNode: Element) {
   const figures = cloneNode.querySelectorAll('figure');
@@ -158,9 +159,12 @@ async function transformYuqueContent(element: Element) {
 export async function transformDOM(domArray: Element[]) {
   const yuqueDOMIndex: number[] = [];
 
-  const clonedDOMArray: Element[] = domArray.map(dom => {
+  const clonedDOMArray: Element[] = [];
+
+  for (const dom of domArray) {
     if (isYuqueContent(dom)) {
-      return dom;
+      clonedDOMArray.push(dom);
+      continue;
     }
     const cloneDom = dom.cloneNode(true) as Element;
     const div = document.createElement('div');
@@ -168,11 +172,28 @@ export async function transformDOM(domArray: Element[]) {
       const pre = document.createElement('pre');
       pre.appendChild(cloneDom);
       div.appendChild(pre);
+    } else if (cloneDom.tagName === 'VIDEO') {
+      const rect = dom.getBoundingClientRect();
+
+      const canvas = await screenShot({
+        x: rect.x,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      });
+      await new Promise(resolve => {
+        const image = document.createElement('img');
+        image.src = canvas.toDataURL('image/jpeg');
+        image.onload = () => {
+          div.appendChild(image);
+          resolve(true);
+        };
+      });
     } else {
       div.appendChild(cloneDom);
     }
-    return div;
-  });
+    clonedDOMArray.push(div);
+  }
 
   for (let clonedDOMIndex = 0; clonedDOMIndex < clonedDOMArray.length; clonedDOMIndex++) {
     let clonedDOM = clonedDOMArray[clonedDOMIndex];
