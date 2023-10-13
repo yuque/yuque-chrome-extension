@@ -37,6 +37,7 @@ const entries = {
   contentScript: 'content-scripts',
   background: 'background',
   extensionPage: [ 'sandbox', 'setting', 'editor' ],
+  yuqueTransformScript: 'yuque-transform-script',
 };
 
 const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({
@@ -96,6 +97,7 @@ if (isProd) {
 const entry = {
   [entries.background]: path.join(pagesPath, entries.background),
   [entries.contentScript]: path.join(pagesPath, 'inject', entries.contentScript),
+  [entries.yuqueTransformScript]: path.join(pagesPath, 'inject', entries.yuqueTransformScript),
 };
 
 entries.extensionPage.forEach(item => {

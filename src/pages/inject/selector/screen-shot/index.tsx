@@ -6,14 +6,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Spin } from 'antd';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import Chrome from '@/core/chrome';
-import { BACKGROUND_EVENTS } from '@/events';
 import classnames from 'classnames';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { SandBoxMessageType } from '@/isomorphic/sandbox';
 import { sendMessageToSandBox } from '@/core/bridge/sendMessageToSandbox';
+import { screenShot } from '@/core/screen-shot';
 import DragLine from './drag-line';
 import styles from './index.module.less';
 
@@ -161,42 +159,21 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
         }, 100);
       });
       try {
-        Chrome.runtime.sendMessage(
-          {
-            action: BACKGROUND_EVENTS.SCREEN_SHOT,
-          },
-          base64 => {
-            const image = new Image();
-            image.src = base64;
-            image.onload = () => {
-              const imageWidthRatio = image.width / window.innerWidth;
-              const imageHeightRatio = image.height / window.innerHeight;
-              const canvas = document.createElement('canvas');
-              const context = canvas.getContext('2d');
-              // 设置截取区域的坐标和宽高
-              const x = startRef.current.left * imageWidthRatio; // 区域的左上角x坐标
-              const y = startRef.current.top * imageHeightRatio; // 区域的左上角y坐标
-              const width =
-                Math.abs(endRef.current.left - startRef.current.left) *
-                imageWidthRatio; // 区域的宽度
-              const height =
-                Math.abs(endRef.current.top - startRef.current.top) *
-                imageHeightRatio; // 区域的高度
-              // 在canvas上绘制截取区域
-              canvas.width = width;
-              canvas.height = height;
-              context?.drawImage(image, x, y, width, height, 0, 0, width, height);
-              canvas.toBlob(res => {
-                sendMessageToSandBox(SandBoxMessageType.startOcr, {
-                  blob: res,
-                });
-                loadingRef.current = false;
-                forceUpdate();
-                props.destroySelectArea();
-              });
-            };
-          },
-        );
+        const canvas = await screenShot({
+          x: startRef.current.left,
+          y: startRef.current.top,
+          width: Math.abs(endRef.current.left - startRef.current.left),
+          height: Math.abs(endRef.current.top - startRef.current.top),
+        });
+        canvas.toBlob(res => {
+          sendMessageToSandBox(SandBoxMessageType.startOcr, {
+            blob: res,
+          });
+          loadingRef.current = false;
+          forceUpdate();
+          props.destroySelectArea();
+        });
+ 
       } catch (error) {
         loadingRef.current = false;
         forceUpdate();
@@ -214,6 +191,10 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
       }),
       [onScreenshot],
     );
+
+    if (loadingRef.current) {
+      return 
+    }
 
     return (
       <div
@@ -327,7 +308,6 @@ export default forwardRef<IScreenShotRef, IScreenShotProps>(
             </div>
           </div>
         )}
-        {loadingRef.current && <Spin className={styles.loading} spinning />}
       </div>
     );
   },

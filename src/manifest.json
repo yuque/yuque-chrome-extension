@@ -31,7 +31,8 @@
         "doc.umd.js",
         "CodeMirror.js",
         "katex.min.js",
-        "tracert_a385.js"
+        "tracert_a385.js",
+        "yuque-transform-script.js"
       ],
       "matches": [
         "<all_urls>",
