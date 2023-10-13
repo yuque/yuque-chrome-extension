@@ -172,7 +172,7 @@ function generateOriginAndCloneDomArray(cloneElement: Element, originElement: El
   if (originDoms.length < cloneDoms.length) {
     for (let i = 0; i < cloneDoms.length; i++) {
       const cloneDom = cloneDoms[i];
-      const originDom = i == 0 ? originElement : originDoms[i - 1];
+      const originDom = i === 0 ? originElement : originDoms[i - 1];
       result.push({
         origin: originDom,
         clone: cloneDom,
