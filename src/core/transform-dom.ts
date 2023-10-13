@@ -124,35 +124,39 @@ async function transformYuqueContent(element: Element) {
       };
     });
 
-    const ids: string[] = [];
-    if (element.classList.contains('.ne-viewer-body')) {
-      element.childNodes.forEach(item => {
-        const id = (item as Element).id;
+    try {
+      const ids: string[] = [];
+      if (element.classList.contains('ne-viewer-body')) {
+        element.childNodes.forEach(item => {
+          const id = (item as Element).id;
+          if (id) {
+            ids.push(id);
+          }
+        });
+      } else if (element.closest('.ne-viewer-body')) {
+        const id = findYuqueNeTag(element)?.id;
         if (id) {
           ids.push(id);
         }
-      });
-    } else if (element.closest('.ne-viewer-body')) {
-      const id = findYuqueNeTag(element)?.id;
-      if (id) {
-        ids.push(id);
+      } else if (element.querySelector('.ne-viewer-body')) {
+        element.querySelector('.ne-viewer-body')?.childNodes.forEach(item => {
+          const id = (item as Element).id;
+          if (id) {
+            ids.push(id);
+          }
+        });
       }
-    } else if (element.querySelector('.ne-viewer-body')) {
-      element.querySelector('.ne-viewer-body')?.childNodes.forEach(item => {
-        const id = (item as Element).id;
-        if (id) {
-          ids.push(id);
-        }
-      });
-    }
 
-    window.postMessage(
-      {
-        key: 'tarnsfromYuqueContent',
-        data: { ids },
-      },
-      '*',
-    );
+      window.postMessage(
+        {
+          key: 'tarnsfromYuqueContent',
+          data: { ids },
+        },
+        '*',
+      );
+    } catch (error) {
+      transformError(error);
+    }
   });
 }
 
