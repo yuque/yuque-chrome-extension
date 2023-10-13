@@ -160,6 +160,67 @@ async function transformYuqueContent(element: Element) {
   });
 }
 
+interface IOriginAndCloneDomItem {
+  origin: Element;
+  clone: Element;
+}
+
+function generateOriginAndCloneDomArray(cloneElement: Element, originElement: Element, name: keyof HTMLElementTagNameMap): Array<IOriginAndCloneDomItem> {
+  const originDoms = originElement.querySelectorAll(name);
+  const cloneDoms = cloneElement.querySelectorAll(name);
+  const result: Array<IOriginAndCloneDomItem> = [];
+  if (originDoms.length < cloneDoms.length) {
+    for (let i = 0; i < cloneDoms.length; i++) {
+      const cloneDom = cloneDoms[i];
+      const originDom = i == 0 ? originElement : originDoms[i - 1];
+      result.push({
+        origin: originDom,
+        clone: cloneDom,
+      });
+    }
+  } else {
+    originDoms.forEach((originDom, index) => {
+      result.push({
+        origin: originDom,
+        clone: cloneDoms[index],
+      });
+    });
+  }
+  return result;
+}
+
+async function transformVideoToImage(element: Element, originDom: Element) {
+  const videoMapArray = generateOriginAndCloneDomArray(element, originDom, 'video');
+
+  for (const videoMap of videoMapArray) {
+    const rect = videoMap.origin.getBoundingClientRect();
+    const canvas = await screenShot({
+      x: rect.x,
+      y: rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
+
+    await new Promise(resolve => {
+      const image = document.createElement('img');
+      image.src = canvas.toDataURL('image/jpeg');
+      videoMap.clone.parentNode?.replaceChild(image, videoMap.clone);
+
+      resolve(true);
+    });
+  }
+}
+
+function transformCanvasToImage(element: Element, originDom: Element) {
+  const canvasMapArray = generateOriginAndCloneDomArray(element, originDom, 'canvas');
+
+  for (const canvasMap of canvasMapArray) {
+    const imageElement = document.createElement('img');
+    imageElement.src = (canvasMap.origin as HTMLCanvasElement).toDataURL();
+    canvasMap.clone.parentNode?.replaceChild(imageElement, canvasMap.clone);
+  }
+}
+
 export async function transformDOM(domArray: Element[]) {
   const yuqueDOMIndex: number[] = [];
 
@@ -176,23 +237,6 @@ export async function transformDOM(domArray: Element[]) {
       const pre = document.createElement('pre');
       pre.appendChild(cloneDom);
       div.appendChild(pre);
-    } else if (cloneDom.tagName === 'VIDEO') {
-      const rect = dom.getBoundingClientRect();
-
-      const canvas = await screenShot({
-        x: rect.x,
-        y: rect.top,
-        width: rect.width,
-        height: rect.height,
-      });
-      await new Promise(resolve => {
-        const image = document.createElement('img');
-        image.src = canvas.toDataURL('image/jpeg');
-        image.onload = () => {
-          div.appendChild(image);
-          resolve(true);
-        };
-      });
     } else {
       div.appendChild(cloneDom);
     }
@@ -215,6 +259,8 @@ export async function transformDOM(domArray: Element[]) {
       }
     }
 
+    const originDom = domArray[clonedDOMIndex];
+
     // 替换 a 标签的链接
     const linkElements = clonedDOM.querySelectorAll('a');
     linkElements.forEach(a => {
@@ -233,43 +279,11 @@ export async function transformDOM(domArray: Element[]) {
     // 处理 hexo 代码
     hexoCodeBlock(clonedDOM);
 
-    // 转化canvas为img
-    const canvasElements = clonedDOM.querySelectorAll('canvas');
-    if (canvasElements) {
-      const originDom = domArray[clonedDOMIndex];
-      const originalCanvasElements = originDom.querySelectorAll('canvas');
+    // 将 video 截屏转为 img
+    await transformVideoToImage(clonedDOM, originDom);
 
-      /**
-       * originDom 比原有 dom 少一个层级
-       * 因此可能产生 originalCanvasElements 比 cloneCanvasElements 少一个对情况
-       */
-      if (originalCanvasElements.length < canvasElements.length) {
-        canvasElements.forEach((canvas, index) => {
-          try {
-            const originCanvas =
-              index === 0
-                ? (originDom as HTMLCanvasElement)
-                : originalCanvasElements[index - 1];
-            const imageElement = document.createElement('img');
-            imageElement.src = originCanvas.toDataURL();
-            canvas.parentNode?.replaceChild(imageElement, canvas);
-          } catch (e) {
-            //
-          }
-        });
-      } else {
-        canvasElements.forEach((canvas, index) => {
-          try {
-            const originCanvas = originalCanvasElements[index];
-            const imageElement = document.createElement('img');
-            imageElement.src = originCanvas.toDataURL();
-            canvas.parentNode?.replaceChild(imageElement, canvas);
-          } catch (e) {
-            //
-          }
-        });
-      }
-    }
+    // 转化canvas为img
+    transformCanvasToImage(clonedDOM, originDom);
   }
 
   return clonedDOMArray.map((item, index) => {
