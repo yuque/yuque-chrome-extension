@@ -221,6 +221,20 @@ function transformCanvasToImage(element: Element, originDom: Element) {
   }
 }
 
+function transformMath(element: Element) {
+  // for 知乎
+  const zTextMaths = element.querySelectorAll('.ztext-math');
+  for (const zTextMath of zTextMaths) {
+    const dataTex = zTextMath.getAttribute('data-tex');
+    if (dataTex) {
+      const div = document.createElement('div');
+      div.setAttribute('data-type', 'math');
+      div.setAttribute('data-text', dataTex);
+      zTextMath.parentNode?.replaceChild(div, zTextMath);
+    }
+  }
+}
+
 export async function transformDOM(domArray: Element[]) {
   const yuqueDOMIndex: number[] = [];
 
@@ -237,6 +251,9 @@ export async function transformDOM(domArray: Element[]) {
       const pre = document.createElement('pre');
       pre.appendChild(cloneDom);
       div.appendChild(pre);
+    } else if (dom.closest('.ztext-math')) {
+      // 知乎代码块选取时只能选取到 svg ，先查到他上层的 .ztext-math
+      div.append(dom.closest('.ztext-math')?.cloneNode(true) as Element);
     } else {
       div.appendChild(cloneDom);
     }
@@ -284,6 +301,8 @@ export async function transformDOM(domArray: Element[]) {
 
     // 转化canvas为img
     transformCanvasToImage(clonedDOM, originDom);
+
+    transformMath(clonedDOM);
   }
 
   return clonedDOMArray.map((item, index) => {
