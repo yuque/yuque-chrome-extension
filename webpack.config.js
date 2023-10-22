@@ -20,6 +20,7 @@ const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
 const templatePath = path.join(srcPath, 'template.html');
 const pkg = require('./package.json');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const {
   SERVER_HOST,
@@ -36,7 +37,7 @@ const fileExtensions = [
 const entries = {
   contentScript: 'content-scripts',
   background: 'background',
-  extensionPage: [ 'sandbox', 'setting', 'editor' ],
+  extensionPage: [ 'setting', 'editor', 'sidePanel' ],
   yuqueTransformScript: 'yuque-transform-script',
 };
 
@@ -50,6 +51,10 @@ const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({
 const plugins = [
   new webpack.ProgressPlugin(),
   ...htmlPlugins,
+  new MiniCssExtractPlugin({
+    filename: '[name].css',
+    chunkFilename: '[id].css',
+  }),
   new CopyWebpackPlugin({
     patterns: [
       {
@@ -64,7 +69,7 @@ const plugins = [
         },
       },
       {
-        from: path.join(pagesPath, 'background/background-wrapper.js'),
+        from: path.join(srcPath, 'background/background-wrapper.js'),
         to: path.join(distPath, pkg.version, 'background-wrapper.js'),
       },
     ],
@@ -73,6 +78,7 @@ const plugins = [
     'process.env.VERSION': JSON.stringify(pkg.version),
     'process.env.BUILD_TIME': JSON.stringify(moment().format('MMDDHHmm')),
     'process.env.SERVER_HOST': JSON.stringify(SERVER_HOST),
+    'process.env.ENTRY': JSON.stringify(process.env.ENTRY),
   }),
 ];
 
@@ -95,7 +101,7 @@ if (isProd) {
 }
 
 const entry = {
-  [entries.background]: path.join(pagesPath, entries.background),
+  [entries.background]: path.join(srcPath, entries.background),
   [entries.contentScript]: path.join(pagesPath, 'inject', entries.contentScript),
   [entries.yuqueTransformScript]: path.join(pagesPath, 'inject', entries.yuqueTransformScript),
 };
@@ -124,7 +130,7 @@ const rules = [
     },
     use: [
       {
-        loader: 'style-loader',
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',
@@ -138,7 +144,7 @@ const rules = [
     test: /\.module\.less$/,
     use: [
       {
-        loader: 'style-loader',
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',
@@ -158,7 +164,7 @@ const rules = [
     test: /.css$/,
     use: [
       {
-        loader: 'style-loader',
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',
