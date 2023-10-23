@@ -1,4 +1,4 @@
-import { WordMarkConfigKey } from '../word-mark';
+import { WordMarkConfigKey } from '../constant/wordMark';
 
 export enum OperateWordConfigMarkEnum {
   get = 'get',

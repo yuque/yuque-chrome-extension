@@ -4,7 +4,7 @@ import {
   IOperateClipData,
 } from '@/isomorphic/background/clip';
 import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 
 export async function createClipActionListener(
   request: RequestMessage<IOperateClipData>,

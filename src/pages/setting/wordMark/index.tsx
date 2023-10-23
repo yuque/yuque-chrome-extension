@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Switch } from 'antd';
-import { IWordMarkConfig, WordMarkConfigKey } from '@/isomorphic/word-mark';
+import { IWordMarkConfig, WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
 import SelectSavePosition from '@/components/SelectSavePosition';
 import { backgroundBridge } from '@/core/bridge/background';
 import styles from './index.module.less';

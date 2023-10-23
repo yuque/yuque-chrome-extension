@@ -4,12 +4,17 @@ import {
   IOperateUserData,
   OperateUserEnum,
 } from '@/isomorphic/background/user';
-import { SERVER_URLS } from '@/isomorphic/constants';
 import { IUser } from '@/isomorphic/interface';
 import Storage from '@/background/core/storage';
 import requestFn from '@/background/core/request';
-import { STORAGE_KEYS } from '@/config';
+import { STORAGE_KEYS, YUQUE_DOMAIN } from '@/config';
 import { RequestMessage } from './index';
+
+export const SERVER_URLS = {
+  LOGOUT: `${YUQUE_DOMAIN}/logout`,
+  LOGIN: `${YUQUE_DOMAIN}/api/accounts/login`,
+  DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
+};
 
 const createLoginWindow = (): Promise<number> => {
   return new Promise(resolve => {

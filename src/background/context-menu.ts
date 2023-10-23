@@ -1,5 +1,5 @@
 import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { __i18n } from '@/isomorphic/i18n';
 
 interface MenuItem {

@@ -1,6 +1,5 @@
-import Chrome from '@/core/chrome';
-import { WordMarkOptionTypeEnum } from './constants';
 import { ISavePosition } from '@/core/bridge/background/request/mine';
+import { WordMarkOptionTypeEnum } from '../constants';
 
 export enum WordMarkConfigKey {
   // 是否开启
@@ -47,18 +46,3 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
   toolbars: [WordMarkOptionTypeEnum.clipping, WordMarkOptionTypeEnum.translate],
 };
 
-export const getPageUrl = () => {
-  return `${window.location.origin}${window.location.pathname}`;
-};
-
-export const isEnableWordMark = (config: IWordMarkConfig | null) => {
-  const url = getPageUrl();
-  if (!config?.enable || config.disableUrl?.includes(url)) {
-    return false;
-  }
-  return true;
-};
-
-export const preferencesUrl = `${Chrome.runtime.getURL('setting.html')}`;
-
-export const wordMarkSettingUrl = `${preferencesUrl}?page=wordMark`;

@@ -2,10 +2,10 @@ import {
   WordMarkConfigKey,
   IWordMarkConfig,
   defaultWordMarkConfig,
-} from '@/isomorphic/word-mark';
+} from '@/isomorphic/constant/wordMark';
 import Chrome from '@/background/core/chrome';
 import { IWordMarkConfigOption } from '@/isomorphic/background/wordMarkConfig';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { STORAGE_KEYS } from '@/config';
 import Storage from './storage';
 

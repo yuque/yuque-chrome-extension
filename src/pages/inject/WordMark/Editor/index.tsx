@@ -10,7 +10,7 @@ import {
   EDITOR_IFRAME_CONTAINER_ID,
   EditorMessageType,
   EditorMessageKey,
-} from '@/isomorphic/editor';
+} from '@/isomorphic/event/editor';
 
 export interface IEditorRef {
   /**

@@ -1,7 +1,6 @@
 import React from 'react';
 import Icon, { CloseOutlined } from '@ant-design/icons';
-import LinkHelper from '@/core/link-helper';
-import Chrome from '@/core/chrome';
+import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
 import UserAvatar from '@/components/UserAvatar';
 import YuqueLogoSvg from '@/assets/svg/yuque-logo.svg';
@@ -16,7 +15,7 @@ function SuperSidebarHeader() {
   };
   
   const openSetting = () => {
-    window.open(Chrome.runtime.getURL('setting.html'));
+    window.open(LinkHelper.settingPage);
   };
 
   const closeSidePanel = () => {

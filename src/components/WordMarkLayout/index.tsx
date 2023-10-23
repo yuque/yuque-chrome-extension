@@ -4,7 +4,7 @@ import {
   WordMarkMessageActions,
   WordMarkMessageKey,
 } from '@/isomorphic/event/wordMark';
-import { isEnableWordMark } from '@/isomorphic/word-mark';
+import { IWordMarkConfig } from '@/isomorphic/constant/wordMark';
 import { IWordMarkContext, WordMarkContext } from './context';
 
 interface IWordMarkLayoutProps {
@@ -15,6 +15,15 @@ function WordMarkLayout(props: IWordMarkLayoutProps) {
   const [wordMarkConfig, setWordMarkConfig] = useState<IWordMarkContext | null>(
     null,
   );
+
+  const isEnableWordMark = (config: IWordMarkConfig | null) => {
+    const url = `${window.location.origin}${window.location.pathname}`;
+    if (!config?.enable || config.disableUrl?.includes(url)) {
+      return false;
+    }
+    return true;
+  };
+  
   useEffect(() => {
     backgroundBridge.wordMarkConfig.get().then(res => {
       setWordMarkConfig(res);

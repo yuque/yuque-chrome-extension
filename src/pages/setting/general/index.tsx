@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import Icon from '@ant-design/icons';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import { useAccountContext } from '@/components/AccountLayout/useAccountContext';
 import HomeSvg from '@/assets/svg/home.svg';
 import styles from './index.module.less';

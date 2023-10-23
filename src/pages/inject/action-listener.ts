@@ -1,5 +1,5 @@
 import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { ClipAssistantMessageActions } from '@/isomorphic/event/clipAssistant';
 import { WordMarkMessageActions } from '@/isomorphic/event/wordMark';
 import { AccountLayoutMessageActions } from '@/isomorphic/event/accountLayout';

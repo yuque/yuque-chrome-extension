@@ -1,6 +1,5 @@
 import Chrome from '@/core/chrome';
 import { initI18N } from '@/isomorphic/i18n';
-import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
 import { createWordMark } from './WordMark';
 import {
   ClipAssistantMessageActions,
@@ -32,6 +31,8 @@ enum SidePanelStatus {
   // 隐藏
   Hidden = 'Hidden',
 }
+
+const YQ_SANDBOX_BOARD_IFRAME = 'yq-sandbox-board-iframe';
 
 export class App {
   /**

@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { backgroundBridge } from '@/core/bridge/background';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
-import { EditorMessageType, EditorMessageKey } from '@/isomorphic/editor';
+import { EditorMessageType, EditorMessageKey } from '@/isomorphic/event/editor';
 
 function Editor() {
   const editorRef = useRef<IEditorRef>(null);

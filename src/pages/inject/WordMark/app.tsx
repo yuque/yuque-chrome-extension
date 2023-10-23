@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { message } from 'antd';
 import classnames from 'classnames';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
@@ -204,7 +204,7 @@ function WordMarkApp() {
   }, [selectText, initPosition, type]);
 
   return (
-    <div className={styles.wrapper} id="我是傻逼">
+    <div className={styles.wrapper}>
       <div
         style={{
           left: `${wordMarkPositionRef.current.left}px`,

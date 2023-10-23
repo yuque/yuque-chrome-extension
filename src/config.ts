@@ -20,7 +20,8 @@ export const STORAGE_KEYS = {
     SELECT_TAGS: 'note/select-tags',
   },
 };
-export const YUQUE_DOMAIN = 'https://www.yuque.com';
+// export const YUQUE_DOMAIN = 'https://www.yuque.com';
+export const YUQUE_DOMAIN = 'https://lark.alipay.net:8443';
 export const YUQUE_CSRF_COOKIE_NAME = 'yuque_ctoken';
 export const EXTENSION_ID = 'extension-id';
 export const VERSION = pkgJSON.version;

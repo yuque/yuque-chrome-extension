@@ -12,7 +12,7 @@ import {
   buildParamsForDoc,
   buildParamsForNote,
 } from '@/components/lake-editor/helper';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import { STORAGE_KEYS } from '@/config';
 import {
   DefaultSavePosition,

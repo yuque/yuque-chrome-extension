@@ -12,7 +12,7 @@ import {
   IRequestConfig,
   IRequestOptions,
 } from '@/isomorphic/background/request';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { getCurrentAccount } from './util';
 
 export class CsrfTokenError extends Error {

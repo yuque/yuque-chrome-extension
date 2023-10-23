@@ -1,5 +1,5 @@
 import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 
 function remindToRefreshPage(tabId: number) {
   const msg = __i18n('你需要重新加载该页面才能剪藏。请重新加载页面后再试一次');

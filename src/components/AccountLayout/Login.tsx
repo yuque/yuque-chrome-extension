@@ -4,7 +4,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { backgroundBridge } from '@/core/bridge/background';
 import { IUser } from '@/isomorphic/interface';
 import { __i18n } from '@/isomorphic/i18n';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import { VERSION } from '@/config';
 import YuqueLogo from '@/assets/images/yuque-logo.png';
 import styles from './Login.module.less';

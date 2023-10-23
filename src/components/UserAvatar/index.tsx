@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { Avatar, Badge, Popover, Modal } from 'antd';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import SemverCompare from 'semver-compare';
 import { VERSION } from '@/config';
 import { useCheckVersion } from '@/hooks/useCheckVersion';

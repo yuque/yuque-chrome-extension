@@ -1,5 +1,5 @@
 import Chrome from '@/background/core/chrome';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import { YUQUE_DOMAIN } from '@/config';
 import { initI18N } from '@/isomorphic/i18n';
 import { listenBrowserActionEvent } from './browser-action';

@@ -24,5 +24,3 @@ export const toolbars: ToolbarItem[] = [
     icon: Translate,
   },
 ];
-
-export const disableWordMarkKey = 'disable_yq_word_mark';

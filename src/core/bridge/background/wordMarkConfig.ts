@@ -3,7 +3,7 @@ import {
   OperateWordConfigMarkEnum,
   IWordMarkConfigOption,
 } from '@/isomorphic/background/wordMarkConfig';
-import { IWordMarkConfig, WordMarkConfigKey } from '@/isomorphic/word-mark';
+import { IWordMarkConfig, WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
 import type { ICallBridgeImpl } from './index';
 
 export function createWordMarkConfigBridge(impl: ICallBridgeImpl) {

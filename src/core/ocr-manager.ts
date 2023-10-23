@@ -1,4 +1,4 @@
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import { replaceTextPunc } from '@/isomorphic/util';
 
 interface IOcrResultItem {

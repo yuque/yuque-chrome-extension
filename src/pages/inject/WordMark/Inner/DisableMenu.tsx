@@ -1,9 +1,9 @@
 import React from 'react';
 import { __i18n } from '@/isomorphic/i18n';
+import LinkHelper from '@/isomorphic/link-helper';
+import { WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
 import { backgroundBridge } from '@/core/bridge/background';
-import { WordMarkConfigKey, wordMarkSettingUrl } from '@/isomorphic/word-mark';
 import styles from './DisableMenu.module.less';
-import { getPageUrl } from '../util';
 
 function DisableMenu() {
   const disableForever = () => {
@@ -15,7 +15,7 @@ function DisableMenu() {
   const disableForPage = () => {
     backgroundBridge.wordMarkConfig.update(
       WordMarkConfigKey.disableUrl,
-      getPageUrl(),
+      `${window.location.origin}${window.location.pathname}`,
       {
         notice: true,
       },
@@ -27,7 +27,7 @@ function DisableMenu() {
   };
 
   const openSetting = () => {
-    backgroundBridge.tab.create(wordMarkSettingUrl);
+    backgroundBridge.tab.create(LinkHelper.wordMarkSettingPage);
   };
 
   return (

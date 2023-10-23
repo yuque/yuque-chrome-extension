@@ -3,7 +3,7 @@ import {
   IOperateSidePanelData,
 } from '@/isomorphic/background/sidePanel';
 import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/contentScript';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { RequestMessage } from './index';
 
 export async function createSidePanelActionListener(

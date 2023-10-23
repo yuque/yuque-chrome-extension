@@ -1,16 +1,15 @@
 import { get as safeGet } from 'lodash';
-import {
-  BIG_DOCUMENT_BLOCK_COUNT,
-  DESCRIPTION_MAX_LENGTH,
-  SUMMARY_PARAGRAPH_MAX_COUNT,
-  VIEW_MORE_TAG,
-} from '@/isomorphic/constants';
 import { IEditorRef } from './editor';
 
 interface ExtractSummaryRawOption {
   maxHtmlTextLength?: number;
   summary: string;
 }
+
+export const SUMMARY_PARAGRAPH_MAX_COUNT = 10;
+export const BIG_DOCUMENT_BLOCK_COUNT = 200;
+export const DESCRIPTION_MAX_LENGTH = 5000;
+export const VIEW_MORE_TAG = '<!-- note-viewmore -->';
 
 export const extractSummaryRaw = (
   content: string,
