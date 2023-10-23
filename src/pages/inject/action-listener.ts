@@ -36,8 +36,9 @@ export const initContentScriptActionListener = (context: App) => {
             sendResponse(true);
             break;
           }
+          const { isRunningInjectPage = true } = request.data || {}
           context.isOperateSelecting = true;
-          context.hiddenSidePanel();
+          isRunningInjectPage && context.hiddenSidePanel();
           new Promise(resolve => {
             showScreenShot({
               dom: context.rootContainer,
@@ -46,12 +47,13 @@ export const initContentScriptActionListener = (context: App) => {
             });
           }).then(res => {
             context.isOperateSelecting = false;
-            context.showSidePanel();
+            isRunningInjectPage && context.showSidePanel();
             sendResponse(res);
           });
           break;
         }
         case ContentScriptEvents.SelectArea: {
+          const { isRunningInjectPage = true } = request.data || {}
           if (context.isOperateSelecting) {
             sendResponse(true);
             break;
@@ -64,7 +66,7 @@ export const initContentScriptActionListener = (context: App) => {
             break;
           }
           context.isOperateSelecting = true;
-          context.hiddenSidePanel();
+          isRunningInjectPage && context.hiddenSidePanel();
           new Promise(resolve => {
             showSelectArea({
               dom: context.rootContainer,
@@ -73,7 +75,7 @@ export const initContentScriptActionListener = (context: App) => {
             });
           }).then(res => {
             context.isOperateSelecting = false;
-            context.showSidePanel();
+            isRunningInjectPage && context.showSidePanel();
             sendResponse(res);
           });
           break;

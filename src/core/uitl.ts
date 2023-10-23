@@ -11,3 +11,5 @@ export function findCookieSettingPage() {
   }
   return '';
 }
+
+export const isRunningInjectPage = window.self !== window.top;

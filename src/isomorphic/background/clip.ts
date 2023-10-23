@@ -5,4 +5,5 @@ export enum OperateClipEnum {
 
 export interface IOperateClipData {
   type: OperateClipEnum;
+  isRunningInjectPage: boolean;
 }

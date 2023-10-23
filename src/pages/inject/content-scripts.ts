@@ -1,6 +1,5 @@
 import Chrome from '@/core/chrome';
 import { initI18N } from '@/isomorphic/i18n';
-import { createWordMark } from './WordMark';
 import {
   ClipAssistantMessageActions,
   ClipAssistantMessageKey
@@ -14,6 +13,7 @@ import {
   AccountLayoutMessageKey,
 } from '@/isomorphic/event/accountLayout';
 import { initContentScriptActionListener } from './action-listener';
+import { createWordMark } from './WordMark';
 
 enum SidePanelStatus {
   // 还没有初始化
@@ -114,7 +114,6 @@ export class App {
         right: 0;
         top: 0;
         z-index: 999999;
-        background: rgba(0, 0, 0, 0.2);
         color-scheme: none;
         user-select: none;
       }
@@ -172,7 +171,6 @@ export class App {
     await this.initSidePanel();
     this.sidePanelIframe?.classList.remove('show');
     this.sidePanelIframe?.blur();
-    // initWordMark();
   }
 
   async hiddenSidePanel() {

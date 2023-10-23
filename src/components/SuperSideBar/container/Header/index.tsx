@@ -1,5 +1,7 @@
 import React from 'react';
 import Icon, { CloseOutlined } from '@ant-design/icons';
+import { __i18n } from '@/isomorphic/i18n';
+import { isRunningInjectPage } from '@/core/uitl';
 import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
 import UserAvatar from '@/components/UserAvatar';
@@ -13,20 +15,19 @@ function SuperSidebarHeader() {
   const openHome = () => {
     window.open(LinkHelper.dashboard);
   };
-  
   const openSetting = () => {
     window.open(LinkHelper.settingPage);
   };
 
   const closeSidePanel = () => {
     backgroundBridge.sidePanel.close();
-  }
+  };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
         <Icon component={YuqueLogoSvg} className={styles.yuqueIcon} />
-        <span className={styles.title}>语雀·智能笔记</span>
+        <span className={styles.title}>{__i18n('语雀·智能笔记')}</span>
       </div>
       <div className={styles.right}>
         <div className={styles.infoWrapper}>
@@ -38,9 +39,11 @@ function SuperSidebarHeader() {
           </div>
           <UserAvatar />
         </div>
-        <div onClick={closeSidePanel} className={styles.closeWrapper}>
-          <CloseOutlined />
-        </div>
+        {isRunningInjectPage && (
+          <div onClick={closeSidePanel} className={styles.closeWrapper}>
+            <CloseOutlined />
+          </div>
+        )}
       </div>
     </div>
   );
