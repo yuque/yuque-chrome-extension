@@ -39,4 +39,17 @@ export default {
         });
       });
     }),
+  sendMessageToAllTab: (message: any) => {
+    new Promise(resolve => {
+      tabs.query({ status: 'complete' }, (res) => {
+        for (const tab of res) {
+          if (tab.id) {
+            tabs.sendMessage(tab.id, message, (res) => {
+              resolve(res);
+            })
+          }
+        }
+      })
+    })
+  }
 };

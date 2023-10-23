@@ -1,0 +1,32 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid @border-color;
+}
+
+.input {
+  height: 32px;
+  width: 100%;
+  background: transparent;
+  padding-left: 0;
+  border: none;
+  flex: 1;
+  outline: none;
+
+  &::-webkit-input-placeholder {
+    color: @grey-6;
+  }
+}
+
+.checkIcon {
+  margin-left: 2px;
+  color: @grey-6;
+
+  svg {
+    position: relative;
+  }
+}

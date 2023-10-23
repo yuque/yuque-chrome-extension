@@ -1,0 +1,32 @@
+@import '~@/styles/parameters.less';
+
+.container {
+  height: 100%;
+  width: 100%;
+  border-left: 1px solid @border-color;
+  background: @grey-1;
+
+  .header {
+    height: 44px;
+    border-bottom: 1px solid @border-color;
+  }
+
+  .body {
+    display: flex;
+    height: calc(100% - 44px);
+
+    .content {
+      flex: 1 1 auto;
+
+      .hidden {
+        display: none;
+      }
+    }
+
+    .sideBar {
+      border-left: 1px solid @border-color;
+      width: 52px;
+      flex: 0 0 52px;
+    }
+  }
+}

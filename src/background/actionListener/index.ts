@@ -1,7 +1,5 @@
-import { BACKGROUND_EVENTS } from '@/events';
 import Chrome from '@/background/core/chrome';
 import { BackgroundEvents } from '@/isomorphic/background';
-import { createWindowActionListener } from './window';
 import { createStorageActionListener } from './storage';
 import { createUserActionListener } from './user';
 import { createClipActionListener } from './clip';
@@ -15,7 +13,7 @@ type MessageSender = chrome.runtime.MessageSender;
 type SendResponse = (response: any) => void;
 
 export interface RequestMessage<T> {
-  action: keyof typeof BACKGROUND_EVENTS | BackgroundEvents;
+  action: BackgroundEvents;
   data: T;
 }
 
@@ -27,10 +25,6 @@ export const initBackGroundActionListener = () => {
       sendResponse: SendResponse,
     ) => {
       switch (request.action) {
-        case BackgroundEvents.OperateWindow: {
-          createWindowActionListener(request, sendResponse);
-          break;
-        }
         case BackgroundEvents.OperateUser: {
           createUserActionListener(request, sendResponse);
           break;

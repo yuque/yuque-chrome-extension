@@ -1,5 +1,5 @@
-import Chrome from '@/core/chrome';
-import { GLOBAL_EVENTS } from '@/events';
+import Chrome from '@/background/core/chrome';
+import { ContentScriptEvents } from '@/isomorphic/contentScript';
 import { __i18n } from '@/isomorphic/i18n';
 
 interface MenuItem {
@@ -42,24 +42,23 @@ export function listenContextMenuEvents() {
 
     switch (info.menuItemId) {
       case menuList[0].id: {
-        const { pageUrl, selectionText } = info;
+        const { selectionText } = info;
         Chrome.tabs.sendMessage(tab.id as number, {
-          action: GLOBAL_EVENTS.SAVE_TO_NOTE,
-          pageUrl,
-          selectionText,
+          action: ContentScriptEvents.AddContentToClipAssistant,
+          data: selectionText,
         });
         break;
       }
       case menuList[1].id:
         Chrome.tabs.sendMessage(tab.id as number, {
-          action: GLOBAL_EVENTS.SHOW_BOARD,
+          action: ContentScriptEvents.ToggleSidePanel,
         });
         break;
       case menuList[2].id: {
         const { srcUrl } = info;
         Chrome.tabs.sendMessage(tab.id as number, {
-          action: GLOBAL_EVENTS.SAVE_TO_NOTE,
-          selectionText: `<img src=${srcUrl} />`,
+          action: ContentScriptEvents.AddContentToClipAssistant,
+          data: `<img src=${srcUrl} />`,
         });
         break;
       }

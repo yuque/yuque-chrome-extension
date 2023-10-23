@@ -1,4 +1,4 @@
-import Chrome from '@/core/chrome';
+import Chrome from '@/background/core/chrome';
 import LinkHelper from '@/core/link-helper';
 import { YUQUE_DOMAIN } from '@/config';
 import { initI18N } from '@/isomorphic/i18n';

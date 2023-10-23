@@ -8,7 +8,6 @@ import React, {
 import { Root, createRoot } from 'react-dom/client';
 import bowser from 'bowser';
 import OcrIconSvg from '@/assets/svg/ocr-icon.svg';
-import { onSandboxClose } from '@/pages/sandbox/helper';
 import loadLakeEditor from './load';
 import { InjectEditorPlugin } from './editor-plugin';
 import { slash } from './slash-options';
@@ -19,12 +18,11 @@ const blockquoteID = 'yqextensionblockquoteid';
 
 export interface EditorProps {
   value: string;
-  enableEsc?: boolean;
   children?: React.ReactNode;
   onChange?: (value: string) => void;
   onLoad?: () => void;
-  onSave: () => void;
-  uploadImage: (params: { data: string | File }) => Promise<{
+  onSave?: () => void;
+  uploadImage?: (params: { data: string | File }) => Promise<{
     url: string;
     size: number;
     filename: string;
@@ -86,7 +84,7 @@ export interface IEditorRef {
 }
 
 export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
-  const { value, enableEsc, onChange, onLoad } = props;
+  const { value, onChange, onLoad } = props;
   const [ _loading, setLoading ] = useState(true);
   const [ editor, setEditor ] = useState<any>(null);
   const contextRef = useRef({
@@ -327,22 +325,6 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   );
 
   useEffect(() => {
-    if (!enableEsc) {
-      return;
-    }
-    const listener = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Esc') {
-        onSandboxClose();
-      }
-    };
-
-    iframeRef.current?.contentWindow?.addEventListener('keydown', listener)
-    return () => {
-      iframeRef.current?.contentWindow?.removeEventListener('keydown', listener)
-    }
-  }, [enableEsc])
-
-  useEffect(() => {
     if (!rootNodeRef.current.div) return;
     rootNodeRef.current.div.render(props.children);
   }, [ props.children ]);
@@ -353,6 +335,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
     <iframe
       ref={iframeRef}
       height="100%"
+      width="100%"
       srcDoc={templateHtml}
       allow="*"
       style={{

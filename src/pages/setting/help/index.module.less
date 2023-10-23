@@ -3,14 +3,36 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  max-width: 668px;
 
-  .item {
-    font-size: 16px;
-    color: @grey-9;
+  .link {
+    font-size: @font-size;
+    line-height: 22px;
+    color: @text-primary;
+    margin-bottom: 12px;
 
     span {
       cursor: pointer;
+    }
+  }
+
+  .line {
+    background-color: @border-light-color;
+    height: 1px;
+    margin: 12px 0;
+  }
+
+  .joinUs {
+    .title {
+      color: @text-primary;
+      font-weight: 500;
+      font-size: @font-size-lg;
+      line-height: 24px;
+      margin: 12px 0 16px;
+    }
+
+    .img {
+      width: 146px;
     }
   }
 }

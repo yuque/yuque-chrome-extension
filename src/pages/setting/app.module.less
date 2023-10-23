@@ -1,96 +1,64 @@
 @import '~@/styles/parameters.less';
 
 .pageWrapper {
-  background-color: #eef1f5;
   height: 100vh;
   width: 100vw;
-  padding: 48px 0;
-}
-
-.header {
-  font-size: 24px;
-  color: @text-color;
-  font-weight: 500;
-}
-
-.page {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 90%;
-  height: 100%;
-  background: @white;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px #919eab29;
-  max-width: 1148px;
-  min-width: 720px;
-  margin: 0 auto;
-}
+  .left {
+    width: 256px;
+    flex: 0 0 auto;
+    background: #FCFCFC;
+    padding: 24px 16px;
 
-.left {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+    .header {
+      font-size: 20px;
+      line-height: 24px;
+      color: @text-primary;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
 
-.right {
-  min-width: 0;
-  flex: 1;
-  padding: 24px 24px 48px 32px;
-  height: 100%;
-  border-left: 2px solid #eef1f5;
-  overflow-y: overlay;
-  overscroll-behavior: contain;
-}
+    .menu {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
 
-.menu {
-  width: 200px;
-  padding: 0 10px 0 0;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+      .menuItem {
+        padding: 5px 16px;
+        font-size: @font-size;
+        line-height: 22px;
+        color: @text-primary;
+        border-radius: 6px;
+        cursor: pointer;
 
-.title {
-  font-size: 24px;
-  color: @text-color;
-  margin-bottom: 24px;
-}
+        &:hover {
+          background-color: @grey-2;
+        }
+      }
 
-.menuItem {
-  padding: 0 16px;
-  cursor: pointer;
-  width: 200px;
-  height: 48px;
-  border-radius: 8px;
-  font-size: 16px;
-  color: @grey-9;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    background: @grey-2;
+      .menuItemSelect {
+        font-weight: 500;
+        background-color: @grey-2;
+      }
+    }
   }
-}
 
-.menuItemSelect {
-  font-weight: 600;
-  background: @grey-2;
+  .right {
+    width: calc(100vw - 256px);
+    padding: 24px 50px;
+    overflow-y: auto;
+
+    .pageTitle {
+      font-size: 20px;
+      line-height: 28px;
+      color: @text-primary;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+  }
 }
 
 .hidden {
   display: none;
-}
-
-:global {
-  * {
-    margin: 0;
-  }
-
-  div {
-    box-sizing: border-box;
-  }
 }

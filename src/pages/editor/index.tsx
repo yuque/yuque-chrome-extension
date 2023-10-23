@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { urlOrFileUpload } from '@/core/html-parser';
+import { backgroundBridge } from '@/core/bridge/background';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { EditorMessageType, EditorMessageKey } from '@/isomorphic/editor';
 
@@ -8,7 +8,7 @@ function Editor() {
   const editorRef = useRef<IEditorRef>(null);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-    return urlOrFileUpload(params.data);
+    return backgroundBridge.request.upload.attach(params.data);
   }, []);
 
   useEffect(() => {
@@ -30,42 +30,42 @@ function Editor() {
       };
       switch (action) {
         case EditorMessageType.appendContent: {
-          editorRef.current.appendContent(data.html, data.breakLine);
+          editorRef.current?.appendContent(data.html, data.breakLine);
           sendMessage();
           break;
         }
         case EditorMessageType.setContent: {
-          editorRef.current.setContent(data.content, data.type);
+          editorRef.current?.setContent(data.content, data.type);
           sendMessage();
           break;
         }
         case EditorMessageType.getContent: {
-          const content = await editorRef.current.getContent(data.type);
+          const content = await editorRef.current?.getContent(data.type);
           sendMessage(content);
           break;
         }
         case EditorMessageType.isEmpty: {
-          const isEmpty = editorRef.current.isEmpty();
+          const isEmpty = editorRef.current?.isEmpty();
           sendMessage(isEmpty);
           break;
         }
         case EditorMessageType.getSummaryContent: {
-          const content = editorRef.current.getSummaryContent();
+          const content = editorRef.current?.getSummaryContent();
           sendMessage(content);
           break;
         }
         case EditorMessageType.wordCount: {
-          const wordCount = editorRef.current.wordCount();
+          const wordCount = editorRef.current?.wordCount();
           sendMessage(wordCount);
           break;
         }
         case EditorMessageType.focusToStart: {
-          editorRef.current.focusToStart(data.offset);
+          editorRef.current?.focusToStart(data.offset);
           sendMessage();
           break;
         }
         case EditorMessageType.insertBreakLine: {
-          editorRef.current.insertBreakLine();
+          editorRef.current?.insertBreakLine();
           sendMessage();
           break;
         }
@@ -95,10 +95,10 @@ function Editor() {
       value=""
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSave={() => {}}
-      uploadImage={onUploadImage}
+      uploadImage={onUploadImage as any}
     />
   );
 }
 
-const root = createRoot(document.getElementById('ReactApp'));
+const root = createRoot(document.getElementById('ReactApp') as Element);
 root.render(<Editor />);

@@ -1,45 +1,102 @@
-import $ from 'jquery';
 import Chrome from '@/core/chrome';
-import { GLOBAL_EVENTS } from '@/events';
 import { initI18N } from '@/isomorphic/i18n';
+import { YQ_SANDBOX_BOARD_IFRAME } from '@/isomorphic/constants';
+import { createWordMark } from './WordMark';
 import {
-  StartSelectEnum,
-  YQ_SANDBOX_BOARD_IFRAME,
-} from '@/isomorphic/constants';
-import { contentExtensionBridge } from '@/pages/inject/inject-bridges';
+  ClipAssistantMessageActions,
+  ClipAssistantMessageKey
+} from '@/isomorphic/event/clipAssistant';
 import {
-  ClippingTypeEnum,
-  SandBoxMessageKey,
-  SandBoxMessageType,
-} from '@/isomorphic/sandbox';
-import { initSelectArea, destroySelectArea } from './selector';
-import { initWordMark, destroyWordMark } from './word-mark';
+  WordMarkMessageActions,
+  WordMarkMessageKey,
+} from '@/isomorphic/event/wordMark';
+import {
+  AccountLayoutMessageActions,
+  AccountLayoutMessageKey,
+} from '@/isomorphic/event/accountLayout';
+import { initContentScriptActionListener } from './action-listener';
 
-class App {
-  private iframeClassName: string;
-  private iframe: HTMLIFrameElement | null = null;
+enum SidePanelStatus {
+  // 还没有初始化
+  UnInit = 'UnInit',
+
+  // 正在加载中
+  Loading = 'Loading',
+
+  // 初始化完成
+  InitReady = 'InitReady',
+
+  // 展开
+  Visible = 'Visible',
+
+  // 隐藏
+  Hidden = 'Hidden',
+}
+
+export class App {
+  /**
+   * 插件注入页面的 dom 的父节点
+   */
+  private _rootContainer: HTMLDivElement | null = null;
+  /**
+   * sidePanel iframe
+   */
+  private sidePanelIframe: HTMLIFrameElement | null = null;
+  /**
+   * sidePanelIframe 加载状态
+   */
+  private _sidePanelStatus: SidePanelStatus = SidePanelStatus.UnInit;
+  private initSidePanelPromise: Promise<boolean> | undefined;
+  private sidePanelClipReadyPromise: Promise<boolean> | undefined;
+  /**
+   * 是否在操作选取，如 ocr 截屏、dom 选取
+   */
+  public isOperateSelecting = false;
+
+  public removeWordMark: VoidCallback = () => {};
 
   constructor() {
-    this.iframeClassName = `sandbox-iframe-${Date.now()}`;
-    this.bindEvent();
-    this.initBoard();
+    this.initShadowRoot();
+    initContentScriptActionListener(this);
   }
 
-  injectStyleIfNeeded(className: string, css: string) {
-    if ($(`#${className}`)[0]) {
-      return;
-    }
+  get rootContainer(): HTMLDivElement {
+    return this._rootContainer as HTMLDivElement;
+  }
 
-    const style = document.createElement('style');
-    style.id = className;
-    style.innerHTML = css;
-    document.head.appendChild(style);
+  get sidePanelStatus() {
+    return this._sidePanelStatus;
+  }
+
+  get sidePanelIsReady() {
+    return this.sidePanelStatus !== SidePanelStatus.UnInit;
+  }
+
+  private initShadowRoot() {
+    const div = document.createElement('div');
+    div.id = `yuque-extension-root-container`;
+    div.classList.add('yuque-extension-root-container-class');
+    const css = Chrome.runtime.getURL('content-scripts.css');
+    fetch(css)
+      .then(response => response.text())
+      .then(cssContent => {
+        const style = document.createElement('style');
+        style.textContent = cssContent;
+        document.head.appendChild(style);
+        const root = document.createElement('div');
+        this._rootContainer = root;
+        document.body.appendChild(div);
+        div.appendChild(root);
+        // 创建好 wordMark
+        this.removeWordMark = createWordMark({
+          dom: this.rootContainer,
+        });
+      });
   }
 
   get iframeCSSFieldContent() {
-    const { iframeClassName } = this;
     return `
-      #${YQ_SANDBOX_BOARD_IFRAME}.${iframeClassName} {
+      #${YQ_SANDBOX_BOARD_IFRAME} {
         display: none;
         border: none;
         margin: 0;
@@ -49,9 +106,9 @@ class App {
         overflow: hidden;
         position: fixed;
         transition: initial;
-        max-width: 100vw;
+        max-width: 418px;
         max-height: 100vh;
-        width: 100vw;
+        width: 418px;
         height: 100vh;
         right: 0;
         top: 0;
@@ -60,127 +117,137 @@ class App {
         color-scheme: none;
         user-select: none;
       }
-      #${YQ_SANDBOX_BOARD_IFRAME}.${iframeClassName}.show {
+      #${YQ_SANDBOX_BOARD_IFRAME}.show {
         display: block;
         color-scheme: auto;
       }
     `;
   }
 
-  initBoard() {
-    if (this.iframe) {
-      return;
+  private async addListenClipAssistantReady(): Promise<boolean> {
+    if (this.sidePanelClipReadyPromise) {
+      return this.sidePanelClipReadyPromise;
     }
-    const { iframeClassName } = this;
-    this.injectStyleIfNeeded(iframeClassName, this.iframeCSSFieldContent);
-    const iframe = document.createElement('iframe');
-    iframe.src = Chrome.runtime.getURL('sandbox.html');
-    iframe.classList.add(iframeClassName);
-    iframe.id = YQ_SANDBOX_BOARD_IFRAME;
-    document.body.append(iframe);
-    iframe.onload = () => {
-      this.iframe = iframe;
-    };
-  }
-
-  showBoard() {
-    if (!this.iframe) {
-      return;
-    }
-    this.iframe?.classList.add('show');
-    this.iframe?.contentWindow?.postMessage(
-      {
-        key: SandBoxMessageKey,
-        action: SandBoxMessageType.initSandbox,
-      },
-      '*',
-    );
-    this.iframe?.focus();
-    destroyWordMark();
-    destroySelectArea();
-  }
-
-  removeIframe() {
-    this.iframe?.classList.remove('show');
-    this.iframe?.blur();
-    initWordMark();
-  }
-
-  getPageHTML() {
-    const body = $('html').clone();
-    body.find('script').remove();
-    body.find('style').remove();
-    body.removeClass();
-    return body.html();
-  }
-
-  startSelect(data: { type: StartSelectEnum }) {
-    initSelectArea(data);
-    this.iframe?.classList.remove('show');
-  }
-
-  saveToNote(data: any) {
-    const { selectionText } = data;
-    this.iframe?.contentWindow?.postMessage(
-      {
-        key: SandBoxMessageKey,
-        action: SandBoxMessageType.getSelectedHtml,
-        data: {
-          HTMLs: [selectionText],
-          type: ClippingTypeEnum.area,
-        },
-      },
-      '*',
-    );
-    this.showBoard();
-  }
-
-  bindEvent() {
-    Chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
-      switch (request.action) {
-        case GLOBAL_EVENTS.SHOW_BOARD: {
-          this.showBoard();
-          sendResponse(true);
+    this.sidePanelClipReadyPromise = new Promise(resolve => {
+      const onMessage = (e: MessageEvent<any>) => {
+        if (e.data.key !== ClipAssistantMessageKey) {
           return;
         }
-        case GLOBAL_EVENTS.START_SELECT: {
-          this.startSelect(request.data);
-          sendResponse(true);
-          return;
+        if (e.data.action === ClipAssistantMessageActions.ready) {
+          resolve(true);
+          window.removeEventListener('message', onMessage);
         }
-        case GLOBAL_EVENTS.CLOSE_BOARD: {
-          this.removeIframe();
-          sendResponse(true);
-          return;
-        }
-        case GLOBAL_EVENTS.GET_PAGE_HTML: {
-          const html = this.getPageHTML();
-          sendResponse(html);
-          return;
-        }
-        case GLOBAL_EVENTS.SAVE_TO_NOTE: {
-          this.saveToNote(request);
-          sendResponse(true);
-          return;
-        }
-        default:
-          sendResponse(true);
-      }
+      };
+      window.addEventListener('message', onMessage);
     });
+    return this.sidePanelClipReadyPromise;
   }
-}
 
-function initBridge() {
-  contentExtensionBridge.connect();
+  private async initSidePanel(): Promise<boolean> {
+    if (this.initSidePanelPromise) {
+      return this.initSidePanelPromise;
+    }
+    this.initSidePanelPromise = new Promise(resolve => {
+      // 先注入 iframe 对样式
+      const style = document.createElement('style');
+      style.textContent = this.iframeCSSFieldContent;
+      document.head.appendChild(style);
+      // 创建 iframe
+      const iframe = document.createElement('iframe');
+      iframe.src = Chrome.runtime.getURL('sidePanel.html');
+      iframe.id = YQ_SANDBOX_BOARD_IFRAME;
+      this.rootContainer.appendChild(iframe);
+      this.addListenClipAssistantReady();
+      iframe.onload = () => {
+        this._sidePanelStatus = SidePanelStatus.InitReady;
+        this.sidePanelIframe = iframe;
+        resolve(true);
+      };
+    });
+    return this.initSidePanelPromise;
+  }
+
+  async removeIframe() {
+    await this.initSidePanel();
+    this.sidePanelIframe?.classList.remove('show');
+    this.sidePanelIframe?.blur();
+    // initWordMark();
+  }
+
+  async hiddenSidePanel() {
+    await this.initSidePanel();
+    this.sidePanelIframe?.classList.remove('show');
+    this.sidePanelIframe?.blur();
+    this._sidePanelStatus = SidePanelStatus.Hidden;
+  }
+
+  async showSidePanel() {
+    await this.initSidePanel();
+    this.sidePanelIframe?.classList.add('show');
+    this._sidePanelStatus = SidePanelStatus.Visible;
+  }
+
+  async toggleSidePanel() {
+    await this.initSidePanel();
+    switch (this.sidePanelStatus) {
+      case SidePanelStatus.InitReady: {
+        this.showSidePanel();
+        break;
+      }
+      case SidePanelStatus.Visible: {
+        this.hiddenSidePanel();
+        break;
+      }
+      case SidePanelStatus.Hidden: {
+        this.showSidePanel();
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  async sendMessageToClipAssistant(action: ClipAssistantMessageActions, data?: any) {
+    await this.initSidePanel();
+    await this.addListenClipAssistantReady();
+    this.sidePanelIframe?.contentWindow?.postMessage(
+      {
+        key: ClipAssistantMessageKey,
+        action,
+        data,
+      },
+      '*',
+    );
+  }
+
+  async sendMessageToAccountLayout(action: AccountLayoutMessageActions, data?: any) {
+    // 通知所有的 accountLayout 去触发强制更新，使用到的地方有 setting 页，sidePanel 页
+    this.sidePanelIframe?.contentWindow?.postMessage(
+      {
+        key: AccountLayoutMessageKey,
+        action,
+        data,
+      },
+      '*',
+    );
+  }
+
+  async sendMessageToWordMark(action: WordMarkMessageActions, data?: any) {
+    window.postMessage(
+      {
+        key: WordMarkMessageKey,
+        action,
+        data,
+      },
+      '*',
+    );
+  }
 }
 
 function initSandbox() {
   initI18N();
-  initBridge();
-
   window._yuque_ext_app = window._yuque_ext_app || new App();
 }
 
 initSandbox();
-
-initWordMark();

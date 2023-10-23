@@ -1,0 +1,59 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  background-color: @white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .loadingWrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .tip {
+      color: #00B96B;
+      margin-top: 16px;
+    }
+  }
+
+  .headerWrapper {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 32px;
+    padding: 16px 16px 0;
+
+    .headerItem {
+      cursor: pointer;
+      font-size: @font-size;
+      color: @text-primary;
+
+      .icon {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .editorWrapper {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding-top: 16px;
+  }
+
+  .saveOptionWrapper {
+    flex: 0 0 auto;
+    padding: 0 16px 24px;
+    display: flex;
+    justify-content: space-between;
+
+    .savePositionWrapper {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}

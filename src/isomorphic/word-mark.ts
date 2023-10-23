@@ -1,6 +1,6 @@
-import { Book } from '@/core/interface';
 import Chrome from '@/core/chrome';
 import { WordMarkOptionTypeEnum } from './constants';
+import { ISavePosition } from '@/core/bridge/background/request/mine';
 
 export enum WordMarkConfigKey {
   // 是否开启
@@ -24,7 +24,7 @@ export enum WordMarkConfigKey {
 
 export interface IWordMarkConfig {
   [WordMarkConfigKey.enable]: boolean;
-  [WordMarkConfigKey.defaultSavePosition]: Book;
+  [WordMarkConfigKey.defaultSavePosition]: ISavePosition;
   [WordMarkConfigKey.innerPinList]: Array<WordMarkOptionTypeEnum>;
   [WordMarkConfigKey.disableUrl]: Array<string>;
   [WordMarkConfigKey.evokePanelWhenClip]: boolean;
@@ -44,10 +44,7 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
   ],
   disableUrl: [],
   evokePanelWhenClip: false,
-  toolbars: [
-    WordMarkOptionTypeEnum.clipping,
-    WordMarkOptionTypeEnum.translate,
-  ],
+  toolbars: [WordMarkOptionTypeEnum.clipping, WordMarkOptionTypeEnum.translate],
 };
 
 export const getPageUrl = () => {

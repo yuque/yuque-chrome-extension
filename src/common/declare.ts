@@ -3,3 +3,5 @@ export interface MapT<T> {
 }
 
 export type VoidFunction = () => void;
+export type OneArgFunction = (data?: any) => void;
+export type OneArgFunctionT<T> = (data: T) => void;

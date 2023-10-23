@@ -1,0 +1,49 @@
+@import '~@/styles/parameters.less';
+
+.menus {
+  padding: 8px 4px;
+  // 28px 是为拖拽预留
+  width: 194px - 28px;
+}
+
+.menuItem {
+  display: flex;
+  cursor: pointer;
+  height: 32px;
+  font-size: 13px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: @text-primary;
+
+  &:hover {
+    background-color: @bg-primary-hover;
+
+    .action {
+      visibility: visible;
+    }
+  }
+}
+
+.nameWrapper {
+  flex: 1;
+  font-size: @font-size;
+  color: #262626;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action {
+  visibility: hidden;
+  flex: 0 0 auto;
+  font-size: @font-size;
+  transform: rotate(-45deg);
+}
+
+.pinned {
+  color: #00B96B;
+  visibility: visible;
+}

@@ -1,9 +1,13 @@
 import { pick } from 'lodash';
 import Chrome from '@/background/core/chrome';
-import { IOperateUserData, OperateUserEnum } from '@/isomorphic/background/user';
+import {
+  IOperateUserData,
+  OperateUserEnum,
+} from '@/isomorphic/background/user';
 import { SERVER_URLS } from '@/isomorphic/constants';
-import { mineProxy } from '@/core/proxy/mine';
+import { IUser } from '@/isomorphic/interface';
 import Storage from '@/background/core/storage';
+import requestFn from '@/background/core/request';
 import { STORAGE_KEYS } from '@/config';
 import { RequestMessage } from './index';
 
@@ -55,21 +59,33 @@ export async function createUserActionListener(
   const { type } = request.data;
   switch (type) {
     case OperateUserEnum.login: {
-      const windowId = await createLoginWindow();
-      await waitForWindowLogined(windowId);
-      await removeWindow(windowId);
-      const accountInfo = await mineProxy.getUserInfo();
-      const value = pick(accountInfo, ['id', 'login', 'name', 'avatar_url']);
-      const newValue = {
-        ...value,
-        login_at: Date.now(),
-      };
-      await Storage.update(STORAGE_KEYS.CURRENT_ACCOUNT, newValue);
-      callback(newValue);
-      break;
-    }
-    case OperateUserEnum.logout: {
-      break;
+      try {
+        const windowId = await createLoginWindow();
+        await waitForWindowLogined(windowId);
+        await removeWindow(windowId);
+        const { data, status } = await requestFn('/api/mine', {
+          method: 'GET',
+        });
+        if (status === 200) {
+          const accountInfo = (data as any).data as IUser;
+          const value = pick(accountInfo, [
+            'id',
+            'login',
+            'name',
+            'avatar_url',
+          ]);
+          const newValue = {
+            ...value,
+            login_at: Date.now(),
+          };
+          await Storage.update(STORAGE_KEYS.CURRENT_ACCOUNT, newValue);
+          callback(newValue);
+        }
+        callback(null);
+        break;
+      } catch (error) {
+        callback(error);
+      }
     }
     default: {
       callback(true);
