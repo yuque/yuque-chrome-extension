@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Switch } from 'antd';
-import { IWordMarkConfig, WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
+import { __i18n } from '@/isomorphic//i18n';
+import {
+  IWordMarkConfig,
+  WordMarkConfigKey,
+} from '@/isomorphic/constant/wordMark';
 import SelectSavePosition from '@/components/SelectSavePosition';
+import LinkHelper from '@/isomorphic/link-helper';
+import ShortItem from '@/components/ShortItem';
 import { backgroundBridge } from '@/core/bridge/background';
 import styles from './index.module.less';
 
@@ -40,6 +46,21 @@ function WordMark() {
               }
             />
           </div>
+          <div className={styles.configItem}>
+            <div className={styles.desc}>{__i18n('快捷键唤起工具栏')}</div>
+            <ShortItem
+              defaultShortcut={config[WordMarkConfigKey.evokeWordMarkShortKey]}
+              onRemoveShortcut={() => {
+                onConfigChange(WordMarkConfigKey.evokeWordMarkShortKey, '');
+              }}
+              onChangeShortCut={shortcut => {
+                onConfigChange(
+                  WordMarkConfigKey.evokeWordMarkShortKey,
+                  shortcut,
+                );
+              }}
+            />
+          </div>
         </div>
       </div>
 
@@ -71,6 +92,10 @@ function WordMark() {
             />
           </div>
         </div>
+
+        <a className={styles.more} href={LinkHelper.feedback} target="_blank">
+          {__i18n('需要更多划词快捷指令？')}
+        </a>
       </div>
     </div>
   );

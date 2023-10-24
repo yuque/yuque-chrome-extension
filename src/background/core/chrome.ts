@@ -28,7 +28,7 @@ export default {
   commands,
   sendMessageToCurrentTab: (message: any) =>
     new Promise(resolve => {
-      tabs.query({ active: true }, res => {
+      tabs.query({ active: true, lastFocusedWindow: true }, res => {
         const tabId = res[0]?.id;
         if (!tabId) {
           resolve(null);
@@ -41,15 +41,15 @@ export default {
     }),
   sendMessageToAllTab: (message: any) => {
     new Promise(resolve => {
-      tabs.query({ status: 'complete' }, (res) => {
+      tabs.query({ status: 'complete' }, res => {
         for (const tab of res) {
           if (tab.id) {
-            tabs.sendMessage(tab.id, message, (res) => {
+            tabs.sendMessage(tab.id, message, res => {
               resolve(res);
-            })
+            });
           }
         }
-      })
-    })
-  }
+      });
+    });
+  },
 };

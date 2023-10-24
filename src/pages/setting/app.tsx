@@ -7,7 +7,7 @@ import General from './general';
 import WordMark from './wordMark';
 import About from './about';
 import Help from './help';
-import Shortcut from './shortcut';
+// import Shortcut from './shortcut';
 import styles from './app.module.less';
 import '@/styles/global.less';
 
@@ -32,11 +32,11 @@ const menus = [
     key: Page.general,
     page: <General />,
   },
-  {
-    name: __i18n('快捷键设置'),
-    key: Page.shortcut,
-    page: <Shortcut />,
-  },
+  // {
+  //   name: __i18n('快捷键设置'),
+  //   key: Page.shortcut,
+  //   page: <Shortcut />,
+  // },
   {
     name: __i18n('划词工具栏'),
     key: Page.wordMark,

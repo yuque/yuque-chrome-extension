@@ -5,6 +5,7 @@ import React, {
   useState,
   useLayoutEffect,
 } from 'react';
+import keymaster from 'keymaster';
 import { message } from 'antd';
 import classnames from 'classnames';
 import LinkHelper from '@/isomorphic/link-helper';
@@ -36,6 +37,7 @@ function WordMarkApp() {
   const mouseupPositionRef = useRef({ x: 0, y: 0 });
   const isSaving = useRef(false);
   const wordMarkContext = useWordMarkContext();
+  const [visible, setVisible] = useState(false);
 
   const save = useCallback(
     async (text: string) => {
@@ -203,8 +205,20 @@ function WordMarkApp() {
     initPosition();
   }, [selectText, initPosition, type]);
 
+  useEffect(() => {
+    const onkeydown = (e: KeyboardEvent) => {
+      console.log('我是哈哈实话实说');
+      setVisible(v => !v);
+    }
+    keymaster(wordMarkContext.evokeWordMarkShortKey, onkeydown);
+
+    return () => {
+      keymaster.unbind(wordMarkContext.evokeWordMarkShortKey)
+    }
+  }, [wordMarkContext]);
+
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} style={visible ? {} : { display: 'none' }}>
       <div
         style={{
           left: `${wordMarkPositionRef.current.left}px`,

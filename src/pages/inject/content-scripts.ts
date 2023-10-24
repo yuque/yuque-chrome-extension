@@ -57,8 +57,7 @@ export class App {
   public removeWordMark: VoidCallback = () => {};
 
   constructor() {
-    this.initShadowRoot();
-    initContentScriptActionListener(this);
+    this.initRoot();
   }
 
   get rootContainer(): HTMLDivElement {
@@ -73,7 +72,7 @@ export class App {
     return this.sidePanelStatus !== SidePanelStatus.UnInit;
   }
 
-  private initShadowRoot() {
+  private initRoot() {
     const div = document.createElement('div');
     div.id = `yuque-extension-root-container`;
     div.classList.add('yuque-extension-root-container-class');
@@ -92,6 +91,7 @@ export class App {
         this.removeWordMark = createWordMark({
           dom: this.rootContainer,
         });
+        initContentScriptActionListener(this);
       });
   }
 
