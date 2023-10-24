@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import bowser from 'bowser';
 import { Input, InputRef } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { __i18n } from '@/isomorphic/i18n';
@@ -9,24 +10,31 @@ interface IShortcutItemProps {
   defaultShortcut?: string;
   onRemoveShortcut?: (shortcut: string) => void;
   onChangeShortCut?: (shortcut: string) => void;
+  readonly?: boolean;
 }
 
 const shortCutString = __i18n('设置快捷键');
 
-const shortcutHandler = new Shortcut({ platform: PlatformEnum.macOS });
+const shortcutHandler = new Shortcut({
+  platform:
+    bowser.getParser(navigator.userAgent).getOSName() === PlatformEnum.macOS
+      ? PlatformEnum.macOS
+      : PlatformEnum.windows,
+});
 
 function ShortcutItem(props: IShortcutItemProps) {
   const {
     defaultShortcut = '',
     onRemoveShortcut,
     onChangeShortCut,
+    readonly = false,
   } = props || {};
 
   const getShowString = (key: string) =>
     !key ? shortCutString : shortcutHandler.shortcutToShowString(key);
 
   const [editing, setEditing] = useState(false);
-  const [showString, setShowString] = useState(getShowString(defaultShortcut));
+  const [showString, setShowString] = useState('');
   const [currentKeyBoardInput, setCurrentKeyBoardInput] = useState('');
   const inputRef = useRef<InputRef>(null);
   const [showError, setShowError] = useState(false);
@@ -63,10 +71,17 @@ function ShortcutItem(props: IShortcutItemProps) {
     showText = currentKeyBoardInput || __i18n('请输入快捷键');
   }
 
+  useEffect(() => {
+    setShowString(getShowString(defaultShortcut));
+  }, [defaultShortcut]);
+
   return (
     <div
       className={styles.globalShortcut}
       onClick={() => {
+        if (readonly) {
+          return;
+        }
         if (!editing) {
           setEditing(true);
           inputRef.current?.focus();
@@ -89,13 +104,13 @@ function ShortcutItem(props: IShortcutItemProps) {
           className={styles.input}
         />
         <p className={styles.inputTip}>{showText}</p>
-        {showString && (
+        {showString && !readonly && (
           <div onClick={removeShortcut} className={styles.tooltip}>
             <CloseOutlined />
           </div>
         )}
       </div>
-      {showError && (
+      {showError && !readonly && (
         <div className={styles.error}>
           {__i18n('需以 Ctrl 键、Alt 键、Option 键或 ⌘ 键开头')}
         </div>

@@ -92,6 +92,11 @@ export async function createUserActionListener(
       }
       break;
     }
+    case OperateUserEnum.getUserShortCut: {
+      const result = await Chrome.commands.getAll();
+      callback(result);
+      break;
+    }
     default: {
       callback(true);
       break;

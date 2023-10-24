@@ -17,6 +17,17 @@ export function createUserBridge(impl: ICallBridgeImpl) {
           );
         });
       },
+      async getUserShortCut(): Promise<any[]> {
+        return new Promise(resolve => {
+          impl(
+            BackgroundEvents.OperateUser,
+            { type: OperateUserEnum.getUserShortCut },
+            res => {
+              resolve(res);
+            },
+          );
+        });
+      },
     },
   };
 }
