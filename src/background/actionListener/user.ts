@@ -87,10 +87,10 @@ export async function createUserActionListener(
           callback(newValue);
         }
         callback(null);
-        break;
       } catch (error) {
         callback(error);
       }
+      break;
     }
     default: {
       callback(true);

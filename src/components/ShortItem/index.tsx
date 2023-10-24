@@ -34,7 +34,6 @@ function ShortcutItem(props: IShortcutItemProps) {
   const handleKeyboardInput = async (e: React.KeyboardEvent) => {
     const { keyboardString, shortcut } =
       shortcutHandler.getShortcutByKeyboard(e);
-    console.log(keyboardString, shortcut);
     if (!keyboardString) {
       setShowError(true);
       return;

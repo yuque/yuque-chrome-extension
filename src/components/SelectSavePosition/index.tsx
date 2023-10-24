@@ -45,7 +45,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
 
   const onSelect = useCallback(
     (id: number) => {
-      const item = savePositionList.find(item => item.id === id);
+      const item = savePositionList.find(i => i.id === id);
       if (rememberKey) {
         backgroundBridge.storage.update(rememberKey, item);
       }

@@ -9,7 +9,6 @@ export const builtinManifests = {
     label: '剪藏助手',
     description: '',
     icon: ClipAssistantSvg,
-    hasWatermark: true,
     disableUnpin: true,
     Provider: DataClipSidebarProvider,
     id: 1,

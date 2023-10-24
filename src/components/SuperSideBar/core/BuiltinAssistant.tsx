@@ -29,7 +29,6 @@ export class BuiltinAssistant implements IAssistant {
 
   priority: string;
 
-  hasWatermark?: boolean;
 
   provider: ISideContentProvider;
 
@@ -43,7 +42,6 @@ export class BuiltinAssistant implements IAssistant {
     this.label = this.getLabel(manifest.label) || builtinManifest.label;
     this.description = manifest.description || builtinManifest.description;
     this.icon = this.getIconNode(manifest.icon) || builtinManifest.icon;
-    this.hasWatermark = manifest.hasWatermark || builtinManifest.hasWatermark;
     const Provider = manifest.Provider || builtinManifest.Provider;
     this.provider = new Provider();
   }

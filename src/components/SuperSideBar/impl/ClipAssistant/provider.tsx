@@ -20,7 +20,9 @@ export class DataClipSidebarProvider extends SideContentProviderWithDatasource<C
     return true;
   }
 
-  initialize(contextData: ISidebarContextData): void {}
+  initialize(contextData: ISidebarContextData): void {
+    // ignore
+  }
 
   destroy() {
     // ignore

@@ -277,7 +277,9 @@ function ClipContent() {
         <LakeEditor
           ref={editorRef}
           value=""
-          onSave={() => {}}
+          onSave={() => {
+            //
+          }}
           onLoad={onLoad}
           uploadImage={onUploadImage as any}
         />

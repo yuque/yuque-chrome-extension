@@ -73,8 +73,12 @@ function SuperSidebarContainer() {
     scrollToBottom(immediately?: boolean) {
       scrollerRef.current?.scrollToBottom(immediately);
     },
-    renderDrawer: conf => {},
-    closeDrawer: () => {},
+    renderDrawer: conf => {
+      //
+    },
+    closeDrawer: () => {
+      //
+    },
   }).current;
 
   useEffect(() => {

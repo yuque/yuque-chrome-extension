@@ -54,7 +54,9 @@ export class App {
    */
   public isOperateSelecting = false;
 
-  public removeWordMark: VoidCallback = () => {};
+  public removeWordMark: VoidCallback = () => {
+    //
+  };
 
   constructor() {
     this.initRoot();

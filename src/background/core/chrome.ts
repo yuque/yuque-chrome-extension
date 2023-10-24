@@ -34,8 +34,8 @@ export default {
           resolve(null);
           return;
         }
-        tabs.sendMessage(tabId, message, res => {
-          resolve(res);
+        tabs.sendMessage(tabId, message, res1 => {
+          resolve(res1);
         });
       });
     }),
@@ -44,8 +44,8 @@ export default {
       tabs.query({ status: 'complete' }, res => {
         for (const tab of res) {
           if (tab.id) {
-            tabs.sendMessage(tab.id, message, res => {
-              resolve(res);
+            tabs.sendMessage(tab.id, message, res1 => {
+              resolve(res1);
             });
           }
         }

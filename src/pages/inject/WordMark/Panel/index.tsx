@@ -69,6 +69,10 @@ function WordMarkPanel(props: WordMarkPanelProps) {
         }
         setResult(data.join(''));
         setLoading(false);
+        break;
+      }
+      default: {
+        break;
       }
     }
   };

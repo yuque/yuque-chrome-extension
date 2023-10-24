@@ -139,7 +139,12 @@ function TagMenu(props: ITagMenuProps) {
       )}
 
       {!suggestTags.length && (
-        <div className={styles.create} onClick={() => {}}>
+        <div
+          className={styles.create}
+          onClick={() => {
+            onCreateTag(inputText);
+          }}
+        >
           <PlusOutlined className={styles.icon} />
           <span className={styles.text}>
             {__i18n('创建标签 “{name}”', { name: inputText })}
