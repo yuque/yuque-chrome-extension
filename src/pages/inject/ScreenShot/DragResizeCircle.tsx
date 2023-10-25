@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
-import styles from './drag-line.module.less';
+import classnames from 'classnames';
+import styles from './DragResizeCircle.module.less';
 
-export type DragDirection = 'top' | 'bottom' | 'left' | 'right';
+export type DragResizeCircleDirection =
+  | 'topLeft'
+  | 'topCenter'
+  | 'topRight'
+  | 'leftCenter'
+  | 'rightCenter'
+  | 'bottomLeft'
+  | 'bottomCenter'
+  | 'bottomRight';
 
-interface IDragLineProps {
-  direction: DragDirection;
-  width: number;
-  height: number;
-  updatePosition: (event: React.DragEvent<HTMLDivElement>, resetPosition?: boolean) => void;
+interface IDragResizeCircleProps {
+  direction: DragResizeCircleDirection;
+  updatePosition: (
+    event: React.DragEvent<HTMLDivElement>,
+    resetPosition?: boolean,
+  ) => void;
   handleDragEnd: () => void;
 }
 
-const DragLine = (props: IDragLineProps) => {
-  const { direction, width, height, updatePosition } = props;
+const DragResizeCircle = (props: IDragResizeCircleProps) => {
+  const { direction, updatePosition } = props;
   const [dragging, setDragging] = useState(false);
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
@@ -33,11 +43,7 @@ const DragLine = (props: IDragLineProps) => {
   return (
     <>
       <div
-        className={styles[`${direction}Line`]}
-        style={{
-          width: `${width}px`,
-          height: `${height}px`,
-        }}
+        className={classnames(styles[`${direction}Circle`], styles.circle)}
         onMouseDown={handleDragStart}
         onDragStart={handleDragStart}
         onDrag={handleDrag}
@@ -58,4 +64,4 @@ const DragLine = (props: IDragLineProps) => {
   );
 };
 
-export default React.memo(DragLine);
+export default React.memo(DragResizeCircle);

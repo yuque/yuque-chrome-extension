@@ -1,0 +1,77 @@
+@import '~@/styles/parameters.less';
+
+.circle {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  width: 8px;
+  height: 8px;
+  background-color: @white;
+  border-radius: 50%;
+  z-index: @z-index-max;
+  position: absolute;
+}
+
+.topLeftCircle {
+  left: 0;
+  top: 0;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: nwse-resize;
+}
+
+.topCenterCircle {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: ns-resize;
+}
+
+.topRightCircle {
+  left: 100%;
+  top: 0;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: nesw-resize;
+}
+
+.leftCenterCircle {
+  left: 0%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: ew-resize;
+}
+
+.rightCenterCircle {
+  left: 100%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: ew-resize;
+}
+
+.bottomLeftCircle {
+  left: 0%;
+  top: 100%;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: nesw-resize;
+}
+
+.bottomCenterCircle {
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: ns-resize;
+}
+
+.bottomRightCircle {
+  left: 100%;
+  top: 100%;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: nwse-resize;
+}
+
+.dragBarMask {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: @z-index-max + 1;
+}
