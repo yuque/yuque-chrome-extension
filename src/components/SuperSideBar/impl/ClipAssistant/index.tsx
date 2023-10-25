@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { Button, Spin, message } from 'antd';
+import { Button, Spin, Tooltip, message } from 'antd';
 import classnames from 'classnames';
 import Icon, { LinkOutlined } from '@ant-design/icons';
 import { __i18n } from '@/isomorphic/i18n';
@@ -19,6 +19,7 @@ import {
   ISavePosition,
 } from '@/core/bridge/background/request/mine';
 import { ITag } from '@/core/bridge/background/request/tag';
+import useClipShortCut from '@/hooks/useClipShortCut';
 import {
   ClipSelectAreaId,
   ClipScreenOcrId,
@@ -35,6 +36,7 @@ import styles from './index.module.less';
 
 function ClipContent() {
   const editorRef = useRef<IEditorRef>(null);
+  const shortcutMap = useClipShortCut();
   const [loading, setLoading] = useState<{
     type?: 'ocr';
     loading: boolean;
@@ -248,30 +250,44 @@ function ClipContent() {
     >
       {renderLoading()}
       <div className={styles.headerWrapper}>
-        <div
-          className={styles.headerItem}
-          onClick={onSelectArea}
-          id={ClipSelectAreaId}
+        <Tooltip
+          title={shortcutMap.selectArea}
+          getPopupContainer={node => node}
         >
-          <Icon component={ClipperSvg} className={styles.icon} />
-          <span>{__i18n('选取剪藏')}</span>
-        </div>
-        <div
-          className={styles.headerItem}
-          onClick={onScreenOcr}
-          id={ClipScreenOcrId}
+          <div
+            className={styles.headerItem}
+            onClick={onSelectArea}
+            id={ClipSelectAreaId}
+          >
+            <Icon component={ClipperSvg} className={styles.icon} />
+            <span>{__i18n('选取剪藏')}</span>
+          </div>
+        </Tooltip>
+        <Tooltip title={shortcutMap.startOcr} getPopupContainer={node => node}>
+          <div
+            className={styles.headerItem}
+            onClick={onScreenOcr}
+            id={ClipScreenOcrId}
+          >
+            <Icon component={OcrSvg} className={styles.icon} />
+            <span>{__i18n('OCR 提取')}</span>
+          </div>
+        </Tooltip>
+
+        <Tooltip
+          title={shortcutMap.collectLink}
+          placement="top"
+          getPopupContainer={node => node}
         >
-          <Icon component={OcrSvg} className={styles.icon} />
-          <span>{__i18n('OCR 提取')}</span>
-        </div>
-        <div
-          className={styles.headerItem}
-          onClick={onCollectLink}
-          id={ClipCollectLinkId}
-        >
-          <LinkOutlined className={styles.icon} />
-          <span>{__i18n('链接收藏')}</span>
-        </div>
+          <div
+            className={styles.headerItem}
+            onClick={onCollectLink}
+            id={ClipCollectLinkId}
+          >
+            <LinkOutlined className={styles.icon} />
+            <span>{__i18n('链接收藏')}</span>
+          </div>
+        </Tooltip>
       </div>
       <div className={styles.editorWrapper}>
         <LakeEditor

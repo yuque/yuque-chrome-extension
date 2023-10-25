@@ -1,5 +1,5 @@
-import { ConfigProvider } from 'antd';
 import React from 'react';
+import { ConfigProvider } from 'antd';
 
 interface IAntdLayoutProps {
   children: React.ReactNode;
@@ -12,6 +12,8 @@ function AntdLayout(props: IAntdLayoutProps) {
       theme={{
         token: {
           colorPrimary: '#00B96B',
+          colorBorder: '#EFEFEF',
+          colorText: '#585A5A',
         },
       }}
     >

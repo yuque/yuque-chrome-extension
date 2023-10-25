@@ -5,3 +5,10 @@ export interface IUser {
   login_at: number;
   name: string;
 }
+
+export interface IShortcutMap {
+  collectLink?: string;
+  openSidePanel?: string;
+  selectArea?: string;
+  startOcr?: string;
+}

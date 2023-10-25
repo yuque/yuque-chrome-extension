@@ -1,11 +1,14 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { Select } from 'antd';
+import Icon from '@ant-design/icons';
+import { SelectCommonPlacement } from 'antd/es/_util/motion';
 import { backgroundBridge } from '@/core/bridge/background';
 import {
   DefaultSavePosition,
   ISavePosition,
 } from '@/core/bridge/background/request/mine';
-import { SelectCommonPlacement } from 'antd/es/_util/motion';
+import ArrowDown from '@/assets/svg/arrow-down.svg';
+import styles from './index.module.less';
 
 export interface ISelectSavePositionProps {
   onChange?: (item: ISavePosition) => void;
@@ -81,6 +84,8 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
       placement={placement}
       options={list}
       onSelect={onSelect}
+      className={styles.selectWrapper}
+      suffixIcon={<Icon component={ArrowDown} className={styles.iconWrapper} />}
     />
   );
 }

@@ -1,6 +1,6 @@
 import { BackgroundEvents } from '@/isomorphic/background';
 import { OperateUserEnum } from '@/isomorphic/background/user';
-import { IUser } from '@/isomorphic/interface';
+import { IShortcutMap, IUser } from '@/isomorphic/interface';
 import { ICallBridgeImpl } from './index';
 
 export function createUserBridge(impl: ICallBridgeImpl) {
@@ -17,13 +17,17 @@ export function createUserBridge(impl: ICallBridgeImpl) {
           );
         });
       },
-      async getUserShortCut(): Promise<any[]> {
+      async getUserShortCut(): Promise<IShortcutMap> {
         return new Promise(resolve => {
           impl(
             BackgroundEvents.OperateUser,
             { type: OperateUserEnum.getUserShortCut },
             res => {
-              resolve(res);
+              const map: IShortcutMap = {};
+              for (const item of res) {
+                map[item.name as keyof IShortcutMap] = item.shortcut;
+              }
+              resolve(map);
             },
           );
         });

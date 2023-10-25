@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import classnames from 'classnames';
 import { Button, Popover } from 'antd';
 import useClickAway from '@/hooks/useClickAway';
 import { __i18n } from '@/isomorphic/i18n';
@@ -49,7 +50,7 @@ function AddTagButton(props: IAddTagButtonProps) {
       arrow={false}
     >
       <Button
-        className="add-tag-button"
+        className={classnames("add-tag-button", styles.button)}
         onClick={() => {
           setOpen(!open);
         }}

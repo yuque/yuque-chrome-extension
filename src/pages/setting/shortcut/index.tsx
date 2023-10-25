@@ -1,31 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { backgroundBridge } from '@/core/bridge/background';
+import useClipShortCut from '@/hooks/useClipShortCut';
 import ShortcutItem from '@/components/ShortItem';
 import { browserSystemLink } from '@/core/browser-system-link';
 import styles from './index.module.less';
 
-interface IShortcutMap {
-  collectLink?: string;
-  openSidePanel?: string;
-  selectArea?: string;
-  selectOcr?: string;
-}
-
 function Shortcut() {
-  const [shortcutMap, setShortcutMap] = useState<IShortcutMap>({});
+  const shortcutMap = useClipShortCut();
   const openShortCut = () => {
     backgroundBridge.tab.create(browserSystemLink.shortCut);
   };
-
-  useEffect(() => {
-    backgroundBridge.user.getUserShortCut().then(res => {
-      const map: IShortcutMap = {};
-      for (const item of res) {
-        map[item.name as keyof IShortcutMap] = item.shortcut;
-      }
-      setShortcutMap(map);
-    });
-  }, []);
 
   return (
     <div className={styles.configWrapper}>
@@ -61,7 +45,7 @@ function Shortcut() {
           </div>
           <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('OCR 提取')}</div>
-            <ShortcutItem defaultShortcut={shortcutMap.selectOcr} readonly />
+            <ShortcutItem defaultShortcut={shortcutMap.startOcr} readonly />
           </div>
           <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('收藏链接')}</div>

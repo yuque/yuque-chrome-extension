@@ -11,9 +11,9 @@
 
   .tag {
     display: flex;
-    border: 1px solid @border-light-color;
+    border: 1px solid @border-color-primary;
     padding: 0 12px;
-    border-radius: 15px;
+    border-radius: 6px;
     line-height: 30px;
     gap: 4px;
     color: @grey-8;
@@ -24,12 +24,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      color: @text-color;
     }
 
     .close {
       cursor: pointer;
       display: flex;
       align-items: center;
+      color: @text-color-secondary;
 
       svg {
         font-size: @font-size-sm;
