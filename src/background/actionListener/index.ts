@@ -53,9 +53,9 @@ export const initBackGroundActionListener = () => {
           createWordMarkConfigActionListener(request, sendResponse);
           break;
         }
-        default:
-          sendResponse(true);
+        default: {
           break;
+        }
       }
       return true;
     },

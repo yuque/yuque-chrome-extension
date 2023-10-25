@@ -134,9 +134,9 @@ export const initContentScriptActionListener = (context: App) => {
           sendResponse(true);
           break;
         }
-        default:
-          sendResponse(true);
+        default: {
           break;
+        }
       }
       return true;
     },
