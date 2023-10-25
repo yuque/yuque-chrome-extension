@@ -207,7 +207,7 @@ function WordMarkApp() {
 
   useEffect(() => {
     const onkeydown = (e: KeyboardEvent) => {
-      console.log('我是哈哈实话实说');
+      e.preventDefault();
       setVisible(v => !v);
     }
     keymaster(wordMarkContext.evokeWordMarkShortKey, onkeydown);

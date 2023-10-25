@@ -17,7 +17,7 @@ const shortCutString = __i18n('设置快捷键');
 
 const shortcutHandler = new Shortcut({
   platform:
-    bowser.getParser(navigator.userAgent).getOSName() === PlatformEnum.macOS
+    bowser.getParser(navigator.userAgent).getOSName() === 'macOS'
       ? PlatformEnum.macOS
       : PlatformEnum.windows,
 });
@@ -40,6 +40,7 @@ function ShortcutItem(props: IShortcutItemProps) {
   const [showError, setShowError] = useState(false);
 
   const handleKeyboardInput = async (e: React.KeyboardEvent) => {
+    e.preventDefault();
     const { keyboardString, shortcut } =
       shortcutHandler.getShortcutByKeyboard(e);
     if (!keyboardString) {
@@ -49,7 +50,7 @@ function ShortcutItem(props: IShortcutItemProps) {
     setShowError(false);
     setCurrentKeyBoardInput(keyboardString);
     if (shortcut) {
-      onChangeShortCut?.(keyboardString);
+      onChangeShortCut?.(shortcut);
       inputRef.current?.blur();
       setEditing(false);
       setCurrentKeyBoardInput('');

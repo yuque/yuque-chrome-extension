@@ -1,5 +1,7 @@
+import Keymaster from 'keymaster';
 import { invert } from 'lodash';
 
+Keymaster
 export enum PlatformEnum {
   macOS = 'macOs',
   windows = 'windows',
@@ -38,16 +40,16 @@ const EVENTKEY_TO_KEYBOARD = {
   },
 };
 
-// 键盘功能键映射 electron 的快捷键配置
+// 键盘功能键映射的快捷键配置
 const KEYBOARD_TO_SHORTCUT = {
   [PlatformEnum.macOS]: {
     '⇧': 'Shift',
-    '⌘': 'CommandOrControl',
+    '⌘': '⌘',
     '⌥': 'Alt',
     '^': 'Ctrl',
   },
   [PlatformEnum.windows]: {
-    Ctrl: 'CommandOrControl',
+    Ctrl: 'Ctrl',
     Shift: 'Shift',
     Alt: 'Alt',
   },
@@ -71,9 +73,10 @@ class Shortcut {
   private shortcutSep = '+';
   private shortcutToKeyboard: any;
   constructor(options: IShortcutOptions) {
+    console.log(options, '我啥哈哈')
     const { platform } = options;
     this.eventKeyToKeyboard = EVENTKEY_TO_KEYBOARD[platform];
-    // 键盘按钮 - electron 快捷键的映射
+    // 键盘按钮快捷键的映射
     this.keyBoardToShortcut = KEYBOARD_TO_SHORTCUT[platform];
     // 不同平台展示快捷键的分隔符
     this.keyBoardStringSep = SEP[platform];
@@ -148,7 +151,7 @@ class Shortcut {
   }
 
   /**
-   * 把键盘的功能键转换成 electron 快捷键的
+   * 把键盘的功能键转换成快捷键的
    */
   private metaKeyToShortcut(metaKeyArr: string[]) {
     const { keyBoardToShortcut } = this;
@@ -161,8 +164,7 @@ class Shortcut {
   }
 
   /**
-   * electron 快捷键转成对应平台的展示文案
-   * CommandOrControl => ⌘
+   * 快捷键转成对应平台的展示文案
    * @param {string} shortcut
    */
   shortcutToShowString(shortcut: string) {

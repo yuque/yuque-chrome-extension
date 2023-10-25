@@ -18,6 +18,9 @@ function WordMarkLayout(props: IWordMarkLayoutProps) {
 
   const isEnableWordMark = (config: IWordMarkConfig | null) => {
     const url = `${window.location.origin}${window.location.pathname}`;
+    if (config?.evokeWordMarkShortKey) {
+      return true;
+    }
     if (!config?.enable || config.disableUrl?.includes(url)) {
       return false;
     }
