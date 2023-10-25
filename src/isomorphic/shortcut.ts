@@ -1,7 +1,5 @@
-import Keymaster from 'keymaster';
 import { invert } from 'lodash';
 
-Keymaster
 export enum PlatformEnum {
   macOS = 'macOs',
   windows = 'windows',
@@ -73,7 +71,6 @@ class Shortcut {
   private shortcutSep = '+';
   private shortcutToKeyboard: any;
   constructor(options: IShortcutOptions) {
-    console.log(options, '我啥哈哈')
     const { platform } = options;
     this.eventKeyToKeyboard = EVENTKEY_TO_KEYBOARD[platform];
     // 键盘按钮快捷键的映射
