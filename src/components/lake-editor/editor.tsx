@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { Root, createRoot } from 'react-dom/client';
+import { __i18n } from '@/isomorphic/i18n';
 import bowser from 'bowser';
 import OcrIconSvg from '@/assets/svg/ocr-icon.svg';
 import loadLakeEditor from './load';
@@ -169,6 +170,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
               },
             ],
           },
+          placeholder: __i18n('记你想记'),
         });
         newEditor.on('visitLink', (url: string) => {
           window.open(url, '__blank');

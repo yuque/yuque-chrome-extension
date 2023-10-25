@@ -27,7 +27,9 @@ function General() {
           />
         </div>
         <div className={styles.operateWrapper}>
-          <Button onClick={onLogout}>{__i18n('退出登录')}</Button>
+          <Button onClick={onLogout} className={styles.button}>
+            {__i18n('退出登录')}
+          </Button>
         </div>
       </div>
     </div>

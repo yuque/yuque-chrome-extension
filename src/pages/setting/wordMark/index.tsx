@@ -46,21 +46,25 @@ function WordMark() {
               }
             />
           </div>
-          <div className={styles.configItem}>
-            <div className={styles.desc}>{__i18n('快捷键唤起工具栏')}</div>
-            <ShortItem
-              defaultShortcut={config[WordMarkConfigKey.evokeWordMarkShortKey]}
-              onRemoveShortcut={() => {
-                onConfigChange(WordMarkConfigKey.evokeWordMarkShortKey, '');
-              }}
-              onChangeShortCut={shortcut => {
-                onConfigChange(
-                  WordMarkConfigKey.evokeWordMarkShortKey,
-                  shortcut,
-                );
-              }}
-            />
-          </div>
+          {!config.enable && (
+            <div className={styles.configItem}>
+              <div className={styles.desc}>{__i18n('快捷键唤起工具栏')}</div>
+              <ShortItem
+                defaultShortcut={
+                  config[WordMarkConfigKey.evokeWordMarkShortKey]
+                }
+                onRemoveShortcut={() => {
+                  onConfigChange(WordMarkConfigKey.evokeWordMarkShortKey, '');
+                }}
+                onChangeShortCut={shortcut => {
+                  onConfigChange(
+                    WordMarkConfigKey.evokeWordMarkShortKey,
+                    shortcut,
+                  );
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
 

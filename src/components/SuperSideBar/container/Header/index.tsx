@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon, { CloseOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
+import { STORAGE_KEYS } from '@/config';
 import { __i18n } from '@/isomorphic/i18n';
 import { isRunningInjectPage } from '@/core/uitl';
 import LinkHelper from '@/isomorphic/link-helper';
@@ -11,16 +13,36 @@ import HomeSvg from '@/assets/svg/home.svg';
 import styles from './index.module.less';
 
 function SuperSidebarHeader() {
+  const [showTip, setShowTip] = useState(false);
   const openHome = () => {
     window.open(LinkHelper.dashboard);
   };
+
+  const hiddenTip = () => {
+    backgroundBridge.storage.update(STORAGE_KEYS.TIP.READ_SHORTCUT, true);
+    setShowTip(false);
+  };
+
   const openSetting = () => {
+    if (showTip) {
+      window.open(LinkHelper.shortcutSettingPage);
+      hiddenTip();
+      return;
+    }
     window.open(LinkHelper.settingPage);
   };
 
   const closeSidePanel = () => {
     backgroundBridge.sidePanel.close();
   };
+
+  useEffect(() => {
+    backgroundBridge.storage.get(STORAGE_KEYS.TIP.READ_SHORTCUT).then(res => {
+      if (!res) {
+        setShowTip(true);
+      }
+    });
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -33,9 +55,25 @@ function SuperSidebarHeader() {
           <div className={styles.itemWrapper} onClick={openHome}>
             <Icon component={HomeSvg} />
           </div>
-          <div className={styles.itemWrapper} onClick={openSetting}>
-            <Icon component={SettingSvg} />
-          </div>
+          <Tooltip
+            title={
+              <span>
+                {__i18n('立即设置快捷键，为操作提效')}
+                <CloseOutlined
+                  className={styles.closeTip}
+                  onClick={hiddenTip}
+                />
+              </span>
+            }
+            placement="bottomLeft"
+            open={showTip}
+            overlayClassName={styles.tooltipWrapper}
+            getPopupContainer={node => node.parentNode as HTMLElement}
+          >
+            <div className={styles.itemWrapper} onClick={openSetting}>
+              <Icon component={SettingSvg} />
+            </div>
+          </Tooltip>
           <UserAvatar />
         </div>
         {isRunningInjectPage && (
