@@ -37,7 +37,7 @@ export function createTabBridge(impl: ICallBridgeImpl) {
             },
           );
         });
-      }
+      },
     },
   };
 }

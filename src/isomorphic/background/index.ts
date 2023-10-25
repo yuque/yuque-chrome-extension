@@ -1,4 +1,3 @@
-
 export enum BackgroundEvents {
   OperateStorage = 'background/operate-storage',
   OperateWindow = 'background/operate-window',

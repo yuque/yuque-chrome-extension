@@ -2,7 +2,7 @@ import Chrome from '@/core/chrome';
 import { initI18N } from '@/isomorphic/i18n';
 import {
   ClipAssistantMessageActions,
-  ClipAssistantMessageKey
+  ClipAssistantMessageKey,
 } from '@/isomorphic/event/clipAssistant';
 import {
   WordMarkMessageActions,
@@ -76,7 +76,7 @@ export class App {
 
   private initRoot() {
     const div = document.createElement('div');
-    div.id = `yuque-extension-root-container`;
+    div.id = 'yuque-extension-root-container';
     div.classList.add('yuque-extension-root-container-class');
     const css = Chrome.runtime.getURL('content-scripts.css');
     fetch(css)

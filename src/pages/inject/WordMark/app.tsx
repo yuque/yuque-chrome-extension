@@ -209,12 +209,12 @@ function WordMarkApp() {
     const onkeydown = (e: KeyboardEvent) => {
       e.preventDefault();
       setVisible(v => !v);
-    }
+    };
     keymaster(wordMarkContext.evokeWordMarkShortKey, onkeydown);
 
     return () => {
-      keymaster.unbind(wordMarkContext.evokeWordMarkShortKey)
-    }
+      keymaster.unbind(wordMarkContext.evokeWordMarkShortKey);
+    };
   }, [wordMarkContext]);
 
   return (

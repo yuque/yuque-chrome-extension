@@ -50,4 +50,3 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
   toolbars: [WordMarkOptionTypeEnum.clipping, WordMarkOptionTypeEnum.translate],
   evokeWordMarkShortKey: '',
 };
-

@@ -1,4 +1,3 @@
-
 export enum ContentScriptEvents {
   ScreenOcr = 'contentScript/screenOcr',
   SelectArea = 'contentScript/selectArea',
@@ -6,6 +5,6 @@ export enum ContentScriptEvents {
   ToggleSidePanel = 'contentScript/toggleSidePanel',
   WordMarkConfigChange = 'contentScript/wordMarkConfigChange',
   AddContentToClipAssistant = 'contentScript/addContentToClipAssistant',
-  ForceUpgradeVersion= 'contentScript/forceUpgradeVersion',
-  LoginOut= 'contentScript/LoginOut',
+  ForceUpgradeVersion = 'contentScript/forceUpgradeVersion',
+  LoginOut = 'contentScript/LoginOut',
 }

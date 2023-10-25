@@ -152,7 +152,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                           typeof widget.enable === 'function'
                             ? () => (widget.enable as (ui: any) => boolean)(cardUI)
                             : () => !!widget.enable,
-                      }))
+                      })),
                     });
                   });
                   return cardUI.cardData.getOcrLocations()?.length > 0;

@@ -21,4 +21,3 @@ export const __i18n: (text: string, params?: {[key: string]: string}) => string 
   en: {},
   useEn: () => true,
 });
-

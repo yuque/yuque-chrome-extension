@@ -10,7 +10,6 @@ import SettingSvg from '@/assets/svg/setting.svg';
 import HomeSvg from '@/assets/svg/home.svg';
 import styles from './index.module.less';
 
-
 function SuperSidebarHeader() {
   const openHome = () => {
     window.open(LinkHelper.dashboard);

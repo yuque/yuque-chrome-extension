@@ -7,15 +7,6 @@ import {
 } from '@/components/SuperSideBar/declare';
 import { IAssistantManifest } from './IAssistantManifest';
 
-function* builtinPriorityGenerator() {
-  let priority = 0;
-  while (true) {
-    yield `a${++priority}`;
-  }
-}
-
-const builtinPriorityGeneratorInstance = builtinPriorityGenerator()!;
-
 export class BuiltinAssistant implements IAssistant {
   id: number;
 
@@ -29,15 +20,13 @@ export class BuiltinAssistant implements IAssistant {
 
   priority: string;
 
-
   provider: ISideContentProvider;
 
   constructor(manifest: IAssistantManifest) {
     const builtinManifest = builtinManifests[manifest.type];
 
     this.id = manifest.id;
-    this.priority =
-      manifest.priority || builtinPriorityGeneratorInstance.next().value!;
+    this.priority = manifest.priority;
     this.type = manifest.type;
     this.label = this.getLabel(manifest.label) || builtinManifest.label;
     this.description = manifest.description || builtinManifest.description;

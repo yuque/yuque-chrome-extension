@@ -6,7 +6,7 @@ import { __i18n } from '@/isomorphic/i18n';
 import TagMenu, { ITagMenuProps } from './TagMenu';
 import styles from './index.module.less';
 
-interface IAddTagButtonProps extends ITagMenuProps {}
+type IAddTagButtonProps = ITagMenuProps;
 
 function AddTagButton(props: IAddTagButtonProps) {
   const { tags, selectTags, updateSelectTags, updateTags } = props;
@@ -50,7 +50,7 @@ function AddTagButton(props: IAddTagButtonProps) {
       arrow={false}
     >
       <Button
-        className={classnames("add-tag-button", styles.button)}
+        className={classnames('add-tag-button', styles.button)}
         onClick={() => {
           setOpen(!open);
         }}

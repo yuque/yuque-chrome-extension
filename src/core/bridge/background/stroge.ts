@@ -10,7 +10,7 @@ export function createStorageBridge(impl: ICallBridgeImpl) {
           impl(
             BackgroundEvents.OperateStorage,
             { key, type: OperateStorageEnum.get },
-            (res) => {
+            res => {
               resolve(res);
             },
           );

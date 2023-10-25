@@ -179,9 +179,9 @@ function App(props: IAppProps) {
       <div
         className={styles.screenBackgroundLeft}
         style={{
-          left: `0`,
-          top: `0`,
-          bottom: `0`,
+          left: '0',
+          top: '0',
+          bottom: '0',
           width: `${selectAreaLeft}px`,
         }}
       />
@@ -189,7 +189,7 @@ function App(props: IAppProps) {
         className={styles.screenBackgroundTop}
         style={{
           left: `${selectAreaLeft}px`,
-          top: `0`,
+          top: '0',
           height: `${selectAreaTop}px`,
           width: `${selectAreaRight - selectAreaLeft}px`,
         }}
@@ -198,9 +198,9 @@ function App(props: IAppProps) {
         className={styles.screenBackgroundRight}
         style={{
           left: `${selectAreaRight}px`,
-          right: `0`,
-          top: `0`,
-          bottom: `0`,
+          right: '0',
+          top: '0',
+          bottom: '0',
         }}
       />
       <div
@@ -209,7 +209,7 @@ function App(props: IAppProps) {
           left: `${selectAreaLeft}px`,
           width: `${selectAreaRight - selectAreaLeft}px`,
           top: `${selectAreaBottom}px`,
-          bottom: `0`,
+          bottom: '0',
         }}
       />
       <div

@@ -1,4 +1,3 @@
-
 // 划词操作类型
 export enum WordMarkOptionTypeEnum {
   /**

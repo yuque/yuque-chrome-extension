@@ -10,7 +10,6 @@ import DragList from '@/components/DragList';
 import { ToolbarItem, toolbars as defaultToolbars } from '../constants';
 import styles from './OperateMenu.module.less';
 
-
 interface IOperateMenuProps {
   pinList: WordMarkOptionTypeEnum[];
   handlePin: (type: WordMarkOptionTypeEnum) => void;

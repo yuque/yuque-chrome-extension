@@ -123,15 +123,15 @@ async function request<T>(
         action: ContentScriptEvents.ForceUpgradeVersion,
         data: {
           html: responseJson?.html,
-        }
-      })
+        },
+      });
       throw responseJson;
     }
     // 登录过期
     if (response.status === 401 && responseJson.message === 'Unauthorized') {
       Chrome.sendMessageToAllTab({
         action: ContentScriptEvents.LoginOut,
-      })
+      });
       throw responseJson;
     }
     if (!(response.status >= 200 && response.status < 300)) {

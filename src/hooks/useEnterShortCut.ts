@@ -15,7 +15,7 @@ export function useEnterShortcut(props: IUseShortcutProps) {
     const onOk = (e: KeyboardEvent) => {
       e.preventDefault();
       props.onOk();
-    }
+    };
     keymaster(okKey, onOk);
     return () => keymaster.unbind(okKey);
   }, [props.onOk, okKey]);
@@ -24,7 +24,7 @@ export function useEnterShortcut(props: IUseShortcutProps) {
     const onCancel = (e: KeyboardEvent) => {
       e.preventDefault();
       props.onCancel();
-    }
+    };
     keymaster(cancelKey, onCancel);
     return () => keymaster.unbind(cancelKey);
   }, [props.onCancel, cancelKey]);

@@ -3,17 +3,19 @@ import { IUser } from '@/isomorphic/interface';
 import React, { MutableRefObject } from 'react';
 
 export interface IRootDrawerRef {
-  render: (conf: RootRenderProps) => void,
-  onClose: () => void,
+  render: (conf: RootRenderProps) => void;
+  onClose: () => void;
 }
-export type RootRenderProps = { title: React.ReactElement, content: React.ReactElement };
+export type RootRenderProps = {
+  title: React.ReactElement;
+  content: React.ReactElement;
+};
 
 export interface IScrollerRef {
   scrollToBottom(immediately?: boolean): void;
 }
 
 export type IListenerRemover = () => void;
-
 
 export interface IMessageProgress {
   status?: number;
@@ -56,13 +58,12 @@ export interface IRenderTextOptions extends IBaseRenderOptions {
   typewriter?: boolean;
 }
 
-
 export interface IRenderInputOptions extends IBaseRenderOptions {
   ref: React.MutableRefObject<any | undefined>;
   placeholder?: string;
   disabled?: boolean;
   onEnter: (text: string) => void;
-  extra?: React.ReactNode
+  extra?: React.ReactNode;
 }
 
 export type IRenderResult = React.JSX.Element | React.ReactElement | null;
@@ -121,7 +122,7 @@ export interface ISidebarRenderContext {
 
   scrollToBottom(immediately?: boolean): void;
 
-  renderDrawer: IRootDrawerRef['render']
+  renderDrawer: IRootDrawerRef['render'];
   closeDrawer(): void;
 }
 
@@ -256,7 +257,7 @@ export abstract class SideContentDatasource<
   }
 
   removeListener(listener: T) {
-    this._listeners = this._listeners.filter((it) => it !== listener);
+    this._listeners = this._listeners.filter(it => it !== listener);
   }
 
   protected notifyListener(invoker: (listener: T) => void) {
@@ -264,7 +265,7 @@ export abstract class SideContentDatasource<
   }
 
   protected notifyDatasetUpdated(params?: IDatasetUpdatedParams) {
-    this.notifyListener((listener) => listener.onDatasetUpdated?.(params));
+    this.notifyListener(listener => listener.onDatasetUpdated?.(params));
   }
 }
 
@@ -298,7 +299,9 @@ export enum AssistantType {
   ClipAssistant = 'ClipAssistant',
 }
 
-export interface IAssistant<T extends ISideContentProvider = ISideContentProvider> {
+export interface IAssistant<
+  T extends ISideContentProvider = ISideContentProvider,
+> {
   id: number;
   type: AssistantType;
   label: string;
@@ -308,4 +311,3 @@ export interface IAssistant<T extends ISideContentProvider = ISideContentProvide
   hasWatermark?: boolean;
   provider: T;
 }
-

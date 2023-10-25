@@ -36,7 +36,7 @@ export const initContentScriptActionListener = (context: App) => {
             sendResponse(true);
             break;
           }
-          const { isRunningInjectPage = true } = request.data || {}
+          const { isRunningInjectPage = true } = request.data || {};
           context.isOperateSelecting = true;
           isRunningInjectPage && context.hiddenSidePanel();
           new Promise(resolve => {
@@ -53,7 +53,7 @@ export const initContentScriptActionListener = (context: App) => {
           break;
         }
         case ContentScriptEvents.SelectArea: {
-          const { isRunningInjectPage = true } = request.data || {}
+          const { isRunningInjectPage = true } = request.data || {};
           if (context.isOperateSelecting) {
             sendResponse(true);
             break;

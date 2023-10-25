@@ -12,8 +12,8 @@ export async function createTabActionListener(
   const { type, url } = request.data;
   switch (type) {
     case OperateTabEnum.screenShot: {
-      const tabs = await Chrome.tabs.query({ lastFocusedWindow: true })
-      const res =  await Chrome.tabs.captureVisibleTab(tabs[0].windowId as number);
+      const tabs = await Chrome.tabs.query({ lastFocusedWindow: true });
+      const res = await Chrome.tabs.captureVisibleTab(tabs[0].windowId as number);
       callback(res);
       break;
     }
@@ -25,7 +25,7 @@ export async function createTabActionListener(
     case OperateTabEnum.create: {
       Chrome.tabs.create({ url });
       callback(true);
-      break
+      break;
     }
     default: {
       break;

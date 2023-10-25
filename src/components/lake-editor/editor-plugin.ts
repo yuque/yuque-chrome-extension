@@ -150,7 +150,6 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, PositionUtil, O
     }
   }
 
-
   class CustomKernelPlugin extends KernelPlugin {
     static PluginName = 'CustomEditorPlugin';
 

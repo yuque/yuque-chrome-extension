@@ -26,7 +26,7 @@ function WordMarkLayout(props: IWordMarkLayoutProps) {
     }
     return true;
   };
-  
+
   useEffect(() => {
     backgroundBridge.wordMarkConfig.get().then(res => {
       setWordMarkConfig(res);

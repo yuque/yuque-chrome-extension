@@ -78,7 +78,6 @@ const plugins = [
     'process.env.VERSION': JSON.stringify(pkg.version),
     'process.env.BUILD_TIME': JSON.stringify(moment().format('MMDDHHmm')),
     'process.env.SERVER_HOST': JSON.stringify(SERVER_HOST),
-    'process.env.ENTRY': JSON.stringify(process.env.ENTRY),
   }),
 ];
 

@@ -50,7 +50,7 @@ class SuperSidebarContainer {
   get first() {
     return this.rightBarAssistants?.[0];
   }
-  
+
   initCurrentAssistant() {
     if (this._assistants.length === 0) {
       return;
@@ -159,8 +159,8 @@ class SuperSidebarContainer {
 
   addAssistant(assistant: IAssistant) {
     this._assistants.push(assistant);
-    this.notifyListener((listener) => listener.onAssistantsChanged?.());
-    this.notifyListener((listener) => listener.onManifestsChanged?.());
+    this.notifyListener(listener => listener.onAssistantsChanged?.());
+    this.notifyListener(listener => listener.onManifestsChanged?.());
   }
 }
 

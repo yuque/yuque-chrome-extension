@@ -31,13 +31,13 @@ export function callBackgroundBridge(
   data?: MapT<any>,
   callback?: OneArgFunctionT<any>,
 ) {
-  callback = callback || function () {
+  callback = callback || function() {
     // ignore
   };
   Chrome.runtime.sendMessage(
     {
       action: bridgeName,
-      data: data,
+      data,
     },
     res => {
       callback?.(res);
