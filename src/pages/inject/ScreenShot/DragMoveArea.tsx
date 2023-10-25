@@ -2,7 +2,8 @@ import React, { useRef, useState } from 'react';
 import styles from './DragMoveArea.module.less';
 
 export interface IMoveParams {
-  x: number; y: number;
+  x: number;
+  y: number;
 }
 
 interface IDragResizeCircleProps {
@@ -39,15 +40,14 @@ const DragMoveArea = (props: IDragResizeCircleProps) => {
 
   return (
     <>
-      <div
-        className={styles.area}
-        id="yq-area"
-        style={props.style}
-        onMouseDown={handleDragStart}
-        onDragStart={handleDragStart}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-      >
+      <div className={styles.area} id="yq-area" style={props.style}>
+        <div
+          className={styles.dargArea}
+          onMouseDown={handleDragStart}
+          onDragStart={handleDragStart}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+        />
         {props.children}
       </div>
       {dragging && (
