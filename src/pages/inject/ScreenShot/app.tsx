@@ -6,7 +6,7 @@ import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { useEnterShortcut } from '@/hooks/useEnterShortCut';
 import DragResizeCircle, {
   DragResizeCircleDirection,
-} from './dragResizeCircle';
+} from './DragResizeCircle';
 import DragMoveArea, { IMoveParams } from './DragMoveArea';
 import styles from './app.module.less';
 
