@@ -1,0 +1,49 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-left: 1px solid @border-color;
+  background: @white;
+
+  .content {
+    padding: 0 70px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      img {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+      }
+
+      .loginTip {
+        color: @text-primary;
+        font-size: @font-size-lg;
+        margin-bottom: 32px;
+        font-weight: 500;
+      }
+    }
+
+    .question {
+      margin-top: 12px;
+      font-size: @font-size-sm;
+      text-decoration: none;
+      color: @text-color-secondary;
+
+      .icon {
+        margin-right: 4px;
+        color: @text-color-secondary;
+      }
+    }
+  }
+}

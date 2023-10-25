@@ -25,8 +25,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "sandbox.html",
+        "content-scripts.css",
         "editor.html",
+        "sidePanel.html",
         "doc.css",
         "doc.umd.js",
         "CodeMirror.js",
@@ -57,6 +58,25 @@
     "storage",
     "tabs",
     "webRequest",
-    "scripting"
-  ]
+    "scripting",
+    "sidePanel",
+    "commands"
+  ],
+  "side_panel": {
+     "default_path": "sidePanel.html"
+  },
+  "commands": {
+    "openSidePanel": {
+      "description": "打开侧边栏"
+    },
+    "selectArea": {
+      "description": "选取剪藏"
+    },
+    "startOcr": {
+      "description": "OCR 提取"
+    },
+    "collectLink": {
+      "description": "收藏链接"
+    }
+  }
 }

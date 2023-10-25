@@ -1,0 +1,34 @@
+
+@import '~@/styles/parameters.less';
+
+.overlayClassName {
+
+  :global {
+    .yuque-chrome-extension-popover-inner {
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    .yuque-chrome-extension-popover-arrow {
+      display: none;
+    }
+  }
+
+  .popoverWrapper {
+    height: 320px;
+    display: flex;
+    align-items: flex-end;
+
+    .containerWrapper {
+      box-shadow: @panel-default-box-shadow;
+      border: 1px solid @border-color;
+      border-radius: 8px;
+      background-color: @white;
+    }
+  }
+}
+
+.button {
+  border-color: @border-color-primary;
+}
+

@@ -1,0 +1,41 @@
+
+@import '~@/styles/parameters.less';
+
+.tagWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 16px;
+  max-height: 120px;
+  overflow-y: auto;
+
+  .tag {
+    display: flex;
+    border: 1px solid @border-color-primary;
+    padding: 0 12px;
+    border-radius: 6px;
+    line-height: 30px;
+    gap: 4px;
+    color: @grey-8;
+    font-size: @font-size;
+
+    .tagName {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: @text-color;
+    }
+
+    .close {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: @text-color-secondary;
+
+      svg {
+        font-size: @font-size-sm;
+      }
+    }
+  }
+}

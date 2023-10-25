@@ -1,9 +1,9 @@
 @import '~@/styles/parameters.less';
 
 .title {
-  margin-bottom: 12px;
-  font-size: 16px;
-  color: @text-color;
+  margin-bottom: 16px;
+  font-size: @font-size-lg;
+  color: @text-primary;
   font-weight: 500;
 }
 
@@ -11,38 +11,36 @@
   display: flex;
   border: 1px solid @border-color;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 10px 16px;
   font-size: 14px;
-  gap: 12px;
   align-items: center;
-  max-width: 420px;
+  max-width: 804px;
 }
 
 .avatar {
   flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .infoWrapper {
   display: flex;
   flex: 1 1 auto;
-  flex-direction: column;
-  justify-content: center;
   color: @text-color;
+  font-size: @font-size;
   overflow: hidden;
-
-  .desc {
-    font-size: @font-size-sm;
-    color: @text-color-secondary;
-
-  }
-
-  .name, .desc {
+  gap: 8px;
+  margin: 0 12px;
+  .name {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  .homeIcon {
+    cursor: pointer;
+    font-size: @font-size-lg;
   }
 }
 
@@ -50,9 +48,5 @@
   display: flex;
   gap: 16px;
   flex: 0 0 auto;
-}
-
-.operateItem {
-  cursor: pointer;
 }
 

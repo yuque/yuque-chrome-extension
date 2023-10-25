@@ -1,0 +1,25 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: @z-index-max;
+
+  :global {
+    * {
+      box-sizing: border-box;
+    }
+  }
+}
+
+.wordMarkWrapper {
+  position: absolute;
+  z-index: @z-index-max;
+  user-select: none;
+}
+
+.hidden {
+  display: none;
+}
+

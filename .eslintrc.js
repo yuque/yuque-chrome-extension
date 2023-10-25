@@ -80,6 +80,14 @@ const tslintConfig = {
     '@typescript-eslint/ban-ts-comment': [ 'warn' ],
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
+    'no-multiple-empty-lines': [
+      'error',
+      {
+        max: 1,
+        maxEOF: 0,
+        maxBOF: 0,
+      },
+    ],
   },
 };
 

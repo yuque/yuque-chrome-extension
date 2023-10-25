@@ -1,7 +1,7 @@
 import React from 'react';
 import { __i18n } from '@/isomorphic/i18n';
 import { RELEASE_NOTES, VERSION } from '@/config';
-import LinkHelper from '@/core/link-helper';
+import LinkHelper from '@/isomorphic/link-helper';
 import styles from './index.module.less';
 
 function About() {

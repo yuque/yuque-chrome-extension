@@ -1,0 +1,95 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.upgradeVersionItem {
+  display: flex;
+
+  .name {
+    flex: 1;
+  }
+
+  .version {
+    flex: 0 0 auto;
+    color: rgba(0, 0, 0, 0.45);
+  }
+}
+
+.userInfoWrapper {
+  min-width: 162px;
+
+  .title {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .04);
+    padding: 8px @base-padding 14px;
+    font-weight: 400;
+    margin: 0 6px;
+
+
+    .userInfo {
+      margin-left: @base-padding;
+    }
+
+    .login {
+      font-size: @font-size-sm;
+      color: rgba(0, 0, 0, .45);
+    }
+  }
+
+  .menuWrapper {
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+    gap: 6px;
+
+    .menuItem {
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+
+      &:hover {
+        background-color: @grey-2;
+      }
+    }
+  }
+}
+
+
+.updateModal {
+  display: flex;
+  align-items: center;
+
+  .updateIframe {
+    height: 90vh;
+    vertical-align: top;
+    border: none;
+    width: 100%;
+  }
+
+  :global {
+    .yuque-chrome-extension-modal-content {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .yuque-chrome-extension-modal-confirm-confirm {
+      top: 0;
+    }
+
+    .anticon-exclamation-circle {
+      display: none;
+    }
+
+    .yuque-chrome-extension-modal-confirm-content {
+      width: 100%;
+    }
+  }
+}

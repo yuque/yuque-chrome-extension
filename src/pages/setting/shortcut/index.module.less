@@ -1,0 +1,56 @@
+@import '~@/styles/parameters.less';
+
+.configWrapper {
+  max-width: 668px;
+
+  .pageDesc {
+    font-size: @font-size;
+    display: flex;
+    justify-content: space-between;
+
+    .setting {
+      margin-left: auto;
+      color: @link-color;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+
+  .card {
+    padding: 24px 0;
+    border-bottom: 1px solid @border-light-color;
+    color: @text-primary;
+
+    .title {
+      font-size: @font-size-lg;
+      line-height: 24px;
+      margin-bottom: 16px;
+    }
+
+    .body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .configItem {
+        display: flex;
+        justify-content: space-between;
+
+        .desc {
+          font-size: @font-size;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  .card:first-child {
+    padding-top: 0;
+  }
+
+  .card:last-child {
+    border-bottom: 1px solid transparent;
+  }
+}
+

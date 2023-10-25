@@ -1,0 +1,58 @@
+@import '~@/styles/parameters.less';
+
+.configWrapper {
+  max-width: 668px;
+
+  .card {
+    padding: 24px 0;
+    border-bottom: 1px solid @border-light-color;
+    color: @text-primary;
+
+    .title {
+      font-size: @font-size-lg;
+      line-height: 24px;
+      margin-bottom: 16px;
+    }
+
+    .body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .configItem {
+        display: flex;
+        justify-content: space-between;
+
+        .desc {
+          font-size: @font-size;
+          display: flex;
+          align-items: center;
+        }
+
+        :global {
+          .yuque-chrome-extension-select-arrow {
+            color: @text-color-secondary;
+          }
+        }
+      }
+    }
+  }
+
+  .card:first-child {
+    padding-top: 0;
+  }
+
+  .card:last-child {
+    border-bottom: 1px solid transparent;
+  }
+
+  .more {
+    margin-top: 40px;
+    color: @link-color;
+    display: block;
+    cursor: pointer;
+    outline-style: none;
+    text-decoration: none;
+  }
+}
+

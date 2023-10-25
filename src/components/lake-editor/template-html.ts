@@ -15,8 +15,7 @@ export const templateHtml = `
       overflow: hidden;
     }
     .toolbar-container {
-      display: flex;
-      padding: 0 0 0 24px;
+      display: none;
     }
     #toolbar {
       flex: 1;
@@ -49,6 +48,19 @@ export const templateHtml = `
     .continue-button:hover, .continue-button:focus {
       color: #00B96B;
       border-color: #00B96B;
+    }
+    .ne-layout-mode-fixed .ne-editor-wrap {
+      padding: 0 16px;
+    }
+    .ne-layout-mode-fixed .ne-engine {
+      padding: 0;
+      min-height: calc(100vh - 10px)
+    }
+    .ne-layout-mode-fixed .ne-editor-wrap-content {
+      min-width: 333px;
+    }
+    .ne-layout-mode-fixed .ne-editor-outer-wrap-box {
+      min-width: 333px;
     }
   </style>
 </head>

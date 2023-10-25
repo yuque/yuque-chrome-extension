@@ -1,0 +1,39 @@
+@import '~@/styles/parameters.less';
+
+.menus {
+  padding: 6px 8px;
+}
+
+.menuItem {
+  display: flex;
+  cursor: pointer;
+  height: 32px;
+  font-size: 13px;
+  flex-direction: row;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: @text-primary;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: @bg-primary-hover;
+  }
+}
+
+.footer {
+  border-top: 1px solid @border-color;
+  font-size: @font-size-sm;
+  font-size: 13px;
+  line-height: 30px;
+  color: @text-color-secondary;
+  padding: 0 16px;
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+
+  .link {
+    color: #3872e0;
+    cursor: pointer;
+  }
+}

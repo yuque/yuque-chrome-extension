@@ -18,8 +18,10 @@ const {
 const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
+const templateWithTracePath = path.join(srcPath, 'templateWithTrace.html');
 const templatePath = path.join(srcPath, 'template.html');
 const pkg = require('./package.json');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const {
   SERVER_HOST,
@@ -36,12 +38,13 @@ const fileExtensions = [
 const entries = {
   contentScript: 'content-scripts',
   background: 'background',
-  extensionPage: [ 'sandbox', 'setting', 'editor' ],
+  extensionPage: [ 'setting', 'editor', 'sidePanel' ],
   yuqueTransformScript: 'yuque-transform-script',
 };
 
+// editor 页面是一个隐藏页面，不需要加入埋点日志
 const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({
-  template: templatePath,
+  template: item === 'editor' ? templatePath : templateWithTracePath,
   filename: `${item}.html`,
   chunks: [ item ],
   minify: false,
@@ -50,6 +53,10 @@ const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({
 const plugins = [
   new webpack.ProgressPlugin(),
   ...htmlPlugins,
+  new MiniCssExtractPlugin({
+    filename: '[name].css',
+    chunkFilename: '[id].css',
+  }),
   new CopyWebpackPlugin({
     patterns: [
       {
@@ -64,7 +71,7 @@ const plugins = [
         },
       },
       {
-        from: path.join(pagesPath, 'background/background-wrapper.js'),
+        from: path.join(srcPath, 'background/background-wrapper.js'),
         to: path.join(distPath, pkg.version, 'background-wrapper.js'),
       },
     ],
@@ -95,7 +102,7 @@ if (isProd) {
 }
 
 const entry = {
-  [entries.background]: path.join(pagesPath, entries.background),
+  [entries.background]: path.join(srcPath, entries.background),
   [entries.contentScript]: path.join(pagesPath, 'inject', entries.contentScript),
   [entries.yuqueTransformScript]: path.join(pagesPath, 'inject', entries.yuqueTransformScript),
 };
@@ -124,7 +131,7 @@ const rules = [
     },
     use: [
       {
-        loader: 'style-loader',
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',
@@ -138,7 +145,7 @@ const rules = [
     test: /\.module\.less$/,
     use: [
       {
-        loader: 'style-loader',
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',
@@ -158,7 +165,7 @@ const rules = [
     test: /.css$/,
     use: [
       {
-        loader: 'style-loader',
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',

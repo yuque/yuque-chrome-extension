@@ -1,0 +1,41 @@
+@import '~@/styles/parameters.less';
+
+.inputWrapper {
+  position: relative;
+  width: 160px;
+  margin-left: auto;
+
+  .input {
+    width: 160px;
+  }
+
+  .inputTip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding-left: 12px;
+    font-size: @font-size;
+  }
+
+  .tooltip {
+    font-size: @font-size;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: @text-color-secondary;
+  }
+}
+
+.error {
+  font-size: @font-size-sm;
+  margin-top: 4px;
+  color: @red-6;
+}

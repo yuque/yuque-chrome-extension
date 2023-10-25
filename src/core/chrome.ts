@@ -26,14 +26,4 @@ export default {
   windows,
   downloads,
   scripting,
-  getCurrentTab: (): Promise<chrome.tabs.Tab> =>
-    new Promise(resolve => {
-      tabs.getCurrent(resolve);
-    }),
-  sendMessageToCurrentTab: message =>
-    new Promise(resolve => {
-      tabs.getCurrent(tab => {
-        tabs.sendMessage(tab.id, message, resolve);
-      });
-    }),
 };
