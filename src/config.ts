@@ -19,6 +19,9 @@ export const STORAGE_KEYS = {
   NOTE: {
     SELECT_TAGS: 'note/select-tags',
   },
+  TIP: {
+    READ_SHORTCUT: 'tip/read-shortcut',
+  },
 };
 export const YUQUE_DOMAIN = 'https://www.yuque.com';
 export const YUQUE_CSRF_COOKIE_NAME = 'yuque_ctoken';

@@ -1,0 +1,24 @@
+@import '~@/styles/parameters.less';
+
+.area {
+  position: absolute;
+  background-color: transparent;
+  border: 2px solid #00B96B;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  .dargArea {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.dragBarMask {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: @z-index-max + 1;
+}

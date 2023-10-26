@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import classnames from 'classnames';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { transformDOM } from '@/core/transform-dom';
 import { __i18n } from '@/isomorphic/i18n';
@@ -127,8 +128,9 @@ function App(props: IAppProps) {
 
   return (
     <>
-      <div className={classnames(styles.mask, 'select-inner')}>
-        {__i18n('单击区域以选中，再次单击取消选中。ESC 退出， ↲ 完成')}
+      <div className={classnames(styles.maskWrapper, 'select-inner')}>
+        <InfoCircleOutlined className={styles.icon} />
+        {__i18n('单击区域选中，再次点击取消选中，ESC 退出，↩ 完成。')}
         {!!targetRectListRef.current.length && (
           <div
             className={classnames(styles.confirm, 'select-confirm')}

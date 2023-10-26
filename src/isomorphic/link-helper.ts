@@ -19,6 +19,7 @@ const LinkHelper = {
     'https://www.yuque.com/yuque/yuque-browser-extension/welcome#BQrrd',
   settingPage: chrome.runtime.getURL('setting.html'),
   wordMarkSettingPage: `${chrome.runtime.getURL('setting.html')}?page=wordMark`,
+  shortcutSettingPage: `${chrome.runtime.getURL('setting.html')}?page=shortcut`,
 };
 
 export default LinkHelper;

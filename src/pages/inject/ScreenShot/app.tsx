@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
-import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { screenShot } from '@/core/screen-shot';
-import DragLine from './drag-line';
-import styles from './app.module.less';
+import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { useEnterShortcut } from '@/hooks/useEnterShortCut';
+import DragResizeCircle, {
+  DragResizeCircleDirection,
+} from './DragResizeCircle';
+import DragMoveArea, { IMoveParams } from './DragMoveArea';
+import styles from './app.module.less';
 
-type DragDirection = 'top' | 'bottom' | 'left' | 'right';
 
 export interface IAppProps {
   onScreenSuccess: (blob: string | null) => void;
@@ -37,32 +39,70 @@ function App(props: IAppProps) {
         : selectAreaBottom + 8,
   };
 
+  const onMove = useCallback((params: IMoveParams) => {
+    setIsDragging(true);
+    const startLeft = startRef.current.left - params.x;
+    const startTop = startRef.current.top - params.y;
+    const endLeft = endRef.current.left - params.x;
+    const endTop = endRef.current.top - params.y;
+    if (startLeft > 0 && endLeft < window.innerWidth) {
+      startRef.current.left = startLeft;
+      endRef.current.left = endLeft;
+    }
+    if (startTop > 0 && endTop < window.innerHeight) {
+      startRef.current.top = startTop;
+      endRef.current.top = endTop;
+    }
+    forceUpdate();
+  }, []);
+
   const onDrag = useCallback(
     (
       e: React.DragEvent<HTMLDivElement>,
-      direction: DragDirection,
+      direction: DragResizeCircleDirection,
       resetPosition?: boolean,
     ) => {
       setIsDragging(true);
       switch (direction) {
-        case 'left': {
+        case 'topLeft': {
           startRef.current.left = e.clientX;
-          break;
-        }
-        case 'right': {
-          endRef.current.left = e.clientX || window.innerWidth;
-          break;
-        }
-        case 'top': {
           startRef.current.top = e.clientY;
           break;
         }
-        case 'bottom': {
+        case 'topCenter': {
+          startRef.current.top = e.clientY;
+          break;
+        }
+        case 'topRight': {
+          endRef.current.left = e.clientX;
+          startRef.current.top = e.clientY;
+          break;
+        }
+        case 'leftCenter': {
+          startRef.current.left = e.clientX;
+          break;
+        }
+        case 'rightCenter': {
+          endRef.current.left = e.clientX;
+          break;
+        }
+        case 'bottomLeft': {
+          startRef.current.left = e.clientX;
           endRef.current.top = e.clientY || window.innerHeight;
           break;
         }
-        default:
+        case 'bottomCenter': {
+          endRef.current.top = e.clientY || window.innerHeight;
           break;
+        }
+        case 'bottomRight': {
+          endRef.current.left = e.clientX || window.innerWidth;
+          endRef.current.top = e.clientY || window.innerHeight;
+          break;
+        }
+        default: {
+          break;
+        }
       }
       if (resetPosition) {
         // 计算完成后做一次 endRef 和 startRef 的数据订正
@@ -212,54 +252,73 @@ function App(props: IAppProps) {
           bottom: '0',
         }}
       />
-      <div
-        className={styles.area}
-        id="yq-area"
+      <DragMoveArea
         style={{
           left: `${selectAreaLeft}px`,
           top: `${selectAreaTop}px`,
           width: `${selectAreaWidth}px`,
           height: `${selectAreaHeight}px`,
         }}
+        handleDragEnd={handleDragEnd}
+        onMove={onMove}
       >
-        <DragLine
-          width={selectAreaWidth}
-          height={2}
-          updatePosition={(e, resetPosition) => onDrag(e, 'top', resetPosition)}
-          direction="top"
+        <DragResizeCircle
+          direction="topLeft"
           handleDragEnd={handleDragEnd}
-        />
-        <DragLine
-          width={selectAreaWidth}
-          height={2}
           updatePosition={(e, resetPosition) =>
-            onDrag(e, 'bottom', resetPosition)
+            onDrag(e, 'topLeft', resetPosition)
           }
-          direction="bottom"
-          handleDragEnd={handleDragEnd}
         />
-
-        <DragLine
-          width={2}
-          height={selectAreaHeight}
+        <DragResizeCircle
+          direction="topCenter"
+          handleDragEnd={handleDragEnd}
           updatePosition={(e, resetPosition) =>
-            onDrag(e, 'left', resetPosition)
+            onDrag(e, 'topCenter', resetPosition)
           }
-          direction="left"
-          key="left"
-          handleDragEnd={handleDragEnd}
         />
-        <DragLine
-          width={2}
-          height={selectAreaHeight}
+        <DragResizeCircle
+          direction="topRight"
+          handleDragEnd={handleDragEnd}
           updatePosition={(e, resetPosition) =>
-            onDrag(e, 'right', resetPosition)
+            onDrag(e, 'topRight', resetPosition)
           }
-          direction="right"
-          key="right"
-          handleDragEnd={handleDragEnd}
         />
-      </div>
+        <DragResizeCircle
+          direction="leftCenter"
+          handleDragEnd={handleDragEnd}
+          updatePosition={(e, resetPosition) =>
+            onDrag(e, 'leftCenter', resetPosition)
+          }
+        />
+        <DragResizeCircle
+          direction="rightCenter"
+          handleDragEnd={handleDragEnd}
+          updatePosition={(e, resetPosition) =>
+            onDrag(e, 'rightCenter', resetPosition)
+          }
+        />
+        <DragResizeCircle
+          direction="bottomLeft"
+          handleDragEnd={handleDragEnd}
+          updatePosition={(e, resetPosition) =>
+            onDrag(e, 'bottomLeft', resetPosition)
+          }
+        />
+        <DragResizeCircle
+          direction="bottomCenter"
+          handleDragEnd={handleDragEnd}
+          updatePosition={(e, resetPosition) =>
+            onDrag(e, 'bottomCenter', resetPosition)
+          }
+        />
+        <DragResizeCircle
+          direction="bottomRight"
+          handleDragEnd={handleDragEnd}
+          updatePosition={(e, resetPosition) =>
+            onDrag(e, 'bottomRight', resetPosition)
+          }
+        />
+      </DragMoveArea>
       {!isDragging && screenShowAreaIsInit && (
         <div
           className={styles.operateBar}

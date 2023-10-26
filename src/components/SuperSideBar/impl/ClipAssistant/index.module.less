@@ -25,16 +25,22 @@
   .headerWrapper {
     flex: 0 0 auto;
     display: flex;
-    gap: 32px;
-    padding: 16px 16px 0;
+    padding: 16px 10px 0;
+    gap: 20px;
 
     .headerItem {
       cursor: pointer;
       font-size: @font-size;
       color: @text-primary;
+      padding: 3px 6px;
+      border-radius: 6px;
 
       .icon {
         margin-right: 8px;
+      }
+
+      &:hover {
+        background: @bg-primary-hover;
       }
     }
   }

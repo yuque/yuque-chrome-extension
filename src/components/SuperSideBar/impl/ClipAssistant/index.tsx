@@ -207,6 +207,18 @@ function ClipContent() {
   }, [selectSavePosition, userTags]);
 
   useEffect(() => {
+    const onStartSelectArea = () => {
+      const div = document.querySelector(`#${ClipSelectAreaId}`);
+      (div as HTMLDivElement)?.click();
+    };
+    const onStartScreenOcr = () => {
+      const div = document.querySelector(`#${ClipScreenOcrId}`);
+      (div as HTMLDivElement)?.click();
+    };
+    const onStartCollectLink = () => {
+      const div = document.querySelector(`#${ClipCollectLinkId}`);
+      (div as HTMLDivElement)?.click();
+    };
     const onMessage = (e: any) => {
       if (e.data.key !== ClipAssistantMessageKey) {
         return;
@@ -217,18 +229,15 @@ function ClipContent() {
           break;
         }
         case ClipAssistantMessageActions.startSelectArea: {
-          const div = document.querySelector(`#${ClipSelectAreaId}`);
-          (div as HTMLDivElement)?.click();
+          onStartSelectArea();
           break;
         }
         case ClipAssistantMessageActions.startScreenOcr: {
-          const div = document.querySelector(`#${ClipScreenOcrId}`);
-          (div as HTMLDivElement)?.click();
+          onStartScreenOcr();
           break;
         }
         case ClipAssistantMessageActions.startCollectLink: {
-          const div = document.querySelector(`#${ClipCollectLinkId}`);
-          (div as HTMLDivElement)?.click();
+          onStartCollectLink();
           break;
         }
         default: {
@@ -308,8 +317,7 @@ function ClipContent() {
           <SelectSavePosition
             rememberKey={STORAGE_KEYS.USER.CLIPPING_SAVE_POSITION}
             onChange={setSelectSavePosition}
-          />
-          {selectSavePosition?.id === DefaultSavePosition.id && (
+          >
             <AddTagButton
               tags={userTags}
               selectTags={selectTags}
@@ -317,7 +325,7 @@ function ClipContent() {
               updateSelectTags={setSelectTags}
               key={selectTags.length}
             />
-          )}
+          </SelectSavePosition>
         </div>
         <Button type="primary" onClick={onSave}>
           {__i18n('保存')}

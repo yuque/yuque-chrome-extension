@@ -27,7 +27,7 @@ function Shortcut() {
         <div className={styles.title}>{__i18n('侧边栏')}</div>
         <div className={styles.body}>
           <div className={styles.configItem}>
-            <div className={styles.desc}>{__i18n('快捷唤起划词工具栏')}</div>
+            <div className={styles.desc}>{__i18n('快捷唤起侧边栏')}</div>
             <ShortcutItem
               defaultShortcut={shortcutMap.openSidePanel}
               readonly
