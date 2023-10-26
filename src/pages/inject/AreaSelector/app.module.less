@@ -15,7 +15,7 @@
   border: 2px solid @primary-color;
 }
 
-.mask {
+.maskWrapper {
   display: flex;
   box-sizing: border-box;
   align-items: center;
@@ -27,11 +27,19 @@
   font-size: 14px;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.65);
+  box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.13), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 12px 24px 16px rgba(0, 0, 0, 0.04);
   z-index: @z-index-max + 1;
   border-radius: 10px;
   text-align: center;
   pointer-events: none; // 遮罩层不需要响应鼠标事件
   color: @white;
+  font-family: @font-family;
+  white-space: nowrap;
+
+  .icon {
+    margin-right: 8px;
+    font-size: @font-size-lg;
+  }
 }
 
 .confirm {
@@ -45,8 +53,7 @@
   cursor: pointer;
   display: inline-block;
   color: @white;
-  font-size: 12px;
-  font-weight: 400;
+  font-size: @font-size;
   padding: 0 8px;
   text-align: center;
   touch-action: manipulation;
@@ -56,5 +63,6 @@
   text-decoration: none;
   pointer-events: all;
   transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  font-family: @font-family;
 }
 
