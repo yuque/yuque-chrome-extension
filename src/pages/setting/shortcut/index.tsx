@@ -1,8 +1,10 @@
 import React from 'react';
+import Icon from '@ant-design/icons';
 import { backgroundBridge } from '@/core/bridge/background';
 import useClipShortCut from '@/hooks/useClipShortCut';
 import ShortcutItem from '@/components/ShortItem';
 import { browserSystemLink } from '@/core/browser-system-link';
+import ArrowDownSvg from '@/assets/svg/arrow-down.svg';
 import styles from './index.module.less';
 
 function Shortcut() {
@@ -21,6 +23,7 @@ function Shortcut() {
         </span>
         <div onClick={openShortCut} className={styles.setting}>
           {__i18n('去设置')}
+          <Icon component={ArrowDownSvg} className={styles.icon} />
         </div>
       </div>
       <div className={styles.card}>
