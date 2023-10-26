@@ -65,10 +65,11 @@ function SuperSidebarHeader() {
                 />
               </span>
             }
-            placement="bottomLeft"
+            placement="bottomRight"
             open={showTip}
             overlayClassName={styles.tooltipWrapper}
-            getPopupContainer={node => node.parentNode as HTMLElement}
+            getPopupContainer={node => node as HTMLElement}
+            arrow={{ pointAtCenter: true }}
           >
             <div className={styles.itemWrapper} onClick={openSetting}>
               <Icon component={SettingSvg} />
