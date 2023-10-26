@@ -294,7 +294,7 @@ export abstract class SideContentProviderWithDatasource<
 
 export enum AssistantType {
   /**
-   * 剪藏助手
+   * 笔记
    */
   ClipAssistant = 'ClipAssistant',
 }

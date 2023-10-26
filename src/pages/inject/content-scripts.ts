@@ -5,6 +5,10 @@ import {
   ClipAssistantMessageKey,
 } from '@/isomorphic/event/clipAssistant';
 import {
+  SidePanelMessageActions,
+  SidePanelMessageKey,
+} from '@/isomorphic/event/sidePanel';
+import {
   WordMarkMessageActions,
   WordMarkMessageKey,
 } from '@/isomorphic/event/wordMark';
@@ -94,6 +98,7 @@ export class App {
           dom: this.rootContainer,
         });
         initContentScriptActionListener(this);
+        this.initSidePanel();
       });
   }
 
@@ -184,6 +189,14 @@ export class App {
 
   async showSidePanel() {
     await this.initSidePanel();
+
+    this.sidePanelIframe?.contentWindow?.postMessage(
+      {
+        key: SidePanelMessageKey,
+        action: SidePanelMessageActions.arouse,
+      },
+      '*',
+    );
     this.sidePanelIframe?.classList.add('show');
     this._sidePanelStatus = SidePanelStatus.Visible;
   }
@@ -209,7 +222,10 @@ export class App {
     }
   }
 
-  async sendMessageToClipAssistant(action: ClipAssistantMessageActions, data?: any) {
+  async sendMessageToClipAssistant(
+    action: ClipAssistantMessageActions,
+    data?: any,
+  ) {
     await this.initSidePanel();
     await this.addListenClipAssistantReady();
     this.sidePanelIframe?.contentWindow?.postMessage(
@@ -222,7 +238,10 @@ export class App {
     );
   }
 
-  async sendMessageToAccountLayout(action: AccountLayoutMessageActions, data?: any) {
+  async sendMessageToAccountLayout(
+    action: AccountLayoutMessageActions,
+    data?: any,
+  ) {
     // 通知所有的 accountLayout 去触发强制更新，使用到的地方有 setting 页，sidePanel 页
     this.sidePanelIframe?.contentWindow?.postMessage(
       {

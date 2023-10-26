@@ -171,6 +171,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
             ],
           },
           placeholder: __i18n('记你想记'),
+          defaultFontsize: 14,
         });
         newEditor.on('visitLink', (url: string) => {
           window.open(url, '__blank');

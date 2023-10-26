@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import bowser from 'bowser';
+import classnames from 'classnames';
 import { Input, InputRef } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { __i18n } from '@/isomorphic/i18n';
@@ -12,8 +13,6 @@ interface IShortcutItemProps {
   onChangeShortCut?: (shortcut: string) => void;
   readonly?: boolean;
 }
-
-const shortCutString = __i18n('设置快捷键');
 
 const shortcutHandler = new Shortcut({
   platform:
@@ -29,6 +28,8 @@ function ShortcutItem(props: IShortcutItemProps) {
     onChangeShortCut,
     readonly = false,
   } = props || {};
+
+  const shortCutString = readonly ? __i18n('未设置') : __i18n('设置快捷键');
 
   const getShowString = (key: string) =>
     !key ? shortCutString : shortcutHandler.shortcutToShowString(key);
@@ -78,7 +79,6 @@ function ShortcutItem(props: IShortcutItemProps) {
 
   return (
     <div
-      className={styles.globalShortcut}
       onClick={() => {
         if (readonly) {
           return;
@@ -96,7 +96,11 @@ function ShortcutItem(props: IShortcutItemProps) {
         }, 200);
       }}
     >
-      <div className={styles.inputWrapper}>
+      <div
+        className={classnames(styles.inputWrapper, {
+          [styles.disableWrapper]: readonly,
+        })}
+      >
         <Input
           // 保证不会触发中文输入法
           readOnly

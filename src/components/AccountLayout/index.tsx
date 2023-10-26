@@ -8,20 +8,10 @@ import {
 } from '@/isomorphic/event/accountLayout';
 import { useEffectAsync } from '@/hooks/useAsyncEffect';
 import { backgroundBridge } from '@/core/bridge/background';
-import Chrome from '@/core/chrome';
 import { findCookieSettingPage } from '@/core/uitl';
-import {
-  EXTENSION_ID,
-  REFERER_URL,
-  REQUEST_HEADER_VERSION,
-  STORAGE_KEYS,
-  TRACERT_CONFIG,
-  VERSION,
-} from '@/config';
+import { STORAGE_KEYS } from '@/config';
 import Login from './Login';
 import { AccountContext } from './context';
-
-declare const Tracert: any;
 
 interface IAccountLayoutProps {
   children: React.ReactNode;
@@ -80,22 +70,7 @@ function AccountLayout(props: IAccountLayoutProps) {
           });
         });
       }
-      const accountInfo: any =
-        await backgroundBridge.request.mine.getUserInfo();
-      if (accountInfo && accountInfo?.id === info.id) {
-        const tabInfo = await backgroundBridge.tab.getCurrent();
-        Tracert.start({
-          spmAPos: TRACERT_CONFIG.spmAPos,
-          spmBPos: TRACERT_CONFIG.spmBPos,
-          role_id: (info as IUser)?.id,
-          mdata: {
-            [REQUEST_HEADER_VERSION]: VERSION,
-            [EXTENSION_ID]: Chrome.runtime.id,
-            [REFERER_URL]: tabInfo?.url,
-          },
-        });
-        setUser(info);
-      }
+      setUser(info);
     } catch (error) {
       console.log('init user error:', error);
     }

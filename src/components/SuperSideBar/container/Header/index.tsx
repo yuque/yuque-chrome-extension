@@ -48,13 +48,15 @@ function SuperSidebarHeader() {
     <div className={styles.wrapper}>
       <div className={styles.left}>
         <Icon component={YuqueLogoSvg} className={styles.yuqueIcon} />
-        <span className={styles.title}>{__i18n('语雀·智能笔记')}</span>
+        <span className={styles.title}>{__i18n('语雀')}</span>
       </div>
       <div className={styles.right}>
         <div className={styles.infoWrapper}>
-          <div className={styles.itemWrapper} onClick={openHome}>
-            <Icon component={HomeSvg} />
-          </div>
+          <Tooltip title={__i18n('访问语雀')} mouseEnterDelay={0.5}>
+            <div className={styles.itemWrapper} onClick={openHome}>
+              <Icon component={HomeSvg} />
+            </div>
+          </Tooltip>
           <Tooltip
             title={
               <span>
@@ -71,9 +73,17 @@ function SuperSidebarHeader() {
             getPopupContainer={node => node as HTMLElement}
             arrow={{ pointAtCenter: true }}
           >
-            <div className={styles.itemWrapper} onClick={openSetting}>
-              <Icon component={SettingSvg} />
-            </div>
+            {showTip ? (
+              <div className={styles.itemWrapper} onClick={openSetting}>
+                <Icon component={SettingSvg} />
+              </div>
+            ) : (
+              <Tooltip title={__i18n('设置')} mouseEnterDelay={0.5}>
+                <div className={styles.itemWrapper} onClick={openSetting}>
+                  <Icon component={SettingSvg} />
+                </div>
+              </Tooltip>
+            )}
           </Tooltip>
           <UserAvatar />
         </div>

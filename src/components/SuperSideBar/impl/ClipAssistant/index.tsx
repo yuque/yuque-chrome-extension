@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { Button, Spin, Tooltip, message } from 'antd';
+import { Button, Spin, Tooltip, message, Input } from 'antd';
 import classnames from 'classnames';
-import Icon, { LinkOutlined } from '@ant-design/icons';
+import Icon from '@ant-design/icons';
 import { __i18n } from '@/isomorphic/i18n';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { backgroundBridge } from '@/core/bridge/background';
@@ -29,10 +29,12 @@ import {
 } from '@/isomorphic/event/clipAssistant';
 import OcrSvg from '@/assets/svg/ocr-icon.svg';
 import ClipperSvg from '@/assets/svg/clipper.svg';
+import CollectLinkSvg from '@/assets/svg/collect-link.svg';
 import { superSidebar } from '@/components/SuperSideBar/index';
 import AddTagButton from './component/AddTagButton';
 import TagList from './component/TagList';
 import styles from './index.module.less';
+import { isRunningInjectPage } from '@/core/uitl';
 
 function ClipContent() {
   const editorRef = useRef<IEditorRef>(null);
@@ -46,8 +48,16 @@ function ClipContent() {
   const [selectSavePosition, setSelectSavePosition] = useState<ISavePosition>();
   const [userTags, setUserTags] = useState<ITag[]>([]);
   const [selectTags, setSelectTags] = useState<ITag[]>([]);
+  const [title, setTitle] = useState('');
 
-  const onLoad = () => {
+  const onTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setTitle(e.target.value);
+    },
+    [],
+  );
+
+  const onLoad = useCallback(() => {
     // iframe 加载完成后触发一个 message
     window.parent.postMessage(
       {
@@ -56,7 +66,7 @@ function ClipContent() {
       },
       '*',
     );
-  };
+  }, []);
 
   const onSave = async () => {
     const editor = editorRef.current;
@@ -85,12 +95,9 @@ function ClipContent() {
           </span>,
         );
       } else {
-        const tab = await backgroundBridge.tab.getCurrent();
         const docParams = {
           ...(await buildParamsForDoc(editor)),
-          title: __i18n('[来自剪藏] {title}', {
-            title: tab?.title || '',
-          }),
+          title,
           book_id: selectSavePosition?.id as number,
         };
         const doc = await backgroundBridge.request.doc.create(docParams);
@@ -104,6 +111,9 @@ function ClipContent() {
             </a>
           </span>,
         );
+      }
+      if (isRunningInjectPage) {
+        backgroundBridge.sidePanel.close();
       }
       editor.setContent('');
     } catch (error) {
@@ -251,6 +261,12 @@ function ClipContent() {
     };
   }, []);
 
+  useEffect(() => {
+    backgroundBridge.tab.getCurrent().then(tab => {
+      setTitle(tab?.title || '');
+    });
+  }, []);
+
   return (
     <div
       className={classnames(styles.wrapper, {
@@ -293,18 +309,28 @@ function ClipContent() {
             onClick={onCollectLink}
             id={ClipCollectLinkId}
           >
-            <LinkOutlined className={styles.icon} />
+            <Icon component={CollectLinkSvg} className={styles.icon} />
             <span>{__i18n('链接收藏')}</span>
           </div>
         </Tooltip>
+      </div>
+      <div
+        className={classnames(styles.titleWrapper, {
+          [styles.none]: !selectSavePosition?.id,
+        })}
+      >
+        <Input.TextArea
+          className={styles.title}
+          placeholder={__i18n('请输入标题')}
+          value={title}
+          autoSize={{ minRows: 1, maxRows: 100 }}
+          onChange={onTitleChange}
+        />
       </div>
       <div className={styles.editorWrapper}>
         <LakeEditor
           ref={editorRef}
           value=""
-          onSave={() => {
-            //
-          }}
           onLoad={onLoad}
           uploadImage={onUploadImage as any}
         />

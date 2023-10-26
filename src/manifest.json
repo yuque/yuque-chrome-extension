@@ -66,8 +66,11 @@
      "default_path": "sidePanel.html"
   },
   "commands": {
-    "openSidePanel": {
-      "description": "打开侧边栏"
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+K",
+        "mac": "Command+K"
+      }
     },
     "selectArea": {
       "description": "选取剪藏"

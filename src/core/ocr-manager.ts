@@ -103,7 +103,7 @@ class OCRManager {
       });
       return result.map(item => ({
         ...item,
-        text: replaceTextPunc(item.text),
+        text: replaceTextPunc(item.text).toLowerCase(),
       }));
     } catch (e) {
       //
