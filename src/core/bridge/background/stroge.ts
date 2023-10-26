@@ -1,11 +1,12 @@
 import { BackgroundEvents } from '@/isomorphic/background';
 import { OperateStorageEnum } from '@/isomorphic/background/storage';
+import { IUser } from '@/isomorphic/interface';
 import { ICallBridgeImpl } from './index';
 
 export function createStorageBridge(impl: ICallBridgeImpl) {
   return {
     storage: {
-      async get(key: string) {
+      async get(key: string): Promise<IUser> {
         return new Promise(resolve => {
           impl(
             BackgroundEvents.OperateStorage,

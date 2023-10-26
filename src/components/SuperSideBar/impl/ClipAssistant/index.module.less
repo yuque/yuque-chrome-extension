@@ -25,8 +25,8 @@
   .headerWrapper {
     flex: 0 0 auto;
     display: flex;
-    padding: 16px 10px 0;
-    gap: 20px;
+    padding: 16px 10px 16px;
+    gap: 30px;
 
     .headerItem {
       cursor: pointer;
@@ -36,6 +36,7 @@
       border-radius: 6px;
 
       .icon {
+        font-size: @font-size-lg;
         margin-right: 8px;
       }
 
@@ -45,10 +46,41 @@
     }
   }
 
+  .titleWrapper {
+    flex: 0 0 auto;
+
+    .title {
+      padding: 0 16px;
+      color: @text-primary;
+      font-weight: 600;
+      font-size: @font-size-lg;
+      outline: none;
+      border: none;
+      resize: none;
+      font-family: @font-family;
+      width: 100%;
+      box-shadow: none;
+      line-height: 22px;
+      margin-bottom: 6px;
+
+      &:hover, &:focus {
+        border: none;
+        box-shadow: none;
+      }
+
+      &::placeholder {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .none {
+    display: none;
+  }
+
   .editorWrapper {
     flex: 1 1 auto;
     overflow: hidden;
-    padding-top: 16px;
   }
 
   .saveOptionWrapper {

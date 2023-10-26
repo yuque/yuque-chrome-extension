@@ -18,9 +18,6 @@ export function listenBrowserActionEvent() {
       tab.id as number,
       {
         action: ContentScriptEvents.ToggleSidePanel,
-        data: {
-          forceVisible: true,
-        },
       },
       () => {
         /**

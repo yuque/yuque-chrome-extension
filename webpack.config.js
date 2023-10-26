@@ -18,7 +18,6 @@ const {
 const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 const pagesPath = path.resolve(srcPath, 'pages');
-const templateWithTracePath = path.join(srcPath, 'templateWithTrace.html');
 const templatePath = path.join(srcPath, 'template.html');
 const pkg = require('./package.json');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -44,7 +43,7 @@ const entries = {
 
 // editor 页面是一个隐藏页面，不需要加入埋点日志
 const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({
-  template: item === 'editor' ? templatePath : templateWithTracePath,
+  template: templatePath,
   filename: `${item}.html`,
   chunks: [ item ],
   minify: false,

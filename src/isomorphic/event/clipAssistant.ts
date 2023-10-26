@@ -11,7 +11,7 @@ export const ClipAssistantMessageKey = 'ClipAssistantMessageKey';
 
 export enum ClipAssistantMessageActions {
   /**
-   * 剪藏助手 ready 加载完成后通知的事件
+   * 笔记 ready 加载完成后通知的事件
    */
   ready = 'ready',
   addContent = 'addContent',
