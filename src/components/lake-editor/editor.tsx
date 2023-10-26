@@ -170,7 +170,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
               },
             ],
           },
-          placeholder: __i18n('记你想记'),
+          placeholder: __i18n('输入正文'),
           defaultFontsize: 14,
         });
         newEditor.on('visitLink', (url: string) => {

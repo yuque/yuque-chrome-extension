@@ -16,8 +16,12 @@ import {
   AccountLayoutMessageActions,
   AccountLayoutMessageKey,
 } from '@/isomorphic/event/accountLayout';
-import { initContentScriptActionListener } from './action-listener';
+import {
+  initContentScriptActionListener,
+  initContentScriptMessageListener,
+} from './action-listener';
 import { createWordMark } from './WordMark';
+import '@/styles/inject.less';
 
 enum SidePanelStatus {
   // 还没有初始化
@@ -98,6 +102,7 @@ export class App {
           dom: this.rootContainer,
         });
         initContentScriptActionListener(this);
+        initContentScriptMessageListener();
         this.initSidePanel();
       });
   }

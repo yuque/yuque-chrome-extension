@@ -1,5 +1,12 @@
+import React from 'react';
+import { message } from 'antd';
 import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
+import {
+  ContentScriptEvents,
+  ContentScriptMessageKey,
+  ContentScriptMessageActions,
+  IShowMessageData,
+} from '@/isomorphic/event/contentScript';
 import { ClipAssistantMessageActions } from '@/isomorphic/event/clipAssistant';
 import { WordMarkMessageActions } from '@/isomorphic/event/wordMark';
 import { AccountLayoutMessageActions } from '@/isomorphic/event/accountLayout';
@@ -141,4 +148,48 @@ export const initContentScriptActionListener = (context: App) => {
       return true;
     },
   );
+};
+
+export const initContentScriptMessageListener = () => {
+  window.addEventListener('message', (e: MessageEvent<any>) => {
+    const { action, key, data } = e.data || {};
+    if (key !== ContentScriptMessageKey) {
+      return;
+    }
+    switch (action) {
+      case ContentScriptMessageActions.ShowMessage: {
+        const { type, text, link } = (data || {}) as IShowMessageData;
+        const content = (
+          <span className="yuque-chrome-extension-message">
+            <span className="yuque-chrome-extension-message-text">{text}</span>
+            {!!link && (
+              <a
+                target="_blank"
+                href={link.href}
+                className="yuque-chrome-extension-message-href"
+              >
+                {link.text}
+              </a>
+            )}
+          </span>
+        );
+        if (type === 'success') {
+          message.success({
+            content,
+            className: 'yuque-chrome-extension-message-wrapper',
+          });
+        }
+        if (type === 'error') {
+          message.error({
+            content,
+            className: 'yuque-chrome-extension-message-wrapper',
+          });
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  });
 };

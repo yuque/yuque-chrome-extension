@@ -27,6 +27,11 @@ import {
   ClipAssistantMessageKey,
   ClipAssistantMessageActions,
 } from '@/isomorphic/event/clipAssistant';
+import {
+  ContentScriptMessageActions,
+  ContentScriptMessageKey,
+} from '@/isomorphic/event/contentScript';
+import { isRunningInjectPage } from '@/core/uitl';
 import OcrSvg from '@/assets/svg/ocr-icon.svg';
 import ClipperSvg from '@/assets/svg/clipper.svg';
 import CollectLinkSvg from '@/assets/svg/collect-link.svg';
@@ -34,7 +39,6 @@ import { superSidebar } from '@/components/SuperSideBar/index';
 import AddTagButton from './component/AddTagButton';
 import TagList from './component/TagList';
 import styles from './index.module.less';
-import { isRunningInjectPage } from '@/core/uitl';
 
 function ClipContent() {
   const editorRef = useRef<IEditorRef>(null);
@@ -75,6 +79,37 @@ function ClipContent() {
       message.warning(__i18n('内容不能为空'));
       return;
     }
+
+    const showSuccessMessage = (
+      text: string,
+      link: { text: string; href: string },
+    ) => {
+      if (isRunningInjectPage) {
+        window.parent.postMessage(
+          {
+            key: ContentScriptMessageKey,
+            action: ContentScriptMessageActions.ShowMessage,
+            data: {
+              text,
+              type: 'success',
+              link,
+            },
+          },
+          '*',
+        );
+        return;
+      }
+      message.success(
+        <span>
+          {text}
+          &nbsp;&nbsp;
+          <a target="_blank" href={link.href}>
+            {link.text}
+          </a>
+        </span>,
+      );
+    };
+
     setLoading({ loading: true });
     try {
       // 保存到小记
@@ -85,15 +120,10 @@ function ClipContent() {
         };
         await backgroundBridge.request.note.create(noteParams);
         const url = LinkHelper.goMyNote();
-        message.success(
-          <span>
-            {__i18n('保存成功！')}
-            &nbsp;&nbsp;
-            <a target="_blank" href={url}>
-              {__i18n('去小记查看')}
-            </a>
-          </span>,
-        );
+        showSuccessMessage(__i18n('保存成功！'), {
+          href: url,
+          text: __i18n('去小记查看'),
+        });
       } else {
         const docParams = {
           ...(await buildParamsForDoc(editor)),
@@ -102,15 +132,10 @@ function ClipContent() {
         };
         const doc = await backgroundBridge.request.doc.create(docParams);
         const url = LinkHelper.goDoc(doc);
-        message.success(
-          <span>
-            {__i18n('保存成功！')}
-            &nbsp;&nbsp;
-            <a target="_blank" href={url}>
-              {__i18n('立即查看')}
-            </a>
-          </span>,
-        );
+        showSuccessMessage(__i18n('保存成功！'), {
+          href: url,
+          text: __i18n('立即查看'),
+        });
       }
       if (isRunningInjectPage) {
         backgroundBridge.sidePanel.close();
@@ -321,7 +346,7 @@ function ClipContent() {
       >
         <Input.TextArea
           className={styles.title}
-          placeholder={__i18n('请输入标题')}
+          placeholder={__i18n('输入标题')}
           value={title}
           autoSize={{ minRows: 1, maxRows: 100 }}
           onChange={onTitleChange}
