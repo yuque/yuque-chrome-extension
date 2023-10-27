@@ -70,7 +70,7 @@ function SuperSidebarHeader() {
             placement="bottomRight"
             open={showTip}
             overlayClassName={styles.tooltipWrapper}
-            getPopupContainer={node => node as HTMLElement}
+            getPopupContainer={node => node.parentElement as HTMLElement}
             arrow={{ pointAtCenter: true }}
           >
             {showTip ? (
@@ -85,7 +85,9 @@ function SuperSidebarHeader() {
               </Tooltip>
             )}
           </Tooltip>
-          <UserAvatar />
+          <div className={styles.itemWrapper}>
+            <UserAvatar />
+          </div>
         </div>
         {isRunningInjectPage && (
           <div onClick={closeSidePanel} className={styles.closeWrapper}>

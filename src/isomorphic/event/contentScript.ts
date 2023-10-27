@@ -8,3 +8,18 @@ export enum ContentScriptEvents {
   ForceUpgradeVersion = 'contentScript/forceUpgradeVersion',
   LoginOut = 'contentScript/LoginOut',
 }
+
+export const ContentScriptMessageKey = 'ContentScriptMessageKey';
+
+export enum ContentScriptMessageActions {
+  ShowMessage = 'showMessage',
+}
+
+export interface IShowMessageData {
+  type: 'error' | 'success';
+  text: string;
+  link?: {
+    text: string;
+    href: string;
+  };
+}

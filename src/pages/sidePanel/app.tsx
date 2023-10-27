@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AccountLayout from '@/components/AccountLayout';
 import SuperSideBarContainer from '@/components/SuperSideBar/container';
 import AntdLayout from '@/components/AntdLayout';
@@ -18,13 +18,35 @@ import {
 } from '@/config';
 import { IUser } from '@/isomorphic/interface';
 import { isRunningInjectPage } from '@/core/uitl';
+import { useForceUpdate } from '@/hooks/useForceUpdate';
 import styles from './app.module.less';
 import '@/styles/global.less';
 
 declare const Tracert: any;
 
+const MiniWidth = 416;
+
 function App() {
   const [sidePanelIsReady, setSidePanelIsReady] = useState(false);
+  const { forceUpdate } = useForceUpdate();
+  const disableRef = useRef(window.innerWidth < MiniWidth);
+
+  useEffect(() => {
+    if (isRunningInjectPage) {
+      return;
+    }
+    const onResize = () => {
+      const disable = window.innerWidth < MiniWidth;
+      if (disable !== disableRef.current) {
+        disableRef.current = disable;
+        forceUpdate();
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (sidePanelIsReady) {
@@ -80,6 +102,13 @@ function App() {
             {sidePanelIsReady && <SuperSideBarContainer />}
           </AccountLayout>
         </div>
+        {disableRef.current && !isRunningInjectPage && (
+          <div className={styles.disableWrapper}>
+            <div className={styles.disableModal}>
+              <img src="https://mdn.alipayobjects.com/huamei_0prmtq/afts/img/A*MQcdSY9buAgAAAAAAAAAAAAADvuFAQ/original" />
+            </div>
+          </div>
+        )}
       </div>
     </AntdLayout>
   );

@@ -8,12 +8,17 @@ interface IAntdLayoutProps {
 function AntdLayout(props: IAntdLayoutProps) {
   return (
     <ConfigProvider
-      prefixCls='yuque-chrome-extension'
+      prefixCls="yuque-chrome-extension"
       theme={{
         token: {
           colorPrimary: '#00B96B',
           colorBorder: '#EFEFEF',
           colorText: '#585A5A',
+        },
+        components: {
+          Select: {
+            optionSelectedBg: '#EFF0F0',
+          },
         },
       }}
     >

@@ -25,7 +25,11 @@ export function createUserBridge(impl: ICallBridgeImpl) {
             res => {
               const map: IShortcutMap = {};
               for (const item of res) {
-                map[item.name as keyof IShortcutMap] = item.shortcut;
+                if (item.name === '_execute_action') {
+                  map.openSidePanel = item.shortcut;
+                } else {
+                  map[item.name as keyof IShortcutMap] = item.shortcut;
+                }
               }
               resolve(map);
             },
