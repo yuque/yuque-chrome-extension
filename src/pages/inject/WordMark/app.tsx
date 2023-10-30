@@ -69,7 +69,7 @@ function WordMarkApp() {
             <span>
               {__i18n('保存成功！')}
               &nbsp;&nbsp;
-              <a target="_blank" href={url}>
+              <a target="_blank" href={url} className={styles.link}>
                 {__i18n('去小记查看')}
               </a>
             </span>,
@@ -116,7 +116,7 @@ function WordMarkApp() {
             .join('');
         }
         await editorRef.current?.setContent(
-          `${html}<p><br></p><blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote>`,
+          `${html}<blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote>`,
           'text/html',
         );
         await save(html);
