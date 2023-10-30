@@ -13,6 +13,7 @@ export const templateHtml = `
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
     .toolbar-container {
       display: none;

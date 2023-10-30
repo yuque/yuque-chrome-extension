@@ -19,6 +19,10 @@ function AntdLayout(props: IAntdLayoutProps) {
           Select: {
             optionSelectedBg: '#EFF0F0',
           },
+          Tooltip: {
+            colorBgSpotlight: 'rgba(0, 0, 0, 0.75)',
+            fontSize: 12,
+          },
         },
       }}
     >

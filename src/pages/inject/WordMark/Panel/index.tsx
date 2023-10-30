@@ -125,7 +125,6 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 trigger="hover"
                 placement="bottom"
                 getPopupContainer={node => node as HTMLElement}
-                mouseEnterDelay={0.5}
               >
                 <div className={styles.saveOperateItem} onClick={onSave}>
                   <Icon component={NoteLogoSvg} />
@@ -137,7 +136,6 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 trigger="hover"
                 placement="bottom"
                 getPopupContainer={node => node.parentElement as HTMLElement}
-                mouseEnterDelay={0.5}
               >
                 <div className={styles.saveOperateItem} onClick={onCopyText}>
                   <Icon component={CopySvg} />
