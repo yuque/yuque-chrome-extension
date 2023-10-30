@@ -192,9 +192,7 @@ export class App {
     this._sidePanelStatus = SidePanelStatus.Hidden;
   }
 
-  async showSidePanel() {
-    await this.initSidePanel();
-
+  private arouseSidePanel() {
     this.sidePanelIframe?.contentWindow?.postMessage(
       {
         key: SidePanelMessageKey,
@@ -202,6 +200,11 @@ export class App {
       },
       '*',
     );
+  }
+
+  async showSidePanel() {
+    await this.initSidePanel();
+    this.arouseSidePanel();
     this.sidePanelIframe?.classList.add('show');
     this._sidePanelStatus = SidePanelStatus.Visible;
   }
@@ -231,6 +234,7 @@ export class App {
     action: ClipAssistantMessageActions,
     data?: any,
   ) {
+    this.arouseSidePanel();
     await this.initSidePanel();
     await this.addListenClipAssistantReady();
     this.sidePanelIframe?.contentWindow?.postMessage(

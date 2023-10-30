@@ -45,7 +45,7 @@ function WordMarkApp() {
         // 展开侧边栏
         window._yuque_ext_app.showSidePanel();
         // 发送消息在编辑器内加入内容
-        window._yuque_ext_app?.sendMessageToSidePanel(
+        window._yuque_ext_app?.sendMessageToClipAssistant(
           ClipAssistantMessageActions.addContent,
           text,
         );
@@ -208,7 +208,14 @@ function WordMarkApp() {
   useEffect(() => {
     const onkeydown = (e: KeyboardEvent) => {
       e.preventDefault();
-      setVisible(v => !v);
+      setVisible(v => {
+        message.success(
+          !v
+            ? __i18n('本次访问已开启划词工具栏')
+            : __i18n('本次访问已关闭划词工具栏'),
+        );
+        return !v;
+      });
     };
     keymaster(wordMarkContext.evokeWordMarkShortKey, onkeydown);
 

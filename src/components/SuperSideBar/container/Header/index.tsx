@@ -52,7 +52,7 @@ function SuperSidebarHeader() {
       </div>
       <div className={styles.right}>
         <div className={styles.infoWrapper}>
-          <Tooltip title={__i18n('访问语雀')} mouseEnterDelay={0.5}>
+          <Tooltip title={__i18n('访问语雀')}>
             <div className={styles.itemWrapper} onClick={openHome}>
               <Icon component={HomeSvg} />
             </div>
@@ -78,7 +78,7 @@ function SuperSidebarHeader() {
                 <Icon component={SettingSvg} />
               </div>
             ) : (
-              <Tooltip title={__i18n('设置')} mouseEnterDelay={0.5}>
+              <Tooltip title={__i18n('设置')}>
                 <div className={styles.itemWrapper} onClick={openSetting}>
                   <Icon component={SettingSvg} />
                 </div>

@@ -301,7 +301,7 @@ function ClipContent() {
       {renderLoading()}
       <div className={styles.headerWrapper}>
         <Tooltip
-          title={shortcutMap.selectArea}
+          title={isRunningInjectPage ? shortcutMap.selectArea : ''}
           getPopupContainer={node => node}
         >
           <div
@@ -313,7 +313,10 @@ function ClipContent() {
             <span>{__i18n('选取剪藏')}</span>
           </div>
         </Tooltip>
-        <Tooltip title={shortcutMap.startOcr} getPopupContainer={node => node}>
+        <Tooltip
+          title={isRunningInjectPage ? shortcutMap.startOcr : ''}
+          getPopupContainer={node => node}
+        >
           <div
             className={styles.headerItem}
             onClick={onScreenOcr}
@@ -325,7 +328,7 @@ function ClipContent() {
         </Tooltip>
 
         <Tooltip
-          title={shortcutMap.collectLink}
+          title={isRunningInjectPage ? shortcutMap.collectLink : ''}
           placement="top"
           getPopupContainer={node => node}
         >
@@ -358,6 +361,7 @@ function ClipContent() {
           value=""
           onLoad={onLoad}
           uploadImage={onUploadImage as any}
+          onSave={onSave}
         />
       </div>
       {selectSavePosition?.id === DefaultSavePosition.id && (
