@@ -5,7 +5,6 @@ import React, {
   useState,
   useLayoutEffect,
 } from 'react';
-import keymaster from 'keymaster';
 import { message } from 'antd';
 import classnames from 'classnames';
 import LinkHelper from '@/isomorphic/link-helper';
@@ -24,10 +23,10 @@ import Inner from './Inner';
 import styles from './app.module.less';
 
 function WordMarkApp() {
-  const [showWordMark, setShowWordMark] = useState(false);
   const [type, setType] = useState<WordMarkOptionTypeEnum | null>(null);
   const [selectText, setSelectText] = useState<string>('');
   const { forceUpdate } = useForceUpdate();
+  const showWordMarkRef = useRef(false);
   const editorRef = useRef<IEditorRef>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wordMarkPositionRef = useRef({
@@ -49,7 +48,8 @@ function WordMarkApp() {
           ClipAssistantMessageActions.addContent,
           text,
         );
-        setShowWordMark(false);
+        showWordMarkRef.current = false;
+        forceUpdate();
         return;
       }
       if (isSaving.current) {
@@ -96,7 +96,8 @@ function WordMarkApp() {
             </span>,
           );
         }
-        setShowWordMark(false);
+        showWordMarkRef.current = false;
+        forceUpdate();
       } catch (e) {
         message.error(__i18n('保存失败，请重试！'));
       }
@@ -108,7 +109,7 @@ function WordMarkApp() {
   const executeCommand = useCallback(
     async (t: WordMarkOptionTypeEnum) => {
       if (t === WordMarkOptionTypeEnum.clipping) {
-        const selection = document.getSelection();
+        const selection = window.getSelection();
         let html = '';
         if (selection) {
           html = Array.from(selection.getRangeAt(0).cloneContents().childNodes)
@@ -142,7 +143,8 @@ function WordMarkApp() {
   }, []);
 
   const closeWordMark = useCallback(() => {
-    setShowWordMark(false);
+    showWordMarkRef.current = false;
+    forceUpdate();
   }, []);
 
   useEffect(() => {
@@ -163,23 +165,30 @@ function WordMarkApp() {
         const selection = window.getSelection();
         // 如果选中区域可编辑，那么不展示划词
         if (isEdit || !selection) {
-          setShowWordMark(false);
+          showWordMarkRef.current = false;
+          setVisible(false);
+          forceUpdate();
           return;
         }
         const selectionText = selection.toString();
         if (selection.rangeCount <= 0) {
-          setShowWordMark(false);
+          showWordMarkRef.current = false;
+          setVisible(false);
+          forceUpdate();
           return;
         }
         if (!selectionText.trim().length) {
-          setShowWordMark(false);
+          showWordMarkRef.current = false;
+          setVisible(false);
+          forceUpdate();
           return;
         }
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
         const x = (rect.left + rect.right) / 2;
         const y = rect.bottom;
-        setShowWordMark(true);
+        showWordMarkRef.current = true;
+        forceUpdate();
         setSelectText(selectionText);
         mouseupPositionRef.current = {
           x,
@@ -196,7 +205,7 @@ function WordMarkApp() {
 
   useEffect(() => {
     setType(null);
-  }, [selectText, showWordMark]);
+  }, [selectText, showWordMarkRef.current]);
 
   useLayoutEffect(() => {
     if (!selectText) {
@@ -207,20 +216,14 @@ function WordMarkApp() {
 
   useEffect(() => {
     const onkeydown = (e: KeyboardEvent) => {
-      e.preventDefault();
-      setVisible(v => {
-        message.success(
-          !v
-            ? __i18n('本次访问已开启划词工具栏')
-            : __i18n('本次访问已关闭划词工具栏'),
-        );
-        return !v;
-      });
+      if (e.key === wordMarkContext.evokeWordMarkShortKey && showWordMarkRef.current) {
+        setVisible(v => !v);
+      }
     };
-    keymaster(wordMarkContext.evokeWordMarkShortKey, onkeydown);
+    window.addEventListener('keydown', onkeydown);
 
     return () => {
-      keymaster.unbind(wordMarkContext.evokeWordMarkShortKey);
+      window.removeEventListener('keydown', onkeydown);
     };
   }, [wordMarkContext]);
 
@@ -232,7 +235,7 @@ function WordMarkApp() {
           top: `${wordMarkPositionRef.current.top}px`,
         }}
         className={classnames(styles.wordMarkWrapper, {
-          [styles.hidden]: !showWordMark,
+          [styles.hidden]: !showWordMarkRef.current,
         })}
         onMouseUp={e => {
           // 内部面板阻止冒泡，避免触发 mouseup 事件

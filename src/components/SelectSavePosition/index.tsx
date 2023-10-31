@@ -75,7 +75,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
 
   const positionList = useMemo(() => {
     return [
-      { value: 'note', label: __i18n('保存小记') },
+      { value: 'note', label: __i18n('存为小记') },
       { value: 'book', label: __i18n('存为文档') },
     ];
   }, []);

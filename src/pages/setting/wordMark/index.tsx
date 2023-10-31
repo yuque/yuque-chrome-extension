@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch } from 'antd';
+import { Select, Switch } from 'antd';
 import { __i18n } from '@/isomorphic//i18n';
 import {
   IWordMarkConfig,
@@ -7,9 +7,51 @@ import {
 } from '@/isomorphic/constant/wordMark';
 import SelectSavePosition from '@/components/SelectSavePosition';
 import LinkHelper from '@/isomorphic/link-helper';
-import ShortItem from '@/components/ShortItem';
 import { backgroundBridge } from '@/core/bridge/background';
+import { isMacOs } from '@/core/system-info';
 import styles from './index.module.less';
+
+const mac = [
+  {
+    value: '',
+    label: '无',
+  },
+  {
+    value: 'Meta',
+    label: 'Command',
+  },
+  {
+    value: 'Alt',
+    label: 'Alt',
+  },
+  {
+    value: 'Shift',
+    label: 'Shift',
+  },
+  {
+    value: 'Control',
+    label: 'Ctrl',
+  },
+];
+
+const windows = [
+  {
+    value: '',
+    label: '无',
+  },
+  {
+    value: 'Alt',
+    label: 'Alt',
+  },
+  {
+    value: 'Shift',
+    label: 'Shift',
+  },
+  {
+    value: 'Control',
+    label: 'Ctrl',
+  },
+];
 
 function WordMark() {
   const [config, setConfig] = useState<IWordMarkConfig | null>(null);
@@ -48,19 +90,15 @@ function WordMark() {
           </div>
           {!config.enable && (
             <div className={styles.configItem}>
-              <div className={styles.desc}>{__i18n('快捷键唤起工具栏')}</div>
-              <ShortItem
-                defaultShortcut={
-                  config[WordMarkConfigKey.evokeWordMarkShortKey]
-                }
-                onRemoveShortcut={() => {
-                  onConfigChange(WordMarkConfigKey.evokeWordMarkShortKey, '');
-                }}
-                onChangeShortCut={shortcut => {
-                  onConfigChange(
-                    WordMarkConfigKey.evokeWordMarkShortKey,
-                    shortcut,
-                  );
+              <div className={styles.desc}>
+                {__i18n('选中文本+按指定修饰键唤起')}
+              </div>
+              <Select
+                value={config[WordMarkConfigKey.evokeWordMarkShortKey]}
+                options={isMacOs ? mac : windows}
+                style={{ width: '120px' }}
+                onChange={(v: string) => {
+                  onConfigChange(WordMarkConfigKey.evokeWordMarkShortKey, v);
                 }}
               />
             </div>
