@@ -17,20 +17,20 @@ const mac = [
     label: '无',
   },
   {
-    value: 'Meta',
-    label: 'Command',
-  },
-  {
-    value: 'Alt',
-    label: 'Alt',
-  },
-  {
     value: 'Shift',
     label: 'Shift',
   },
   {
     value: 'Control',
     label: 'Ctrl',
+  },
+  {
+    value: 'Alt',
+    label: 'Alt',
+  },
+  {
+    value: 'Meta',
+    label: 'Command',
   },
 ];
 
@@ -40,16 +40,16 @@ const windows = [
     label: '无',
   },
   {
-    value: 'Alt',
-    label: 'Alt',
-  },
-  {
     value: 'Shift',
     label: 'Shift',
   },
   {
     value: 'Control',
     label: 'Ctrl',
+  },
+  {
+    value: 'Alt',
+    label: 'Alt',
   },
 ];
 
@@ -93,7 +93,7 @@ function WordMark() {
           {!config.enable && (
             <div className={styles.configItem}>
               <div className={styles.desc}>
-                {__i18n('选中文本+按指定修饰键唤起')}
+                {__i18n('选中文本 + 按指定修饰键唤起')}
               </div>
               <Select
                 value={config[WordMarkConfigKey.evokeWordMarkShortKey]}
