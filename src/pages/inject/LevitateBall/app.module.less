@@ -15,7 +15,6 @@
     .ballWrapper {
       display: flex;
       flex-direction: row;
-      justify-content: center;
       align-items: center;
       user-select: none;
       border: 1px solid @border-color;
@@ -24,7 +23,7 @@
       background: @white;
       opacity: 0.62;
       cursor: pointer;
-      padding: 4px 12px 4px 4px;
+      padding: 6px 8px 6px 8px;
       gap: 4px;
       .logo {
         font-size: 24px;
@@ -52,6 +51,7 @@
       transition: all 0.3s ease-in-out;
       cursor: pointer;
       color: @text-color-secondary;
+      font-size: @font-size;
     }
   }
 }
@@ -91,11 +91,12 @@
   .radioGroup {
     display: flex;
     flex-direction: column;
+    gap: 10px;
   }
 
   .linkWrapper {
     color: @text-color-secondary;
-    margin-top: 4px;
+    margin-top: 10px;
 
     .link {
       color: @link-color;
@@ -125,6 +126,10 @@
   :global {
     .anticon-exclamation-circle {
       display: none;
+    }
+
+    .yuque-chrome-extension-confirm-paragraph {
+      row-gap: 10px;
     }
   }
 }

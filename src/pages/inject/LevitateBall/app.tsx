@@ -93,7 +93,7 @@ function App() {
                 backgroundBridge.tab.create(LinkHelper.sidePanelSettingPage);
               }}
             >
-              {__i18n('设置页')}
+              {__i18n('设置')}
             </div>
             {__i18n('开启')}
           </div>
@@ -101,7 +101,7 @@ function App() {
       ),
       prefixCls: 'yuque-chrome-extension',
       closable: true,
-      title: __i18n('关闭悬浮球'),
+      title: __i18n('关闭悬浮气泡'),
       centered: true,
       wrapClassName: styles.disableModal,
       maskClosable: true,
@@ -225,6 +225,7 @@ function App() {
           className={styles.dragBarMask}
           onMouseLeave={() => {
             setDragging(false);
+            entryStartActionRef.current = '';
           }}
         />
       )}
