@@ -20,6 +20,7 @@ const LinkHelper = {
   settingPage: chrome.runtime.getURL('setting.html'),
   wordMarkSettingPage: `${chrome.runtime.getURL('setting.html')}?page=wordMark`,
   shortcutSettingPage: `${chrome.runtime.getURL('setting.html')}?page=shortcut`,
+  sidePanelSettingPage: `${chrome.runtime.getURL('setting.html')}?page=sidePanel`,
 };
 
 export default LinkHelper;

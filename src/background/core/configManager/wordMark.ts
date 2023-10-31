@@ -4,10 +4,10 @@ import {
   defaultWordMarkConfig,
 } from '@/isomorphic/constant/wordMark';
 import Chrome from '@/background/core/chrome';
-import { IWordMarkConfigOption } from '@/isomorphic/background/wordMarkConfig';
+import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { STORAGE_KEYS } from '@/config';
-import Storage from './storage';
+import Storage from '../storage';
 
 class WordMarkConfigManager {
   async get() {
@@ -19,18 +19,14 @@ class WordMarkConfigManager {
       const key = _key as keyof IWordMarkConfig;
       const value = config[key];
       if (typeof value === 'undefined') {
-        config[key] = defaultWordMarkConfig[key] as any;
+        config[key] = defaultWordMarkConfig[key] as never;
       }
     }
 
     return config;
   }
 
-  async update(
-    key: WordMarkConfigKey,
-    value: any,
-    option?: IWordMarkConfigOption,
-  ) {
+  async update(key: string, value: any, option?: IConfigManagerOption) {
     const config = await this.get();
     const result: IWordMarkConfig = {
       ...config,
@@ -50,7 +46,7 @@ class WordMarkConfigManager {
 
   private noticeWebPage(
     config: IWordMarkConfig,
-    option?: IWordMarkConfigOption,
+    option?: IConfigManagerOption,
   ) {
     const { notice = false } = option || {};
     if (!notice) {

@@ -6,5 +6,5 @@ export enum BackgroundEvents {
   OperateTab = 'background/operate-tab',
   OperateSidePanel = 'background/operate-sidePanel',
   OperateRequest = 'background/operate-request',
-  OperateWordMarkConfig = 'background/operate-wordMarkConfig',
+  OperateManagerConfig = 'background/operate-config-manager',
 }

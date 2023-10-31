@@ -52,8 +52,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
       return;
     }
     const defaultSavePosition = await backgroundBridge.storage.get(rememberKey);
-    const positionItem = (defaultSavePosition ||
-      DefaultSavePosition) as ISavePosition;
+    const positionItem = (defaultSavePosition || DefaultSavePosition) as ISavePosition;
     initPositionState(positionItem);
   };
 

@@ -7,13 +7,19 @@ import styles from './DisableMenu.module.less';
 
 function DisableMenu() {
   const disableForever = () => {
-    backgroundBridge.wordMarkConfig.update(WordMarkConfigKey.enable, false, {
-      notice: true,
-    });
+    backgroundBridge.configManager.update(
+      'wordMark',
+      WordMarkConfigKey.enable,
+      false,
+      {
+        notice: true,
+      },
+    );
   };
 
   const disableForPage = () => {
-    backgroundBridge.wordMarkConfig.update(
+    backgroundBridge.configManager.update(
+      'wordMark',
       WordMarkConfigKey.disableUrl,
       `${window.location.origin}${window.location.pathname}`,
       {
