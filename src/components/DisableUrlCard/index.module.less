@@ -1,0 +1,50 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: @panel-default-box-shadow;
+  padding: 12px;
+  border: 1px solid @border-light-color;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .cardItemWrapper {
+    display: flex;
+    gap: 12px;
+    padding: 6px 12px;
+    align-items: center;
+    background-color: @grey-2;
+    border-radius: 8px;
+    width: calc(50% - 8px);
+    border: 1px solid @border-color-primary;
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .name {
+      overflow: hidden;
+      flex: 1 1 auto;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .deleteWrapper {
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      flex: 0 0 auto;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: @bg-primary-hover;
+      }
+    }
+  }
+}

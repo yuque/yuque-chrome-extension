@@ -17,10 +17,15 @@ import {
   AccountLayoutMessageKey,
 } from '@/isomorphic/event/accountLayout';
 import {
+  LevitateBallMessageActions,
+  LevitateBallMessageKey,
+} from '@/isomorphic/event/levitateBall';
+import {
   initContentScriptActionListener,
   initContentScriptMessageListener,
 } from './action-listener';
 import { createWordMark } from './WordMark';
+import { createLevitateBall } from './LevitateBall';
 import '@/styles/inject.less';
 
 enum SidePanelStatus {
@@ -66,6 +71,10 @@ export class App {
     //
   };
 
+  public removeLevitateBall: VoidCallback = () => {
+    //
+  };
+
   constructor() {
     this.initRoot();
   }
@@ -104,6 +113,9 @@ export class App {
         initContentScriptActionListener(this);
         initContentScriptMessageListener();
         this.initSidePanel();
+        this.removeLevitateBall = createLevitateBall({
+          dom: root,
+        });
       });
   }
 
@@ -125,7 +137,7 @@ export class App {
         height: 100vh;
         right: 0;
         top: 0;
-        z-index: 999999;
+        z-index: 2147483645;
         color-scheme: none;
         user-select: none;
       }
@@ -266,6 +278,20 @@ export class App {
     window.postMessage(
       {
         key: WordMarkMessageKey,
+        action,
+        data,
+      },
+      '*',
+    );
+  }
+
+  async sendMessageToLevitateBall(
+    action: LevitateBallMessageActions,
+    data?: any,
+  ) {
+    window.postMessage(
+      {
+        key: LevitateBallMessageKey,
         action,
         data,
       },

@@ -57,7 +57,9 @@ function WordMark() {
   const [config, setConfig] = useState<IWordMarkConfig | null>(null);
 
   const onConfigChange = async (key: WordMarkConfigKey, value: any) => {
-    await backgroundBridge.wordMarkConfig.update(key, value, { notice: true });
+    await backgroundBridge.configManager.update('wordMark', key, value, {
+      notice: true,
+    });
     setConfig({
       ...(config as IWordMarkConfig),
       [key]: value,
@@ -65,7 +67,7 @@ function WordMark() {
   };
 
   useEffect(() => {
-    backgroundBridge.wordMarkConfig.get().then(res => {
+    backgroundBridge.configManager.get('wordMark').then(res => {
       setConfig(res);
     });
   }, []);
@@ -113,7 +115,8 @@ function WordMark() {
             <div className={styles.desc}>{__i18n('默认保存位置')}</div>
             <SelectSavePosition
               onChange={item => {
-                backgroundBridge.wordMarkConfig.update(
+                backgroundBridge.configManager.update(
+                  'wordMark',
                   WordMarkConfigKey.defaultSavePosition,
                   item,
                 );

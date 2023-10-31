@@ -15,6 +15,7 @@ export const STORAGE_KEYS = {
   },
   SETTINGS: {
     WORD_MARK_CONFIG: 'settings/word-mark-config',
+    LEVITATE_BALL_CONFIG: 'settings/levitate-ball-config',
   },
   NOTE: {
     SELECT_TAGS: 'note/select-tags',

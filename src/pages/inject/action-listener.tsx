@@ -13,6 +13,7 @@ import { AccountLayoutMessageActions } from '@/isomorphic/event/accountLayout';
 import { App } from './content-scripts';
 import { showScreenShot } from './ScreenShot';
 import { showSelectArea } from './AreaSelector';
+import { LevitateBallMessageActions } from '@/isomorphic/event/levitateBall';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -110,6 +111,14 @@ export const initContentScriptActionListener = (context: App) => {
         case ContentScriptEvents.WordMarkConfigChange: {
           context.sendMessageToWordMark(
             WordMarkMessageActions.wordMarkConfigUpdate,
+            request.data,
+          );
+          sendResponse(true);
+          break;
+        }
+        case ContentScriptEvents.LevitateConfigChange: {
+          context.sendMessageToLevitateBall(
+            LevitateBallMessageActions.levitateBallConfigUpdate,
             request.data,
           );
           sendResponse(true);

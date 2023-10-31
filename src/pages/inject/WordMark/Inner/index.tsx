@@ -28,7 +28,8 @@ function InnerWordMark(props: InnerWordMarkProps) {
       const result = tools.includes(type)
         ? tools.filter(t => t !== type)
         : [type, ...tools];
-      backgroundBridge.wordMarkConfig.update(
+      backgroundBridge.configManager.update(
+        'wordMark',
         WordMarkConfigKey.innerPinList,
         result,
       );

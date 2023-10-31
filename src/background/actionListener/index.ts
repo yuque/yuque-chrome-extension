@@ -6,7 +6,7 @@ import { createClipActionListener } from './clip';
 import { createTabActionListener } from './tab';
 import { createSidePanelActionListener } from './sidePanel';
 import { createRequestActionListener } from './request';
-import { createWordMarkConfigActionListener } from './wordMarkConfig';
+import { createManagerConfigActionListener } from './configManager';
 
 type MessageSender = chrome.runtime.MessageSender;
 
@@ -49,8 +49,8 @@ export const initBackGroundActionListener = () => {
           createRequestActionListener(request, sendResponse);
           break;
         }
-        case BackgroundEvents.OperateWordMarkConfig: {
-          createWordMarkConfigActionListener(request, sendResponse);
+        case BackgroundEvents.OperateManagerConfig: {
+          createManagerConfigActionListener(request, sendResponse);
           break;
         }
         default: {

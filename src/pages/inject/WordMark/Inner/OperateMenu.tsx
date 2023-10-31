@@ -26,7 +26,11 @@ function OperateMenu(props: IOperateMenuProps) {
   const updateToolbar = (list: ToolbarItem[]) => {
     const result = list.map(item => item.id) as WordMarkOptionTypeEnum[];
     setToolbarKeys(result);
-    backgroundBridge.wordMarkConfig.update(WordMarkConfigKey.toolbars, result);
+    backgroundBridge.configManager.update(
+      'wordMark',
+      WordMarkConfigKey.toolbars,
+      result,
+    );
   };
 
   const toolbars = useMemo(() => {

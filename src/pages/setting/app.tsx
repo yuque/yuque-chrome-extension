@@ -9,6 +9,7 @@ import About from './about';
 import Help from './help';
 import Shortcut from './shortcut';
 import styles from './app.module.less';
+import SidePanel from './sidePanel';
 import '@/styles/global.less';
 
 initI18N();
@@ -18,6 +19,8 @@ enum Page {
   general = 'general',
   // 快捷键设置
   shortcut = 'shortcut',
+  // 侧边栏
+  sidePanel = 'sidePanel',
   // 划词工具栏
   wordMark = 'wordMark',
   // 帮助页面
@@ -36,6 +39,11 @@ const menus = [
     name: __i18n('快捷键设置'),
     key: Page.shortcut,
     page: <Shortcut />,
+  },
+  {
+    name: __i18n('侧边栏'),
+    key: Page.sidePanel,
+    page: <SidePanel />,
   },
   {
     name: __i18n('划词工具栏'),

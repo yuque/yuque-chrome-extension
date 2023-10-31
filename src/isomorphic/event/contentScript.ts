@@ -4,6 +4,7 @@ export enum ContentScriptEvents {
   CollectLink = 'contentScript/collectLink',
   ToggleSidePanel = 'contentScript/toggleSidePanel',
   WordMarkConfigChange = 'contentScript/wordMarkConfigChange',
+  LevitateConfigChange = 'contentScript/levitateConfigChange',
   AddContentToClipAssistant = 'contentScript/addContentToClipAssistant',
   ForceUpgradeVersion = 'contentScript/forceUpgradeVersion',
   LoginOut = 'contentScript/LoginOut',

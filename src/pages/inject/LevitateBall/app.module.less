@@ -1,0 +1,130 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  z-index: @z-index-max - 1;
+
+  .ballEntry {
+    max-width: 34px;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    position: relative;
+
+    .ballWrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      border: 1px solid @border-color;
+      border-radius: 32px 0 0 32px;
+      box-shadow: 0 3.2px 12px #00000014, 0 5px 25px #0000000a;
+      background: @white;
+      opacity: 0.62;
+      cursor: pointer;
+      padding: 4px 12px 4px 4px;
+      gap: 4px;
+      .logo {
+        font-size: 24px;
+        flex: 0 0 auto;
+      }
+
+      .hiddenWrapper {
+        display: flex;
+        white-space: nowrap;
+        flex: 0 0 auto;
+        color: @text-primary;
+        font-size: @font-size;
+      }
+    }
+  }
+
+  .closeWrapper {
+    height: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+
+    .closeIcon {
+      transform: translateX(16px);
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      color: @text-color-secondary;
+    }
+  }
+}
+
+.wrapper.wrapperHover {
+  .ballEntry {
+    max-width: 160px;
+
+    .ballWrapper {
+      opacity: 1;
+    }
+
+    .closeWrapper {
+      transform: translateX(0) translateY(-100%);
+    }
+  }
+  .closeWrapper {
+    .closeIcon {
+      transform: translateX(-4px);
+    }
+  }
+}
+
+.dragBarMask {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: @z-index-max + 1;
+}
+
+.disableModal {
+  z-index: @z-index-max + 2 !important;
+
+  .radioGroup {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .linkWrapper {
+    color: @text-color-secondary;
+    margin-top: 4px;
+
+    .link {
+      color: @link-color;
+      text-decoration: none;
+      display: inline-flex;
+      outline: none;
+      padding: 0 4px;
+      cursor: pointer;
+    }
+  }
+
+  .disableModalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+
+    .button {
+      margin: 0;
+      padding: 0 16px;
+    }
+
+    .sure {
+      color: @white;
+    }
+  }
+
+  :global {
+    .anticon-exclamation-circle {
+      display: none;
+    }
+  }
+}
