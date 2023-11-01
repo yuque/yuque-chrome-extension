@@ -6,7 +6,7 @@ import {
   LevitateConfigKey,
 } from '@/isomorphic/constant/levitate';
 import DisableUrlCard, { IDisableUrlItem } from '@/components/DisableUrlCard';
-import styles from '../common.module.less';
+import styles from './index.module.less';
 
 function Shortcut() {
   const [config, setConfig] = useState({} as ILevitateConfig);
