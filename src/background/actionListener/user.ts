@@ -11,7 +11,7 @@ import { STORAGE_KEYS, YUQUE_DOMAIN } from '@/config';
 import { RequestMessage } from './index';
 
 export const SERVER_URLS = {
-  LOGOUT: `${YUQUE_DOMAIN}/logout`,
+  LOGIN_PAGE: `${YUQUE_DOMAIN}/login`,
   LOGIN: `${YUQUE_DOMAIN}/api/accounts/login`,
   DASHBOARD: `${YUQUE_DOMAIN}/dashboard`,
 };
@@ -26,7 +26,7 @@ const createLoginWindow = (): Promise<number> => {
         left: 400,
         top: 100,
         type: 'panel',
-        url: SERVER_URLS.LOGOUT,
+        url: SERVER_URLS.LOGIN_PAGE,
       },
       res => resolve(res?.id as number),
     );
@@ -65,6 +65,9 @@ export async function createUserActionListener(
   switch (type) {
     case OperateUserEnum.login: {
       try {
+        await requestFn('/api/accounts/logout', {
+          method: 'DELETE',
+        });
         const windowId = await createLoginWindow();
         await waitForWindowLogined(windowId);
         await removeWindow(windowId);
