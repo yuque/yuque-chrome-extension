@@ -215,8 +215,16 @@ function WordMarkApp() {
   }, [selectText, initPosition, type]);
 
   useEffect(() => {
+    setVisible(wordMarkContext.enable);
+    // 不存在修饰键时不监听键盘事件
+    if (!wordMarkContext.evokeWordMarkShortKey) {
+      return;
+    }
     const onkeydown = (e: KeyboardEvent) => {
-      if (e.key === wordMarkContext.evokeWordMarkShortKey && showWordMarkRef.current) {
+      if (
+        e.key === wordMarkContext.evokeWordMarkShortKey &&
+        showWordMarkRef.current
+      ) {
         setVisible(v => !v);
       }
     };
