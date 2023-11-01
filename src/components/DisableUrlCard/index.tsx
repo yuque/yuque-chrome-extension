@@ -1,5 +1,7 @@
 import React from 'react';
-import { DeleteOutlined } from '@ant-design/icons';
+import { Row, Col } from 'antd';
+import Icon from '@ant-design/icons';
+import ActionDelete from '@/assets/svg/action-delete.svg';
 import styles from './index.module.less';
 
 export interface IDisableUrlItem {
@@ -18,22 +20,24 @@ function DisableUrlCard(props: IDisableUrlCardProps) {
     return null;
   }
   return (
-    <div className={styles.wrapper}>
+    <Row gutter={20}>
       {options.map((item, index) => {
         return (
-          <div key={item.origin} className={styles.cardItemWrapper}>
-            <img src={item.icon} className={styles.icon} />
-            <span className={styles.name}>{item.origin}</span>
-            <div
-              className={styles.deleteWrapper}
-              onClick={() => props.onDelete(item, index)}
-            >
-              <DeleteOutlined />
+          <Col span={12} key={item.origin}>
+            <div key={item.origin} className={styles.cardItemWrapper}>
+              <img src={item.icon} className={styles.icon} />
+              <span className={styles.name}>{item.origin}</span>
+              <div
+                className={styles.deleteWrapper}
+                onClick={() => props.onDelete(item, index)}
+              >
+                <Icon component={ActionDelete} />
+              </div>
             </div>
-          </div>
+          </Col>
         );
       })}
-    </div>
+    </Row>
   );
 }
 
