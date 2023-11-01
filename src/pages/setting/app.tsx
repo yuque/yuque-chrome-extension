@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import classnames from 'classnames';
+import React from 'react';
+import { Anchor } from 'antd';
 import { initI18N } from '@/isomorphic/i18n';
 import AccountLayout from '@/components/AccountLayout';
 import AntdLayout from '@/components/AntdLayout';
@@ -29,88 +29,73 @@ enum Page {
   about = 'about',
 }
 
-const menus = [
+const anchorMenus = [
   {
-    name: __i18n('通用设置'),
+    title: __i18n('通用设置'),
     key: Page.general,
-    page: <General />,
+    href: `#${Page.general}`,
   },
   {
-    name: __i18n('快捷键设置'),
+    title: __i18n('快捷键设置'),
     key: Page.shortcut,
-    page: <Shortcut />,
+    href: `#${Page.shortcut}`,
   },
   {
-    name: __i18n('侧边栏'),
+    title: __i18n('侧边栏'),
     key: Page.sidePanel,
-    page: <SidePanel />,
+    href: `#${Page.sidePanel}`,
   },
   {
-    name: __i18n('划词工具栏'),
+    title: __i18n('划词工具栏'),
     key: Page.wordMark,
-    page: <WordMark />,
+    href: `#${Page.wordMark}`,
   },
   {
-    name: __i18n('帮助与反馈'),
+    title: __i18n('帮助与反馈'),
     key: Page.help,
-    page: <Help />,
+    href: `#${Page.help}`,
   },
   {
-    name: __i18n('关于语雀插件'),
+    title: __i18n('关于语雀插件'),
     key: Page.about,
-    page: <About />,
+    href: `#${Page.about}`,
   },
 ];
 
 function App() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const queryPage = urlParams.get('page') as Page;
-  const defaultPage = Object.values(Page).includes(queryPage)
-    ? queryPage
-    : Page.general;
-
-  const [page, setPage] = useState<Page>(defaultPage);
-  const title = useMemo(() => {
-    return menus.find(item => item.key === page)?.name;
-  }, [page]);
-
   return (
     <AntdLayout>
       <AccountLayout>
         <div className={styles.pageWrapper}>
           <div className={styles.left}>
             <div className={styles.header}>{__i18n('语雀浏览器插件')}</div>
-            <div className={styles.menu}>
-              {menus.map(item => {
-                return (
-                  <div
-                    className={classnames(styles.menuItem, {
-                      [styles.menuItemSelect]: page === item.key,
-                    })}
-                    onClick={() => setPage(item.key)}
-                    key={item.key}
-                  >
-                    {item.name}
-                  </div>
-                );
-              })}
-            </div>
+            <Anchor items={anchorMenus} />
           </div>
           <div className={styles.right}>
-            <div className={styles.pageTitle}>{title}</div>
-            {menus.map(item => {
-              return (
-                <div
-                  className={classnames({
-                    [styles.hidden]: page !== item.key,
-                  })}
-                  key={item.key}
-                >
-                  {item.page}
-                </div>
-              );
-            })}
+            <div id={Page.general} className={styles.pageItem}>
+              <div className={styles.pageTitle}>{__i18n('通用设置')}</div>
+              <General />
+            </div>
+            <div id={Page.shortcut} className={styles.pageItem}>
+              <div className={styles.pageTitle}>{__i18n('快捷键设置')}</div>
+              <Shortcut />
+            </div>
+            <div id={Page.sidePanel} className={styles.pageItem}>
+              <div className={styles.pageTitle}>{__i18n('侧边栏')}</div>
+              <SidePanel />
+            </div>
+            <div id={Page.wordMark} className={styles.pageItem}>
+              <div className={styles.pageTitle}>{__i18n('划词工具栏')}</div>
+              <WordMark />
+            </div>
+            <div id={Page.help} className={styles.pageItem}>
+              <div className={styles.pageTitle}>{__i18n('帮助与反馈')}</div>
+              <Help />
+            </div>
+            <div id={Page.about} className={styles.pageItem}>
+              <div className={styles.pageTitle}>{__i18n('关于语雀插件')}</div>
+              <About />
+            </div>
           </div>
         </div>
       </AccountLayout>

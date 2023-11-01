@@ -1,26 +1,20 @@
 import React from 'react';
 import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
-import { WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
 import { backgroundBridge } from '@/core/bridge/background';
 import styles from './DisableMenu.module.less';
 
 function DisableMenu() {
   const disableForever = () => {
-    backgroundBridge.configManager.update(
-      'wordMark',
-      WordMarkConfigKey.enable,
-      false,
-      {
-        notice: true,
-      },
-    );
+    backgroundBridge.configManager.update('wordMark', 'enable', false, {
+      notice: true,
+    });
   };
 
   const disableForPage = () => {
     backgroundBridge.configManager.update(
       'wordMark',
-      WordMarkConfigKey.disableUrl,
+      'disableUrl',
       `${window.location.origin}${window.location.pathname}`,
       {
         notice: true,

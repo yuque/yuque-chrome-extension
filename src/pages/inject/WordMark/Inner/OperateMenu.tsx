@@ -4,7 +4,6 @@ import { PushpinOutlined, PushpinFilled } from '@ant-design/icons';
 import classnames from 'classnames';
 import { backgroundBridge } from '@/core/bridge/background';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
-import { WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import DragList from '@/components/DragList';
 import { ToolbarItem, toolbars as defaultToolbars } from '../constants';
@@ -26,11 +25,7 @@ function OperateMenu(props: IOperateMenuProps) {
   const updateToolbar = (list: ToolbarItem[]) => {
     const result = list.map(item => item.id) as WordMarkOptionTypeEnum[];
     setToolbarKeys(result);
-    backgroundBridge.configManager.update(
-      'wordMark',
-      WordMarkConfigKey.toolbars,
-      result,
-    );
+    backgroundBridge.configManager.update('wordMark', 'toolbars', result);
   };
 
   const toolbars = useMemo(() => {
@@ -47,7 +42,9 @@ function OperateMenu(props: IOperateMenuProps) {
   return (
     <div className={styles.menus}>
       <DragList
-        dataSource={toolbars}
+        dataSource={toolbars.filter(
+          item => !wordMarkContext.disableFunction.includes(item.id as any),
+        )}
         renderItem={item => {
           const { type, name, icon } = item;
           const pinned = pinList.includes(type);

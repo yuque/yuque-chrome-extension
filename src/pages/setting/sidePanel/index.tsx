@@ -6,7 +6,7 @@ import {
   LevitateConfigKey,
 } from '@/isomorphic/constant/levitate';
 import DisableUrlCard, { IDisableUrlItem } from '@/components/DisableUrlCard';
-import styles from './index.module.less';
+import styles from '../common.module.less';
 
 function Shortcut() {
   const [config, setConfig] = useState({} as ILevitateConfig);
@@ -42,13 +42,14 @@ function Shortcut() {
 
   return (
     <div className={styles.configWrapper}>
-      <div className={styles.card}>
+      <div className={styles.configCard}>
         <div className={styles.body}>
           <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('展示侧边栏悬浮气泡')}</div>
             <Switch
               checked={config.enable}
               onChange={() => onConfigChange('enable', !config.enable)}
+              size='small'
             />
           </div>
           {!!config.disableUrl?.length && (

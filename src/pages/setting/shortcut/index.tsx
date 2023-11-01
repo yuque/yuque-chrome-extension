@@ -14,7 +14,7 @@ function Shortcut() {
   };
 
   return (
-    <div className={styles.configWrapper}>
+    <>
       <div className={styles.pageDesc}>
         <span>
           {__i18n(
@@ -26,8 +26,8 @@ function Shortcut() {
           <Icon component={ArrowDownSvg} className={styles.icon} />
         </div>
       </div>
-      <div className={styles.card}>
-        <div className={styles.title}>{__i18n('侧边栏')}</div>
+      <div className={styles.configCard}>
+        <div className={styles.h2Title}>{__i18n('侧边栏')}</div>
         <div className={styles.body}>
           <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('快捷唤起侧边栏')}</div>
@@ -39,8 +39,8 @@ function Shortcut() {
         </div>
       </div>
 
-      <div className={styles.card}>
-        <div className={styles.title}>{__i18n('剪藏方式')}</div>
+      <div className={styles.configCard}>
+        <div className={styles.h2Title}>{__i18n('剪藏方式')}</div>
         <div className={styles.body}>
           <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('选取剪藏')}</div>
@@ -56,7 +56,7 @@ function Shortcut() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
