@@ -69,7 +69,8 @@ function App() {
 
   const onCloseLevitateBall = () => {
     let disableType: DisableType = 'disableOnce';
-    Modal.confirm({
+    const modal = Modal.confirm({});
+    modal.update({
       content: (
         <AntdLayout>
           <Radio.Group
@@ -108,13 +109,16 @@ function App() {
       footer: (
         <AntdLayout>
           <div className={styles.disableModalFooter}>
-            <Button className={styles.button} onClick={Modal.destroyAll}>
+            <Button className={styles.button} onClick={modal.destroy}>
               {__i18n('取消')}
             </Button>
             <Button
               className={classnames(styles.button, styles.sure)}
               type="primary"
-              onClick={() => disableLevitateBall(disableType)}
+              onClick={() => {
+                disableLevitateBall(disableType);
+                modal.destroy();
+              }}
             >
               {__i18n('确定')}
             </Button>

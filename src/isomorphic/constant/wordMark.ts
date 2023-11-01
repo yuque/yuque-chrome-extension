@@ -1,38 +1,33 @@
 import { ISavePosition } from '@/core/bridge/background/request/mine';
 import { WordMarkOptionTypeEnum } from '../constants';
 
-export enum WordMarkConfigKey {
+export type IWordMarkConfig = {
   // 是否开启
-  enable = 'enable',
+  enable: boolean;
 
   // 剪藏默认存储地址
-  defaultSavePosition = 'defaultSavePosition',
+  defaultSavePosition: ISavePosition;
 
   // 划词置顶的操作
-  innerPinList = 'innerPinList',
+  innerPinList: Array<WordMarkOptionTypeEnum>;
 
   // 禁用页面的 url
-  disableUrl = 'disableUrl',
+  disableUrl: Array<string>;
 
   // 剪藏时唤起面板
-  evokePanelWhenClip = 'evokePanelWhenClip',
+  evokePanelWhenClip: boolean;
 
   // 剪藏面板的排序规则
-  toolbars = 'toolbars',
+  toolbars: Array<WordMarkOptionTypeEnum>;
 
   // 换次面板快捷键
-  evokeWordMarkShortKey = 'evokeWordMarkShortKey',
+  evokeWordMarkShortKey: string;
+
+  // 用户关闭的划词的某个功能
+  disableFunction: Array<WordMarkOptionTypeEnum>;
 }
 
-export interface IWordMarkConfig {
-  [WordMarkConfigKey.enable]: boolean;
-  [WordMarkConfigKey.defaultSavePosition]: ISavePosition;
-  [WordMarkConfigKey.innerPinList]: Array<WordMarkOptionTypeEnum>;
-  [WordMarkConfigKey.disableUrl]: Array<string>;
-  [WordMarkConfigKey.evokePanelWhenClip]: boolean;
-  [WordMarkConfigKey.toolbars]: Array<WordMarkOptionTypeEnum>;
-  [WordMarkConfigKey.evokeWordMarkShortKey]: string;
-}
+export type WordMarkConfigKey = keyof IWordMarkConfig;
 
 export const defaultWordMarkConfig: IWordMarkConfig = {
   enable: false,
@@ -49,4 +44,5 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
   evokePanelWhenClip: false,
   toolbars: [WordMarkOptionTypeEnum.clipping, WordMarkOptionTypeEnum.translate],
   evokeWordMarkShortKey: '',
+  disableFunction: [],
 };

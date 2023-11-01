@@ -1,5 +1,4 @@
 import {
-  WordMarkConfigKey,
   IWordMarkConfig,
   defaultWordMarkConfig,
 } from '@/isomorphic/constant/wordMark';
@@ -11,30 +10,22 @@ import Storage from '../storage';
 
 class WordMarkConfigManager {
   async get() {
-    const config: IWordMarkConfig =
-      (await Storage.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG)) || {};
-
-    // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
-    for (const _key of Object.keys(defaultWordMarkConfig)) {
-      const key = _key as keyof IWordMarkConfig;
-      const value = config[key];
-      if (typeof value === 'undefined') {
-        config[key] = defaultWordMarkConfig[key] as never;
-      }
-    }
-
-    return config;
+    const config = await this.getStorageConfig();
+    return this.transformConfig(config);
   }
 
-  async update(key: string, value: any, option?: IConfigManagerOption) {
-    const config = await this.get();
+  async update(
+    key: keyof IWordMarkConfig,
+    value: any,
+    option?: IConfigManagerOption,
+  ) {
+    const config = await this.getStorageConfig();
     const result: IWordMarkConfig = {
       ...config,
       [key]: value,
     };
-
     // enable 改变时，将 disable url 全部清空
-    if (key === WordMarkConfigKey.enable) {
+    if (key === 'enable') {
       result.disableUrl = [];
     }
     await Chrome.storage.local.set({
@@ -58,11 +49,41 @@ class WordMarkConfigManager {
         if (tab.id) {
           Chrome.tabs.sendMessage(tab.id, {
             action: ContentScriptEvents.WordMarkConfigChange,
-            data: config,
+            data: this.transformConfig(config),
           });
         }
       }
     });
+  }
+
+  private async getStorageConfig() {
+    const config: IWordMarkConfig =
+      (await Storage.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG)) || {};
+
+    // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
+    for (const _key of Object.keys(defaultWordMarkConfig)) {
+      const key = _key as keyof IWordMarkConfig;
+      const value = config[key];
+      if (typeof value === 'undefined') {
+        config[key] = defaultWordMarkConfig[key] as never;
+      }
+    }
+    return config;
+  }
+
+  private transformConfig(config: IWordMarkConfig) {
+    const disableFunction = config.disableFunction;
+
+    const result = {
+      ...config,
+      filterInnerPinList: config.innerPinList.filter(
+        item => !disableFunction.includes(item),
+      ),
+      filterToolbars: config.toolbars.filter(
+        item => !disableFunction.includes(item),
+      ),
+    };
+    return result;
   }
 }
 

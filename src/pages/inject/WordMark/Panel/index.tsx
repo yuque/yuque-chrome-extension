@@ -8,6 +8,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
 import CopySvg from '@/assets/svg/copy.svg';
 import { backgroundBridge } from '@/core/bridge/background';
+import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import { toolbars } from '../constants';
 import { IEditorRef } from '../Editor';
 import styles from './index.module.less';
@@ -32,6 +33,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
     save,
     editorRef,
   } = props;
+  const wordMarkContext = useWordMarkContext();
   const [result, setResult] = useState<string>(StepMessage.onStart);
   const [type, setType] = useState(defaultType);
   const [loading, setLoading] = useState(true);
@@ -89,7 +91,10 @@ function WordMarkPanel(props: WordMarkPanelProps) {
     <div className={styles.panelWrapper}>
       <div className={styles.execCommandWrapper}>
         {toolbars.map(item => {
-          if ([WordMarkOptionTypeEnum.clipping].includes(item.type)) {
+          if (
+            [WordMarkOptionTypeEnum.clipping].includes(item.type) ||
+            wordMarkContext.disableFunction.includes(item.id as any)
+          ) {
             return null;
           }
           return (

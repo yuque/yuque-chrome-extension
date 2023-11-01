@@ -1,59 +1,36 @@
 @import '~@/styles/parameters.less';
+@import '../common.module.less';
 
-.configWrapper {
-  max-width: 668px;
+.more {
+  margin-top: 40px;
+  color: @link-color;
+  display: inline-block;
+  cursor: pointer;
+  outline-style: none;
+  text-decoration: none;
+}
 
-  .card {
-    padding: 24px 0;
-    border-bottom: 1px solid @border-light-color;
+.toolbarSettingWrapper {
+  .toolbarSettingItem {
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    display: flex;
+    padding: 12px 12px;
+    gap: 8px;
     color: @text-primary;
+    font-size: @font-size;
+    align-items: center;
 
-    .title {
-      font-size: @font-size-lg;
-      line-height: 24px;
-      margin-bottom: 16px;
-      font-weight: 500;
-    }
+    .toolbarSettingName {
+      flex: 1 1 auto;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
 
-    .body {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-
-      .configItem {
-        display: flex;
-        justify-content: space-between;
-
-        .desc {
-          font-size: @font-size;
-          display: flex;
-          align-items: center;
-        }
-
-        :global {
-          .yuque-chrome-extension-select-arrow {
-            color: @text-color-secondary;
-          }
-        }
+      .toolbarSettingDesc {
+        color: @text-color-secondary;
       }
     }
   }
-
-  .card:first-child {
-    padding-top: 0;
-  }
-
-  .card:last-child {
-    border-bottom: 1px solid transparent;
-  }
-
-  .more {
-    margin-top: 40px;
-    color: @link-color;
-    display: inline-block;
-    cursor: pointer;
-    outline-style: none;
-    text-decoration: none;
-  }
 }
-

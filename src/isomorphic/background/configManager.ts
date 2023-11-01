@@ -6,8 +6,12 @@ export enum OperateConfigManagerEnum {
   update = 'update',
 }
 
-export type ManagerType = 'wordMark' | 'levitate';
-export type ManagerKey = WordMarkConfigKey | LevitateConfigKey;
+export type ManagerKey = {
+  wordMark: WordMarkConfigKey,
+  levitate: LevitateConfigKey
+};
+
+export type ManagerType = keyof ManagerKey;
 
 export interface IConfigManagerOption {
   notice?: boolean;

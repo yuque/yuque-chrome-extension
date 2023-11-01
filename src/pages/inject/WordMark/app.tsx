@@ -236,7 +236,10 @@ function WordMarkApp() {
   }, [wordMarkContext]);
 
   return (
-    <div className={styles.wrapper} style={visible ? {} : { display: 'none' }}>
+    <div
+      className={styles.wrapper}
+      style={(visible || wordMarkContext.enable) ? {} : { display: 'none' }}
+    >
       <div
         style={{
           left: `${wordMarkPositionRef.current.left}px`,

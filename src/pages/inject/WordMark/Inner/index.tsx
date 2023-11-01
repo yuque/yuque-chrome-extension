@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Popover } from 'antd';
 import Icon, { CloseOutlined } from '@ant-design/icons';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
-import { WordMarkConfigKey } from '@/isomorphic/constant/wordMark';
 import { backgroundBridge } from '@/core/bridge/background';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import YuqueLogo from '@/assets/svg/yuque-logo.svg';
@@ -20,7 +19,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
   const { executeCommand } = props;
   const wordMarkContext = useWordMarkContext();
   const [pinedTools, setPinedTools] = useState<WordMarkOptionTypeEnum[]>(
-    wordMarkContext.innerPinList,
+    wordMarkContext.filterInnerPinList,
   );
 
   const handlePin = useCallback((type: WordMarkOptionTypeEnum) => {
@@ -28,14 +27,14 @@ function InnerWordMark(props: InnerWordMarkProps) {
       const result = tools.includes(type)
         ? tools.filter(t => t !== type)
         : [type, ...tools];
-      backgroundBridge.configManager.update(
-        'wordMark',
-        WordMarkConfigKey.innerPinList,
-        result,
-      );
+      backgroundBridge.configManager.update('wordMark', 'innerPinList', result);
       return result;
     });
   }, []);
+
+  useEffect(() => {
+    setPinedTools(wordMarkContext.filterInnerPinList);
+  }, [wordMarkContext]);
 
   return (
     <div

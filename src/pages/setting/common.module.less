@@ -1,0 +1,42 @@
+@import '~@/styles/parameters.less';
+
+// 子标题
+.h2Title {
+  font-size: @font-size-lg;
+  line-height: 24px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.configItem {
+  display: flex;
+  justify-content: space-between;
+
+  .desc {
+    font-size: @font-size;
+    display: flex;
+    align-items: center;
+  }
+}
+
+// 每个大块的 config 配置样式
+.configCard {
+  padding: 24px 0;
+  border-bottom: 1px solid @border-light-color;
+  color: @text-primary;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.configCard:first-child {
+  padding-top: 0;
+}
+
+.configCard:last-child {
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0;
+}

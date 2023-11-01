@@ -1,6 +1,4 @@
-export type LevitateConfigKey = 'enable' | 'disableUrl' | 'position';
-
-export interface ILevitateConfig {
+export type ILevitateConfig = {
   disableUrl: Array<{
     origin: string;
     icon: string;
@@ -8,6 +6,8 @@ export interface ILevitateConfig {
   position: string;
   enable: boolean;
 }
+
+export type LevitateConfigKey = keyof ILevitateConfig;
 
 export const defaultLevitateConfig: ILevitateConfig = {
   enable: true,
