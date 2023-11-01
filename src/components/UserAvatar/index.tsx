@@ -32,8 +32,12 @@ const UserAvatar = () => {
         onLogout?.();
         break;
       case 'feedback':
+        window.open(LinkHelper.feedback, '_blank');
+        break;
+      case 'useHelp': {
         window.open(LinkHelper.helpDoc, '_blank');
         break;
+      }
       case 'upgrade-version':
         Modal.confirm({
           content: (
@@ -73,6 +77,10 @@ const UserAvatar = () => {
             <span className={styles.version}>&nbsp;v{newVersion}</span>
           </div>
         ),
+      },
+      {
+        key: 'useHelp',
+        label: __i18n('使用帮助'),
       },
       {
         key: 'feedback',
