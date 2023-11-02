@@ -45,7 +45,7 @@ export function listenContextMenuEvents() {
         const { selectionText } = info;
         Chrome.tabs.sendMessage(tab.id as number, {
           action: ContentScriptEvents.AddContentToClipAssistant,
-          data: selectionText,
+          data: `${selectionText}<br/>`,
         });
         break;
       }
