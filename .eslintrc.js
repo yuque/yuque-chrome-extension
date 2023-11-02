@@ -41,6 +41,10 @@ const eslintConfig = {
         jsx: 'never',
       },
     ],
+    "array-bracket-spacing": [
+      "error",
+      "never",
+    ],
   },
   overrides: [],
 };
