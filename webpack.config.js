@@ -37,7 +37,7 @@ const fileExtensions = [
 const entries = {
   contentScript: 'content-scripts',
   background: 'background',
-  extensionPage: [ 'setting', 'editor', 'sidePanel' ],
+  extensionPage: ['setting', 'editor', 'sidePanel'],
   yuqueTransformScript: 'yuque-transform-script',
 };
 
@@ -45,7 +45,7 @@ const entries = {
 const htmlPlugins = entries.extensionPage.map(item => new HtmlWebpackPlugin({
   template: templatePath,
   filename: `${item}.html`,
-  chunks: [ item ],
+  chunks: [item],
   minify: false,
 }));
 
@@ -185,8 +185,8 @@ const rules = [
   {
     test: /\.svg$/i,
     issuer: /\.tsx?$/,
-    resourceQuery: { not: [ /url/ ] }, // exclude react component if *.svg?url
-    use: [ '@svgr/webpack' ],
+    resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
+    use: ['@svgr/webpack'],
   },
   {
     test: /\.svg$/i,

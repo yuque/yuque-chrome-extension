@@ -50,7 +50,7 @@ function updateDynamicRules() {
         ],
       },
       condition: {
-        domains: [ chrome.runtime.id ],
+        domains: [chrome.runtime.id],
         urlFilter: `${YUQUE_DOMAIN}/api/upload/attach`,
         resourceTypes: [
           chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,

@@ -10,7 +10,6 @@ import DragResizeCircle, {
 import DragMoveArea, { IMoveParams } from './DragMoveArea';
 import styles from './app.module.less';
 
-
 export interface IAppProps {
   onScreenSuccess: (blob: string | null) => void;
   onScreenCancel: () => void;

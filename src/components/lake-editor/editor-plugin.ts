@@ -143,7 +143,7 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, PositionUtil, O
 
       position = PositionUtil.insertText(job, position, text);
 
-      job.setSelection([ job.newRange(position) ]);
+      job.setSelection([job.newRange(position)]);
       editing.commitJob(job);
 
       return true;
@@ -160,7 +160,7 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, PositionUtil, O
 
       if (htmlService) {
         htmlService.registerHTMLNodeReader(
-          [ 'blockquote' ],
+          ['blockquote'],
           {
             readNode(context: any, node: any) {
               context.setNode({
@@ -183,6 +183,6 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, PositionUtil, O
   OpenEditorFactory.editorPlugins.unshift(CustomEditorPlugin);
   // @ts-expect-error not error
   OpenEditorFactory.editorPlugins[CustomEditorPlugin.PluginName] = CustomEditorPlugin;
-  OpenEditorFactory.registerKernelPlugin([ CustomKernelPlugin ]);
+  OpenEditorFactory.registerKernelPlugin([CustomKernelPlugin]);
   // OpenEditorFactory.registerRenderPlugin([ Plugins.AutoScroll.AutoScrollRenderPlugin ]);
 }

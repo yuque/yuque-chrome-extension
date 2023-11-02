@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import AntdLayout from '@/components/AntdLayout';
 import LevitateBallApp from './app';
 
-
 interface ICreateWordMarkOption {
   dom: HTMLElement;
 }
@@ -11,7 +10,7 @@ interface ICreateWordMarkOption {
 function App() {
   return (
     <AntdLayout>
-     <LevitateBallApp />
+      <LevitateBallApp />
     </AntdLayout>
   );
 }

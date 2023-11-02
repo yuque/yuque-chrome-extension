@@ -30,8 +30,8 @@ class OCRManager {
   private iframe: HTMLIFrameElement | undefined;
   private ocrIframeId = 'yq-ocr-iframe-id';
   private sendMessageRef:
-    | ((requestData: { action: string; data?: any }) => Promise<any>)
-    | undefined;
+  | ((requestData: { action: string; data?: any }) => Promise<any>)
+  | undefined;
   private initSidePanelPromise: Promise<boolean> | undefined;
 
   async init() {
