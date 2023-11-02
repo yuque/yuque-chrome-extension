@@ -32,7 +32,7 @@ function ShortcutItem(props: IShortcutItemProps) {
   const shortCutString = readonly ? __i18n('未设置') : __i18n('设置快捷键');
 
   const getShowString = (key: string) =>
-    !key ? shortCutString : shortcutHandler.shortcutToShowString(key);
+    (!key ? shortCutString : shortcutHandler.shortcutToShowString(key));
 
   const [editing, setEditing] = useState(false);
   const [showString, setShowString] = useState('');

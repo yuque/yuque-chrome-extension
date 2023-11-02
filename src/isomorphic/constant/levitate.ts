@@ -5,7 +5,7 @@ export type ILevitateConfig = {
   }>;
   position: string;
   enable: boolean;
-}
+};
 
 export type LevitateConfigKey = keyof ILevitateConfig;
 

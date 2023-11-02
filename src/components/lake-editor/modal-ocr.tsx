@@ -43,7 +43,7 @@ export function replaceTextPunc(text: string) {
 }
 
 export default function OCRModal(props: IOCRModalProps) {
-  const [ value, setValue ] = useState(
+  const [value, setValue] = useState(
     replaceTextPunc(
       props.ocr
         .sort((v1, v2) => {

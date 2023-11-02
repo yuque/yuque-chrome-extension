@@ -17,7 +17,7 @@ export const toolbars: ToolbarItem[] = [
     type: WordMarkOptionTypeEnum.clipping,
     name: __i18n('剪藏'),
     icon: Clipping,
-    desc: __i18n('对划词内容中英文互译')
+    desc: __i18n('对划词内容中英文互译'),
   },
   {
     id: WordMarkOptionTypeEnum.translate,

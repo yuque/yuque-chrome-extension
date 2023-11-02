@@ -86,8 +86,8 @@ export interface IEditorRef {
 
 export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   const { value, onChange, onLoad } = props;
-  const [ _loading, setLoading ] = useState(true);
-  const [ editor, setEditor ] = useState<any>(null);
+  const [_loading, setLoading] = useState(true);
+  const [editor, setEditor] = useState<any>(null);
   const contextRef = useRef({
     onChange: props.onChange,
     onLoad: props.onLoad,
@@ -197,7 +197,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
     if (!editor) return;
     editor.setDocument('text/html', value);
     contextRef.current?.onLoad?.();
-  }, [ editor, value ]);
+  }, [editor, value]);
 
   useEffect(() => {
     if (!editor || !iframeRef.current) return;
@@ -220,13 +220,13 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
         true,
       );
     };
-  }, [ editor, iframeRef, props.onSave ]);
+  }, [editor, iframeRef, props.onSave]);
 
   // 更新回调
   useEffect(() => {
     contextRef.current.onChange = onChange;
     contextRef.current.onLoad = onLoad;
-  }, [ onChange, onLoad ]);
+  }, [onChange, onLoad]);
 
   // 导出ref
   useImperativeHandle(
@@ -324,13 +324,13 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
         editor.execCommand('breakLine');
       },
     }),
-    [ editor ],
+    [editor],
   );
 
   useEffect(() => {
     if (!rootNodeRef.current.div) return;
     rootNodeRef.current.div.render(props.children);
-  }, [ props.children ]);
+  }, [props.children]);
 
   // 渲染iframe
   // 通过iframe加载lake编辑器防止样式污染

@@ -12,9 +12,9 @@ const eslintConfig = {
     'import/resolver': {
       alias: {
         map: [
-          [ '@', `${__dirname}/src` ],
+          ['@', `${__dirname}/src`],
         ],
-        extensions: [ '.ts', '.tsx', '.js', '.jsx', '.json' ],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       },
     },
   },
@@ -29,7 +29,7 @@ const eslintConfig = {
     'react',
     'react-hooks',
   ],
-  ignorePatterns: [ '*.d.ts' ],
+  ignorePatterns: ['*.d.ts'],
   rules: {
     'import/extensions': [
       'error',
@@ -41,13 +41,17 @@ const eslintConfig = {
         jsx: 'never',
       },
     ],
+    'array-bracket-spacing': [
+      'error',
+      'never',
+    ],
   },
   overrides: [],
 };
 
 const tslintConfig = {
   // enable the rule specifically for TypeScript files
-  files: [ '*.ts', '*.tsx' ],
+  files: ['*.ts', '*.tsx'],
   extends: [
     'eslint-config-egg/typescript',
     'plugin:@typescript-eslint/recommended',
@@ -58,7 +62,7 @@ const tslintConfig = {
   ],
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': [ '.ts', '.tsx' ],
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
     'import/resolver': {
       ...eslintConfig.settings['import/resolver'],
@@ -77,7 +81,7 @@ const tslintConfig = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     strict: 'off',
-    '@typescript-eslint/ban-ts-comment': [ 'warn' ],
+    '@typescript-eslint/ban-ts-comment': ['warn'],
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
     'no-multiple-empty-lines': [

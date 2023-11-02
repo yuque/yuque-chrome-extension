@@ -46,7 +46,7 @@ function WordMarkApp() {
         // 发送消息在编辑器内加入内容
         window._yuque_ext_app?.sendMessageToClipAssistant(
           ClipAssistantMessageActions.addContent,
-          text,
+          `${text}<br>`,
         );
         showWordMarkRef.current = false;
         forceUpdate();

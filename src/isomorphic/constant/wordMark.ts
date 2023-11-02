@@ -25,7 +25,7 @@ export type IWordMarkConfig = {
 
   // 用户关闭的划词的某个功能
   disableFunction: Array<WordMarkOptionTypeEnum>;
-}
+};
 
 export type WordMarkConfigKey = keyof IWordMarkConfig;
 
