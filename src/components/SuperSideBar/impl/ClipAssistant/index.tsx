@@ -232,14 +232,11 @@ function ClipContent() {
   };
 
   useEffect(() => {
-    if (
-      selectSavePosition?.id !== DefaultSavePosition.id ||
-      !!userTags.length
-    ) {
+    if (selectSavePosition?.id !== DefaultSavePosition.id) {
       return;
     }
     handleRequestTag();
-  }, [selectSavePosition, userTags]);
+  }, [selectSavePosition]);
 
   useEffect(() => {
     const onStartSelectArea = () => {
