@@ -3,14 +3,14 @@ import { ICallBridgeImpl } from '../index';
 
 export function createUploadProxy(impl: ICallBridgeImpl) {
   return {
-    async attach(data: string) {
+    async attach(data: string | File) {
       return new Promise((resolve, rejected) => {
         impl(
           BackgroundEvents.OperateRequest,
           {
             url: '/api/upload/attach',
             config: {
-              data,
+              data: typeof data === 'string' ? data : URL.createObjectURL(data),
             },
             options: {
               isFileUpload: true,
