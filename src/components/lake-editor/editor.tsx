@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { Root, createRoot } from 'react-dom/client';
 import { __i18n } from '@/isomorphic/i18n';
-import bowser from 'bowser';
 import OcrIconSvg from '@/assets/svg/ocr-icon.svg';
+import { isWindow } from '@/core/browser-system-link';
 import loadLakeEditor from './load';
 import { InjectEditorPlugin } from './editor-plugin';
 import { slash } from './slash-options';
@@ -144,16 +144,22 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                 enable: (cardUI: any) => {
                   cardUI.on('uploadSuccess', () => {
                     cardUI.uiViewProxy.rerender({
-                      innerButtonWidgets: cardUI.pluginOption.innerButtonWidgets.map((widget: any) => ({
-                        ...widget,
-                        execute: () => {
-                          widget.execute(cardUI);
-                        },
-                        enable:
-                          typeof widget.enable === 'function'
-                            ? () => (widget.enable as (ui: any) => boolean)(cardUI)
-                            : () => !!widget.enable,
-                      })),
+                      innerButtonWidgets:
+                        cardUI.pluginOption.innerButtonWidgets.map(
+                          (widget: any) => ({
+                            ...widget,
+                            execute: () => {
+                              widget.execute(cardUI);
+                            },
+                            enable:
+                              typeof widget.enable === 'function'
+                                ? () =>
+                                  (widget.enable as (ui: any) => boolean)(
+                                    cardUI,
+                                  )
+                                : () => !!widget.enable,
+                          }),
+                        ),
                     });
                   });
                   return cardUI.cardData.getOcrLocations()?.length > 0;
@@ -162,7 +168,11 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
                   cardUI.copyText = win.Doc.FrameworkUtils.copyText;
                   cardUI.Icon = win.Doc.FrameworkUiLib.Icon;
                   cardUI.insertTextAfterImage = (text: string) => {
-                    newEditor.execCommand('insertAfterImage', cardUI.cardNode.id, text);
+                    newEditor.execCommand(
+                      'insertAfterImage',
+                      cardUI.cardNode.id,
+                      text,
+                    );
                     newEditor.execCommand('focus');
                   };
                   showEditorModal(cardUI);
@@ -202,18 +212,16 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   useEffect(() => {
     if (!editor || !iframeRef.current) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && (bowser.windows ? e.ctrlKey : e.metaKey)) {
-        props.onSave();
+      if (e.key === 'Enter' && (isWindow ? e.ctrlKey : e.metaKey)) {
+        props.onSave?.();
       }
     };
-    document.addEventListener('keydown', onKeyDown, true);
     iframeRef.current?.contentDocument?.addEventListener(
       'keydown',
       onKeyDown,
       true,
     );
     return () => {
-      document.removeEventListener('keydown', onKeyDown, true);
       iframeRef.current?.contentDocument?.removeEventListener(
         'keydown',
         onKeyDown,

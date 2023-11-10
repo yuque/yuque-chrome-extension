@@ -1,4 +1,5 @@
 import React, { useRef, useMemo, useEffect } from 'react';
+import classnames from 'classnames';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { registerAssistantsToSidebar } from '@/components/SuperSideBar/registry';
 import { superSidebar } from '@/components/SuperSideBar';
@@ -8,10 +9,13 @@ import {
   ISidebarRenderContext,
   IScrollerRef,
   ISidebarContextData,
+  ISideContentProvider,
+  IRootDrawerRef,
 } from '../declare';
 import { generalRender } from '../render';
 import { RightBar } from './RightBar';
 import SuperSidebarHeader from './Header';
+import { RootDrawer } from './Drawer';
 import styles from './index.module.less';
 
 interface ContentProps {
@@ -59,6 +63,7 @@ const EnhanceContentImpl = (props: ContentProps) => {
 
 function SuperSidebarContainer() {
   const { currentAssistant } = superSidebar;
+  const rootDrawerRef = useRef<IRootDrawerRef>(null);
   const { user } = useAccountContext();
   const { forceUpdate } = useForceUpdate();
   const scrollerRef = useRef<IScrollerRef>();
@@ -73,13 +78,26 @@ function SuperSidebarContainer() {
     scrollToBottom(immediately?: boolean) {
       scrollerRef.current?.scrollToBottom(immediately);
     },
-    renderDrawer: conf => {
-      //
-    },
+    renderDrawer: conf => rootDrawerRef.current?.render(conf),
     closeDrawer: () => {
       //
     },
   }).current;
+
+  useEffect(() => {
+    const remover = superSidebar.addListener({
+      onAssistantsChanged() {
+        forceUpdate();
+      },
+      onActivateAssistantChanged(assistant: IAssistant<ISideContentProvider>) {
+        forceUpdate();
+      },
+    });
+
+    return () => {
+      remover();
+    };
+  }, []);
 
   useEffect(() => {
     renderContext.contextData = contextData;
@@ -93,17 +111,24 @@ function SuperSidebarContainer() {
 
   return (
     <div className={styles.container}>
+      <RootDrawer ref={rootDrawerRef} />
       <div className={styles.header}>
         <SuperSidebarHeader />
       </div>
       <div className={styles.body}>
         <div className={styles.content}>
           {superSidebar.getAssistantById(1) && (
-            <EnhanceContentImpl
-              scrollerRef={scrollerRef as any}
-              assistant={superSidebar.getAssistantById(1)}
-              renderContext={renderContext}
-            />
+            <div
+              className={classnames(styles.clipAssistantWrapper, {
+                [styles.hidden]: currentAssistant?.id !== 1,
+              })}
+            >
+              <EnhanceContentImpl
+                scrollerRef={scrollerRef as any}
+                assistant={superSidebar.getAssistantById(1)}
+                renderContext={renderContext}
+              />
+            </div>
           )}
           {currentAssistant?.id !== 1 && (
             <EnhanceContentImpl

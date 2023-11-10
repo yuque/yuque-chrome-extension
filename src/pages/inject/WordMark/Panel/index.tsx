@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Icon from '@ant-design/icons';
 import { Input, message, Tooltip } from 'antd';
 import classnames from 'classnames';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic/i18n';
 import { CloseOutlined } from '@ant-design/icons';
 import NoteLogoSvg from '@/assets/svg/note-logo.svg';
@@ -54,28 +54,19 @@ function WordMarkPanel(props: WordMarkPanelProps) {
   const executeCommand = async () => {
     setLoading(true);
     setResult(StepMessage.onStart);
-    switch (type) {
-      case WordMarkOptionTypeEnum.translate: {
-        const res = await backgroundBridge.request.wordMark.translate(
+    try {
+      let text = '';
+      if (type === WordMarkOptionTypeEnum.translate) {
+        const { result: textResult } = await backgroundBridge.request.wordMark.translate(
           selectText,
         );
-        const { code, data = [] } = res || {};
-        if (code !== 200) {
-          message.error(
-            code === 400
-              ? __i18n('超出可翻译的字数上限，请减少选中内容')
-              : __i18n('翻译失败'),
-          );
-          console.log('translate error: ', res);
-          closeWordMark();
-        }
-        setResult(data.join(''));
-        setLoading(false);
-        break;
+        text = textResult;
       }
-      default: {
-        break;
-      }
+      setResult(text);
+    } catch (error) {
+      console.log(error, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 

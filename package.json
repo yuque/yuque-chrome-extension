@@ -28,7 +28,8 @@
     "lint": "npm run lint:js && npm run lint:less",
     "lint-staged": "lint-staged",
     "translate": "easy-i18n-cli -c ./i18n.config.js",
-    "translate:check": "npm run translate -- --check"
+    "translate:check": "npm run translate -- --check",
+    "update:assets": "node ./tools/dev-tools/generate-svg-map.js"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -49,6 +50,7 @@
     "react-dom": "^18.2.0",
     "react-spring": "^9.7.3",
     "semver-compare": "^1.0.0",
+    "uuid": "^9.0.1",
     "whatwg-fetch": "^3.6.17"
   },
   "devDependencies": {

@@ -34,7 +34,7 @@ class SuperSidebarContainer {
   private _initializedAssistants: IAssistant[] = [];
 
   get assistants() {
-    return this._assistants.sort((a, b) => (a.priority > b.priority ? 1 : -1));
+    return this._assistants;
   }
 
   get rightBarAssistants() {

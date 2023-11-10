@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { BackgroundEvents } from '@/isomorphic/background';
 import { detect } from '@/isomorphic/util';
 import { ICallBridgeImpl } from '../index';
@@ -13,7 +14,7 @@ export function createWordMarkProxy(impl: ICallBridgeImpl) {
   return {
     async translate(
       srcText: string,
-    ): Promise<{ code: number; data: string[] }> {
+    ): Promise<{ result: string; code: number; data: string[] }> {
       return new Promise((resolve, rejected) => {
         const srcLanguage = detect(srcText);
         const tgtLanguage = srcLanguage === 'zh' ? 'en' : 'zh';
@@ -33,11 +34,16 @@ export function createWordMarkProxy(impl: ICallBridgeImpl) {
             },
           },
           res => {
-            if (res.status === 200) {
-              resolve(res.data);
+            if (res.status !== 200) {
+              message.error(
+                res.status === 400
+                  ? __i18n('超出可翻译的字数上限，请减少选中内容')
+                  : __i18n('翻译失败'),
+              );
+              rejected(res);
               return;
             }
-            rejected(res);
+            resolve(res.data?.data?.join(''));
           },
         );
       });

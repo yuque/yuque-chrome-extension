@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Popover } from 'antd';
 import Icon, { CloseOutlined } from '@ant-design/icons';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { backgroundBridge } from '@/core/bridge/background';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import YuqueLogo from '@/assets/svg/yuque-logo.svg';

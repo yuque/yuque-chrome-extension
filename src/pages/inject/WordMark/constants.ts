@@ -1,4 +1,4 @@
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic/i18n';
 import Clipping from '@/assets/svg/clipping.svg';
 import Translate from '@/assets/svg/translate.svg';
@@ -17,13 +17,13 @@ export const toolbars: ToolbarItem[] = [
     type: WordMarkOptionTypeEnum.clipping,
     name: __i18n('剪藏'),
     icon: Clipping,
-    desc: __i18n('对划词内容中英文互译'),
+    desc: __i18n('将划词内容剪藏到语雀'),
   },
   {
     id: WordMarkOptionTypeEnum.translate,
     type: WordMarkOptionTypeEnum.translate,
     name: __i18n('翻译'),
     icon: Translate,
-    desc: __i18n('将划词内容剪藏到语雀'),
+    desc: __i18n('对划词内容中英文互译'),
   },
 ];
