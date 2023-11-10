@@ -1,6 +1,20 @@
 // eslint-disable-next-line max-classes-per-file
+import { CompletionEnum } from '@/isomorphic/constant/ai';
 import { IUser } from '@/isomorphic/interface';
 import React, { MutableRefObject } from 'react';
+
+export type IMsg = {
+  msgId: string;
+  type: CompletionEnum;
+  feedback?: number;
+  content: string;
+  completion_id: number;
+  typewriter?: boolean;
+  stream?: boolean;
+  index?: number;
+  docText?: string;
+  docTitle?: string;
+};
 
 export interface IRootDrawerRef {
   render: (conf: RootRenderProps) => void;
@@ -111,6 +125,11 @@ export interface ISidebarGeneralRender {
    * 不可用的时候的渲染
    */
   renderDisable(options?: IRenderDisableOptions): IRenderResult;
+
+  /**
+   * 渲染新用户提示
+   */
+  renderNewTip(options?: IRenderNewTipsOptions): IRenderResult;
 }
 
 export interface ISidebarRenderContext {
@@ -310,4 +329,12 @@ export interface IAssistant<
   priority: string;
   hasWatermark?: boolean;
   provider: T;
+}
+
+export interface IRenderNewTipsOptions extends IBaseRenderOptions {
+  img?: string;
+  data: Array<{
+    title: string;
+    desc: Array<string>;
+  }>;
 }

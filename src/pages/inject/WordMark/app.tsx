@@ -9,7 +9,7 @@ import { message } from 'antd';
 import classnames from 'classnames';
 import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { ClipAssistantMessageActions } from '@/isomorphic/event/clipAssistant';
 import {

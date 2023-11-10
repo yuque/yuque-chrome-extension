@@ -1,8 +1,11 @@
 import bowser from 'bowser';
 
-const name = bowser.getParser(navigator.userAgent).getBrowserName();
-const isEdge = name === 'Microsoft Edge';
+const uaParser = bowser.getParser(navigator.userAgent);
 
+const name = uaParser.getBrowserName();
+export const isEdge = name === 'Microsoft Edge';
+
+export const isWindow = uaParser.getOSName() !== 'macOS';
 const ChromeSystemLink = {
   cookieSetting: 'chrome://settings/cookies',
   shortCut: 'chrome://extensions/shortcuts',

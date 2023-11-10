@@ -6,6 +6,7 @@ import Chrome from '@/background/core/chrome';
 import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { STORAGE_KEYS } from '@/config';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import Storage from '../storage';
 
 class WordMarkConfigManager {
@@ -66,6 +67,26 @@ class WordMarkConfigManager {
       const value = config[key];
       if (typeof value === 'undefined') {
         config[key] = defaultWordMarkConfig[key] as never;
+      }
+
+      /**
+       * 当缓存中的 toolbars 长度和默认不一致时，说明扩展了 toolbars
+       * 然后将新增的 toolbars 扩展到缓存的最后
+       */
+      if (
+        key === 'toolbars' &&
+        value &&
+        config[key].length !== defaultWordMarkConfig.toolbars.length
+      ) {
+        const newAddToolbars: WordMarkOptionTypeEnum[] = [];
+        for (const item of defaultWordMarkConfig.toolbars) {
+          if (!config[key].includes(item)) {
+            newAddToolbars.push(item);
+          }
+        }
+        if (newAddToolbars.length) {
+          config[key] = config[key].concat(newAddToolbars);
+        }
       }
     }
     return config;

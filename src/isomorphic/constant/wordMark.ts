@@ -1,5 +1,17 @@
 import { ISavePosition } from '@/core/bridge/background/request/mine';
-import { WordMarkOptionTypeEnum } from '../constants';
+
+// 划词操作类型
+export enum WordMarkOptionTypeEnum {
+  /**
+   * 翻译
+   */
+  translate = 'translate',
+
+  /**
+   * 剪藏
+   */
+  clipping = 'clipping',
+}
 
 export type IWordMarkConfig = {
   // 是否开启
@@ -42,7 +54,10 @@ export const defaultWordMarkConfig: IWordMarkConfig = {
   ],
   disableUrl: [],
   evokePanelWhenClip: false,
-  toolbars: [WordMarkOptionTypeEnum.clipping, WordMarkOptionTypeEnum.translate],
+  toolbars: [
+    WordMarkOptionTypeEnum.clipping,
+    WordMarkOptionTypeEnum.translate,
+  ],
   evokeWordMarkShortKey: '',
   disableFunction: [],
 };

@@ -3,7 +3,7 @@ import { Select, Switch, Row, Col } from 'antd';
 import { ToolbarItem, toolbars } from '@/pages/inject/WordMark/constants';
 import Icon from '@ant-design/icons';
 import ArrowDown from '@/assets/svg/arrow-down.svg';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic//i18n';
 import {
   IWordMarkConfig,

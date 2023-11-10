@@ -1,0 +1,45 @@
+@import '~@/styles/parameters.less';
+
+.wrapper {
+  background-image: linear-gradient(137deg, #fff 0%, #f0fff4 100%);
+  border: 1px solid #efefef;
+  padding: 14px 12px;
+  margin-bottom: 16px;
+
+  .img {
+    height: 20px;
+  }
+
+  .item {
+    padding-left: 10px;
+    margin-top: 16px;
+
+    .title {
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+
+      &::after {
+        position: absolute;
+        content: '';
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 6px;
+        background: @primary-color;
+        opacity: 0.6;
+        left: -13px;
+        top: 8px;
+      }
+    }
+
+    .desc {
+      .descItem {
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: @text-color-secondary;
+      }
+    }
+  }
+}

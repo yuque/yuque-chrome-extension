@@ -3,7 +3,7 @@ import Icon from '@ant-design/icons';
 import { PushpinOutlined, PushpinFilled } from '@ant-design/icons';
 import classnames from 'classnames';
 import { backgroundBridge } from '@/core/bridge/background';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constants';
+import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import DragList from '@/components/DragList';
 import { ToolbarItem, toolbars as defaultToolbars } from '../constants';

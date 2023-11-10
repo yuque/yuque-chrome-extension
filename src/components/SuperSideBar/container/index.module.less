@@ -5,6 +5,8 @@
   width: 100%;
   border-left: 1px solid @border-color;
   background: @grey-1;
+  overflow-y: hidden;
+  position: relative;
 
   .header {
     height: 44px;
@@ -16,7 +18,14 @@
     height: calc(100% - 44px);
 
     .content {
+      display: flex;
+      flex-direction: column;
       flex: 1 1 auto;
+
+      .clipAssistantWrapper {
+        height: 100%;
+        width: 100%;
+      }
 
       .hidden {
         display: none;
