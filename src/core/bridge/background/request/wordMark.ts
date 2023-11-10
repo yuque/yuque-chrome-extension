@@ -14,7 +14,7 @@ export function createWordMarkProxy(impl: ICallBridgeImpl) {
   return {
     async translate(
       srcText: string,
-    ): Promise<{ result: string; code: number; data: string[] }> {
+    ): Promise<{ result: string; }> {
       return new Promise((resolve, rejected) => {
         const srcLanguage = detect(srcText);
         const tgtLanguage = srcLanguage === 'zh' ? 'en' : 'zh';
@@ -43,7 +43,7 @@ export function createWordMarkProxy(impl: ICallBridgeImpl) {
               rejected(res);
               return;
             }
-            resolve(res.data?.data?.join(''));
+            resolve({ result: res.data?.data?.join('') });
           },
         );
       });
