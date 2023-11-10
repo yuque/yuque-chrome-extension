@@ -1,11 +1,10 @@
 // eslint-disable-next-line max-classes-per-file
-import { CompletionEnum } from '@/isomorphic/constant/ai';
 import { IUser } from '@/isomorphic/interface';
 import React, { MutableRefObject } from 'react';
 
 export type IMsg = {
   msgId: string;
-  type: CompletionEnum;
+  type: string;
   feedback?: number;
   content: string;
   completion_id: number;
