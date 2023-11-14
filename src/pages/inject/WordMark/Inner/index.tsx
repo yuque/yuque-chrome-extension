@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Popover } from 'antd';
-import Icon, { CloseOutlined } from '@ant-design/icons';
+import { Popover, Tooltip } from 'antd';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { backgroundBridge } from '@/core/bridge/background';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
-import YuqueLogo from '@/assets/svg/yuque-logo.svg';
-import More from '@/assets/svg/more.svg';
+import Typography from '@/components/Typography';
+import LarkIcon from '@/components/LarkIcon';
 import { toolbars } from '../constants';
 import OperateMenu from './OperateMenu';
 import DisableMenu from './DisableMenu';
@@ -37,18 +36,31 @@ function InnerWordMark(props: InnerWordMarkProps) {
   }, [wordMarkContext]);
 
   return (
-    <div
-      className={styles.innerWordMarkWrapper}
-      style={{
-        width: `${pinedTools.length * 62 + 66 + 34}px`,
-      }}
-    >
-      <Icon component={YuqueLogo} className={styles.yuqueLogo} />
+    <div className={styles.innerWordMarkWrapper}>
+      <LarkIcon name="yuque-logo" className={styles.yuqueLogo} />
       <div className={styles.pinList}>
         {toolbars.map(item => {
           const pinned = pinedTools.includes(item.type);
           if (!pinned) {
             return null;
+          }
+          if (pinedTools.length > 3) {
+            return (
+              <Tooltip
+                title={item.name}
+                key={item.type}
+              >
+                <Typography
+                  type="iconButton"
+                  ml={6}
+                  mr={6}
+                  onClick={() => executeCommand(item.type)}
+                  className={styles.smallIcon}
+                >
+                  <LarkIcon name={item.icon} className={styles.itemIcon} />
+                </Typography>
+              </Tooltip>
+            );
           }
           return (
             <div
@@ -56,7 +68,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
               key={item.type}
               onClick={() => executeCommand(item.type)}
             >
-              <Icon component={item.icon} className={styles.itemIcon} />
+              <LarkIcon name={item.icon} className={styles.itemIcon} />
               <span className={styles.name}>{item.name}</span>
             </div>
           );
@@ -73,7 +85,9 @@ function InnerWordMark(props: InnerWordMarkProps) {
         }
         overlayClassName={styles.overlayClassName}
       >
-        <Icon component={More} className={styles.moreActions} />
+        <div className={styles.moreActions}>
+          <LarkIcon name="more" />
+        </div>
       </Popover>
       <div className={styles.line} />
       <Popover
@@ -81,7 +95,9 @@ function InnerWordMark(props: InnerWordMarkProps) {
         content={<DisableMenu />}
         overlayClassName={styles.overlayClassName}
       >
-        <CloseOutlined className={styles.closeActions} />
+        <div className={styles.closeActions}>
+          <LarkIcon name="close-outline" size={14} />
+        </div>
       </Popover>
     </div>
   );

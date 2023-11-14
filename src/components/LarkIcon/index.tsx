@@ -2,8 +2,10 @@ import React, { Suspense } from 'react';
 import Icon from '@ant-design/icons';
 import { SvgMaps } from './SvgMap';
 
+export type ILarkIconName = keyof typeof SvgMaps;
+
 interface IProps {
-  name: keyof typeof SvgMaps;
+  name: ILarkIconName;
   size?: number;
   className?: string;
   spin?: boolean;

@@ -83,7 +83,7 @@ const tslintConfig = {
     strict: 'off',
     '@typescript-eslint/ban-ts-comment': ['warn'],
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': 'error',
+    '@typescript-eslint/no-shadow': 'off',
     'no-multiple-empty-lines': [
       'error',
       {
@@ -92,6 +92,7 @@ const tslintConfig = {
         maxBOF: 0,
       },
     ],
+    'no-bitwise': 'off',
   },
 };
 

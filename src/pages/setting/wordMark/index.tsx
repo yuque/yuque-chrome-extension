@@ -1,16 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Select, Switch, Row, Col } from 'antd';
 import { ToolbarItem, toolbars } from '@/pages/inject/WordMark/constants';
-import Icon from '@ant-design/icons';
-import ArrowDown from '@/assets/svg/arrow-down.svg';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
-import { __i18n } from '@/isomorphic//i18n';
+import { __i18n } from '@/isomorphic/i18n';
 import {
   IWordMarkConfig,
   WordMarkConfigKey,
 } from '@/isomorphic/constant/wordMark';
-import SelectSavePosition from '@/components/SelectSavePosition';
 import LinkHelper from '@/isomorphic/link-helper';
+import LarkIcon from '@/components/LarkIcon';
+import SelectSavePosition from '@/components/SelectSavePosition';
 import { backgroundBridge } from '@/core/bridge/background';
 import { isMacOs } from '@/core/system-info';
 import styles from './index.module.less';
@@ -131,7 +130,7 @@ function WordMark() {
                   onConfigChange('evokeWordMarkShortKey', v);
                 }}
                 suffixIcon={
-                  <Icon component={ArrowDown} className={styles.iconWrapper} />
+                  <LarkIcon className={styles.iconWrapper} name="arrow-down" />
                 }
               />
             </div>
@@ -141,14 +140,14 @@ function WordMark() {
 
       <div className={styles.configCard}>
         <div className={styles.h2Title}>{__i18n('划词功能设置')}</div>
-        <Row className={styles.toolbarSettingWrapper} gutter={20}>
+        <Row className={styles.toolbarSettingWrapper} gutter={[20, 16]}>
           {toolBarSettings?.map(item => {
             return (
               <Col key={item.id} span={12}>
                 <div className={styles.toolbarSettingItem}>
-                  <Icon
+                  <LarkIcon
+                    name={item.icon}
                     className={styles.toolbarSettingItemIcon}
-                    component={item.icon}
                   />
                   <span className={styles.toolbarSettingName}>
                     {item.name}

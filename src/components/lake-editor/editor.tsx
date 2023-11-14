@@ -140,7 +140,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
               {
                 name: 'ocr',
                 title: 'OCR',
-                icon: <OcrIconSvg />,
+                icon: <OcrIconSvg fill="#fff" />,
                 enable: (cardUI: any) => {
                   cardUI.on('uploadSuccess', () => {
                     cardUI.uiViewProxy.rerender({

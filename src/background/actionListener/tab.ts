@@ -3,6 +3,7 @@ import {
   IOperateTabData,
 } from '@/isomorphic/background/tab';
 import Chrome from '@/background/core/chrome';
+import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { RequestMessage } from './index';
 
 export async function createTabActionListener(
@@ -25,6 +26,13 @@ export async function createTabActionListener(
     case OperateTabEnum.create: {
       Chrome.tabs.create({ url });
       callback(true);
+      break;
+    }
+    case OperateTabEnum.getDocument: {
+      const res = await Chrome.sendMessageToCurrentTab({
+        action: ContentScriptEvents.GetDocument,
+      });
+      callback(res);
       break;
     }
     default: {

@@ -1,7 +1,10 @@
+/* eslint-disable quote-props */
+/* eslint-disable @typescript-eslint/indent */
 // 本文件为自动生成，不要手动修改
 // npm run update:assets
 
 export const SvgMaps = {
+	'action-copy': import('@/assets/svg/action-copy.svg'),
 	'action-delete': import('@/assets/svg/action-delete.svg'),
 	'arrow-down': import('@/assets/svg/arrow-down.svg'),
 	'book-logo': import('@/assets/svg/book-logo.svg'),
@@ -9,9 +12,11 @@ export const SvgMaps = {
 	'clipper': import('@/assets/svg/clipper.svg'),
 	'clipping': import('@/assets/svg/clipping.svg'),
 	'close-circle': import('@/assets/svg/close-circle.svg'),
+	'close-outline': import('@/assets/svg/close-outline.svg'),
 	'collect-link': import('@/assets/svg/collect-link.svg'),
 	'comment-bubble': import('@/assets/svg/comment-bubble.svg'),
 	'copy': import('@/assets/svg/copy.svg'),
+	'feather-outlined': import('@/assets/svg/feather-outlined.svg'),
 	'home': import('@/assets/svg/home.svg'),
 	'icon-loading-green': import('@/assets/svg/icon-loading-green.svg'),
 	'more': import('@/assets/svg/more.svg'),
@@ -23,4 +28,3 @@ export const SvgMaps = {
 	'yuque-logo': import('@/assets/svg/yuque-logo.svg'),
 	'yuque-logo1': import('@/assets/svg/yuque-logo1.svg'),
 };
-

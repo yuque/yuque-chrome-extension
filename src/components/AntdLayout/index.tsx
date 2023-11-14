@@ -1,8 +1,10 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
+import { ConfigProviderProps } from 'antd/es/config-provider';
 
 interface IAntdLayoutProps {
   children: React.ReactNode;
+  config?: ConfigProviderProps;
 }
 
 function AntdLayout(props: IAntdLayoutProps) {
@@ -25,6 +27,7 @@ function AntdLayout(props: IAntdLayoutProps) {
           },
         },
       }}
+      {...props.config}
     >
       {props.children}
     </ConfigProvider>

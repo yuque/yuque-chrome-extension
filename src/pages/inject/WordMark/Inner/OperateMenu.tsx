@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import Icon from '@ant-design/icons';
+import LarkIcon from '@/components/LarkIcon';
 import { PushpinOutlined, PushpinFilled } from '@ant-design/icons';
 import classnames from 'classnames';
 import { backgroundBridge } from '@/core/bridge/background';
@@ -46,7 +46,7 @@ function OperateMenu(props: IOperateMenuProps) {
           item => !wordMarkContext.disableFunction.includes(item.id as any),
         )}
         renderItem={item => {
-          const { type, name, icon } = item;
+          const { type, name } = item;
           const pinned = pinList.includes(type);
           return (
             <div className={styles.menuItem} key={type}>
@@ -54,7 +54,7 @@ function OperateMenu(props: IOperateMenuProps) {
                 className={styles.nameWrapper}
                 onClick={() => executeCommand(type)}
               >
-                <Icon component={icon} className={styles.icon} />
+                <LarkIcon name={item.icon} className={styles.itemIcon} />
                 <span>{name}</span>
               </div>
               <div
