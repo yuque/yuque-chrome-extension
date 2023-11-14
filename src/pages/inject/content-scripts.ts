@@ -52,6 +52,12 @@ export class App {
    * 插件注入页面的 dom 的父节点
    */
   private _rootContainer: HTMLDivElement | null = null;
+
+  /**
+   * shadowRoot 节点
+   */
+  private _shadowRoot: ShadowRoot | null = null;
+
   /**
    * sidePanel iframe
    */
@@ -83,6 +89,10 @@ export class App {
     return this._rootContainer as HTMLDivElement;
   }
 
+  get shadowRoot(): ShadowRoot {
+    return this._shadowRoot as ShadowRoot;
+  }
+
   get sidePanelStatus() {
     return this._sidePanelStatus;
   }
@@ -101,11 +111,17 @@ export class App {
       .then(cssContent => {
         const style = document.createElement('style');
         style.textContent = cssContent;
-        document.head.appendChild(style);
+        // 获取影子节点
+        const shadowRoot = div.attachShadow({ mode: 'open' });
+        this._shadowRoot = shadowRoot;
+        // 创建根节点，所有注入页面的内容都必须挂到这个根节点下
         const root = document.createElement('div');
         this._rootContainer = root;
+        // 将 style、root 加入到影子节点中
+        shadowRoot.appendChild(style);
+        shadowRoot.appendChild(root);
+        this._shadowRoot = shadowRoot;
         document.body.appendChild(div);
-        div.appendChild(root);
         // 创建好 wordMark
         this.removeWordMark = createWordMark({
           dom: this.rootContainer,
@@ -175,7 +191,7 @@ export class App {
       // 先注入 iframe 对样式
       const style = document.createElement('style');
       style.textContent = this.iframeCSSFieldContent;
-      document.head.appendChild(style);
+      this.shadowRoot.appendChild(style);
       // 创建 iframe
       const iframe = document.createElement('iframe');
       iframe.src = Chrome.runtime.getURL('sidePanel.html');

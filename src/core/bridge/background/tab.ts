@@ -38,6 +38,21 @@ export function createTabBridge(impl: ICallBridgeImpl) {
           );
         });
       },
+      async getDocument(): Promise<{
+        url: string;
+        html: string;
+        title: string;
+      }> {
+        return new Promise(resolve => {
+          impl(
+            BackgroundEvents.OperateTab,
+            { type: OperateTabEnum.getDocument },
+            res => {
+              resolve(res);
+            },
+          );
+        });
+      },
     },
   };
 }

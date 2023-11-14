@@ -20,7 +20,7 @@ export const MessageProgress = (props: Props) => {
       {progresses.map((item: IMessageProgress, index: number) => {
         const { icon, text } = item;
 
-        let realIcon = icon;
+        const realIcon = icon;
 
         return (
           <div className={styles.item} key={index}>

@@ -5,18 +5,13 @@
   left: 0;
   top: 0;
   z-index: @z-index-max;
-
-  :global {
-    * {
-      box-sizing: border-box;
-    }
-  }
 }
 
 .wordMarkWrapper {
   position: absolute;
-  z-index: @z-index-max;
+  z-index: 1;
   user-select: none;
+  white-space: nowrap;
 }
 
 .hidden {

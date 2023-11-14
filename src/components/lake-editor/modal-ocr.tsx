@@ -76,9 +76,6 @@ export default function OCRModal(props: IOCRModalProps) {
 
   return (
     <div className="ne-ocr-split">
-      <div className="ne-ocr-image-container">
-        <img src={props.src} />
-      </div>
       <div className="ne-ocr-text-container">
         <textarea
           value={value}

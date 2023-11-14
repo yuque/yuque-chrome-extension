@@ -101,7 +101,6 @@ export async function createUserActionListener(
       break;
     }
     default: {
-      callback(true);
       break;
     }
   }

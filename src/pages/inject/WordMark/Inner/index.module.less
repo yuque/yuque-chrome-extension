@@ -19,8 +19,6 @@
 
   .moreActions {
     color: @text-color-secondary;
-    width: 16px;
-    height: 16px;
     font-size: @font-size-lg;
     cursor: pointer;
     display: inline-block;
@@ -38,12 +36,9 @@
   }
 
   .closeActions {
-    font-size: @font-size;
     justify-content: center;
     color: @text-color-secondary;
     cursor: pointer;
-    width: 14px;
-    height: 14px;
   }
 
   .pinList {
@@ -54,7 +49,7 @@
       display: flex;
       cursor: pointer;
       gap: 4px;
-      padding: 2px 8px;
+      padding: 2px 6px;
       align-items: center;
       color: @text-primary;
 
@@ -73,6 +68,16 @@
         background-color: @bg-primary-hover;
         border-radius: 4px;
       }
+    }
+  }
+
+  .smallIcon {
+    &::after {
+      left: -4px;
+      top: -4px;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      border-radius: 4px;
     }
   }
 }

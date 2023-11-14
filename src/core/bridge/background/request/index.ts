@@ -5,6 +5,7 @@ import { createTagProxy } from './tag';
 import { createWordMarkProxy } from './wordMark';
 import { createUploadProxy } from './upload';
 import { ICallBridgeImpl } from '../index';
+import { createMonitorProxy } from './monitor';
 
 export function createRequestBridge(impl: ICallBridgeImpl) {
   return {
@@ -15,6 +16,7 @@ export function createRequestBridge(impl: ICallBridgeImpl) {
       doc: createDocProxy(impl),
       wordMark: createWordMarkProxy(impl),
       upload: createUploadProxy(impl),
+      monitor: createMonitorProxy(impl),
     },
   };
 }

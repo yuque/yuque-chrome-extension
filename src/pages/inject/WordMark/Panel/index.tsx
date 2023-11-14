@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Icon from '@ant-design/icons';
-import { Input, message, Tooltip } from 'antd';
+import { Input, Tooltip } from 'antd';
 import classnames from 'classnames';
+import LarkIcon from '@/components/LarkIcon';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic/i18n';
 import { CloseOutlined } from '@ant-design/icons';
-import NoteLogoSvg from '@/assets/svg/note-logo.svg';
-import CopySvg from '@/assets/svg/copy.svg';
 import { backgroundBridge } from '@/core/bridge/background';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
+import { useMessage } from '@/components/AntdMessage';
 import { toolbars } from '../constants';
 import { IEditorRef } from '../Editor';
 import styles from './index.module.less';
@@ -37,6 +36,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
   const [result, setResult] = useState<string>(StepMessage.onStart);
   const [type, setType] = useState(defaultType);
   const [loading, setLoading] = useState(true);
+  const apiMessage = useMessage();
   const handClick = (t: WordMarkOptionTypeEnum) => {
     setType(t);
   };
@@ -48,18 +48,22 @@ function WordMarkPanel(props: WordMarkPanelProps) {
 
   const onCopyText = async () => {
     await navigator.clipboard.writeText(result);
-    message.success(__i18n('复制成功'));
+    apiMessage?.success(__i18n('复制成功'));
   };
 
   const executeCommand = async () => {
     setLoading(true);
     setResult(StepMessage.onStart);
+    const item = toolbars.find(item => item.type === type);
+    // 上报一次埋点请求
+    if (item?.monitor) {
+      backgroundBridge.request.monitor.biz(item.monitor);
+    }
     try {
       let text = '';
       if (type === WordMarkOptionTypeEnum.translate) {
-        const { result: textResult } = await backgroundBridge.request.wordMark.translate(
-          selectText,
-        );
+        const { result: textResult } =
+          await backgroundBridge.request.wordMark.translate(selectText);
         text = textResult;
       }
       setResult(text);
@@ -96,7 +100,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 [styles.selectItem]: type === item.type,
               })}
             >
-              <Icon component={item.icon} className={styles.icon} />
+              <LarkIcon name={item.icon} className={styles.icon} />
               <span>{item.name}</span>
             </div>
           );
@@ -123,7 +127,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 getPopupContainer={node => node as HTMLElement}
               >
                 <div className={styles.saveOperateItem} onClick={onSave}>
-                  <Icon component={NoteLogoSvg} />
+                  <LarkIcon name="feather-outlined" />
                 </div>
               </Tooltip>
               <div className={styles.line} />
@@ -134,7 +138,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
                 getPopupContainer={node => node.parentElement as HTMLElement}
               >
                 <div className={styles.saveOperateItem} onClick={onCopyText}>
-                  <Icon component={CopySvg} />
+                  <LarkIcon name="action-copy" />
                 </div>
               </Tooltip>
             </div>

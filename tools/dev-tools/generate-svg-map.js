@@ -42,7 +42,9 @@ function updateAssetsMap({
   // 写入文件
   fs.writeFileSync(
     targetFilePath,
-    `// 本文件为自动生成，不要手动修改
+    `/* eslint-disable quote-props */
+/* eslint-disable @typescript-eslint/indent */
+// 本文件为自动生成，不要手动修改
 // npm run update:assets
 
 export const SvgMaps = ${generateArray(svgMap)};

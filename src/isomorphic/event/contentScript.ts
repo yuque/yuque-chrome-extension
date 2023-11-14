@@ -8,6 +8,7 @@ export enum ContentScriptEvents {
   AddContentToClipAssistant = 'contentScript/addContentToClipAssistant',
   ForceUpgradeVersion = 'contentScript/forceUpgradeVersion',
   LoginOut = 'contentScript/LoginOut',
+  GetDocument = 'contentScript/getDocument',
 }
 
 export const ContentScriptMessageKey = 'ContentScriptMessageKey';

@@ -150,6 +150,14 @@ export const initContentScriptActionListener = (context: App) => {
           sendResponse(true);
           break;
         }
+        case ContentScriptEvents.GetDocument: {
+          sendResponse({
+            url: window.location.href,
+            html: document.documentElement.outerHTML,
+            title: document.title,
+          });
+          break;
+        }
         default: {
           break;
         }

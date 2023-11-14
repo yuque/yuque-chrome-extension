@@ -3,9 +3,7 @@ import React, {
   useEffect,
   useRef,
   useState,
-  useLayoutEffect,
 } from 'react';
-import { message } from 'antd';
 import classnames from 'classnames';
 import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
@@ -21,6 +19,8 @@ import Editor, { IEditorRef } from './Editor';
 import Panel from './Panel';
 import Inner from './Inner';
 import styles from './app.module.less';
+import { MonitorAction } from '@/isomorphic/constant/monitor';
+import { useMessage } from '@/components/AntdMessage';
 
 function WordMarkApp() {
   const [type, setType] = useState<WordMarkOptionTypeEnum | null>(null);
@@ -29,14 +29,11 @@ function WordMarkApp() {
   const showWordMarkRef = useRef(false);
   const editorRef = useRef<IEditorRef>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const wordMarkPositionRef = useRef({
-    left: 0,
-    top: 0,
-  });
   const mouseupPositionRef = useRef({ x: 0, y: 0 });
   const isSaving = useRef(false);
   const wordMarkContext = useWordMarkContext();
   const [visible, setVisible] = useState(false);
+  const apiMessage = useMessage();
 
   const save = useCallback(
     async (text: string) => {
@@ -65,7 +62,7 @@ function WordMarkApp() {
           };
           await backgroundBridge.request.note.create(noteParams);
           const url = LinkHelper.goMyNote();
-          message.success(
+          apiMessage?.success(
             <span>
               {__i18n('保存成功！')}
               &nbsp;&nbsp;
@@ -86,7 +83,7 @@ function WordMarkApp() {
           };
           const doc = await backgroundBridge.request.doc.create(docParams);
           const url = LinkHelper.goDoc(doc);
-          message.success(
+          apiMessage?.success(
             <span>
               {__i18n('保存成功！')}
               &nbsp;&nbsp;
@@ -99,7 +96,7 @@ function WordMarkApp() {
         showWordMarkRef.current = false;
         forceUpdate();
       } catch (e) {
-        message.error(__i18n('保存失败，请重试！'));
+        apiMessage?.error(__i18n('保存失败，请重试！'));
       }
       isSaving.current = false;
     },
@@ -109,6 +106,8 @@ function WordMarkApp() {
   const executeCommand = useCallback(
     async (t: WordMarkOptionTypeEnum) => {
       if (t === WordMarkOptionTypeEnum.clipping) {
+        // 上报一次划词剪藏
+        backgroundBridge.request.monitor.biz(MonitorAction.wordMarkClip);
         const selection = window.getSelection();
         let html = '';
         if (selection) {
@@ -135,11 +134,13 @@ function WordMarkApp() {
     const top = mouseupPositionRef.current.y + window.scrollY + 26;
     const maxLeft = document.body.clientWidth - width;
     const maxTop = window.innerHeight + window.scrollY - height - 28;
-    wordMarkPositionRef.current = {
-      left: Math.min(Math.max(left, 0), maxLeft),
-      top: Math.min(Math.max(top, 0), maxTop),
-    };
-    forceUpdate();
+    if (wrapperRef.current) {
+      wrapperRef.current.style.left = `${Math.min(
+        Math.max(left, 0),
+        maxLeft,
+      )}px`;
+      wrapperRef.current.style.top = `${Math.min(Math.max(top, 0), maxTop)}px`;
+    }
   }, []);
 
   const closeWordMark = useCallback(() => {
@@ -207,13 +208,6 @@ function WordMarkApp() {
     setType(null);
   }, [selectText, showWordMarkRef.current]);
 
-  useLayoutEffect(() => {
-    if (!selectText) {
-      return;
-    }
-    initPosition();
-  }, [selectText, initPosition, type]);
-
   useEffect(() => {
     setVisible(wordMarkContext.enable);
     // 不存在修饰键时不监听键盘事件
@@ -241,10 +235,6 @@ function WordMarkApp() {
       style={(visible || wordMarkContext.enable) ? {} : { display: 'none' }}
     >
       <div
-        style={{
-          left: `${wordMarkPositionRef.current.left}px`,
-          top: `${wordMarkPositionRef.current.top}px`,
-        }}
         className={classnames(styles.wordMarkWrapper, {
           [styles.hidden]: !showWordMarkRef.current,
         })}
@@ -252,7 +242,10 @@ function WordMarkApp() {
           // 内部面板阻止冒泡，避免触发 mouseup 事件
           e.stopPropagation();
         }}
-        ref={wrapperRef}
+        ref={(element: HTMLDivElement) => {
+          (wrapperRef as any).current = element;
+          initPosition();
+        }}
       >
         {type ? (
           <Panel

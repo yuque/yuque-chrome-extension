@@ -93,7 +93,7 @@ export const type = {
 
 interface ITypographyProps {
   className?: string;
-  component?: React.ReactNode;
+  component?: React.FC<any>;
   variant?: keyof typeof variant;
   paragraph?: boolean;
   variantMapping?: any;
