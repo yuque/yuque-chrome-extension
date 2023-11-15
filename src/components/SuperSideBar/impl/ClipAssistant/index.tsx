@@ -1,7 +1,6 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Button, Spin, Tooltip, message, Input } from 'antd';
 import classnames from 'classnames';
-import Icon from '@ant-design/icons';
 import { __i18n } from '@/isomorphic/i18n';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { backgroundBridge } from '@/core/bridge/background';
@@ -31,10 +30,9 @@ import {
   ContentScriptMessageActions,
   ContentScriptMessageKey,
 } from '@/isomorphic/event/contentScript';
+import { IClipConfig } from '@/isomorphic/constant/clip';
 import { isRunningInjectPage } from '@/core/uitl';
-import OcrSvg from '@/assets/svg/ocr-icon.svg';
-import ClipperSvg from '@/assets/svg/clipper.svg';
-import CollectLinkSvg from '@/assets/svg/collect-link.svg';
+import LarkIcon from '@/components/LarkIcon';
 import { superSidebar } from '@/components/SuperSideBar/index';
 import AddTagButton from './component/AddTagButton';
 import TagList from './component/TagList';
@@ -161,8 +159,31 @@ function ClipContent() {
     };
   }, []);
 
+  const onCollectLink = async () => {
+    const tab = await backgroundBridge.tab.getCurrent();
+    const { quote } = getBookmarkHTMLs({
+      title: tab?.title || '',
+      url: tab?.url || '',
+    });
+    editorRef.current?.appendContent(quote);
+    // 回到文档开头
+    editorRef.current?.focusToStart();
+  };
+
+  const addLinkWhenEmpty = async () => {
+    if (!editorRef.current?.isEmpty()) {
+      return;
+    }
+    const config: IClipConfig = await backgroundBridge.configManager.get(
+      'clip',
+    );
+    if (!config.addLink) return;
+    await onCollectLink();
+  };
+
   const onSelectArea = async () => {
     const html = await backgroundBridge.clip.selectArea();
+    await addLinkWhenEmpty();
     editorRef.current?.appendContent(html);
   };
 
@@ -190,23 +211,14 @@ function ClipContent() {
           };
         });
         const text = textArray?.map(item => item.text)?.join('') || '';
+        await addLinkWhenEmpty();
+
         editorRef.current?.appendContent(text);
       }
     } catch (error) {
       console.log('ocr error:', error);
     }
     setLoading({ loading: false });
-  };
-
-  const onCollectLink = async () => {
-    const tab = await backgroundBridge.tab.getCurrent();
-    const { quote } = getBookmarkHTMLs({
-      title: tab?.title || '',
-      url: tab?.url || '',
-    });
-    editorRef.current?.appendContent(quote);
-    // 回到文档开头
-    editorRef.current?.focusToStart();
   };
 
   const handleRequestTag = async () => {
@@ -305,8 +317,10 @@ function ClipContent() {
             className={styles.headerItem}
             onClick={onSelectArea}
             id={ClipSelectAreaId}
+            data-aspm-click="c340502.d391169"
+            data-aspm-desc="选取剪藏"
           >
-            <Icon component={ClipperSvg} className={styles.icon} />
+            <LarkIcon className={styles.icon} name="clipper" />
             <span>{__i18n('选取剪藏')}</span>
           </div>
         </Tooltip>
@@ -318,8 +332,10 @@ function ClipContent() {
             className={styles.headerItem}
             onClick={onScreenOcr}
             id={ClipScreenOcrId}
+            data-aspm-click="c340502.d391174"
+            data-aspm-desc="ocr提取"
           >
-            <Icon component={OcrSvg} className={styles.icon} />
+            <LarkIcon className={styles.icon} name="ocr-icon" />
             <span>{__i18n('OCR 提取')}</span>
           </div>
         </Tooltip>
@@ -333,8 +349,10 @@ function ClipContent() {
             className={styles.headerItem}
             onClick={onCollectLink}
             id={ClipCollectLinkId}
+            data-aspm-click="c340502.d391175"
+            data-aspm-desc="链接收藏"
           >
-            <Icon component={CollectLinkSvg} className={styles.icon} />
+            <LarkIcon className={styles.icon} name="collect-link" />
             <span>{__i18n('链接收藏')}</span>
           </div>
         </Tooltip>

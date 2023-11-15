@@ -14,6 +14,9 @@ interface IProps {
 const LarkIcon = (props: IProps) => {
   const { name, size = 16, className, spin = false } = props;
   const SvgComponent = React.lazy(async () => {
+    if (!SvgMaps[name]) {
+      return import('./EmptyIcon');
+    }
     return SvgMaps[name];
   });
   return (
