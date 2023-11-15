@@ -1,11 +1,8 @@
 import React from 'react';
-import AntdMessage from '@/components/AntdMessage';
 import { createRoot } from 'react-dom/client';
-import { StyleProvider } from '@ant-design/cssinjs';
 import WordMarkLayout from '@/components/WordMarkLayout';
-import AntdLayout from '@/components/AntdLayout';
+import InjectLayout from '../components/InjectLayout';
 import WordMarkApp from './app';
-import '@/styles/global.less';
 
 interface ICreateWordMarkOption {
   dom: HTMLElement;
@@ -13,19 +10,11 @@ interface ICreateWordMarkOption {
 
 function App() {
   return (
-    <StyleProvider container={window._yuque_ext_app.shadowRoot}>
-      <AntdLayout
-        config={{
-          getPopupContainer: () => window._yuque_ext_app.rootContainer,
-        }}
-      >
-        <AntdMessage>
-          <WordMarkLayout>
-            <WordMarkApp />
-          </WordMarkLayout>
-        </AntdMessage>
-      </AntdLayout>
-    </StyleProvider>
+    <InjectLayout>
+      <WordMarkLayout>
+        <WordMarkApp />
+      </WordMarkLayout>
+    </InjectLayout>
   );
 }
 

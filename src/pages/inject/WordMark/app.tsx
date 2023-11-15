@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
@@ -15,12 +10,13 @@ import {
   buildParamsForNote,
 } from '@/components/lake-editor/helper';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
+import { MonitorAction } from '@/isomorphic/constant/monitor';
+import { useInjectContent } from '@/pages/inject/components/InjectLayout';
+import { IClipConfig } from '@/isomorphic/constant/clip';
 import Editor, { IEditorRef } from './Editor';
 import Panel from './Panel';
 import Inner from './Inner';
 import styles from './app.module.less';
-import { MonitorAction } from '@/isomorphic/constant/monitor';
-import { useMessage } from '@/components/AntdMessage';
 
 function WordMarkApp() {
   const [type, setType] = useState<WordMarkOptionTypeEnum | null>(null);
@@ -33,7 +29,7 @@ function WordMarkApp() {
   const isSaving = useRef(false);
   const wordMarkContext = useWordMarkContext();
   const [visible, setVisible] = useState(false);
-  const apiMessage = useMessage();
+  const { message: apiMessage } = useInjectContent();
 
   const save = useCallback(
     async (text: string) => {
@@ -52,9 +48,18 @@ function WordMarkApp() {
       if (isSaving.current) {
         return;
       }
+      const clipConfig: IClipConfig = await backgroundBridge.configManager.get(
+        'clip',
+      );
+      const editor = editorRef.current;
+      if (clipConfig.addLink) {
+        await editor?.appendContent(
+          `<blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote>`,
+          true,
+        );
+      }
       try {
         isSaving.current = true;
-        const editor = editorRef.current;
         if (!wordMarkContext.defaultSavePosition.id) {
           // 保存到小记
           const noteParams = {
@@ -115,10 +120,7 @@ function WordMarkApp() {
             .map((v: any) => v?.outerHTML || v?.nodeValue)
             .join('');
         }
-        await editorRef.current?.setContent(
-          `${html}<blockquote><p>来自: <a href="${window.location.href}">${document.title}</a></p></blockquote>`,
-          'text/html',
-        );
+        await editorRef.current?.setContent(`${html}`, 'text/html');
         await save(html);
         return;
       }

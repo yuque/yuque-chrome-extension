@@ -1,5 +1,6 @@
 import {
   IWordMarkConfig,
+  WordMarkConfigKey,
   defaultWordMarkConfig,
 } from '@/isomorphic/constant/wordMark';
 import Chrome from '@/background/core/chrome';
@@ -16,7 +17,7 @@ class WordMarkConfigManager {
   }
 
   async update(
-    key: keyof IWordMarkConfig,
+    key: WordMarkConfigKey,
     value: any,
     option?: IConfigManagerOption,
   ) {

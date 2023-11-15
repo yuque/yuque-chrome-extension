@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import AntdLayout from '@/components/AntdLayout';
+import InjectLayout from '../components/InjectLayout';
 import LevitateBallApp from './app';
 
 interface ICreateWordMarkOption {
@@ -9,9 +9,9 @@ interface ICreateWordMarkOption {
 
 function App() {
   return (
-    <AntdLayout>
+    <InjectLayout>
       <LevitateBallApp />
-    </AntdLayout>
+    </InjectLayout>
   );
 }
 

@@ -105,6 +105,7 @@ export default function OCRModal(props: IOCRModalProps) {
                 onClick={() => {
                   props.onInsertText?.(value);
                 }}
+                className="ne-ocr-insert"
               >
                 <Icon type="import-x" size={16} />
                 插入文中
@@ -123,7 +124,7 @@ export function showEditorModal(cardUI: any) {
 
   const modal = Modal.info({
     className: 'ne-ocr-modal',
-    width: 860,
+    width: '90%',
     closable: true,
     icon: null,
     title: '提取图中的文本',

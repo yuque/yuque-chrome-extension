@@ -7,7 +7,7 @@ import { __i18n } from '@/isomorphic/i18n';
 import { CloseOutlined } from '@ant-design/icons';
 import { backgroundBridge } from '@/core/bridge/background';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
-import { useMessage } from '@/components/AntdMessage';
+import { useInjectContent } from '@/pages/inject/components/InjectLayout';
 import { toolbars } from '../constants';
 import { IEditorRef } from '../Editor';
 import styles from './index.module.less';
@@ -36,7 +36,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
   const [result, setResult] = useState<string>(StepMessage.onStart);
   const [type, setType] = useState(defaultType);
   const [loading, setLoading] = useState(true);
-  const apiMessage = useMessage();
+  const { message: apiMessage } = useInjectContent();
   const handClick = (t: WordMarkOptionTypeEnum) => {
     setType(t);
   };

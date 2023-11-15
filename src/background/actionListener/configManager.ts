@@ -4,11 +4,13 @@ import {
   OperateConfigManagerEnum,
 } from '@/isomorphic/background/configManager';
 import { wordMarkConfigManager } from '../core/configManager/wordMark';
+import { clipConfigManager } from '../core/configManager/clip';
 import { RequestMessage } from './index';
 
 const managerMap = {
   wordMark: wordMarkConfigManager,
   levitate: levitateConfigManager,
+  clip: clipConfigManager,
 };
 
 export async function createManagerConfigActionListener(
@@ -24,7 +26,7 @@ export async function createManagerConfigActionListener(
       break;
     }
     case OperateConfigManagerEnum.update: {
-      const res = await manage.update(key, value, option);
+      const res = await manage.update(key as any, value, option);
       callback(res);
       break;
     }

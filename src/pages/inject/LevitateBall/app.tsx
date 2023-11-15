@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Icon from '@ant-design/icons';
 import classnames from 'classnames';
-import { Button, Modal, Radio } from 'antd';
+import { Button, Radio } from 'antd';
 import CloseCircle from '@/assets/svg/close-circle.svg';
 import YuqueLogoSve from '@/assets/svg/yuque-logo.svg';
 import { backgroundBridge } from '@/core/bridge/background';
@@ -12,7 +12,7 @@ import {
   LevitateBallMessageKey,
 } from '@/isomorphic/event/levitateBall';
 import LinkHelper from '@/isomorphic/link-helper';
-import AntdLayout from '@/components/AntdLayout';
+import { useInjectContent } from '../components/InjectLayout';
 import styles from './app.module.less';
 
 type DisableType = 'disableUrl' | 'disableOnce' | 'disableForever';
@@ -29,6 +29,7 @@ function App() {
   const positionRef = useRef({
     top: 0,
   });
+  const { Modal } = useInjectContent();
 
   const handleDrag = (event: React.DragEvent<HTMLDivElement>) => {
     if (!dragging || !event.clientY) return;
@@ -72,7 +73,7 @@ function App() {
     const modal = Modal.confirm({});
     modal.update({
       content: (
-        <AntdLayout>
+        <>
           <Radio.Group
             className={styles.radioGroup}
             defaultValue={disableType}
@@ -98,7 +99,7 @@ function App() {
             </div>
             {__i18n('开启')}
           </div>
-        </AntdLayout>
+        </>
       ),
       prefixCls: 'yuque-chrome-extension',
       closable: true,
@@ -107,7 +108,7 @@ function App() {
       wrapClassName: styles.disableModal,
       maskClosable: true,
       footer: (
-        <AntdLayout>
+        <>
           <div className={styles.disableModalFooter}>
             <Button className={styles.button} onClick={modal.destroy}>
               {__i18n('取消')}
@@ -123,7 +124,7 @@ function App() {
               {__i18n('确定')}
             </Button>
           </div>
-        </AntdLayout>
+        </>
       ),
     });
   };

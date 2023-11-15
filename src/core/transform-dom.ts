@@ -270,7 +270,8 @@ export async function transformDOM(domArray: Element[]) {
     // 替换 img 标签的链接
     const imgElements = clonedDOM.querySelectorAll('img');
     imgElements.forEach(img => {
-      img.setAttribute('src', img.src);
+      // 有些 img 采用 srcset 属性去实现，src 中放的其实是小图，所以以 currentSrc 作为渲染的 src
+      img.setAttribute('src', img.currentSrc);
     });
 
     // 移除 pre code 下的兄弟
