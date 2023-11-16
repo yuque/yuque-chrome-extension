@@ -51,17 +51,18 @@ export const templateHtml = `
       border-color: #00B96B;
     }
     .ne-layout-mode-fixed .ne-editor-wrap {
-      padding: 0 16px;
+      padding: 16px 16px 0;
+      height: 100%;
     }
     .ne-layout-mode-fixed .ne-engine {
       padding: 0;
-      min-height: calc(100vh - 10px)
+      min-height: calc(100vh - 34px)
     }
     .ne-layout-mode-fixed .ne-editor-wrap-content {
-      min-width: 333px;
+      min-width: 317px;
     }
     .ne-layout-mode-fixed .ne-editor-outer-wrap-box {
-      min-width: 333px;
+      min-width: 317px;
     }
   </style>
 </head>

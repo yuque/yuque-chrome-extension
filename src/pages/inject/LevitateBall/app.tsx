@@ -26,6 +26,7 @@ function App() {
   const [dragging, setDragging] = useState(false);
   const { forceUpdate } = useForceUpdate();
   const entryStartActionRef = useRef<'click' | 'drag' | ''>('');
+  const entryStartActionStratYRef = useRef(0);
   const positionRef = useRef({
     top: 0,
   });
@@ -82,10 +83,10 @@ function App() {
             }}
           >
             <Radio value={'disableOnce'}>
-              {__i18n('本次关闭直到下次访问')}
+              {__i18n('在本次访问关闭')}
             </Radio>
-            <Radio value={'disableUrl'}>{__i18n('当前网站禁用')}</Radio>
-            <Radio value={'disableForever'}>{__i18n('永久禁用')}</Radio>
+            <Radio value={'disableUrl'}>{__i18n('在本页关闭')}</Radio>
+            <Radio value={'disableForever'}>{__i18n('全部关闭')}</Radio>
           </Radio.Group>
           <div className={styles.linkWrapper}>
             {__i18n('可在')}
@@ -197,11 +198,16 @@ function App() {
         </div>
         <div
           className={styles.ballEntry}
-          onMouseDown={() => {
+          onMouseDown={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            entryStartActionStratYRef.current = e.clientY;
             entryStartActionRef.current = 'click';
           }}
-          onMouseMove={() => {
+          onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             if (!entryStartActionRef.current) {
+              return;
+            }
+            const isClick = Math.abs(entryStartActionStratYRef.current - e.clientY) < 4;
+            if (isClick) {
               return;
             }
             entryStartActionRef.current = 'drag';
