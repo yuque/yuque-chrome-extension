@@ -68,8 +68,8 @@
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Ctrl+K",
-        "mac": "Command+K"
+        "default": "Ctrl+Period",
+        "mac": "Command+Period"
       }
     },
     "selectArea": {
