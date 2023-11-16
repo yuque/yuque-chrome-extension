@@ -3,6 +3,7 @@
   "background": {
     "service_worker": "background-wrapper.js"
   },
+  "description": "语雀浏览器知识管理插件，支持剪藏页面文本和图片，截图OCR识别文字，可划词剪藏、翻译，侧边栏写笔记，并存到语雀。",
   "action": {},
   "content_scripts": [
     {
@@ -59,8 +60,7 @@
     "tabs",
     "webRequest",
     "scripting",
-    "sidePanel",
-    "commands"
+    "sidePanel"
   ],
   "side_panel": {
      "default_path": "sidePanel.html"
