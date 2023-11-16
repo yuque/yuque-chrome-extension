@@ -60,16 +60,6 @@ function Shortcut() {
       <div className={styles.configCard}>
         <div className={styles.body}>
           <div className={styles.configItem}>
-            <div className={styles.desc}>{__i18n('剪藏内容保留来源地址')}</div>
-            <Switch
-              checked={clipConfig.addLink}
-              onChange={() =>
-                onClipConfigChange('addLink', !clipConfig.addLink)
-              }
-              size="small"
-            />
-          </div>
-          <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('展示侧边栏悬浮气泡')}</div>
             <Switch
               checked={config.enable}
@@ -90,6 +80,16 @@ function Shortcut() {
               </div>
             </div>
           )}
+          <div className={styles.configItem}>
+            <div className={styles.desc}>{__i18n('剪藏内容保留来源地址')}</div>
+            <Switch
+              checked={clipConfig.addLink}
+              onChange={() =>
+                onClipConfigChange('addLink', !clipConfig.addLink)
+              }
+              size="small"
+            />
+          </div>
         </div>
       </div>
     </div>

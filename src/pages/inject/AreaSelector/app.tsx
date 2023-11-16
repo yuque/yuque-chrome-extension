@@ -44,6 +44,11 @@ function App(props: IAppProps) {
         return;
       }
 
+      // 跳过插件的元素
+      if (target.closest('#yuque-extension-root-container')) {
+        return;
+      }
+
       // 如果选中元素已经被选中不再选中
       if (targetListRef.current.find(item => item === target)) {
         return;
@@ -73,9 +78,9 @@ function App(props: IAppProps) {
     }
 
     const onToggleSelect = (e: MouseEvent) => {
+      const target = e.composedPath()?.[0] as Element;
       e.stopImmediatePropagation();
       e.preventDefault();
-      const target = e.target as Element;
       console.log(target, target.closest('.select-confirm'));
       if (target.closest('.select-confirm')) {
         onSave();
@@ -162,7 +167,7 @@ function App(props: IAppProps) {
           )
         );
       })}
-      {targetRectRef.current?.width && (
+      {!!targetRectRef.current?.width && (
         <div
           ref={ref}
           className={styles.selectInner}
