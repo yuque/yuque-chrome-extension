@@ -23,15 +23,19 @@ export function createUserBridge(impl: ICallBridgeImpl) {
             BackgroundEvents.OperateUser,
             { type: OperateUserEnum.getUserShortCut },
             res => {
-              const map: IShortcutMap = {};
-              for (const item of res) {
-                if (item.name === '_execute_action') {
-                  map.openSidePanel = item.shortcut;
-                } else {
-                  map[item.name as keyof IShortcutMap] = item.shortcut;
+              try {
+                const map: IShortcutMap = {};
+                for (const item of res) {
+                  if (item.name === '_execute_action') {
+                    map.openSidePanel = item.shortcut;
+                  } else {
+                    map[item.name as keyof IShortcutMap] = item.shortcut;
+                  }
                 }
+                resolve(map);
+              } catch (error) {
+                resolve({});
               }
-              resolve(map);
             },
           );
         });
