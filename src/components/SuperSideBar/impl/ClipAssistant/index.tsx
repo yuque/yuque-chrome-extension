@@ -185,6 +185,7 @@ function ClipContent() {
     const html = await backgroundBridge.clip.selectArea();
     await addLinkWhenEmpty();
     editorRef.current?.appendContent(html);
+    editorRef.current?.insertBreakLine();
   };
 
   const onScreenOcr = async () => {
@@ -214,6 +215,7 @@ function ClipContent() {
         await addLinkWhenEmpty();
 
         editorRef.current?.appendContent(text);
+        editorRef.current?.insertBreakLine();
       }
     } catch (error) {
       console.log('ocr error:', error);
