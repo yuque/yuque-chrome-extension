@@ -2,24 +2,38 @@ import React from 'react';
 import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
+import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import styles from './DisableMenu.module.less';
 
 function DisableMenu() {
+  const { disableUrl } = useWordMarkContext();
   const disableForever = () => {
     backgroundBridge.configManager.update('wordMark', 'enable', false, {
       notice: true,
     });
+    window._yuque_ext_app.removeWordMark();
   };
 
   const disableForPage = () => {
+    const iconLink =
+      document.querySelector("link[rel*='icon']") ||
+      document.querySelector("link[rel*='Icon']");
+    const iconUrl = (iconLink as HTMLLinkElement)?.href;
     backgroundBridge.configManager.update(
       'wordMark',
       'disableUrl',
-      `${window.location.origin}${window.location.pathname}`,
+      [
+        ...disableUrl,
+        {
+          origin: `${window.location.origin}${window.location.pathname}`,
+          icon: iconUrl,
+        },
+      ],
       {
         notice: true,
       },
     );
+    window._yuque_ext_app.removeWordMark();
   };
 
   const disableOnce = () => {

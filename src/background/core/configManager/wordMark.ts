@@ -26,10 +26,6 @@ class WordMarkConfigManager {
       ...config,
       [key]: value,
     };
-    // enable 改变时，将 disable url 全部清空
-    if (key === 'enable') {
-      result.disableUrl = [];
-    }
     await Chrome.storage.local.set({
       [STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG]: result,
     });
@@ -68,6 +64,14 @@ class WordMarkConfigManager {
       const value = config[key];
       if (typeof value === 'undefined') {
         config[key] = defaultWordMarkConfig[key] as never;
+      }
+
+      // 由于历史数据可能被写入 string 或者 string[] 如果判断出是这种数据的，将内容置空
+      if (key === 'disableUrl') {
+        const tempValue = config[key];
+        if (typeof tempValue === 'string' || typeof tempValue?.[0] === 'string') {
+          config[key] = [];
+        }
       }
 
       /**
