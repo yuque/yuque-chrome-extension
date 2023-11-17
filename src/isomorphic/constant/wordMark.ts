@@ -24,7 +24,7 @@ export type IWordMarkConfig = {
   innerPinList: Array<WordMarkOptionTypeEnum>;
 
   // 禁用页面的 url
-  disableUrl: Array<string>;
+  disableUrl: Array<{ origin: string; icon: string }>;
 
   // 剪藏时唤起面板
   evokePanelWhenClip: boolean;

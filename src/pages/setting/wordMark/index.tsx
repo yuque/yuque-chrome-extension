@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Select, Switch, Row, Col } from 'antd';
+import DisableUrlCard, { IDisableUrlItem } from '@/components/DisableUrlCard';
 import { ToolbarItem, toolbars } from '@/pages/inject/WordMark/constants';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic/i18n';
@@ -94,6 +95,16 @@ function WordMark() {
     onConfigChange('disableFunction', result);
   };
 
+  const onDelete = useCallback(
+    (item: IDisableUrlItem) => {
+      const filterArray = config?.disableUrl?.filter(
+        d => d.origin !== item.origin,
+      );
+      onConfigChange('disableUrl', filterArray);
+    },
+    [config],
+  );
+
   useEffect(() => {
     backgroundBridge.configManager.get('wordMark').then(res => {
       setConfig(res);
@@ -133,6 +144,19 @@ function WordMark() {
                   <LarkIcon className={styles.iconWrapper} name="arrow-down" />
                 }
               />
+            </div>
+          )}
+          {!!config.disableUrl?.length && config.enable && (
+            <div>
+              <div className={styles.desc}>
+                {__i18n('管理不展示划词工具栏的页面')}
+              </div>
+              <div className={styles.disableUrlCard}>
+                <DisableUrlCard
+                  options={config.disableUrl}
+                  onDelete={onDelete}
+                />
+              </div>
             </div>
           )}
         </div>

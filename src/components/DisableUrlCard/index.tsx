@@ -20,7 +20,7 @@ function DisableUrlCard(props: IDisableUrlCardProps) {
     return null;
   }
   return (
-    <Row gutter={20}>
+    <Row gutter={[20, 20]}>
       {options.map((item, index) => {
         return (
           <Col span={12} key={item.origin}>

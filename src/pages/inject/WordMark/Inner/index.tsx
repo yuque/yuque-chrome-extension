@@ -46,10 +46,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
           }
           if (pinedTools.length > 3) {
             return (
-              <Tooltip
-                title={item.name}
-                key={item.type}
-              >
+              <Tooltip title={item.name} key={item.type}>
                 <Typography
                   type="iconButton"
                   ml={6}
@@ -89,16 +86,20 @@ function InnerWordMark(props: InnerWordMarkProps) {
           <LarkIcon name="more" />
         </div>
       </Popover>
-      <div className={styles.line} />
-      <Popover
-        placement="bottomRight"
-        content={<DisableMenu />}
-        overlayClassName={styles.overlayClassName}
-      >
-        <div className={styles.closeActions}>
-          <LarkIcon name="close-outline" size={14} />
-        </div>
-      </Popover>
+      {(wordMarkContext.enable || !wordMarkContext.evokeWordMarkShortKey) && (
+        <>
+          <div className={styles.line} />
+          <Popover
+            placement="bottomRight"
+            content={<DisableMenu />}
+            overlayClassName={styles.overlayClassName}
+          >
+            <div className={styles.closeActions}>
+              <LarkIcon name="close-outline" size={14} />
+            </div>
+          </Popover>
+        </>
+      )}
     </div>
   );
 }
