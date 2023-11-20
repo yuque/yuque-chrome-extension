@@ -18,7 +18,7 @@ const remoteAssetsUrls = {
   lakejs: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.umd.js`,
   lakecss: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.css`,
   codemirror: 'https://gw.alipayobjects.com/render/p/yuyan_v/180020010000005484/7.1.4/CodeMirror.js',
-  tracert_a385: 'https://ur.alipay.com/tracert_a385.js',
+  tracert_a385: 'https://app.nlark.com/yuque-chrome-extension/tracert_a385.js',
 };
 
 const localAssetsPaths = {
