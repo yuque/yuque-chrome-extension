@@ -58,6 +58,8 @@ export class App {
    */
   private _shadowRoot: ShadowRoot | null = null;
 
+  private rootDiv: HTMLDivElement | null = null;
+
   /**
    * sidePanel iframe
    */
@@ -103,6 +105,7 @@ export class App {
 
   private initRoot() {
     const div = document.createElement('div');
+    this.rootDiv = div;
     div.id = 'yuque-extension-root-container';
     div.classList.add('yuque-extension-root-container-class');
     const css = Chrome.runtime.getURL('content-scripts.css');
@@ -131,20 +134,6 @@ export class App {
         this.initSidePanel();
         this.removeLevitateBall = createLevitateBall({
           dom: root,
-        });
-        // 搜索页二次搜索会清除掉一些 dom ，所以在 init 的时候需要判断我们挂载的 dom 是否还在，如果不在了，重新挂上去
-        const observer = new MutationObserver((mutationsList: MutationRecord[]) => {
-          for (const mutation of mutationsList) {
-            if (Array.from(mutation.removedNodes).includes(div)) {
-              this.sidePanelClipReadyPromise = undefined;
-              document.body.appendChild(div);
-            }
-          }
-        });
-        // 监听页面 dom 是否被卸载
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true,
         });
       });
   }
@@ -199,6 +188,15 @@ export class App {
 
   private async initSidePanel(): Promise<boolean> {
     if (this.initSidePanelPromise) {
+      // 如果 dom 被卸载掉，延迟 1s 重新将其挂载上去
+      if (!document.querySelector('#yuque-extension-root-container') && this.rootDiv) {
+        document.body.appendChild(this.rootDiv);
+        await new Promise(resolve => {
+          setTimeout(() => {
+            resolve(true);
+          }, 1000);
+        });
+      }
       return this.initSidePanelPromise;
     }
     this.initSidePanelPromise = new Promise(resolve => {

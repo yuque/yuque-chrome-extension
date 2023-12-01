@@ -1,12 +1,12 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "语雀浏览器插件",
   "private": true,
   "releaseNotes": [
-    "[特性] 剪藏侧边栏改版",
-    "[特性] 支持剪藏快捷键操作",
-    "[特性] 划词新增修饰快捷键"
+    "[优化] 增加保存失败的提示",
+    "[修复] 修复插件导致特殊网页卡住问题",
+    "[修复] 语雀文档剪藏列表丢失情况"
   ],
   "repository": {
     "type": "git",
