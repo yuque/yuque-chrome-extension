@@ -139,8 +139,12 @@ function ClipContent() {
         backgroundBridge.sidePanel.close();
       }
       editor.setContent('');
-    } catch (error) {
-      message.error(__i18n('保存失败，请重试！'));
+    } catch (e: any) {
+      if (e.message === '文档上传未结束! 请删除未上传成功的图片') {
+        message.error(__i18n('图片正在上传中，请稍后保存'));
+      } else {
+        message.error(e.message || __i18n('保存失败，请重试！'));
+      }
     }
     setLoading({ loading: false });
   };

@@ -75,6 +75,26 @@ function findYuqueNeTag(element: Element) {
   return null;
 }
 
+function findYuqueChildId(element: Element | null) {
+  let ids: string[] = [];
+
+  if (!element) {
+    return ids;
+  }
+
+  element.childNodes.forEach(item => {
+    const id = (item as Element).id;
+    if (id) {
+      ids.push(id);
+    } else {
+      const childIds = findYuqueChildId(item as Element);
+      ids = ids.concat(childIds);
+    }
+  });
+
+  return ids;
+}
+
 function isYuqueContent(element: Element) {
   if (element.closest('.ne-viewer-body') || document.querySelector('.ne-viewer-body')) {
     return true;
@@ -125,26 +145,18 @@ async function transformYuqueContent(element: Element) {
     });
 
     try {
-      const ids: string[] = [];
+      let ids: string[] = [];
       if (element.classList.contains('ne-viewer-body')) {
-        element.childNodes.forEach(item => {
-          const id = (item as Element).id;
-          if (id) {
-            ids.push(id);
-          }
-        });
+        const childIds = findYuqueChildId(element);
+        ids = ids.concat(childIds);
       } else if (element.closest('.ne-viewer-body')) {
         const id = findYuqueNeTag(element)?.id;
         if (id) {
           ids.push(id);
         }
       } else if (element.querySelector('.ne-viewer-body')) {
-        element.querySelector('.ne-viewer-body')?.childNodes.forEach(item => {
-          const id = (item as Element).id;
-          if (id) {
-            ids.push(id);
-          }
-        });
+        const childIds = findYuqueChildId(element.querySelector('.ne-viewer-body'));
+        ids = ids.concat(childIds);
       }
 
       window.postMessage(
@@ -271,7 +283,7 @@ export async function transformDOM(domArray: Element[]) {
     const imgElements = clonedDOM.querySelectorAll('img');
     imgElements.forEach(img => {
       // 有些 img 采用 srcset 属性去实现，src 中放的其实是小图，所以以 currentSrc 作为渲染的 src
-      img.setAttribute('src', img.currentSrc);
+      img.setAttribute('src', img.currentSrc || img.src);
     });
 
     // 移除 pre code 下的兄弟
