@@ -44,9 +44,13 @@ export default {
       tabs.query({ status: 'complete' }, res => {
         for (const tab of res) {
           if (tab.id) {
-            tabs.sendMessage(tab.id, message, res1 => {
-              resolve(res1);
-            });
+            try {
+              tabs.sendMessage(tab.id, message, res1 => {
+                resolve(res1);
+              });
+            } catch (e) {
+              // 吞掉抛错
+            }
           }
         }
       });

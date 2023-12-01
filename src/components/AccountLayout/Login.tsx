@@ -7,6 +7,9 @@ import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
 import { VERSION } from '@/config';
 import YuqueLogo from '@/assets/images/yuque-logo.png';
+import { isRunningInjectPage } from '@/core/uitl';
+import LarkIcon from '../LarkIcon';
+import Typography from '../Typography';
 import styles from './Login.module.less';
 
 interface ILoginProps {
@@ -39,6 +42,15 @@ function Login(props: ILoginProps) {
 
   return (
     <div className={styles.wrapper}>
+      {isRunningInjectPage && (
+        <Typography
+          type="iconButton"
+          className={styles.closeWrapper}
+          onClick={() => backgroundBridge.sidePanel.close()}
+        >
+          <LarkIcon name="close-outline" />
+        </Typography>
+      )}
       <div className={styles.content}>
         <div className={styles.welcome}>
           <img width="60" src={YuqueLogo} alt="yuque logo" />

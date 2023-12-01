@@ -110,7 +110,7 @@ function AccountLayout(props: IAccountLayoutProps) {
 
   return (
     <AccountContext.Provider value={providerValue as any}>
-      {isLogined ? (
+      {isLogined && !forceUpgradeHtml ? (
         props.children
       ) : (
         <Login onLoginSuccess={setUser} forceUpgradeHtml={forceUpgradeHtml} />
