@@ -8,6 +8,7 @@
   border-left: 1px solid @border-color;
   background: @white;
   justify-content: center;
+  position: relative;
 
   .content {
     padding: 0 70px;
@@ -47,5 +48,12 @@
         color: @text-color-secondary;
       }
     }
+  }
+
+  .closeWrapper {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    color: @text-color-secondary;
   }
 }
