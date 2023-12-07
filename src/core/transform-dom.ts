@@ -28,29 +28,53 @@ function hexoCodeBlock(cloneNode: Element) {
 
 function commonCodeBlock(node: Element) {
   const preElements = node.querySelectorAll('pre');
+  /**
+   * 查询所有 pre 节点
+   * 并将 pre 节点下所有的 code 节点融合成一个新的 code 节点
+   * <pre>
+   *  <code>1</code>
+   *  <ol><code>2</code></ol>
+   * </pre>
+   * 转化后
+   * <pre>
+   *  <code>
+   *    <div>1</div>
+   *    <div>2</div>
+   *  </code>
+   * </pre>
+   */
   preElements.forEach(pre => {
-    const codeElement = pre.querySelector('code');
-    if (codeElement) {
-      const childNodes = pre.childNodes;
-      const needRemoveNodes: ChildNode[] = [];
-      const needMergeNodes: ChildNode[] = [];
-      childNodes.forEach(item => {
-        if ((item as Element)?.tagName === 'CODE' && item !== codeElement) {
-          needMergeNodes.push(item);
-        }
-        if (item !== codeElement) {
-          needRemoveNodes.push(item);
-        }
-      });
-      // 将非 code 移除掉
-      needRemoveNodes.forEach(item => {
+    const codeElementArray = pre.querySelectorAll('code');
+    const cleanCode: ChildNode[] = [];
+    for (const codeElement of codeElementArray) {
+      if (codeElement) {
+        const childNodes = pre.childNodes;
+        const needRemoveNodes: ChildNode[] = [];
+        const needMergeNodes: ChildNode[] = [];
+        childNodes.forEach(item => {
+          if ((item as Element)?.tagName === 'CODE' && item !== codeElement) {
+            needMergeNodes.push(item);
+          }
+          if (item !== codeElement) {
+            needRemoveNodes.push(item);
+          }
+        });
+        const div = document.createElement('div');
+        codeElement.childNodes.forEach(item => {
+          div.appendChild(item);
+        });
+        cleanCode.push(div);
+      }
+      // 移除掉所有的子节点
+      pre.childNodes.forEach(item => {
         pre.removeChild(item);
       });
-      // 将多 code 合成一个 dom
-      needMergeNodes.forEach(item => {
-        codeElement.appendChild(document.createElement('br'));
-        item.childNodes.forEach(codeChild => codeElement.appendChild(codeChild));
+      const code = document.createElement('code');
+      cleanCode.forEach(item => code.appendChild(item));
+      pre.childNodes.forEach(item => {
+        pre.removeChild(item);
       });
+      pre.appendChild(code);
     }
   });
 }
@@ -96,7 +120,10 @@ function findYuqueChildId(element: Element | null) {
 }
 
 function isYuqueContent(element: Element) {
-  if (element.closest('.ne-viewer-body') || document.querySelector('.ne-viewer-body')) {
+  if (
+    element.closest('.ne-viewer-body') ||
+    document.querySelector('.ne-viewer-body')
+  ) {
     return true;
   }
   return false;
@@ -130,7 +157,9 @@ async function transformYuqueContent(element: Element) {
     }, 3000);
 
     await new Promise(resolve1 => {
-      let script = document.querySelector('#yuque-content-transform-script') as HTMLScriptElement;
+      let script = document.querySelector(
+        '#yuque-content-transform-script',
+      ) as HTMLScriptElement;
       if (script) {
         return resolve1(true);
       }
@@ -155,7 +184,9 @@ async function transformYuqueContent(element: Element) {
           ids.push(id);
         }
       } else if (element.querySelector('.ne-viewer-body')) {
-        const childIds = findYuqueChildId(element.querySelector('.ne-viewer-body'));
+        const childIds = findYuqueChildId(
+          element.querySelector('.ne-viewer-body'),
+        );
         ids = ids.concat(childIds);
       }
 
@@ -177,7 +208,11 @@ interface IOriginAndCloneDomItem {
   clone: Element;
 }
 
-function generateOriginAndCloneDomArray(cloneElement: Element, originElement: Element, name: keyof HTMLElementTagNameMap): Array<IOriginAndCloneDomItem> {
+function generateOriginAndCloneDomArray(
+  cloneElement: Element,
+  originElement: Element,
+  name: keyof HTMLElementTagNameMap,
+): Array<IOriginAndCloneDomItem> {
   const originDoms = originElement.querySelectorAll(name);
   const cloneDoms = cloneElement.querySelectorAll(name);
   const result: Array<IOriginAndCloneDomItem> = [];
@@ -202,7 +237,11 @@ function generateOriginAndCloneDomArray(cloneElement: Element, originElement: El
 }
 
 async function transformVideoToImage(element: Element, originDom: Element) {
-  const videoMapArray = generateOriginAndCloneDomArray(element, originDom, 'video');
+  const videoMapArray = generateOriginAndCloneDomArray(
+    element,
+    originDom,
+    'video',
+  );
 
   for (const videoMap of videoMapArray) {
     const rect = videoMap.origin.getBoundingClientRect();
@@ -224,7 +263,11 @@ async function transformVideoToImage(element: Element, originDom: Element) {
 }
 
 function transformCanvasToImage(element: Element, originDom: Element) {
-  const canvasMapArray = generateOriginAndCloneDomArray(element, originDom, 'canvas');
+  const canvasMapArray = generateOriginAndCloneDomArray(
+    element,
+    originDom,
+    'canvas',
+  );
 
   for (const canvasMap of canvasMapArray) {
     const imageElement = document.createElement('img');
@@ -255,12 +298,18 @@ export async function transformDOM(domArray: Element[]) {
     clonedDOMArray.push(div);
   }
 
-  for (let clonedDOMIndex = 0; clonedDOMIndex < clonedDOMArray.length; clonedDOMIndex++) {
+  for (
+    let clonedDOMIndex = 0;
+    clonedDOMIndex < clonedDOMArray.length;
+    clonedDOMIndex++
+  ) {
     let clonedDOM = clonedDOMArray[clonedDOMIndex];
 
     if (isYuqueContent(clonedDOM)) {
       try {
-        clonedDOMArray[clonedDOMIndex] = (await transformYuqueContent(clonedDOM)) as Element;
+        clonedDOMArray[clonedDOMIndex] = (await transformYuqueContent(
+          clonedDOM,
+        )) as Element;
         yuqueDOMIndex.push(clonedDOMIndex);
         continue;
       } catch (error) {
