@@ -24,6 +24,9 @@ export const STORAGE_KEYS = {
   TIP: {
     READ_SHORTCUT: 'tip/read-shortcut',
   },
+  SYSTEM: {
+    LAST_BACKGROUND_UPDATE: 'system/last-background-update',
+  },
 };
 export const YUQUE_DOMAIN = 'https://www.yuque.com';
 export const YUQUE_CSRF_COOKIE_NAME = 'yuque_ctoken';

@@ -7,12 +7,12 @@ import {
 } from '@/isomorphic/constant/levitate';
 import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { STORAGE_KEYS } from '@/config';
-import Storage from '../storage';
+import { storage } from '@/isomorphic/storage';
 
 class LevitateConfigManager {
   async get() {
     const config: ILevitateConfig =
-      (await Storage.get(STORAGE_KEYS.SETTINGS.LEVITATE_BALL_CONFIG)) || {};
+      (await storage.get(STORAGE_KEYS.SETTINGS.LEVITATE_BALL_CONFIG)) || {};
 
     // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
     for (const _key of Object.keys(defaultLevitateConfig)) {

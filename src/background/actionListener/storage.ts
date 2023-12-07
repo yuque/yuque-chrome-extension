@@ -2,7 +2,7 @@ import {
   IOperateStorageData,
   OperateStorageEnum,
 } from '@/isomorphic/background/storage';
-import Storage from '@/background/core/storage';
+import { storage } from '@/isomorphic/storage';
 import { RequestMessage } from './index';
 
 export async function createStorageActionListener(
@@ -12,17 +12,17 @@ export async function createStorageActionListener(
   const { type, key, data } = request.data;
   switch (type) {
     case OperateStorageEnum.get: {
-      const res = await Storage.get(key);
+      const res = await storage.get(key);
       callback(res);
       break;
     }
     case OperateStorageEnum.remove: {
-      const res = await Storage.remove(key);
+      const res = await storage.remove(key);
       callback(res);
       break;
     }
     case OperateStorageEnum.update: {
-      const res = await Storage.update(key, data);
+      const res = await storage.update(key, data);
       callback(res);
       break;
     }

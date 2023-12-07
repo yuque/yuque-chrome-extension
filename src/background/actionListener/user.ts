@@ -5,7 +5,7 @@ import {
   OperateUserEnum,
 } from '@/isomorphic/background/user';
 import { IUser } from '@/isomorphic/interface';
-import Storage from '@/background/core/storage';
+import { storage } from '@/isomorphic/storage';
 import requestFn from '@/background/core/request';
 import { STORAGE_KEYS, YUQUE_DOMAIN } from '@/config';
 import { RequestMessage } from './index';
@@ -86,7 +86,7 @@ export async function createUserActionListener(
             ...value,
             login_at: Date.now(),
           };
-          await Storage.update(STORAGE_KEYS.CURRENT_ACCOUNT, newValue);
+          await storage.update(STORAGE_KEYS.CURRENT_ACCOUNT, newValue);
           callback(newValue);
         }
         callback(null);
