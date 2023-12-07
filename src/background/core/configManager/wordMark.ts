@@ -8,7 +8,7 @@ import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { STORAGE_KEYS } from '@/config';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
-import Storage from '../storage';
+import { storage } from '@/isomorphic/storage';
 
 class WordMarkConfigManager {
   async get() {
@@ -56,7 +56,7 @@ class WordMarkConfigManager {
 
   private async getStorageConfig() {
     const config: IWordMarkConfig =
-      (await Storage.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG)) || {};
+      (await storage.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG)) || {};
 
     // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
     for (const _key of Object.keys(defaultWordMarkConfig)) {
@@ -69,7 +69,10 @@ class WordMarkConfigManager {
       // 由于历史数据可能被写入 string 或者 string[] 如果判断出是这种数据的，将内容置空
       if (key === 'disableUrl') {
         const tempValue = config[key];
-        if (typeof tempValue === 'string' || typeof tempValue?.[0] === 'string') {
+        if (
+          typeof tempValue === 'string' ||
+          typeof tempValue?.[0] === 'string'
+        ) {
           config[key] = [];
         }
       }

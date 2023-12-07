@@ -6,12 +6,12 @@ import {
   ClipConfigKey,
 } from '@/isomorphic/constant/clip';
 import { IConfigManagerOption } from '@/isomorphic/background/configManager';
-import Storage from '../storage';
+import { storage } from '@/isomorphic/storage';
 
 class ClipConfigManager {
   async get() {
     const config: IClipConfig =
-      (await Storage.get(STORAGE_KEYS.SETTINGS.CLIP_CONFIG)) || {};
+      (await storage.get(STORAGE_KEYS.SETTINGS.CLIP_CONFIG)) || {};
 
     // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
     for (const _key of Object.keys(defaultClipConfig)) {
