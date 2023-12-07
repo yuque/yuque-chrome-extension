@@ -69,7 +69,7 @@ const plugins = [
           }, origin);
           if (isBeta) {
             value.name = `${value.name} BETA`;
-            value.description = `${value.description} (THIS EXTENSION IS FOR BETA TESTING)`
+            value.description = `${value.description} (THIS EXTENSION IS FOR BETA TESTING)`;
           }
           return Buffer.from(JSON.stringify(value, null, 2));
         },

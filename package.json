@@ -1,6 +1,6 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "语雀浏览器插件",
   "private": true,
   "releaseNotes": [
@@ -16,7 +16,7 @@
     "pack-zip": "sh ./scripts/build-zip.sh",
     "bundle": "NODE_ENV=production webpack --mode=production",
     "bundle:beta": "NODE_ENV=production BETA=beta webpack --mode=production",
-    "build": "npm run bundle && npm run pack-zip",
+    "build": "npm run bundle && npm run bundle:beta && npm run pack-zip",
     "clean:dist": "sh ./scripts/clean.sh",
     "postinstall": "npm run clean:dist",
     "contributor": "git-contributor",
