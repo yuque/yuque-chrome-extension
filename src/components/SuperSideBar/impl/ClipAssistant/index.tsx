@@ -151,12 +151,10 @@ function ClipContent() {
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
     const file = await transformUrlToFile(params.data);
-    const res = await Promise.all(
-      [
-        backgroundBridge.request.upload.attach(params.data),
-        ocrManager.startOCR('file', file),
-      ].map(p => p.catch(e => e)),
-    );
+    const res = await Promise.all([
+      backgroundBridge.request.upload.attach(params.data),
+      ocrManager.startOCR('file', file),
+    ]);
     return {
       ...(res[0] || {}),
       ocrLocations: res[1],

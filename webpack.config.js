@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackLogPlugin = require('./scripts/log-plugin');
+const isBeta = process.env.BETA === 'beta';
 
 const {
   presetEditor,
@@ -62,16 +63,20 @@ const plugins = [
         from: path.join(srcPath, 'manifest.json'),
         transform(content) {
           const origin = JSON.parse(content.toString());
-          const value = JSON.stringify(Object.assign({
+          const value = Object.assign({
             version: pkg.version,
             name: pkg.description,
-          }, origin), null, 2);
-          return Buffer.from(value);
+          }, origin);
+          if (isBeta) {
+            value.name = `${value.name} BETA`;
+            value.description = `${value.description} (THIS EXTENSION IS FOR BETA TESTING)`
+          }
+          return Buffer.from(JSON.stringify(value, null, 2));
         },
       },
       {
         from: path.join(srcPath, 'background/background-wrapper.js'),
-        to: path.join(distPath, pkg.version, 'background-wrapper.js'),
+        to: path.join(distPath, isBeta ? `${pkg.version}-beta` : pkg.version, 'background-wrapper.js'),
       },
     ],
   }),
@@ -202,7 +207,7 @@ const options = {
   stats: 'errors-only',
   entry,
   output: {
-    path: path.join(__dirname, 'dist', pkg.version),
+    path: path.join(__dirname, 'dist', isBeta ? `${pkg.version}-beta` : pkg.version),
     filename: '[name].js',
   },
   module: {
@@ -249,7 +254,6 @@ const options = {
     ],
   },
 };
-
 
 module.exports = async () => {
   await presetEditor();

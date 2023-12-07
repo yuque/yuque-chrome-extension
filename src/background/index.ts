@@ -18,6 +18,9 @@ listenShortcut();
 chrome.runtime.onInstalled.addListener(async details => {
   console.log('-- runtime installed');
 
+  createContextMenu();
+  updateDynamicRules();
+
   if (details.reason === 'install') {
     chrome.tabs.create({
       url: LinkHelper.introduceExtension,
@@ -64,8 +67,6 @@ chrome.runtime.onInstalled.addListener(async details => {
     );
     chrome.runtime.reload();
   }
-  createContextMenu();
-  updateDynamicRules();
 });
 
 chrome.runtime.setUninstallURL(LinkHelper.unInstallFeedback);
