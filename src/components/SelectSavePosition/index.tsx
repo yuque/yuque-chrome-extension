@@ -92,12 +92,15 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
     (value: PositionType) => {
       if (value === 'note') {
         setSelectSaveItem(DefaultSavePosition);
+        if (rememberKey) {
+          backgroundBridge.storage.update(rememberKey, DefaultSavePosition);
+        }
       } else {
         books[0] && setSelectSaveItem(books[0]);
       }
       setPosition(value);
     },
-    [books],
+    [books, rememberKey],
   );
 
   useEffect(() => {
