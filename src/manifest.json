@@ -34,6 +34,10 @@
         "CodeMirror.js",
         "katex.min.js",
         "tracert_a385.js",
+        "antd.4.24.13.css",
+        "lake-editor-icon.js",
+        "react.production.min.js",
+        "react-dom.production.min.js",
         "yuque-transform-script.js"
       ],
       "matches": [
