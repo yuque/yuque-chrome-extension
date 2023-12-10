@@ -8,6 +8,7 @@ export const templateHtml = `
   <meta charset="UTF-8">
   <title></title>
   <link rel="stylesheet" type="text/css" href="./doc.css"/>
+  <link rel="stylesheet" type="text/css" href="./antd.4.24.13.css"/>
   <style>
     body {
       display: flex;
@@ -54,14 +55,17 @@ export const templateHtml = `
       padding: 16px 16px 0;
       height: 100%;
     }
-    .ne-layout-mode-fixed .ne-engine {
-      padding: 0;
-      min-height: calc(100vh - 34px)
+    .ne-layout-mode-fixed .ne-engine, .ne-layout-mode-adapt .ne-engine {
+      padding: 16px 16px 0;
     }
     .ne-layout-mode-fixed .ne-editor-wrap-content {
       min-width: 317px;
     }
     .ne-layout-mode-fixed .ne-editor-outer-wrap-box {
+      min-width: 317px;
+    }
+    .ne-layout-mode-fixed .ne-editor-outer-wrap-box, .ne-layout-mode-adapt .ne-editor-outer-wrap-box,
+    .ne-layout-mode-fixed .ne-editor-wrap-content, .ne-layout-mode-adapt .ne-editor-wrap-content {
       min-width: 317px;
     }
   </style>
@@ -72,6 +76,8 @@ export const templateHtml = `
     <div id="child"></div>
   </div>
   <div id="root"></div>
+  <script src="./react.production.min.js"></script>
+  <script src="./react-dom.production.min.js"></script>
   <script src="./doc.umd.js"></script>
 </body>
 </html>
