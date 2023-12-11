@@ -18,14 +18,19 @@ const LAKE_EDITOR_VERSION = '1.11.0';
 
 const lakeIconURL = 'https://mdn.alipayobjects.com/design_kitchencore/afts/file/HWy0Q7LuuV0AAAAAAAAAAAAADhulAQBr';
 
+// 必须包含 name 名称
 const remoteAssetsUrls = {
   lakejs: {
     src: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.umd.js`,
     after: (content) => {
       return content.replace(lakeIconURL, './lake-editor-icon.js');
     },
+    name: 'doc.umd.js',
   },
-  lakecss: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.css`,
+  lakecss: {
+    src: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.css`,
+    name: 'doc.css',
+  },
   antdcss: {
     src: 'https://gw.alipayobjects.com/os/lib/antd/4.24.13/dist/antd.css',
     name: 'antd.4.24.13.css',
@@ -34,14 +39,29 @@ const remoteAssetsUrls = {
     src: lakeIconURL,
     name: 'lake-editor-icon.js',
   },
-  codemirror: 'https://gw.alipayobjects.com/render/p/yuyan_v/180020010000005484/7.1.4/CodeMirror.js',
-  tracert_a385: 'https://ur.alipay.com/tracert_a385.js',
+  codemirror: {
+    src: 'https://gw.alipayobjects.com/render/p/yuyan_v/180020010000005484/7.1.4/CodeMirror.js',
+    name: 'CodeMirror.js',
+  },
+  tracert_a385: {
+    src: 'https://ur.alipay.com/tracert_a385.js',
+    name: 'tracert_a385.js',
+  },
 };
 
 const localAssetsPaths = {
-  katex: require.resolve('katex/dist/katex.min.js'),
-  react: require.resolve('react').replace('/index.js', '/umd/react.production.min.js'),
-  reactDOM: require.resolve('react-dom').replace('/index.js', '/umd/react-dom.production.min.js'),
+  katex: {
+    src: require.resolve('katex/dist/katex.min.js'),
+    name: 'katex.min.js',
+  },
+  react: {
+    src: require.resolve('react').replace('/index.js', '/umd/react.production.min.js'),
+    name: 'react.production.min.js',
+  },
+  reactDOM: {
+    src: require.resolve('react-dom').replace('/index.js', '/umd/react-dom.production.min.js'),
+    name: 'react-dom.production.min.js',
+  },
 };
 
 async function downloadFile(remoteURL, localFilename, afterLoad) {
@@ -54,7 +74,7 @@ async function downloadFile(remoteURL, localFilename, afterLoad) {
       fd,
     }),
   });
-  if(afterLoad) {
+  if (afterLoad) {
     const data = readFileSync(localFilename, 'utf-8');
     const newData = afterLoad(data);
     writeFileSync(localFilename, newData);
@@ -65,8 +85,9 @@ module.exports.webpackCleanIgnorePatterns = Object.values({
   ...remoteAssetsUrls,
   ...localAssetsPaths,
 })
-  .map(url => (typeof url === 'string' ? url : url.src).split('/').pop())
-  .map(fileName => `!${fileName}`);
+  .map(item => {
+    return `!${item.name}`;
+  });
 
 module.exports.presetEditor = async function main() {
   console.log('start preset editor ...');
@@ -84,7 +105,7 @@ module.exports.presetEditor = async function main() {
 
   const localAssets = Object.values(localAssetsPaths);
   for (let i = 0; i < localAssets.length; i++) {
-    const filePath = localAssets[i];
+    const filePath = localAssets[i].src;
     const fileName = path.basename(filePath);
     const localFilename = path.resolve(distFolder, fileName);
     mkdirSync(distFolder, { recursive: true });
