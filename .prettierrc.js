@@ -13,5 +13,6 @@ module.exports = {
   htmlWhitespaceSensitivity: 'ignore',
   endOfLine: 'lf',
   embeddedLanguageFormatting: 'auto',
-  bracketSpacing: true
+  bracketSpacing: true,
+  printWidth: 120
 };
