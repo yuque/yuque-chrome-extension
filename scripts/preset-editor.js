@@ -22,8 +22,13 @@ const lakeIconURL = 'https://mdn.alipayobjects.com/design_kitchencore/afts/file/
 const remoteAssetsUrls = {
   lakejs: {
     src: `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${LAKE_EDITOR_VERSION}/umd/doc.umd.js`,
-    after: (content) => {
-      return content.replace(lakeIconURL, './lake-editor-icon.js');
+    after: content => {
+      let result = content;
+      result = result.replace(/https\:\/\/gw\.alipayobjects\.com[\w\/\.]+CodeMirror\.js/g, './CodeMirror.js');
+      result = result.replace(/https\:\/\/gw\.alipayobjects\.com[\w\/\.]+katex\.min\.js/g, './katex.min.js');
+      result = result.replace(lakeIconURL, './lake-editor-icon.js');
+      console.log(content);
+      return result;
     },
     name: 'doc.umd.js',
   },
