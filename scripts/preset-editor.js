@@ -27,7 +27,6 @@ const remoteAssetsUrls = {
       result = result.replace(/https\:\/\/gw\.alipayobjects\.com[\w\/\.]+CodeMirror\.js/g, './CodeMirror.js');
       result = result.replace(/https\:\/\/gw\.alipayobjects\.com[\w\/\.]+katex\.min\.js/g, './katex.min.js');
       result = result.replace(lakeIconURL, './lake-editor-icon.js');
-      console.log(content);
       return result;
     },
     name: 'doc.umd.js',
