@@ -119,10 +119,10 @@ function App(props: IAppProps) {
       }, 200);
     };
 
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mouseover', handleMouseOver, true);
     window.addEventListener('click', onToggleSelect, true);
     return () => {
-      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('mouseover', handleMouseOver, true);
       window.removeEventListener('click', onToggleSelect, true);
     };
   }, []);
