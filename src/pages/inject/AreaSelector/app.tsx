@@ -80,7 +80,6 @@ function App(props: IAppProps) {
       const target = e.composedPath()?.[0] as Element;
       e.stopImmediatePropagation();
       e.preventDefault();
-      console.log(target, target.closest('.select-confirm'));
       if (target.closest('.select-confirm')) {
         onSave();
       } else if (target?.closest('.select-inner')) {

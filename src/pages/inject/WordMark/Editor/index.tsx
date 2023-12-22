@@ -5,7 +5,6 @@ import React, {
   useImperativeHandle,
   useRef,
 } from 'react';
-import Chrome from '@/core/chrome';
 import {
   EDITOR_IFRAME_CONTAINER_ID,
   EditorMessageType,
@@ -172,7 +171,7 @@ export default forwardRef<IEditorRef, {}>((props, ref) => {
 
   return (
     <iframe
-      src={Chrome.runtime.getURL('editor.html')}
+      src={chrome.runtime.getURL('editor.html')}
       ref={iframeRef}
       id={EDITOR_IFRAME_CONTAINER_ID}
       style={{ display: 'none' }}

@@ -3,9 +3,7 @@ import { ClipAssistantMessageActions } from '@/isomorphic/event/clipAssistant';
 import { WordMarkMessageActions, WordMarkMessageKey } from '@/isomorphic/event/wordMark';
 import { AccountLayoutMessageActions, AccountLayoutMessageKey } from '@/isomorphic/event/accountLayout';
 import { LevitateBallMessageActions, LevitateBallMessageKey } from '@/isomorphic/event/levitateBall';
-import { initContentScriptActionListener, initContentScriptMessageListener } from './action-listener';
-import { createWordMark } from './WordMark';
-import '@/styles/inject.less';
+import { initContentScriptActionListener } from './action-listener';
 import {
   InjectScriptRequestKey,
   InjectScriptResponseKey,
@@ -14,7 +12,7 @@ import {
 } from '@/isomorphic/injectScript';
 import { getMsgId } from '@/isomorphic/util';
 import { parseDom } from '@/core/parseDom';
-import { ContentScriptAppRef, createContentScriptApp } from './app';
+import { ContentScriptAppRef, ShowMessageConfig, createContentScriptApp } from './app';
 import { showSelectArea } from './AreaSelector';
 import { showScreenShot } from './ScreenShot';
 
@@ -83,12 +81,7 @@ export class App {
         shadowRoot.appendChild(root);
         this._shadowRoot = shadowRoot;
         document.body.appendChild(div);
-        // 创建好 wordMark
-        this.removeWordMark = createWordMark({
-          dom: this.rootContainer,
-        });
         initContentScriptActionListener(this);
-        initContentScriptMessageListener();
         const { ref } = createContentScriptApp();
         this.contentScriptAppRef = ref;
       });
@@ -239,6 +232,10 @@ export class App {
       this.toggleSidePanel(true);
     }
     return await this.contentScriptAppRef?.current?.addContentToClipAssistant(html);
+  }
+
+  async showMessage(config: ShowMessageConfig) {
+    return this.contentScriptAppRef?.current?.showMessage(config);
   }
 }
 

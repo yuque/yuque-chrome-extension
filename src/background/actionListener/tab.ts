@@ -1,6 +1,5 @@
 import { OperateTabEnum, IOperateTabData } from '@/isomorphic/background/tab';
-import Chrome from '@/background/core/chromeExtension';
-import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
+import chromeExtension from '@/background/core/chromeExtension';
 import { RequestMessage } from './index';
 
 export async function createTabActionListener(
@@ -8,29 +7,46 @@ export async function createTabActionListener(
   callback: (params: any) => void,
   sender: chrome.runtime.MessageSender,
 ) {
-  const { type, url } = request.data;
+  const { type, url, data } = request.data;
+  const currentTab = await chromeExtension.tabs.getCurrentTab(sender.tab);
   switch (type) {
     case OperateTabEnum.screenShot: {
-      const tabs = await Chrome.tabs.query({ lastFocusedWindow: true });
-      const res = await Chrome.tabs.captureVisibleTab(tabs[0].windowId as number);
+      const res = await chromeExtension.tabs.captureVisibleTab(currentTab.windowId as number);
       callback(res);
       break;
     }
     case OperateTabEnum.getCurrent: {
-      const tab = await Chrome.tabs.query({ lastFocusedWindow: true, active: true });
-      callback(tab?.[0]);
+      callback(currentTab);
       break;
     }
     case OperateTabEnum.create: {
-      Chrome.tabs.create({ url });
+      chromeExtension.tabs.create({ url });
       callback(true);
       break;
     }
     case OperateTabEnum.getDocument: {
-      const res = await Chrome.sendMessageToCurrentTab({
-        action: ContentScriptEvents.GetDocument,
+      const result = await chromeExtension.scripting.executeScript({
+        target: { tabId: currentTab.id as number },
+        func: () => {
+          return {
+            url: window.location.href,
+            html: document.documentElement.outerHTML,
+            title: document.title,
+          };
+        },
       });
-      callback(res);
+      callback(result[0].result);
+      break;
+    }
+    case OperateTabEnum.showMessage: {
+      chromeExtension.scripting.executeScript({
+        target: { tabId: currentTab.id as number },
+        args: [{ config: data }],
+        func: args => {
+          return window._yuque_ext_app.showMessage(args.config);
+        },
+      });
+      callback(true);
       break;
     }
     default: {
