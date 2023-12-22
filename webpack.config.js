@@ -39,7 +39,7 @@ const entries = {
   contentScript: 'content-scripts',
   background: 'background',
   extensionPage: ['setting', 'editor', 'sidePanel'],
-  yuqueTransformScript: 'yuque-transform-script',
+  injectContentScript: 'inject-content-script',
 };
 
 // editor 页面是一个隐藏页面，不需要加入埋点日志
@@ -68,8 +68,8 @@ const plugins = [
             name: pkg.description,
           }, origin);
           if (isBeta) {
-            value.name = `${value.name} BETA`;
-            value.description = `${value.description} (THIS EXTENSION IS FOR BETA TESTING)`;
+            value.name = `${value.name} Beta`;
+            value.description = `${value.description}`;
           }
           return Buffer.from(JSON.stringify(value, null, 2));
         },
@@ -108,7 +108,7 @@ if (isProd) {
 const entry = {
   [entries.background]: path.join(srcPath, entries.background),
   [entries.contentScript]: path.join(pagesPath, 'inject', entries.contentScript),
-  [entries.yuqueTransformScript]: path.join(pagesPath, 'inject', entries.yuqueTransformScript),
+  [entries.injectContentScript]: path.join(srcPath, 'injectscript', 'index'),
 };
 
 entries.extensionPage.forEach(item => {

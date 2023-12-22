@@ -7,7 +7,7 @@ import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
 import { VERSION } from '@/config';
 import YuqueLogo from '@/assets/images/yuque-logo.png';
-import { isRunningInjectPage } from '@/core/uitl';
+import Env from '@/isomorphic/env';
 import LarkIcon from '../LarkIcon';
 import Typography from '../Typography';
 import styles from './Login.module.less';
@@ -42,7 +42,7 @@ function Login(props: ILoginProps) {
 
   return (
     <div className={styles.wrapper}>
-      {isRunningInjectPage && (
+      {Env.isRunningHostPage && (
         <Typography
           type="iconButton"
           className={styles.closeWrapper}

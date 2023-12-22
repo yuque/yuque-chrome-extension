@@ -1,14 +1,12 @@
-import {
-  OperateTabEnum,
-  IOperateTabData,
-} from '@/isomorphic/background/tab';
-import Chrome from '@/background/core/chrome';
+import { OperateTabEnum, IOperateTabData } from '@/isomorphic/background/tab';
+import Chrome from '@/background/core/chromeExtension';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { RequestMessage } from './index';
 
 export async function createTabActionListener(
   request: RequestMessage<IOperateTabData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
   const { type, url } = request.data;
   switch (type) {

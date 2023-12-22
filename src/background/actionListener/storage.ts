@@ -1,13 +1,11 @@
-import {
-  IOperateStorageData,
-  OperateStorageEnum,
-} from '@/isomorphic/background/storage';
+import { IOperateStorageData, OperateStorageEnum } from '@/isomorphic/background/storage';
 import { storage } from '@/isomorphic/storage';
 import { RequestMessage } from './index';
 
 export async function createStorageActionListener(
   request: RequestMessage<IOperateStorageData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
   const { type, key, data } = request.data;
   switch (type) {

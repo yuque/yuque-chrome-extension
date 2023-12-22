@@ -1,6 +1,5 @@
-import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { __i18n } from '@/isomorphic/i18n';
+import chromeExtension from './core/chromeExtension';
 
 interface MenuItem {
   id: string;
@@ -33,32 +32,40 @@ const menuList: MenuItem[] = [
 ];
 
 export function createContextMenu() {
-  menuList.forEach(item => Chrome.contextMenus.create(item));
+  menuList.forEach(item => chrome.contextMenus.create(item));
 }
 
 export function listenContextMenuEvents() {
-  Chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (!tab) return;
-
+  chromeExtension.contextMenus.onClicked.addListener(async (info, tab) => {
+    const currentTab = await chromeExtension.tabs.getCurrentTab(tab);
     switch (info.menuItemId) {
       case menuList[0].id: {
         const { selectionText } = info;
-        Chrome.tabs.sendMessage(tab.id as number, {
-          action: ContentScriptEvents.AddContentToClipAssistant,
-          data: `${selectionText}<br/>`,
+        chromeExtension.scripting.executeScript({
+          target: { tabId: currentTab?.id as number },
+          args: [{ html: `${selectionText}<br/>` }],
+          func: args => {
+            window._yuque_ext_app.addContentToClipAssistant(args.html, true);
+          },
         });
         break;
       }
       case menuList[1].id:
-        Chrome.tabs.sendMessage(tab.id as number, {
-          action: ContentScriptEvents.ToggleSidePanel,
+        chromeExtension.scripting.executeScript({
+          target: { tabId: currentTab?.id as number },
+          func: () => {
+            return window._yuque_ext_app.toggleSidePanel();
+          },
         });
         break;
       case menuList[2].id: {
         const { srcUrl } = info;
-        Chrome.tabs.sendMessage(tab.id as number, {
-          action: ContentScriptEvents.AddContentToClipAssistant,
-          data: `<img src=${srcUrl} />`,
+        chromeExtension.scripting.executeScript({
+          target: { tabId: currentTab?.id as number },
+          args: [{ html: `<img src=${srcUrl} />` }],
+          func: args => {
+            window._yuque_ext_app.addContentToClipAssistant(args.html, true);
+          },
         });
         break;
       }

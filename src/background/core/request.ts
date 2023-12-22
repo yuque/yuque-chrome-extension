@@ -1,4 +1,4 @@
-import Chrome from '@/background/core/chrome';
+import Chrome from '@/background/core/chromeExtension';
 import {
   pkg,
   REQUEST_HEADER_VERSION,
@@ -8,10 +8,7 @@ import {
   EXTENSION_ID,
 } from '@/config';
 import 'whatwg-fetch';
-import {
-  IRequestConfig,
-  IRequestOptions,
-} from '@/isomorphic/background/request';
+import { IRequestConfig, IRequestOptions } from '@/isomorphic/background/request';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { getCurrentAccount } from './util';
 
@@ -26,11 +23,7 @@ const generateQuery = (params: { [key: string]: any }) => {
   return `?${new URLSearchParams(params).toString()}`;
 };
 
-const setCsrfToken = (
-  domain: string,
-  cookieName: string,
-  value: string,
-): Promise<chrome.cookies.Cookie> => {
+const setCsrfToken = (domain: string, cookieName: string, value: string): Promise<chrome.cookies.Cookie> => {
   return new Promise(resolve => {
     Chrome.cookies.set({ url: domain, name: cookieName, value }, cookie => {
       resolve(cookie as chrome.cookies.Cookie);
@@ -42,10 +35,7 @@ const generateRandomToken = (): string => {
   return Math.random().toString(36).substring(2);
 };
 
-export const getCsrfToken = async (
-  domain: string,
-  cookieName: string,
-): Promise<string> => {
+export const getCsrfToken = async (domain: string, cookieName: string): Promise<string> => {
   return new Promise(resolve => {
     Chrome.cookies.get({ url: domain, name: cookieName }, cookie => {
       if (cookie) {
@@ -103,9 +93,7 @@ async function request<T>(
     } else if (options.method === 'GET' && config.data) {
       const params = config.data;
       const paramsArray: string[] = [];
-      Object.keys(params).forEach(key =>
-        paramsArray.push(`${key}=${params[key]}`),
-      );
+      Object.keys(params).forEach(key => paramsArray.push(`${key}=${params[key]}`));
       if (paramsArray.length > 0) {
         queryString = `?${paramsArray.join('&')}`;
       }
@@ -115,10 +103,7 @@ async function request<T>(
       ...options,
     });
     const responseJson = await response.json();
-    if (
-      responseJson.status === 400 &&
-      responseJson.code === 'force_upgrade_version'
-    ) {
+    if (responseJson.status === 400 && responseJson.code === 'force_upgrade_version') {
       Chrome.sendMessageToAllTab({
         action: ContentScriptEvents.ForceUpgradeVersion,
         data: {
@@ -143,16 +128,11 @@ async function request<T>(
   }
 }
 
-export async function uploadFile(
-  url: string,
-  file: File,
-  attachableType = 'User',
-  fileType = 'image',
-) {
+export async function uploadFile(url: string, file: File, attachableType = 'User', fileType = 'image') {
   const formData = new FormData();
   formData.append('file', file);
   const csrfToken = await getCsrfToken(YUQUE_DOMAIN, YUQUE_CSRF_COOKIE_NAME);
-  const user = await getCurrentAccount() as any;
+  const user = (await getCurrentAccount()) as any;
   const query = generateQuery({
     attachable_type: attachableType,
     attachable_id: user.id,

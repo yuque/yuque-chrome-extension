@@ -1,35 +1,61 @@
-import {
-  OperateClipEnum,
-  IOperateClipData,
-} from '@/isomorphic/background/clip';
-import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
+import { OperateClipEnum, IOperateClipData } from '@/isomorphic/background/clip';
+import chromeExtension from '@/background/core/chromeExtension';
 import { RequestMessage } from './index';
 
 export async function createClipActionListener(
   request: RequestMessage<IOperateClipData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
-  const { type, isRunningInjectPage } = request.data;
+  const { type, isRunningHostPage } = request.data;
+  const currentTab = await chromeExtension.tabs.getCurrentTab(sender.tab);
   switch (type) {
     case OperateClipEnum.screenOcr: {
-      const res = await Chrome.sendMessageToCurrentTab({
-        action: ContentScriptEvents.ScreenOcr,
-        data: {
-          isRunningInjectPage,
+      chromeExtension.scripting.executeScript(
+        {
+          target: { tabId: currentTab.id as number },
+          args: [{ isRunningHostPage }],
+          func: args => {
+            return window._yuque_ext_app.clipScreenOcr({
+              isRunningHostPage: args.isRunningHostPage,
+            });
+          },
         },
-      });
-      callback(res);
+        res => {
+          callback(res[0].result);
+        },
+      );
       break;
     }
     case OperateClipEnum.selectArea: {
-      const res = await Chrome.sendMessageToCurrentTab({
-        action: ContentScriptEvents.SelectArea,
-        data: {
-          isRunningInjectPage,
+      chromeExtension.scripting.executeScript(
+        {
+          target: { tabId: currentTab.id as number },
+          args: [{ isRunningHostPage }],
+          func: args => {
+            return window._yuque_ext_app.clipSelectArea({
+              isRunningHostPage: args.isRunningHostPage,
+            });
+          },
         },
-      });
-      callback(res);
+        res => {
+          callback(res[0].result);
+        },
+      );
+      break;
+    }
+    case OperateClipEnum.clipPage: {
+      chromeExtension.scripting.executeScript(
+        {
+          target: { tabId: currentTab?.id as number },
+          func: () => {
+            return window._yuque_ext_app.parsePage();
+          },
+        },
+        res => {
+          callback(res[0]?.result);
+        },
+      );
       break;
     }
     default: {

@@ -9,6 +9,7 @@ export const SvgMaps = {
 	'arrow-down': import('@/assets/svg/arrow-down.svg'),
 	'book-logo': import('@/assets/svg/book-logo.svg'),
 	'clip-assistant': import('@/assets/svg/clip-assistant.svg'),
+	'clip-page': import('@/assets/svg/clip-page.svg'),
 	'clipper': import('@/assets/svg/clipper.svg'),
 	'clipping': import('@/assets/svg/clipping.svg'),
 	'close-circle': import('@/assets/svg/close-circle.svg'),
@@ -28,3 +29,4 @@ export const SvgMaps = {
 	'yuque-logo': import('@/assets/svg/yuque-logo.svg'),
 	'yuque-logo1': import('@/assets/svg/yuque-logo1.svg'),
 };
+

@@ -1,8 +1,5 @@
 import { levitateConfigManager } from '@/background/core/configManager/levitate';
-import {
-  IOperateConfigManagerData,
-  OperateConfigManagerEnum,
-} from '@/isomorphic/background/configManager';
+import { IOperateConfigManagerData, OperateConfigManagerEnum } from '@/isomorphic/background/configManager';
 import { wordMarkConfigManager } from '../core/configManager/wordMark';
 import { clipConfigManager } from '../core/configManager/clip';
 import { RequestMessage } from './index';
@@ -16,6 +13,7 @@ const managerMap = {
 export async function createManagerConfigActionListener(
   request: RequestMessage<IOperateConfigManagerData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
   const { type, value, key, managerType, option = {} } = request.data;
   const manage = managerMap[managerType];

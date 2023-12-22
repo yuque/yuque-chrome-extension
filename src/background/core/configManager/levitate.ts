@@ -1,18 +1,13 @@
-import Chrome from '@/background/core/chrome';
+import Chrome from '@/background/core/chromeExtension';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
-import {
-  defaultLevitateConfig,
-  ILevitateConfig,
-  LevitateConfigKey,
-} from '@/isomorphic/constant/levitate';
+import { defaultLevitateConfig, ILevitateConfig, LevitateConfigKey } from '@/isomorphic/constant/levitate';
 import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { STORAGE_KEYS } from '@/config';
 import { storage } from '@/isomorphic/storage';
 
 class LevitateConfigManager {
   async get() {
-    const config: ILevitateConfig =
-      (await storage.get(STORAGE_KEYS.SETTINGS.LEVITATE_BALL_CONFIG)) || {};
+    const config: ILevitateConfig = (await storage.get(STORAGE_KEYS.SETTINGS.LEVITATE_BALL_CONFIG)) || {};
 
     // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
     for (const _key of Object.keys(defaultLevitateConfig)) {

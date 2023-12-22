@@ -38,7 +38,7 @@
         "lake-editor-icon.js",
         "react.production.min.js",
         "react-dom.production.min.js",
-        "yuque-transform-script.js"
+        "inject-content-script.js"
       ],
       "matches": [
         "<all_urls>",
@@ -67,7 +67,7 @@
     "sidePanel"
   ],
   "side_panel": {
-     "default_path": "sidePanel.html"
+    "default_path": "sidePanel.html"
   },
   "commands": {
     "_execute_action": {
@@ -82,8 +82,8 @@
     "startOcr": {
       "description": "OCR 提取"
     },
-    "collectLink": {
-      "description": "收藏链接"
+    "clipPage": {
+      "description": "全文剪藏"
     }
   }
 }

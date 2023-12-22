@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import classnames from 'classnames';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
-import { transformDOM } from '@/core/transform-dom';
+import { useEnterShortcut } from '@/hooks/useEnterShortCut';
+import { parseDom } from '@/core/parseDom';
 import { __i18n } from '@/isomorphic/i18n';
 import styles from './app.module.less';
-import { useEnterShortcut } from '@/hooks/useEnterShortCut';
 
 type Rect = Pick<DOMRect, 'width' | 'height' | 'left' | 'top'>;
 
@@ -26,9 +26,8 @@ function App(props: IAppProps) {
   const onSave = useCallback(async () => {
     setSaving(true);
     const selections = targetListRef.current.filter(item => item) || [];
-    const selectAreaElements = await transformDOM(selections);
-    const HTMLs = Array.from(selectAreaElements);
-    props.onSelectAreaSuccess(HTMLs.join(''));
+    const selectAreaElements = await parseDom.parseDom(selections);
+    props.onSelectAreaSuccess(selectAreaElements.join(''));
   }, []);
 
   useEnterShortcut({

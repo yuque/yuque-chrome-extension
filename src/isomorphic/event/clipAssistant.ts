@@ -15,7 +15,5 @@ export enum ClipAssistantMessageActions {
    */
   ready = 'ready',
   addContent = 'addContent',
-  startSelectArea = 'startSelectArea',
   startScreenOcr = 'startScreenOcr',
-  startCollectLink = 'startCollectLink',
 }
