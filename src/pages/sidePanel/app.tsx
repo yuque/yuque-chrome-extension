@@ -26,7 +26,7 @@ declare const Tracert: any;
 const MiniWidth = 416;
 
 function App() {
-  const [sidePanelIsReady, setSidePanelIsReady] = useState(true);
+  const [sidePanelIsReady, setSidePanelIsReady] = useState(false);
   const { forceUpdate } = useForceUpdate();
   const disableRef = useRef(window.innerWidth < MiniWidth);
 

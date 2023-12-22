@@ -174,7 +174,6 @@ function ClipContent() {
 
   const onClipPage = async () => {
     const html = await backgroundBridge.clip.clipPage();
-    console.log(html);
     await addLinkWhenEmpty();
     editorRef.current?.appendContent(html);
     editorRef.current?.insertBreakLine();
@@ -263,37 +262,23 @@ function ClipContent() {
   }, [selectSavePosition]);
 
   useEffect(() => {
-    const onStartSelectArea = () => {
-      const div = document.querySelector(`#${ClipSelectAreaId}`);
-      (div as HTMLDivElement)?.click();
-    };
     const onStartScreenOcr = () => {
       const div = document.querySelector(`#${ClipScreenOcrId}`);
       (div as HTMLDivElement)?.click();
     };
-    const onStartCollectLink = () => {
-      const div = document.querySelector(`#${ClipCollectLinkId}`);
-      (div as HTMLDivElement)?.click();
-    };
+
     const onMessage = (e: any) => {
       if (e.data.key !== ClipAssistantMessageKey) {
         return;
       }
       switch (e.data.action) {
         case ClipAssistantMessageActions.addContent: {
+          addLinkWhenEmpty();
           editorRef.current?.appendContent(e.data?.data);
-          break;
-        }
-        case ClipAssistantMessageActions.startSelectArea: {
-          onStartSelectArea();
           break;
         }
         case ClipAssistantMessageActions.startScreenOcr: {
           onStartScreenOcr();
-          break;
-        }
-        case ClipAssistantMessageActions.startCollectLink: {
-          onStartCollectLink();
           break;
         }
         default: {
