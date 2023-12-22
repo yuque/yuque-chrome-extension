@@ -1,5 +1,6 @@
 @import '~@/styles/parameters.less';
 
+// 侧边栏样式
 .sidePanelWrapper {
   position: fixed;
   right: 0;
@@ -30,3 +31,29 @@
     }
   }
 }
+
+// 全局 message 样式
+.showMessageContainer {
+  .showMessageWrapper {
+    display: flex;
+    font-size: @font-size;
+
+    .showMessageText {
+      font-size: @font-size;
+    }
+
+    .showMessageHref {
+      color: @link-color;
+      outline: none;
+      text-decoration: none;
+      margin-left: 8px;
+    }
+  }
+
+  :global {
+    .yuque-chrome-extension-message-custom-content {
+      display: inline-flex;
+    }
+  }
+}
+

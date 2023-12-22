@@ -44,8 +44,8 @@ function Shortcut() {
             <ShortcutItem defaultShortcut={shortcutMap.startOcr} readonly />
           </div>
           <div className={styles.configItem}>
-            <div className={styles.desc}>{__i18n('收藏链接')}</div>
-            <ShortcutItem defaultShortcut={shortcutMap.collectLink} readonly />
+            <div className={styles.desc}>{__i18n('全文剪藏')}</div>
+            <ShortcutItem defaultShortcut={shortcutMap.clipPage} readonly />
           </div>
         </div>
       </div>

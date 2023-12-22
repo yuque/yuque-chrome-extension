@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Chrome from '@/core/chrome';
 
 async function fetchAndParseXML(updateUrl: string): Promise<string | null> {
   const response = await fetch(
@@ -16,9 +15,7 @@ async function fetchAndParseXML(updateUrl: string): Promise<string | null> {
   const root = xml.documentElement;
 
   // @ts-ignore
-  const version = root
-    .getElementsByTagName('updatecheck')[0]
-    ?.getAttribute?.('version');
+  const version = root.getElementsByTagName('updatecheck')[0]?.getAttribute?.('version');
   return version;
 }
 
@@ -36,7 +33,7 @@ export function useCheckVersion(): string | null {
   };
 
   useEffect(() => {
-    const manifest = Chrome.runtime.getManifest();
+    const manifest = chrome.runtime.getManifest();
     if (process.env.NODE_ENV !== 'production') {
       console.log('update_url: %s', manifest?.update_url);
     }

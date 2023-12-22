@@ -26,10 +26,6 @@ import {
   ClipAssistantMessageKey,
   ClipAssistantMessageActions,
 } from '@/isomorphic/event/clipAssistant';
-import {
-  ContentScriptMessageActions,
-  ContentScriptMessageKey,
-} from '@/isomorphic/event/contentScript';
 import Env from '@/isomorphic/env';
 import { IClipConfig } from '@/isomorphic/constant/clip';
 import LarkIcon from '@/components/LarkIcon';
@@ -83,18 +79,11 @@ function ClipContent() {
       link: { text: string; href: string },
     ) => {
       if (Env.isRunningHostPage) {
-        window.parent.postMessage(
-          {
-            key: ContentScriptMessageKey,
-            action: ContentScriptMessageActions.ShowMessage,
-            data: {
-              text,
-              type: 'success',
-              link,
-            },
-          },
-          '*',
-        );
+        backgroundBridge.tab.showMessage({
+          text,
+          type: 'success',
+          link,
+        });
         return;
       }
       message.success(

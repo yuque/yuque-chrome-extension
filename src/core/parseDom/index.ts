@@ -13,12 +13,12 @@ class ParseDom {
   }
 
   async parseDom(domArray: Element[]) {
-    const result: Array<string> = [];
+    let result: Array<string> = [];
     for (const dom of domArray) {
       if (this.isYuqueContent(dom)) {
         try {
           const htmlArray = await this.parsePageYuqueContent(dom);
-          result.push(htmlArray[0]);
+          result = result.concat(htmlArray);
           continue;
         } catch (error) {
           //

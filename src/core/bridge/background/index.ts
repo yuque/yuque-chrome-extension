@@ -1,4 +1,3 @@
-import Chrome from '@/core/chrome';
 import { MapT, OneArgFunctionT } from '@/common/declare';
 import { createStorageBridge } from './stroge';
 import { createUserBridge } from './user';
@@ -20,21 +19,15 @@ export interface IBridgeError {
 
 type IBridgeCallback = (res: any) => void;
 
-export type ICallBridgeImpl = (
-  bridgeName: string,
-  params?: IBridgeParams,
-  callback?: IBridgeCallback,
-) => void;
+export type ICallBridgeImpl = (bridgeName: string, params?: IBridgeParams, callback?: IBridgeCallback) => void;
 
-export function callBackgroundBridge(
-  bridgeName: string,
-  data?: MapT<any>,
-  callback?: OneArgFunctionT<any>,
-) {
-  callback = callback || function() {
-    // ignore
-  };
-  Chrome.runtime.sendMessage(
+export function callBackgroundBridge(bridgeName: string, data?: MapT<any>, callback?: OneArgFunctionT<any>) {
+  callback =
+    callback ||
+    function () {
+      // ignore
+    };
+  chrome.runtime.sendMessage(
     {
       action: bridgeName,
       data,

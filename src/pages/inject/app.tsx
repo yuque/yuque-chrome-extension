@@ -2,18 +2,30 @@ import React, { useEffect, useRef, useState, createRef, useImperativeHandle, use
 import { createRoot } from 'react-dom/client';
 import classnames from 'classnames';
 import { STORAGE_KEYS } from '@/config';
-import DragBar from '@/components/DragBar';
 import { backgroundBridge } from '@/core/bridge/background';
 import { ClipAssistantMessageActions, ClipAssistantMessageKey } from '@/isomorphic/event/clipAssistant';
 import { SidePanelMessageActions, SidePanelMessageKey } from '@/isomorphic/event/sidePanel';
+import DragBar from '@/components/DragBar';
+import WordMarkLayout from '@/components/WordMarkLayout';
+import WordMarkApp from './WordMark';
 import LevitateBallApp from './LevitateBall';
-import InjectLayout from './components/InjectLayout';
+import InjectLayout, { useInjectContent } from './components/InjectLayout';
 import styles from './app.module.less';
 
 export interface ContentScriptAppRef {
   toggleSidePanel: (visible?: boolean) => void;
   addContentToClipAssistant: (html: string) => Promise<void>;
   sendMessageToClipAssistant: (action: ClipAssistantMessageActions, data?: any) => Promise<void>;
+  showMessage: (config: ShowMessageConfig) => void;
+}
+
+export interface ShowMessageConfig {
+  type: 'error' | 'success';
+  text: string;
+  link?: {
+    text: string;
+    href: string;
+  };
 }
 
 const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
@@ -22,6 +34,7 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
   const sidePanelIframe = useRef<HTMLIFrameElement>(null);
   const [needLoadSidePanel, setNeedLoadSidePanel] = useState(true);
   const isUsedSidePanelRef = useRef(false);
+  const { message } = useInjectContent();
   const sidePanelPromiseRef = useRef(
     new Promise(resolve => {
       const onMessage = (e: MessageEvent<any>) => {
@@ -46,6 +59,29 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
       },
       '*',
     );
+  }, []);
+
+  const showMessage = useCallback((config: ShowMessageConfig) => {
+    const { text, link, type } = config;
+    const content = (
+      <span className={styles.showMessageWrapper}>
+        <span className={styles.showMessageText}>{text}</span>
+        {!!link && (
+          <a
+            target="_blank"
+            href={link.href}
+            className={styles.showMessageHref}
+          >
+            {link.text}
+          </a>
+        )}
+      </span>
+    );
+    message.open({
+      type,
+      content,
+      className: styles.showMessageContainer,
+    });
   }, []);
 
   const toggleSidePanel = useCallback((visible?: boolean) => {
@@ -83,6 +119,7 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
     toggleSidePanel,
     addContentToClipAssistant,
     sendMessageToClipAssistant,
+    showMessage,
   }));
 
   useEffect(() => {
@@ -112,7 +149,7 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
   }, []);
 
   return (
-    <InjectLayout>
+    <>
       <DragBar
         minWidth={418}
         maxWidth={window.innerWidth}
@@ -138,7 +175,10 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
         </div>
       </DragBar>
       <LevitateBallApp />
-    </InjectLayout>
+      <WordMarkLayout>
+        <WordMarkApp />
+      </WordMarkLayout>
+    </>
   );
 });
 
@@ -146,7 +186,11 @@ export function createContentScriptApp() {
   const div = document.createElement('div');
   const contentScriptRef = createRef<ContentScriptAppRef>();
   const root = createRoot(div);
-  root.render(<App ref={contentScriptRef} />);
+  root.render(
+    <InjectLayout>
+      <App ref={contentScriptRef} />
+    </InjectLayout>,
+  );
   window._yuque_ext_app.rootContainer.appendChild(div);
   return {
     ref: contentScriptRef,
