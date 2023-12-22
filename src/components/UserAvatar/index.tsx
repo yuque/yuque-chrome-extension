@@ -32,7 +32,7 @@ const UserAvatar = () => {
         onLogout?.();
         break;
       case 'feedback':
-        window.open(LinkHelper.feedback, '_blank');
+        window.open(LinkHelper.feedback(), '_blank');
         break;
       case 'useHelp': {
         window.open(LinkHelper.helpDoc, '_blank');

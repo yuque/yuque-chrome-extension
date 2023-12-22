@@ -6,6 +6,7 @@ import { RequestMessage } from './index';
 export async function createRequestActionListener(
   request: RequestMessage<IOperateRequestData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
   const { url, config, options = {} } = request.data;
 

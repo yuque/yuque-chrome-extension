@@ -1,17 +1,12 @@
-import Chrome from '@/background/core/chrome';
+import Chrome from '@/background/core/chromeExtension';
 import { STORAGE_KEYS } from '@/config';
-import {
-  defaultClipConfig,
-  IClipConfig,
-  ClipConfigKey,
-} from '@/isomorphic/constant/clip';
+import { defaultClipConfig, IClipConfig, ClipConfigKey } from '@/isomorphic/constant/clip';
 import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { storage } from '@/isomorphic/storage';
 
 class ClipConfigManager {
   async get() {
-    const config: IClipConfig =
-      (await storage.get(STORAGE_KEYS.SETTINGS.CLIP_CONFIG)) || {};
+    const config: IClipConfig = (await storage.get(STORAGE_KEYS.SETTINGS.CLIP_CONFIG)) || {};
 
     // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
     for (const _key of Object.keys(defaultClipConfig)) {

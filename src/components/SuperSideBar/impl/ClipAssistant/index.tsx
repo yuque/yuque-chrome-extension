@@ -30,8 +30,8 @@ import {
   ContentScriptMessageActions,
   ContentScriptMessageKey,
 } from '@/isomorphic/event/contentScript';
+import Env from '@/isomorphic/env';
 import { IClipConfig } from '@/isomorphic/constant/clip';
-import { isRunningInjectPage } from '@/core/uitl';
 import LarkIcon from '@/components/LarkIcon';
 import { superSidebar } from '@/components/SuperSideBar/index';
 import AddTagButton from './component/AddTagButton';
@@ -82,7 +82,7 @@ function ClipContent() {
       text: string,
       link: { text: string; href: string },
     ) => {
-      if (isRunningInjectPage) {
+      if (Env.isRunningHostPage) {
         window.parent.postMessage(
           {
             key: ContentScriptMessageKey,
@@ -135,7 +135,7 @@ function ClipContent() {
           text: __i18n('立即查看'),
         });
       }
-      if (isRunningInjectPage) {
+      if (Env.isRunningHostPage) {
         backgroundBridge.sidePanel.close();
       }
       editor.setContent('');
@@ -170,6 +170,14 @@ function ClipContent() {
     editorRef.current?.appendContent(quote);
     // 回到文档开头
     editorRef.current?.focusToStart();
+  };
+
+  const onClipPage = async () => {
+    const html = await backgroundBridge.clip.clipPage();
+    console.log(html);
+    await addLinkWhenEmpty();
+    editorRef.current?.appendContent(html);
+    editorRef.current?.insertBreakLine();
   };
 
   const addLinkWhenEmpty = async () => {
@@ -314,7 +322,7 @@ function ClipContent() {
       {renderLoading()}
       <div className={styles.headerWrapper}>
         <Tooltip
-          title={isRunningInjectPage ? shortcutMap.selectArea : ''}
+          title={Env.isRunningHostPage ? shortcutMap.selectArea : ''}
           getPopupContainer={node => node}
         >
           <div
@@ -329,7 +337,7 @@ function ClipContent() {
           </div>
         </Tooltip>
         <Tooltip
-          title={isRunningInjectPage ? shortcutMap.startOcr : ''}
+          title={Env.isRunningHostPage ? shortcutMap.startOcr : ''}
           getPopupContainer={node => node}
         >
           <div
@@ -345,19 +353,19 @@ function ClipContent() {
         </Tooltip>
 
         <Tooltip
-          title={isRunningInjectPage ? shortcutMap.collectLink : ''}
+          title={Env.isRunningHostPage ? shortcutMap.clipPage : ''}
           placement="top"
           getPopupContainer={node => node}
         >
           <div
             className={styles.headerItem}
-            onClick={onCollectLink}
+            onClick={onClipPage}
             id={ClipCollectLinkId}
             data-aspm-click="c340502.d391175"
-            data-aspm-desc="链接收藏"
+            data-aspm-desc="全文剪藏"
           >
-            <LarkIcon className={styles.icon} name="collect-link" />
-            <span>{__i18n('链接收藏')}</span>
+            <LarkIcon className={styles.icon} name="clip-page" />
+            <span>{__i18n('全文剪藏')}</span>
           </div>
         </Tooltip>
       </div>

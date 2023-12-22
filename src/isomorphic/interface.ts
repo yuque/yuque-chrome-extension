@@ -7,7 +7,7 @@ export interface IUser {
 }
 
 export interface IShortcutMap {
-  collectLink?: string;
+  clipPage?: string;
   openSidePanel?: string;
   selectArea?: string;
   startOcr?: string;

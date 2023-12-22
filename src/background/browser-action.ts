@@ -1,33 +1,29 @@
-import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
-
-function remindToRefreshPage(tabId: number) {
-  const msg = __i18n('你需要重新加载该页面才能剪藏。请重新加载页面后再试一次');
-  Chrome.scripting.executeScript({
-    target: { tabId },
-    args: [{ msg }],
-    func: (args: { msg: string }) => {
-      window.alert(args.msg); // eslint-disable-line
-    },
-  });
-}
+import chromeExtension from './core/chromeExtension';
 
 export function listenBrowserActionEvent() {
-  Chrome.action.onClicked.addListener(tab => {
-    Chrome.tabs.sendMessage(
-      tab.id as number,
+  chrome.action.onClicked.addListener(async tab => {
+    const currentTab = await chromeExtension.tabs.getCurrentTab(tab);
+    chromeExtension.scripting.executeScript(
       {
-        action: ContentScriptEvents.ToggleSidePanel,
+        target: { tabId: currentTab?.id as number },
+        func: () => {
+          try {
+            return window._yuque_ext_app.toggleSidePanel();
+          } catch (e) {
+            return { error: e };
+          }
+        },
       },
-      () => {
-        /**
-         * 插件更新后会断链接，需要提醒用户手动刷新下页面
-         */
-        if (
-          Chrome.runtime.lastError?.message ===
-          'Could not establish connection. Receiving end does not exist.'
-        ) {
-          remindToRefreshPage(tab.id as number);
+      res => {
+        if (res[0]?.result?.error) {
+          const msg = __i18n('你需要重新加载该页面才能剪藏。请重新加载页面后再试一次');
+          chromeExtension.scripting.executeScript({
+            target: { tabId: currentTab?.id as number },
+            args: [{ msg }],
+            func: (args: { msg: string }) => {
+              window.alert(args.msg); // eslint-disable-line
+            },
+          });
         }
       },
     );

@@ -3,6 +3,7 @@ import Modal from 'antd/lib/modal';
 import { Button, message } from 'antd/lib';
 
 import './modal-ocr.less';
+import LarkIcon from '../LarkIcon';
 
 export interface IOCRModalProps {
   src: string;
@@ -72,8 +73,6 @@ export default function OCRModal(props: IOCRModalProps) {
     ),
   );
 
-  const Icon = props.Icon;
-
   return (
     <div className="ne-ocr-split">
       <div className="ne-ocr-text-container">
@@ -96,7 +95,7 @@ export default function OCRModal(props: IOCRModalProps) {
                 }
               }}
             >
-              <Icon type="action-copy" size={16} />
+              <LarkIcon name="action-copy" size={16} />
               复制全文
             </Button>
             {props.onInsertText && (
@@ -107,7 +106,6 @@ export default function OCRModal(props: IOCRModalProps) {
                 }}
                 className="ne-ocr-insert"
               >
-                <Icon type="import-x" size={16} />
                 插入文中
               </Button>
             )}

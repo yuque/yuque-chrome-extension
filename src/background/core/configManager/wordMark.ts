@@ -1,9 +1,5 @@
-import {
-  IWordMarkConfig,
-  WordMarkConfigKey,
-  defaultWordMarkConfig,
-} from '@/isomorphic/constant/wordMark';
-import Chrome from '@/background/core/chrome';
+import { IWordMarkConfig, WordMarkConfigKey, defaultWordMarkConfig } from '@/isomorphic/constant/wordMark';
+import chromeExtension from '@/background/core/chromeExtension';
 import { IConfigManagerOption } from '@/isomorphic/background/configManager';
 import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
 import { STORAGE_KEYS } from '@/config';
@@ -16,36 +12,29 @@ class WordMarkConfigManager {
     return this.transformConfig(config);
   }
 
-  async update(
-    key: WordMarkConfigKey,
-    value: any,
-    option?: IConfigManagerOption,
-  ) {
+  async update(key: WordMarkConfigKey, value: any, option?: IConfigManagerOption) {
     const config = await this.getStorageConfig();
     const result: IWordMarkConfig = {
       ...config,
       [key]: value,
     };
-    await Chrome.storage.local.set({
+    await chromeExtension.storage.local.set({
       [STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG]: result,
     });
     this.noticeWebPage(result, option);
     return result;
   }
 
-  private noticeWebPage(
-    config: IWordMarkConfig,
-    option?: IConfigManagerOption,
-  ) {
+  private noticeWebPage(config: IWordMarkConfig, option?: IConfigManagerOption) {
     const { notice = false } = option || {};
     if (!notice) {
       return;
     }
     // 异步通知页面 wordMarkConfig 发生了改变
-    Chrome.tabs.query({ status: 'complete' }, tabs => {
+    chromeExtension.tabs.query({ status: 'complete' }, tabs => {
       for (const tab of tabs) {
         if (tab.id) {
-          Chrome.tabs.sendMessage(tab.id, {
+          chromeExtension.tabs.sendMessage(tab.id, {
             action: ContentScriptEvents.WordMarkConfigChange,
             data: this.transformConfig(config),
           });
@@ -55,8 +44,7 @@ class WordMarkConfigManager {
   }
 
   private async getStorageConfig() {
-    const config: IWordMarkConfig =
-      (await storage.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG)) || {};
+    const config: IWordMarkConfig = (await storage.get(STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG)) || {};
 
     // 做一次 config 的合并，保证获取时一定包含 config 中的每一个元素
     for (const _key of Object.keys(defaultWordMarkConfig)) {
@@ -69,10 +57,7 @@ class WordMarkConfigManager {
       // 由于历史数据可能被写入 string 或者 string[] 如果判断出是这种数据的，将内容置空
       if (key === 'disableUrl') {
         const tempValue = config[key];
-        if (
-          typeof tempValue === 'string' ||
-          typeof tempValue?.[0] === 'string'
-        ) {
+        if (typeof tempValue === 'string' || typeof tempValue?.[0] === 'string') {
           config[key] = [];
         }
       }
@@ -81,11 +66,7 @@ class WordMarkConfigManager {
        * 当缓存中的 toolbars 长度和默认不一致时，说明扩展了 toolbars
        * 然后将新增的 toolbars 扩展到缓存的最后
        */
-      if (
-        key === 'toolbars' &&
-        value &&
-        config[key].length !== defaultWordMarkConfig.toolbars.length
-      ) {
+      if (key === 'toolbars' && value && config[key].length !== defaultWordMarkConfig.toolbars.length) {
         const newAddToolbars: WordMarkOptionTypeEnum[] = [];
         for (const item of defaultWordMarkConfig.toolbars) {
           if (!config[key].includes(item)) {
@@ -105,12 +86,8 @@ class WordMarkConfigManager {
 
     const result = {
       ...config,
-      filterInnerPinList: config.innerPinList.filter(
-        item => !disableFunction.includes(item),
-      ),
-      filterToolbars: config.toolbars.filter(
-        item => !disableFunction.includes(item),
-      ),
+      filterInnerPinList: config.innerPinList.filter(item => !disableFunction.includes(item)),
+      filterToolbars: config.toolbars.filter(item => !disableFunction.includes(item)),
     };
     return result;
   }

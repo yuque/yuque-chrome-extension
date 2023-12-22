@@ -6,7 +6,6 @@ import {
   SidePanelMessageActions,
   SidePanelMessageKey,
 } from '@/isomorphic/event/sidePanel';
-import Chrome from '@/core/chrome';
 import { backgroundBridge } from '@/core/bridge/background';
 import {
   EXTENSION_ID,
@@ -17,7 +16,7 @@ import {
   VERSION,
 } from '@/config';
 import { IUser } from '@/isomorphic/interface';
-import { isRunningInjectPage } from '@/core/uitl';
+import Env from '@/isomorphic/env';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import styles from './app.module.less';
 import '@/styles/global.less';
@@ -27,12 +26,12 @@ declare const Tracert: any;
 const MiniWidth = 416;
 
 function App() {
-  const [sidePanelIsReady, setSidePanelIsReady] = useState(false);
+  const [sidePanelIsReady, setSidePanelIsReady] = useState(true);
   const { forceUpdate } = useForceUpdate();
   const disableRef = useRef(window.innerWidth < MiniWidth);
 
   useEffect(() => {
-    if (isRunningInjectPage) {
+    if (Env.isRunningHostPage) {
       return;
     }
     const onResize = () => {
@@ -51,7 +50,7 @@ function App() {
   useEffect(() => {
     if (sidePanelIsReady) {
       const script = document.createElement('script');
-      script.src = Chrome.runtime.getURL('tracert_a385.js');
+      script.src = chrome.runtime.getURL('tracert_a385.js');
       document.body.appendChild(script);
       script.onload = () => {
         backgroundBridge.tab.getCurrent().then(async tabInfo => {
@@ -64,7 +63,7 @@ function App() {
             role_id: (info as IUser)?.id,
             mdata: {
               [REQUEST_HEADER_VERSION]: VERSION,
-              [EXTENSION_ID]: Chrome.runtime.id,
+              [EXTENSION_ID]: chrome.runtime.id,
               [REFERER_URL]: tabInfo?.url,
             },
           });
@@ -86,7 +85,7 @@ function App() {
           break;
       }
     };
-    if (!isRunningInjectPage) {
+    if (!Env.isRunningHostPage) {
       setSidePanelIsReady(true);
       return;
     }
@@ -102,7 +101,7 @@ function App() {
             {sidePanelIsReady && <SuperSideBarContainer />}
           </AccountLayout>
         </div>
-        {disableRef.current && !isRunningInjectPage && (
+        {disableRef.current && !Env.isRunningHostPage && (
           <div className={styles.disableWrapper}>
             <div className={styles.disableModal}>
               <img src="https://mdn.alipayobjects.com/huamei_0prmtq/afts/img/A*MQcdSY9buAgAAAAAAAAAAAAADvuFAQ/original" />

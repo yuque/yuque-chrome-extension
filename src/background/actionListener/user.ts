@@ -1,9 +1,6 @@
 import { pick } from 'lodash';
-import Chrome from '@/background/core/chrome';
-import {
-  IOperateUserData,
-  OperateUserEnum,
-} from '@/isomorphic/background/user';
+import Chrome from '@/background/core/chromeExtension';
+import { IOperateUserData, OperateUserEnum } from '@/isomorphic/background/user';
 import { IUser } from '@/isomorphic/interface';
 import { storage } from '@/isomorphic/storage';
 import requestFn from '@/background/core/request';
@@ -60,6 +57,7 @@ const removeWindow = (windowId: number) => {
 export async function createUserActionListener(
   request: RequestMessage<IOperateUserData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
   const { type } = request.data;
   switch (type) {
@@ -76,12 +74,7 @@ export async function createUserActionListener(
         });
         if (status === 200) {
           const accountInfo = (data as any).data as IUser;
-          const value = pick(accountInfo, [
-            'id',
-            'login',
-            'name',
-            'avatar_url',
-          ]);
+          const value = pick(accountInfo, ['id', 'login', 'name', 'avatar_url']);
           const newValue = {
             ...value,
             login_at: Date.now(),

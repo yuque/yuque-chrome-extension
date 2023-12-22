@@ -1,6 +1,6 @@
 import { BackgroundEvents } from '@/isomorphic/background';
 import { OperateClipEnum } from '@/isomorphic/background/clip';
-import { isRunningInjectPage } from '@/core/uitl';
+import Env from '@/isomorphic/env';
 import { ICallBridgeImpl } from './index';
 
 export function createClipBridge(impl: ICallBridgeImpl) {
@@ -10,7 +10,7 @@ export function createClipBridge(impl: ICallBridgeImpl) {
         return new Promise(resolve => {
           impl(
             BackgroundEvents.OperateClip,
-            { type: OperateClipEnum.screenOcr, isRunningInjectPage },
+            { type: OperateClipEnum.screenOcr, isRunningHostPage: Env.isRunningHostPage },
             (res: string | null) => {
               resolve(res);
             },
@@ -22,7 +22,19 @@ export function createClipBridge(impl: ICallBridgeImpl) {
         return new Promise(resolve => {
           impl(
             BackgroundEvents.OperateClip,
-            { type: OperateClipEnum.selectArea, isRunningInjectPage },
+            { type: OperateClipEnum.selectArea, isRunningHostPage: Env.isRunningHostPage },
+            (res: string) => {
+              resolve(res);
+            },
+          );
+        });
+      },
+
+      async clipPage(): Promise<string> {
+        return new Promise(resolve => {
+          impl(
+            BackgroundEvents.OperateClip,
+            { type: OperateClipEnum.clipPage, isRunningHostPage: Env.isRunningHostPage },
             (res: string) => {
               resolve(res);
             },

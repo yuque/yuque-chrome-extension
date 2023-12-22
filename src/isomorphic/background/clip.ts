@@ -1,9 +1,10 @@
 export enum OperateClipEnum {
   selectArea = 'selectArea',
   screenOcr = 'screenOcr',
+  clipPage = 'clipPage',
 }
 
 export interface IOperateClipData {
   type: OperateClipEnum;
-  isRunningInjectPage: boolean;
+  isRunningHostPage: boolean;
 }

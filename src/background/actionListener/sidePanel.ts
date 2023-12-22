@@ -1,35 +1,41 @@
-import {
-  OperateSidePanelEnum,
-  IOperateSidePanelData,
-} from '@/isomorphic/background/sidePanel';
-import Chrome from '@/background/core/chrome';
-import { ContentScriptEvents } from '@/isomorphic/event/contentScript';
+import { OperateSidePanelEnum, IOperateSidePanelData } from '@/isomorphic/background/sidePanel';
+import chromeExtension from '../core/chromeExtension';
 import { RequestMessage } from './index';
 
 export async function createSidePanelActionListener(
   request: RequestMessage<IOperateSidePanelData>,
   callback: (params: any) => void,
+  sender: chrome.runtime.MessageSender,
 ) {
   const { type } = request.data;
+  const currentTab = await chromeExtension.tabs.getCurrentTab(sender.tab);
   switch (type) {
     case OperateSidePanelEnum.close: {
-      const res = await Chrome.sendMessageToCurrentTab({
-        action: ContentScriptEvents.ToggleSidePanel,
-        data: {
-          forceVisible: false,
+      chromeExtension.scripting.executeScript(
+        {
+          target: { tabId: currentTab?.id as number },
+          func: () => {
+            return window._yuque_ext_app.toggleSidePanel(false);
+          },
         },
-      });
-      callback(res);
+        res => {
+          callback(res[0]?.result);
+        },
+      );
       break;
     }
     case OperateSidePanelEnum.open: {
-      const res = await Chrome.sendMessageToCurrentTab({
-        action: ContentScriptEvents.ToggleSidePanel,
-        data: {
-          forceVisible: true,
+      chromeExtension.scripting.executeScript(
+        {
+          target: { tabId: currentTab?.id as number },
+          func: () => {
+            return window._yuque_ext_app.toggleSidePanel(true);
+          },
         },
-      });
-      callback(res);
+        res => {
+          callback(res[0]?.result);
+        },
+      );
       break;
     }
     default: {

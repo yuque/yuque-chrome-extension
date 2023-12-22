@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 const rChineseChar = /\p{Script=Han}+/gu;
 
 const blockquoteID = 'yqextensionblockquoteid';
@@ -92,4 +94,10 @@ export async function transformUrlToFile(data: string | File) {
     file = data;
   }
   return file;
+}
+
+export function getMsgId(options: { type: string; id?: number; timestamp?: number }) {
+  const { type, timestamp, id = Date.now() } = options;
+  const uuid = timestamp || uuidv4().replace(/-/g, '').substring(0, 8);
+  return `${type}_${id}_${uuid}`;
 }

@@ -11,5 +11,3 @@ export function findCookieSettingPage() {
   }
   return '';
 }
-export const isRunningInjectPage =
-  typeof window !== 'undefined' && typeof window;

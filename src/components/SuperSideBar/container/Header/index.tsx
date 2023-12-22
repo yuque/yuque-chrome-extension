@@ -3,11 +3,11 @@ import Icon, { CloseOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { STORAGE_KEYS } from '@/config';
 import { __i18n } from '@/isomorphic/i18n';
-import { isRunningInjectPage } from '@/core/uitl';
 import LinkHelper from '@/isomorphic/link-helper';
+import LarkIcon from '@/components/LarkIcon';
+import Env from '@/isomorphic/env';
 import { backgroundBridge } from '@/core/bridge/background';
 import UserAvatar from '@/components/UserAvatar';
-import YuqueLogoSvg from '@/assets/svg/yuque-logo.svg';
 import SettingSvg from '@/assets/svg/setting.svg';
 import HomeSvg from '@/assets/svg/home.svg';
 import styles from './index.module.less';
@@ -47,8 +47,8 @@ function SuperSidebarHeader() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
-        <Icon component={YuqueLogoSvg} className={styles.yuqueIcon} />
-        <span className={styles.title}>{__i18n('语雀')}</span>
+        <LarkIcon className={styles.yuqueIcon} name={'yuque-logo'} />
+        <span className={styles.title}>{Env.isBate ? __i18n('语雀 Beta') : __i18n('语雀')}</span>
       </div>
       <div className={styles.right}>
         <div className={styles.infoWrapper}>
@@ -89,7 +89,7 @@ function SuperSidebarHeader() {
             <UserAvatar />
           </div>
         </div>
-        {isRunningInjectPage && (
+        {Env.isRunningHostPage && (
           <div onClick={closeSidePanel} className={styles.closeWrapper}>
             <CloseOutlined />
           </div>

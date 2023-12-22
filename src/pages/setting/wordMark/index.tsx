@@ -222,7 +222,7 @@ function WordMark() {
           </div>
         </div>
 
-        <a className={styles.more} href={LinkHelper.feedback} target="_blank">
+        <a className={styles.more} href={LinkHelper.feedback()} target="_blank">
           {__i18n('需要更多划词快捷指令？')}
         </a>
       </div>

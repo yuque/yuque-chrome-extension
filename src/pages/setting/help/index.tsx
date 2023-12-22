@@ -15,7 +15,7 @@ function Help() {
         <Icon component={ArrowDownSvg} className={styles.icon} />
       </div>
       <div className={styles.link}>
-        <span onClick={() => window.open(LinkHelper.feedback)}>
+        <span onClick={() => window.open(LinkHelper.feedback())}>
           {__i18n('提交反馈与建议')}
         </span>
         <Icon component={ArrowDownSvg} className={styles.icon} />
