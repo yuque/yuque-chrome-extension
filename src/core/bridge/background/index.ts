@@ -24,7 +24,7 @@ export type ICallBridgeImpl = (bridgeName: string, params?: IBridgeParams, callb
 export function callBackgroundBridge(bridgeName: string, data?: MapT<any>, callback?: OneArgFunctionT<any>) {
   callback =
     callback ||
-    function () {
+    function() {
       // ignore
     };
   chrome.runtime.sendMessage(

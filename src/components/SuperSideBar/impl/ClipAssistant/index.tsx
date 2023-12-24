@@ -7,16 +7,10 @@ import { backgroundBridge } from '@/core/bridge/background';
 import { IStartOcrResult, ocrManager } from '@/core/ocr-manager';
 import { getBookmarkHTMLs, transformUrlToFile } from '@/isomorphic/util';
 import SelectSavePosition from '@/components/SelectSavePosition';
-import {
-  buildParamsForDoc,
-  buildParamsForNote,
-} from '@/components/lake-editor/helper';
+import { buildParamsForDoc, buildParamsForNote } from '@/components/lake-editor/helper';
 import LinkHelper from '@/isomorphic/link-helper';
 import { STORAGE_KEYS } from '@/config';
-import {
-  DefaultSavePosition,
-  ISavePosition,
-} from '@/core/bridge/background/request/mine';
+import { DefaultSavePosition, ISavePosition } from '@/core/bridge/background/request/mine';
 import { ITag } from '@/core/bridge/background/request/tag';
 import useClipShortCut from '@/hooks/useClipShortCut';
 import {
@@ -48,12 +42,9 @@ function ClipContent() {
   const [selectTags, setSelectTags] = useState<ITag[]>([]);
   const [title, setTitle] = useState('');
 
-  const onTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setTitle(e.target.value);
-    },
-    [],
-  );
+  const onTitleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTitle(e.target.value);
+  }, []);
 
   const onLoad = useCallback(() => {
     // iframe 加载完成后触发一个 message
@@ -74,10 +65,7 @@ function ClipContent() {
       return;
     }
 
-    const showSuccessMessage = (
-      text: string,
-      link: { text: string; href: string },
-    ) => {
+    const showSuccessMessage = (text: string, link: { text: string; href: string }) => {
       if (Env.isRunningHostPage) {
         backgroundBridge.tab.showMessage({
           text,
@@ -105,8 +93,8 @@ function ClipContent() {
           ...(await buildParamsForNote(editor)),
           tag_meta_ids: selectTags.map(item => item.id),
         };
-        await backgroundBridge.request.note.create(noteParams);
-        const url = LinkHelper.goMyNote();
+        const result: any = await backgroundBridge.request.note.create(noteParams);
+        const url = LinkHelper.goMyNote(result.data.id);
         showSuccessMessage(__i18n('保存成功！'), {
           href: url,
           text: __i18n('去小记查看'),
@@ -163,27 +151,30 @@ function ClipContent() {
 
   const onClipPage = async () => {
     const html = await backgroundBridge.clip.clipPage();
-    await addLinkWhenEmpty();
+    const isAddLink = await addLinkWhenEmpty();
+    if (!isAddLink) {
+      editorRef.current?.insertBreakLine();
+    }
     editorRef.current?.appendContent(html);
-    editorRef.current?.insertBreakLine();
   };
 
   const addLinkWhenEmpty = async () => {
     if (!editorRef.current?.isEmpty()) {
-      return;
+      return false;
     }
-    const config: IClipConfig = await backgroundBridge.configManager.get(
-      'clip',
-    );
-    if (!config.addLink) return;
+    const config: IClipConfig = await backgroundBridge.configManager.get('clip');
+    if (!config.addLink) return false;
     await onCollectLink();
+    return true;
   };
 
   const onSelectArea = async () => {
     const html = await backgroundBridge.clip.selectArea();
-    await addLinkWhenEmpty();
+    const isAddLink = await addLinkWhenEmpty();
+    if (!isAddLink) {
+      editorRef.current?.insertBreakLine();
+    }
     editorRef.current?.appendContent(html);
-    editorRef.current?.insertBreakLine();
   };
 
   const onScreenOcr = async () => {
@@ -210,10 +201,11 @@ function ClipContent() {
           };
         });
         const text = textArray?.map(item => item.text)?.join('') || '';
-        await addLinkWhenEmpty();
-
+        const isAddLink = await addLinkWhenEmpty();
+        if (!isAddLink) {
+          editorRef.current?.insertBreakLine();
+        }
         editorRef.current?.appendContent(text);
-        editorRef.current?.insertBreakLine();
       }
     } catch (error) {
       console.log('ocr error:', error);
@@ -256,13 +248,16 @@ function ClipContent() {
       (div as HTMLDivElement)?.click();
     };
 
-    const onMessage = (e: any) => {
+    const onMessage = async (e: any) => {
       if (e.data.key !== ClipAssistantMessageKey) {
         return;
       }
       switch (e.data.action) {
         case ClipAssistantMessageActions.addContent: {
-          addLinkWhenEmpty();
+          const isAddLink = await addLinkWhenEmpty();
+          if (!isAddLink) {
+            editorRef.current?.insertBreakLine();
+          }
           editorRef.current?.appendContent(e.data?.data);
           break;
         }

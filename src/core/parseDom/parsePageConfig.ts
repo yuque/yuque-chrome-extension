@@ -1,6 +1,6 @@
 export const parsePageConfig = [
   {
-    url: 'https?:\\\\/\\\\/www\\\\.toutiao\\\\.com\\\\/w\\\\/([a-zA-Z]\\\\/)?[a-zA-Z]\\\\d{10,}',
+    url: 'https?:\\/\\/www\\.toutiao\\.com\\/w\\/([a-zA-Z]\\/)?[a-zA-Z]\\d{10,}',
     include: ['.wtt-content'],
     exclude: [
       '.xgplayer',
@@ -13,12 +13,12 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: 'https?:\\\\/\\\\/www\\\\.toutiao\\\\.com\\\\/article',
+    url: 'https?:\\/\\/www\\.toutiao\\.com\\/article',
     include: ['.article-content'],
     exclude: ['.xgplayer'],
   },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.toutiao\\\\.com\\\\/([a-zA-Z]\\\\/)?[a-zA-Z]\\\\d{10,}',
+    url: '^https?:\\/\\/www\\.toutiao\\.com\\/([a-zA-Z]\\/)?[a-zA-Z]\\d{10,}',
     include: ['.article-content', '.weitoutiao-content'],
     exclude: [
       '#comment-area',
@@ -32,12 +32,12 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/zhuanlan\\\\.zhihu\\\\.com\\\\/p\\\\/',
+    url: '^https?:\\/\\/zhuanlan\\.zhihu\\.com\\/p\\/',
     include: ['article.Post-Main'],
     exclude: ['.Post-Author', '.Post-topicsAndReviewer', '.RichContent-actions', 'img.LinkCard-image', '.Post-Header'],
   },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.zhihu\\\\.com\\\\/question\\\\/\\\\d+',
+    url: '^https?:\\/\\/www\\.zhihu\\.com\\/question\\/\\d+',
     include: ['.QuestionHeader-title', '.ContentItem.AnswerItem', '.List-item'],
     exclude: [
       '.ContentItem-time',
@@ -53,7 +53,7 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/mp\\\\.weixin\\\\.qq\\\\.com\\\\/s',
+    url: '^https?:\\/\\/mp\\.weixin\\.qq\\.com\\/s',
     include: ['.rich_media_wrp', '.js_inner', '#js_common_share_desc'],
     exclude: [
       '.weapp_text_link',
@@ -71,7 +71,7 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/blog\\\\.csdn\\\\.net',
+    url: '^https?:\\/\\/blog\\.csdn\\.net',
     include: ['.blog-content-box', '.hljs-comment'],
     exclude: [
       '.dp-highlighter.bg_cpp .bar',
@@ -83,20 +83,20 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/blog\\\\.csdn\\\\.net',
+    url: '^https?:\\/\\/blog\\.csdn\\.net',
     include: ['.blog-content-box', '.hljs-comment'],
     exclude: ['.dp-highlighter.bg_cpp .bar'],
   },
-  { url: '^https?:\\\\/\\\\/new\\\\.qq\\\\.com', include: ['.content-article'], exclude: ['.videoPlayerWrap'] },
-  { url: '^https?:\\\\/\\\\/applet-data\\\\.web\\\\.bytedance\\\\.net', include: ['.app-main'], exclude: [] },
-  { url: '^https?:\\\\/\\\\/blog\\\\.whatsapp\\\\.com', include: ['._9t2d'], exclude: [] },
+  { url: '^https?:\\/\\/new\\.qq\\.com', include: ['.content-article'], exclude: ['.videoPlayerWrap'] },
+  { url: '^https?:\\/\\/applet-data\\.web\\.bytedance\\.net', include: ['.app-main'], exclude: [] },
+  { url: '^https?:\\/\\/blog\\.whatsapp\\.com', include: ['._9t2d'], exclude: [] },
   {
-    url: '^https?:\\\\/\\\\/gist\\\\.github\\\\.com',
+    url: '^https?:\\/\\/gist\\.github\\.com',
     include: ['.js-gist-file-update-container'],
     exclude: ['.px-0'],
   },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.lennysnewsletter\\\\.com\\\\/p',
+    url: '^https?:\\/\\/www\\.lennysnewsletter\\.com\\/p',
     include: ['.single-post-container', '.header-with-anchor-widget', 'h1', 'h2', 'h3', 'h4'],
     exclude: [
       '.meta-subheader',
@@ -115,27 +115,27 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.larksuite\\\\.com\\\\/hc\\\\/',
+    url: '^https?:\\/\\/www\\.larksuite\\.com\\/hc\\/',
     include: ['#js-hc-breadcrumb  ~ div'],
     exclude: ['.image-wrapper-sizer'],
   },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.feishu\\\\.cn\\\\/hc\\\\/',
+    url: '^https?:\\/\\/www\\.feishu\\.cn\\/hc\\/',
     include: ['#js-hc-breadcrumb ~ div'],
     exclude: ['.image-wrapper-sizer'],
   },
   {
-    url: '^https?:\\\\/\\\\/baijiahao\\\\.baidu\\\\.com\\\\/s',
+    url: '^https?:\\/\\/baijiahao\\.baidu\\.com\\/s',
     include: ['#app > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)'],
     exclude: ['div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)', '#commentModule'],
   },
   {
-    url: '^https?:\\\\/\\\\/mbd\\\\.baidu\\\\.com\\\\/newspage\\\\/data\\\\/landingsuper?',
+    url: '^https?:\\/\\/mbd\\.baidu\\.com\\/newspage\\/data\\/landingsuper?',
     include: ['#app > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)'],
     exclude: ['div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)', '#commentModule'],
   },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.cnbc\\\\.com\\\\/\\\\d+\\\\/',
+    url: '^https?:\\/\\/www\\.cnbc\\.com\\/\\d+\\/',
     include: ['.PageBuilder-pageWrapper'],
     exclude: [
       '.ArticleHeader-headerContentContainer',
@@ -154,7 +154,7 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/nypost\\\\.com\\\\/\\\\d+\\\\/',
+    url: '^https?:\\/\\/nypost\\.com\\/\\d+\\/',
     include: ['.single--article'],
     exclude: [
       '.sharedaddy',
@@ -170,7 +170,7 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/time\\\\.geekbang\\\\.org\\\\/column\\\\/article\\\\/',
+    url: '^https?:\\/\\/time\\.geekbang\\.org\\/column\\/article\\/',
     include: ['.Index_contentWidth_3_1Sf'],
     exclude: [
       '.recommend-read',
@@ -186,7 +186,7 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/dariusforoux\\\\.com',
+    url: '^https?:\\/\\/dariusforoux\\.com',
     include: ['#content'],
     exclude: [
       'form',
@@ -199,7 +199,7 @@ export const parsePageConfig = [
     ],
   },
   {
-    url: '^https?:\\\\/\\\\/cloud\\\\.google\\\\.com\\\\/blog\\\\/',
+    url: '^https?:\\/\\/cloud\\.google\\.com\\/blog\\/',
     include: ['#jump-content', 'c-wiz'],
     exclude: [
       'article-sticky-share-block',
@@ -215,25 +215,25 @@ export const parsePageConfig = [
       '.glue-modal',
     ],
   },
-  { url: '^https?:\\\\/\\\\/medium\\\\.com\\\\/$', include: ['article'], exclude: [] },
+  { url: '^https?:\\/\\/medium\\.com\\/$', include: ['article'], exclude: [] },
   {
-    url: '^https?:\\\\/\\\\/medium\\\\.com\\\\/',
+    url: '^https?:\\/\\/medium\\.com\\/',
     include: ['section', 'main'],
     exclude: ['header', 'footer', 'button'],
   },
-  { url: '^https?:\\\\/\\\\/([a-zA-Z0-9]+\\\\.)medium\\\\.com\\\\/([^about])', include: ['section'], exclude: [] },
-  { url: '^https?:\\\\/\\\\/([a-zA-Z0-9]+\\\\.)medium\\\\.com\\\\/about', include: ['main'], exclude: [] },
-  { url: '^https?:\\\\/\\\\/([a-zA-Z0-9]+\\\\.)medium\\\\.com\\\\/$', include: ['main'], exclude: [] },
+  { url: '^https?:\\/\\/([a-zA-Z0-9]+\\.)medium\\.com\\/([^about])', include: ['section'], exclude: [] },
+  { url: '^https?:\\/\\/([a-zA-Z0-9]+\\.)medium\\.com\\/about', include: ['main'], exclude: [] },
+  { url: '^https?:\\/\\/([a-zA-Z0-9]+\\.)medium\\.com\\/$', include: ['main'], exclude: [] },
   {
-    url: '^https?:\\\\/\\\\/www\\\\.wogoo\\\\.com\\\\/',
+    url: '^https?:\\/\\/www\\.wogoo\\.com\\/',
     include: ['.leftSide'],
     exclude: ['.articleComment', '.zan'],
   },
-  { url: '^https?:\\\\/\\\\/www\\\\.iocoder\\\\.cn\\\\/', include: ['#main'], exclude: ['.article-nav', 'footer'] },
+  { url: '^https?:\\/\\/www\\.iocoder\\.cn\\/', include: ['#main'], exclude: ['.article-nav', 'footer'] },
   {
-    url: '^https?:\\\\/\\\\/help\\\\.solidworks\\\\.com\\\\/',
+    url: '^https?:\\/\\/help\\.solidworks\\.com\\/',
     include: ['#DSMainContent'],
     exclude: ['#DSLeftPane', '#auto_links'],
   },
-  { url: '^https?:\\\\/\\\\/effecthouse\\\\.tiktok\\\\.com\\\\/', include: ['section', 'article'], exclude: [] },
+  { url: '^https?:\\/\\/effecthouse\\.tiktok\\.com\\/', include: ['section', 'article'], exclude: [] },
 ];
