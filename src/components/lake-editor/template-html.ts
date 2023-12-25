@@ -56,7 +56,7 @@ export const templateHtml = `
       height: 100%;
     }
     .ne-layout-mode-fixed .ne-engine, .ne-layout-mode-adapt .ne-engine {
-      padding: 16px 16px 0;
+      padding: 16px 24px 0;
       min-height: calc(100vh - 10px)
     }
     .ne-layout-mode-fixed .ne-editor-wrap-content {
