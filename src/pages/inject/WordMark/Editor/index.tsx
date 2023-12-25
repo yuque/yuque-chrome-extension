@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from 'react';
 import {
   EDITOR_IFRAME_CONTAINER_ID,
@@ -75,6 +76,7 @@ const getRequestID = (() => {
 export default forwardRef<IEditorRef, {}>((props, ref) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const sendMessageRef = useRef<(data: any) => Promise<any>>();
+  const [needLoadEditor, setNeedLoadEditor] = useState(true);
 
   useEffect(() => {
     const resolveCache: Map<number, (data: any) => void> = new Map();
@@ -168,6 +170,25 @@ export default forwardRef<IEditorRef, {}>((props, ref) => {
     }),
     [sendMessage],
   );
+
+  useEffect(() => {
+    // 当页面可见性发生改变时，如果发现用户未使用过插件，释放掉 editor iframe
+    const onVisibilitychange = () => {
+      if (document.hidden) {
+        setNeedLoadEditor(false);
+      } else {
+        setNeedLoadEditor(true);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilitychange);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilitychange);
+    };
+  }, []);
+
+  if (!needLoadEditor) {
+    return null;
+  }
 
   return (
     <iframe
