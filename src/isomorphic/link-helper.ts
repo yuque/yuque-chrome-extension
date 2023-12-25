@@ -3,7 +3,7 @@ import Env from './env';
 
 const LinkHelper = {
   goDoc: (doc: { id: number }) => `${YUQUE_DOMAIN}/go/doc/${doc.id}`,
-  goMyNote: () => `${YUQUE_DOMAIN}/dashboard/notes`,
+  goMyNote: (id: number | string) => `${YUQUE_DOMAIN}/dashboard/notes?selectNoteId=${id}`,
   goMyPage: (account: { login: string }) => `${YUQUE_DOMAIN}/${account.login}`,
   feedback: () => {
     return `https://www.yuque.com/feedbacks/new?body=系统信息：浏览器插件/${Env.isBate ? 'Beta版' : '正式版'}/${

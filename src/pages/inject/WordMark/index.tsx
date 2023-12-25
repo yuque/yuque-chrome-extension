@@ -4,7 +4,6 @@ import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
 import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
-import { ClipAssistantMessageActions } from '@/isomorphic/event/clipAssistant';
 import {
   buildParamsForDoc,
   buildParamsForNote,
@@ -34,13 +33,7 @@ function WordMarkApp() {
   const save = useCallback(
     async (text: string) => {
       if (wordMarkContext.evokePanelWhenClip) {
-        // 展开侧边栏
-        window._yuque_ext_app.showSidePanel();
-        // 发送消息在编辑器内加入内容
-        window._yuque_ext_app?.sendMessageToClipAssistant(
-          ClipAssistantMessageActions.addContent,
-          `${text}<br>`,
-        );
+        window._yuque_ext_app.addContentToClipAssistant(text, true);
         showWordMarkRef.current = false;
         forceUpdate();
         return;
@@ -65,8 +58,8 @@ function WordMarkApp() {
           const noteParams = {
             ...(await buildParamsForNote(editor as any)),
           };
-          await backgroundBridge.request.note.create(noteParams);
-          const url = LinkHelper.goMyNote();
+          const result: any = await backgroundBridge.request.note.create(noteParams);
+          const url = LinkHelper.goMyNote(result.data.id);
           apiMessage?.success(
             <span>
               {__i18n('保存成功！')}

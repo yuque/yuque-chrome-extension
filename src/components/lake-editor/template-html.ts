@@ -69,6 +69,9 @@ export const templateHtml = `
     .ne-layout-mode-fixed .ne-editor-wrap-content, .ne-layout-mode-adapt .ne-editor-wrap-content {
       min-width: 317px;
     }
+    .ne-editor-wrap {
+      overscroll-behavior: contain;
+    }
   </style>
 </head>
 <body>

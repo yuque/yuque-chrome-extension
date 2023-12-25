@@ -11,7 +11,7 @@ const menuList: MenuItem[] = [
   {
     id: 'save-to-yuque-notes',
     get title() {
-      return __i18n('保存到语雀小记');
+      return __i18n('剪藏到语雀');
     },
     contexts: ['selection'],
   },
@@ -25,7 +25,7 @@ const menuList: MenuItem[] = [
   {
     id: 'save-to-yuque-image',
     get title() {
-      return __i18n('保存到语雀小记');
+      return __i18n('剪藏到语雀');
     },
     contexts: ['image'],
   },
@@ -43,7 +43,7 @@ export function listenContextMenuEvents() {
         const { selectionText } = info;
         chromeExtension.scripting.executeScript({
           target: { tabId: currentTab?.id as number },
-          args: [{ html: `${selectionText}<br/>` }],
+          args: [{ html: `${selectionText}` }],
           func: args => {
             window._yuque_ext_app.addContentToClipAssistant(args.html, true);
           },

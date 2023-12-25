@@ -188,6 +188,10 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
           },
           placeholder: __i18n('输入内容...'),
           defaultFontsize: 14,
+          typography: {
+            typography: 'classic',
+            paragraphSpacing: 'relax',
+          },
         });
         newEditor.on('visitLink', (url: string) => {
           window.open(url, '__blank');
