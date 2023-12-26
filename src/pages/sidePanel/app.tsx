@@ -6,6 +6,7 @@ import {
   SidePanelMessageActions,
   SidePanelMessageKey,
 } from '@/isomorphic/event/sidePanel';
+import { storage } from '@/isomorphic/storage';
 import { backgroundBridge } from '@/core/bridge/background';
 import {
   EXTENSION_ID,
@@ -54,7 +55,7 @@ function App() {
       document.body.appendChild(script);
       script.onload = () => {
         backgroundBridge.tab.getCurrent().then(async tabInfo => {
-          const info = await backgroundBridge.storage.get(
+          const info = await storage.get(
             STORAGE_KEYS.CURRENT_ACCOUNT,
           );
           Tracert.start({

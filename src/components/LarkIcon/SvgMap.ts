@@ -2,31 +2,54 @@
 /* eslint-disable @typescript-eslint/indent */
 // 本文件为自动生成，不要手动修改
 // npm run update:assets
+import ActionCopy from '@/assets/svg/action-copy.svg';
+import ActionDelete from '@/assets/svg/action-delete.svg';
+import ArrowDown from '@/assets/svg/arrow-down.svg';
+import BookLogo from '@/assets/svg/book-logo.svg';
+import ClipAssistant from '@/assets/svg/clip-assistant.svg';
+import ClipPage from '@/assets/svg/clip-page.svg';
+import Clipper from '@/assets/svg/clipper.svg';
+import Clipping from '@/assets/svg/clipping.svg';
+import CloseCircle from '@/assets/svg/close-circle.svg';
+import CloseOutline from '@/assets/svg/close-outline.svg';
+import CollectLink from '@/assets/svg/collect-link.svg';
+import CommentBubble from '@/assets/svg/comment-bubble.svg';
+import Copy from '@/assets/svg/copy.svg';
+import FeatherOutlined from '@/assets/svg/feather-outlined.svg';
+import Home from '@/assets/svg/home.svg';
+import IconLoadingGreen from '@/assets/svg/icon-loading-green.svg';
+import More from '@/assets/svg/more.svg';
+import NoteLogo from '@/assets/svg/note-logo.svg';
+import OcrIcon from '@/assets/svg/ocr-icon.svg';
+import Setting from '@/assets/svg/setting.svg';
+import TimeOutlined from '@/assets/svg/time-outlined.svg';
+import Translate from '@/assets/svg/translate.svg';
+import YuqueLogo from '@/assets/svg/yuque-logo.svg';
+import YuqueLogo1 from '@/assets/svg/yuque-logo1.svg';
 
 export const SvgMaps = {
-	'action-copy': import('@/assets/svg/action-copy.svg'),
-	'action-delete': import('@/assets/svg/action-delete.svg'),
-	'arrow-down': import('@/assets/svg/arrow-down.svg'),
-	'book-logo': import('@/assets/svg/book-logo.svg'),
-	'clip-assistant': import('@/assets/svg/clip-assistant.svg'),
-	'clip-page': import('@/assets/svg/clip-page.svg'),
-	'clipper': import('@/assets/svg/clipper.svg'),
-	'clipping': import('@/assets/svg/clipping.svg'),
-	'close-circle': import('@/assets/svg/close-circle.svg'),
-	'close-outline': import('@/assets/svg/close-outline.svg'),
-	'collect-link': import('@/assets/svg/collect-link.svg'),
-	'comment-bubble': import('@/assets/svg/comment-bubble.svg'),
-	'copy': import('@/assets/svg/copy.svg'),
-	'feather-outlined': import('@/assets/svg/feather-outlined.svg'),
-	'home': import('@/assets/svg/home.svg'),
-	'icon-loading-green': import('@/assets/svg/icon-loading-green.svg'),
-	'more': import('@/assets/svg/more.svg'),
-	'note-logo': import('@/assets/svg/note-logo.svg'),
-	'ocr-icon': import('@/assets/svg/ocr-icon.svg'),
-	'setting': import('@/assets/svg/setting.svg'),
-	'time-outlined': import('@/assets/svg/time-outlined.svg'),
-	'translate': import('@/assets/svg/translate.svg'),
-	'yuque-logo': import('@/assets/svg/yuque-logo.svg'),
-	'yuque-logo1': import('@/assets/svg/yuque-logo1.svg'),
+	'action-copy': ActionCopy,
+	'action-delete': ActionDelete,
+	'arrow-down': ArrowDown,
+	'book-logo': BookLogo,
+	'clip-assistant': ClipAssistant,
+	'clip-page': ClipPage,
+	'clipper': Clipper,
+	'clipping': Clipping,
+	'close-circle': CloseCircle,
+	'close-outline': CloseOutline,
+	'collect-link': CollectLink,
+	'comment-bubble': CommentBubble,
+	'copy': Copy,
+	'feather-outlined': FeatherOutlined,
+	'home': Home,
+	'icon-loading-green': IconLoadingGreen,
+	'more': More,
+	'note-logo': NoteLogo,
+	'ocr-icon': OcrIcon,
+	'setting': Setting,
+	'time-outlined': TimeOutlined,
+	'translate': Translate,
+	'yuque-logo': YuqueLogo,
+	'yuque-logo1': YuqueLogo1,
 };
-

@@ -1,17 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import LinkHelper from '@/isomorphic/link-helper';
+import { webProxy } from '@/core/webProxy';
 import { backgroundBridge } from '@/core/bridge/background';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
+import { WordMarkOptionTypeEnum } from '@/core/configManager/wordMark';
+import { clipConfigManager } from '@/core/configManager/clip';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
-import {
-  buildParamsForDoc,
-  buildParamsForNote,
-} from '@/components/lake-editor/helper';
+import { buildParamsForDoc, buildParamsForNote } from '@/components/lake-editor/helper';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import { MonitorAction } from '@/isomorphic/constant/monitor';
 import { useInjectContent } from '@/pages/inject/components/InjectLayout';
-import { IClipConfig } from '@/isomorphic/constant/clip';
 import Editor, { IEditorRef } from './Editor';
 import Panel from './Panel';
 import Inner from './Inner';
@@ -41,9 +39,7 @@ function WordMarkApp() {
       if (isSaving.current) {
         return;
       }
-      const clipConfig: IClipConfig = await backgroundBridge.configManager.get(
-        'clip',
-      );
+      const clipConfig = await clipConfigManager.get();
       const editor = editorRef.current;
       if (clipConfig.addLink) {
         await editor?.appendContent(
@@ -58,8 +54,8 @@ function WordMarkApp() {
           const noteParams = {
             ...(await buildParamsForNote(editor as any)),
           };
-          const result: any = await backgroundBridge.request.note.create(noteParams);
-          const url = LinkHelper.goMyNote(result.data.id);
+          const result: any = await webProxy.note.create(noteParams);
+          const url = LinkHelper.goMyNote(result.id);
           apiMessage?.success(
             <span>
               {__i18n('保存成功！')}
@@ -79,7 +75,7 @@ function WordMarkApp() {
             }),
             book_id: wordMarkContext.defaultSavePosition.id,
           };
-          const doc = await backgroundBridge.request.doc.create(docParams);
+          const doc = await webProxy.doc.create(docParams);
           const url = LinkHelper.goDoc(doc);
           apiMessage?.success(
             <span>
@@ -105,7 +101,7 @@ function WordMarkApp() {
     async (t: WordMarkOptionTypeEnum) => {
       if (t === WordMarkOptionTypeEnum.clipping) {
         // 上报一次划词剪藏
-        backgroundBridge.request.monitor.biz(MonitorAction.wordMarkClip);
+        webProxy.monitor.biz(MonitorAction.wordMarkClip);
         const selection = window.getSelection();
         let html = '';
         if (selection) {
@@ -130,10 +126,7 @@ function WordMarkApp() {
     const maxLeft = document.body.clientWidth - width;
     const maxTop = window.innerHeight + window.scrollY - height - 28;
     if (wrapperRef.current) {
-      wrapperRef.current.style.left = `${Math.min(
-        Math.max(left, 0),
-        maxLeft,
-      )}px`;
+      wrapperRef.current.style.left = `${Math.min(Math.max(left, 0), maxLeft)}px`;
       wrapperRef.current.style.top = `${Math.min(Math.max(top, 0), maxTop)}px`;
     }
   }, []);
@@ -210,10 +203,7 @@ function WordMarkApp() {
       return;
     }
     const onkeydown = (e: KeyboardEvent) => {
-      if (
-        e.key === wordMarkContext.evokeWordMarkShortKey &&
-        showWordMarkRef.current
-      ) {
+      if (e.key === wordMarkContext.evokeWordMarkShortKey && showWordMarkRef.current) {
         setVisible(v => !v);
       }
     };

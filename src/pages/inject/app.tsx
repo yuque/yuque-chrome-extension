@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, createRef, useImperativeHandle, use
 import { createRoot } from 'react-dom/client';
 import classnames from 'classnames';
 import { STORAGE_KEYS } from '@/config';
-import { backgroundBridge } from '@/core/bridge/background';
+import { storage } from '@/isomorphic/storage';
 import { ClipAssistantMessageActions, ClipAssistantMessageKey } from '@/isomorphic/event/clipAssistant';
 import { SidePanelMessageActions, SidePanelMessageKey } from '@/isomorphic/event/sidePanel';
 import DragBar from '@/components/DragBar';
@@ -141,7 +141,7 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
   }, []);
 
   useEffect(() => {
-    backgroundBridge.storage.get(STORAGE_KEYS.SETTINGS.SIDE_PANEL_CONFIG).then(res => {
+    storage.get(STORAGE_KEYS.SETTINGS.SIDE_PANEL_CONFIG).then(res => {
       if (res?.width) {
         setSidePanelWidth(res.width);
       }
@@ -158,7 +158,7 @@ const App = React.forwardRef<ContentScriptAppRef>((props, ref) => {
           [styles.sidePanelWrapperVisible]: sidePanelVisible,
         })}
         onResizeEnd={width => {
-          backgroundBridge.storage.update(STORAGE_KEYS.SETTINGS.SIDE_PANEL_CONFIG, {
+          storage.update(STORAGE_KEYS.SETTINGS.SIDE_PANEL_CONFIG, {
             width,
           });
         }}

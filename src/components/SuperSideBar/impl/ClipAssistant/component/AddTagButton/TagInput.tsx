@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import classnames from 'classnames';
 import throttle from 'lodash/throttle';
 import { CheckOutlined } from '@ant-design/icons';
-import { ITag } from '@/core/bridge/background/request/tag';
 import { __i18n } from '@/isomorphic/i18n';
+import { ITag } from '@/core/webProxy/tag';
 import styles from './TagInput.module.less';
 
 const KEY_CODE_MAP = {

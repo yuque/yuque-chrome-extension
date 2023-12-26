@@ -2,8 +2,7 @@ import React, { useMemo, useState } from 'react';
 import LarkIcon from '@/components/LarkIcon';
 import { PushpinOutlined, PushpinFilled } from '@ant-design/icons';
 import classnames from 'classnames';
-import { backgroundBridge } from '@/core/bridge/background';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
+import { wordMarkConfigManager, WordMarkOptionTypeEnum } from '@/core/configManager/wordMark';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import DragList from '@/components/DragList';
 import { ToolbarItem, toolbars as defaultToolbars } from '../constants';
@@ -18,22 +17,18 @@ interface IOperateMenuProps {
 function OperateMenu(props: IOperateMenuProps) {
   const { pinList, handlePin, executeCommand } = props;
   const wordMarkContext = useWordMarkContext();
-  const [toolbarKeys, setToolbarKeys] = useState<WordMarkOptionTypeEnum[]>(
-    wordMarkContext.toolbars,
-  );
+  const [toolbarKeys, setToolbarKeys] = useState<WordMarkOptionTypeEnum[]>(wordMarkContext.toolbars);
 
   const updateToolbar = (list: ToolbarItem[]) => {
     const result = list.map(item => item.id) as WordMarkOptionTypeEnum[];
     setToolbarKeys(result);
-    backgroundBridge.configManager.update('wordMark', 'toolbars', result);
+    wordMarkConfigManager.update('toolbars', result);
   };
 
   const toolbars = useMemo(() => {
     return toolbarKeys
       .map(key => {
-        const item = defaultToolbars.find(
-          toolbarItem => toolbarItem.id === key,
-        );
+        const item = defaultToolbars.find(toolbarItem => toolbarItem.id === key);
         return item;
       })
       .filter(item => !!item);
@@ -42,18 +37,13 @@ function OperateMenu(props: IOperateMenuProps) {
   return (
     <div className={styles.menus}>
       <DragList
-        dataSource={toolbars.filter(
-          item => !wordMarkContext.disableFunction.includes(item.id as any),
-        )}
+        dataSource={toolbars.filter(item => !wordMarkContext.disableFunction.includes(item.id as any))}
         renderItem={item => {
           const { type, name } = item;
           const pinned = pinList.includes(type);
           return (
             <div className={styles.menuItem} key={type}>
-              <div
-                className={styles.nameWrapper}
-                onClick={() => executeCommand(type)}
-              >
+              <div className={styles.nameWrapper} onClick={() => executeCommand(type)}>
                 <LarkIcon name={item.icon} className={styles.itemIcon} />
                 <span>{name}</span>
               </div>

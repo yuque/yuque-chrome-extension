@@ -1,11 +1,9 @@
 import { createContext } from 'react';
-import { IWordMarkConfig } from '@/isomorphic/constant/wordMark';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
+import { IWordMarkConfig, WordMarkOptionTypeEnum } from '@/core/configManager/wordMark';
 
 export type IWordMarkContext = IWordMarkConfig & {
   filterInnerPinList: Array<WordMarkOptionTypeEnum>;
   filterToolbars: Array<WordMarkOptionTypeEnum>;
+  destroyWordMark: () => void;
 };
-export const WordMarkContext = createContext<IWordMarkContext>(
-  {} as IWordMarkContext,
-);
+export const WordMarkContext = createContext<IWordMarkContext>({} as IWordMarkContext);

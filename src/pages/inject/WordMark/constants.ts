@@ -1,7 +1,7 @@
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic/i18n';
 import { ILarkIconName } from '@/components/LarkIcon';
 import { MonitorAction } from '@/isomorphic/constant/monitor';
+import { WordMarkOptionTypeEnum } from '@/core/configManager/wordMark';
 
 export interface ToolbarItem {
   type: WordMarkOptionTypeEnum;

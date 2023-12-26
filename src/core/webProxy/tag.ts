@@ -1,5 +1,4 @@
-import { BackgroundEvents } from '@/isomorphic/background';
-import { ICallBridgeImpl } from '../index';
+import { httpProxy } from './base';
 
 export interface ITag {
   id: number;
@@ -8,12 +7,11 @@ export interface ITag {
   updated_at: Date;
 }
 
-export function createTagProxy(impl: ICallBridgeImpl) {
+export function createTagProxy() {
   return {
-    async index(): Promise<ITag[]> {
-      return new Promise((resolve, rejected) => {
-        impl(
-          BackgroundEvents.OperateRequest,
+    index: async (): Promise<ITag[]> => {
+      return new Promise((resolve, reject) => {
+        httpProxy.sendMethodCallToBackground(
           {
             url: '/api/modules/note/tags/TagController/index',
             config: {
@@ -21,19 +19,19 @@ export function createTagProxy(impl: ICallBridgeImpl) {
             },
           },
           res => {
-            if (res.status === 200) {
-              resolve(res?.data?.data || []);
+            if (res.status !== 200) {
+              reject(res);
               return;
             }
-            rejected(res);
+            resolve(res?.data?.data || []);
+            return;
           },
         );
       });
     },
-    async create(params: { name: string }): Promise<ITag | null> {
-      return new Promise((resolve, rejected) => {
-        impl(
-          BackgroundEvents.OperateRequest,
+    create: async (params: { name: string }): Promise<ITag> => {
+      return new Promise((resolve, reject) => {
+        httpProxy.sendMethodCallToBackground(
           {
             url: '/api/modules/note/tags/TagController/create',
             config: {
@@ -45,11 +43,12 @@ export function createTagProxy(impl: ICallBridgeImpl) {
             },
           },
           res => {
-            if (res.status === 200) {
-              resolve(res?.data || null);
+            if (res.status !== 200) {
+              reject(res);
               return;
             }
-            rejected(res);
+            resolve(res.data);
+            return;
           },
         );
       });

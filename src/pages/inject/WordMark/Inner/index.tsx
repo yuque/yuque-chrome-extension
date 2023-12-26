@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Popover, Tooltip } from 'antd';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
-import { backgroundBridge } from '@/core/bridge/background';
+import { wordMarkConfigManager, WordMarkOptionTypeEnum } from '@/core/configManager/wordMark';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import Typography from '@/components/Typography';
 import LarkIcon from '@/components/LarkIcon';
@@ -17,16 +16,12 @@ interface InnerWordMarkProps {
 function InnerWordMark(props: InnerWordMarkProps) {
   const { executeCommand } = props;
   const wordMarkContext = useWordMarkContext();
-  const [pinedTools, setPinedTools] = useState<WordMarkOptionTypeEnum[]>(
-    wordMarkContext.filterInnerPinList,
-  );
+  const [pinedTools, setPinedTools] = useState<WordMarkOptionTypeEnum[]>(wordMarkContext.filterInnerPinList);
 
   const handlePin = useCallback((type: WordMarkOptionTypeEnum) => {
     setPinedTools(tools => {
-      const result = tools.includes(type)
-        ? tools.filter(t => t !== type)
-        : [type, ...tools];
-      backgroundBridge.configManager.update('wordMark', 'innerPinList', result);
+      const result = tools.includes(type) ? tools.filter(t => t !== type) : [type, ...tools];
+      wordMarkConfigManager.update('innerPinList', result);
       return result;
     });
   }, []);
@@ -60,11 +55,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
             );
           }
           return (
-            <div
-              className={styles.pinToolbarItem}
-              key={item.type}
-              onClick={() => executeCommand(item.type)}
-            >
+            <div className={styles.pinToolbarItem} key={item.type} onClick={() => executeCommand(item.type)}>
               <LarkIcon name={item.icon} className={styles.itemIcon} />
               <span className={styles.name}>{item.name}</span>
             </div>
@@ -73,13 +64,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
       </div>
       <Popover
         placement="bottomRight"
-        content={
-          <OperateMenu
-            pinList={pinedTools}
-            executeCommand={executeCommand}
-            handlePin={handlePin}
-          />
-        }
+        content={<OperateMenu pinList={pinedTools} executeCommand={executeCommand} handlePin={handlePin} />}
         overlayClassName={styles.overlayClassName}
       >
         <div className={styles.moreActions}>
@@ -89,11 +74,7 @@ function InnerWordMark(props: InnerWordMarkProps) {
       {(wordMarkContext.enable || !wordMarkContext.evokeWordMarkShortKey) && (
         <>
           <div className={styles.line} />
-          <Popover
-            placement="bottomRight"
-            content={<DisableMenu />}
-            overlayClassName={styles.overlayClassName}
-          >
+          <Popover placement="bottomRight" content={<DisableMenu />} overlayClassName={styles.overlayClassName}>
             <div className={styles.closeActions}>
               <LarkIcon name="close-outline" size={14} />
             </div>

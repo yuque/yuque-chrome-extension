@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Select, Switch, Row, Col } from 'antd';
-import DisableUrlCard, { IDisableUrlItem } from '@/components/DisableUrlCard';
-import { ToolbarItem, toolbars } from '@/pages/inject/WordMark/constants';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
-import { __i18n } from '@/isomorphic/i18n';
 import {
   IWordMarkConfig,
   WordMarkConfigKey,
-} from '@/isomorphic/constant/wordMark';
+  WordMarkOptionTypeEnum,
+  wordMarkConfigManager,
+} from '@/core/configManager/wordMark';
+import DisableUrlCard, { IDisableUrlItem } from '@/components/DisableUrlCard';
+import { ToolbarItem, toolbars } from '@/pages/inject/WordMark/constants';
+import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
 import LarkIcon from '@/components/LarkIcon';
 import SelectSavePosition from '@/components/SelectSavePosition';
-import { backgroundBridge } from '@/core/bridge/background';
 import { isMacOs } from '@/core/system-info';
 import styles from './index.module.less';
 
@@ -73,19 +73,14 @@ function WordMark() {
   }, [config]);
 
   const onConfigChange = async (key: WordMarkConfigKey, value: any) => {
-    await backgroundBridge.configManager.update('wordMark', key, value, {
-      notice: true,
-    });
+    await wordMarkConfigManager.update(key, value);
     setConfig({
       ...(config as IWordMarkConfig),
       [key]: value,
     });
   };
 
-  const onEnableFunctionChange = (
-    id: WordMarkOptionTypeEnum,
-    enable: boolean,
-  ) => {
+  const onEnableFunctionChange = (id: WordMarkOptionTypeEnum, enable: boolean) => {
     let result = config?.disableFunction;
     if (!enable) {
       result?.push(id);
@@ -97,16 +92,14 @@ function WordMark() {
 
   const onDelete = useCallback(
     (item: IDisableUrlItem) => {
-      const filterArray = config?.disableUrl?.filter(
-        d => d.origin !== item.origin,
-      );
+      const filterArray = config?.disableUrl?.filter(d => d.origin !== item.origin);
       onConfigChange('disableUrl', filterArray);
     },
     [config],
   );
 
   useEffect(() => {
-    backgroundBridge.configManager.get('wordMark').then(res => {
+    wordMarkConfigManager.get().then(res => {
       setConfig(res);
     });
   }, []);
@@ -122,17 +115,11 @@ function WordMark() {
         <div className={styles.body}>
           <div className={styles.configItem}>
             <div className={styles.desc}>{__i18n('默认启动划词工具栏')}</div>
-            <Switch
-              checked={config.enable}
-              onChange={() => onConfigChange('enable', !config.enable)}
-              size="small"
-            />
+            <Switch checked={config.enable} onChange={() => onConfigChange('enable', !config.enable)} size="small" />
           </div>
           {!config.enable && (
             <div className={styles.configItem}>
-              <div className={styles.desc}>
-                {__i18n('选中文本 + 按指定修饰键唤起')}
-              </div>
+              <div className={styles.desc}>{__i18n('选中文本 + 按指定修饰键唤起')}</div>
               <Select
                 value={config.evokeWordMarkShortKey}
                 options={isMacOs ? mac : windows}
@@ -140,22 +127,15 @@ function WordMark() {
                 onChange={(v: string) => {
                   onConfigChange('evokeWordMarkShortKey', v);
                 }}
-                suffixIcon={
-                  <LarkIcon className={styles.iconWrapper} name="arrow-down" />
-                }
+                suffixIcon={<LarkIcon className={styles.iconWrapper} name="arrow-down" />}
               />
             </div>
           )}
           {!!config.disableUrl?.length && config.enable && (
             <div>
-              <div className={styles.desc}>
-                {__i18n('管理不展示划词工具栏的页面')}
-              </div>
+              <div className={styles.desc}>{__i18n('管理不展示划词工具栏的页面')}</div>
               <div className={styles.disableUrlCard}>
-                <DisableUrlCard
-                  options={config.disableUrl}
-                  onDelete={onDelete}
-                />
+                <DisableUrlCard options={config.disableUrl} onDelete={onDelete} />
               </div>
             </div>
           )}
@@ -169,16 +149,11 @@ function WordMark() {
             return (
               <Col key={item.id} span={12}>
                 <div className={styles.toolbarSettingItem}>
-                  <LarkIcon
-                    name={item.icon}
-                    className={styles.toolbarSettingItemIcon}
-                  />
+                  <LarkIcon name={item.icon} className={styles.toolbarSettingItemIcon} />
                   <span className={styles.toolbarSettingName}>
                     {item.name}
                     {__i18n('：')}
-                    <span className={styles.toolbarSettingDesc}>
-                      {item.desc}
-                    </span>
+                    <span className={styles.toolbarSettingDesc}>{item.desc}</span>
                   </span>
                   <Switch
                     checked={item.enable}
@@ -201,11 +176,7 @@ function WordMark() {
             <div className={styles.desc}>{__i18n('默认保存位置')}</div>
             <SelectSavePosition
               onChange={item => {
-                backgroundBridge.configManager.update(
-                  'wordMark',
-                  'defaultSavePosition',
-                  item,
-                );
+                wordMarkConfigManager.update('defaultSavePosition', item);
               }}
               defaultSavePosition={config.defaultSavePosition}
             />
@@ -214,9 +185,7 @@ function WordMark() {
             <div className={styles.desc}>{__i18n('每次都唤起剪藏面板')}</div>
             <Switch
               checked={config.evokePanelWhenClip}
-              onChange={() =>
-                onConfigChange('evokePanelWhenClip', !config.evokePanelWhenClip)
-              }
+              onChange={() => onConfigChange('evokePanelWhenClip', !config.evokePanelWhenClip)}
               size="small"
             />
           </div>

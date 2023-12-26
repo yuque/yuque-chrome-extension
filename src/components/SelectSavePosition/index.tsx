@@ -1,14 +1,11 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { Select } from 'antd';
-import Icon from '@ant-design/icons';
 import { SelectCommonPlacement } from 'antd/es/_util/motion';
-import { backgroundBridge } from '@/core/bridge/background';
-import {
-  DefaultSavePosition,
-  ISavePosition,
-} from '@/core/bridge/background/request/mine';
+import { webProxy } from '@/core/webProxy';
+import { DefaultSavePosition, ISavePosition } from '@/core/webProxy/mine';
 import { __i18n } from '@/isomorphic/i18n';
-import ArrowDown from '@/assets/svg/arrow-down.svg';
+import { storage } from '@/isomorphic/storage';
+import LarkIcon from '../LarkIcon';
 import styles from './index.module.less';
 
 export interface ISelectSavePositionProps {
@@ -51,13 +48,13 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
       initPositionState(DefaultSavePosition);
       return;
     }
-    const defaultSavePosition = await backgroundBridge.storage.get(rememberKey);
+    const defaultSavePosition = await storage.get(rememberKey);
     const positionItem = (defaultSavePosition || DefaultSavePosition) as ISavePosition;
     initPositionState(positionItem);
   };
 
   const updateBookList = async () => {
-    const list = await backgroundBridge.request.mine.getBooks();
+    const list = await webProxy.mine.getBooks();
     setBooks([...list]);
   };
 
@@ -65,7 +62,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
     (id: number) => {
       const item = books.find(i => i.id === id);
       if (rememberKey) {
-        backgroundBridge.storage.update(rememberKey, item);
+        storage.update(rememberKey, item);
       }
       setSelectSaveItem(item);
     },
@@ -93,7 +90,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
       if (value === 'note') {
         setSelectSaveItem(DefaultSavePosition);
         if (rememberKey) {
-          backgroundBridge.storage.update(rememberKey, DefaultSavePosition);
+          storage.update(rememberKey, DefaultSavePosition);
         }
       } else {
         books[0] && setSelectSaveItem(books[0]);
@@ -123,9 +120,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
         options={positionList}
         onSelect={onChangePosition}
         className={styles.selectWrapper}
-        suffixIcon={
-          <Icon component={ArrowDown} className={styles.iconWrapper} />
-        }
+        suffixIcon={<LarkIcon name="arrow-down" className={styles.iconWrapper} />}
       />
       {position === 'book' && !!selectSaveItem?.id ? (
         <Select
@@ -135,9 +130,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
           options={bookList}
           onSelect={onSelectBook}
           className={styles.selectWrapper}
-          suffixIcon={
-            <Icon component={ArrowDown} className={styles.iconWrapper} />
-          }
+          suffixIcon={<LarkIcon name="arrow-down" className={styles.iconWrapper} />}
         />
       ) : (
         props.children

@@ -1,7 +1,6 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { __i18n } from '@/isomorphic/i18n';
-import { ITag } from '@/core/bridge/background/request/tag';
+import { ITag } from '@/core/webProxy/tag';
 import styles from './index.module.less';
 
 interface ITagListProps {

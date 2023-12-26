@@ -4,8 +4,6 @@ import { createUserBridge } from './user';
 import { createClipBridge } from './clip';
 import { createTabBridge } from './tab';
 import { createSidePanelBridge } from './sidePanel';
-import { createRequestBridge } from './request';
-import { createConfigManagerBridge } from './configManager';
 
 export interface IBridgeParams {
   [key: string]: any;
@@ -45,8 +43,6 @@ export function createBridges(impl: ICallBridgeImpl) {
     ...createClipBridge(impl),
     ...createTabBridge(impl),
     ...createSidePanelBridge(impl),
-    ...createRequestBridge(impl),
-    ...createConfigManagerBridge(impl),
   };
 }
 
