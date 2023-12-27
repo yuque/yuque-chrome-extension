@@ -195,7 +195,7 @@ function App() {
           }}
         >
           <div className={styles.ballWrapper}>
-            <LarkIcon name="yuque-logo" className={styles.logo} />
+            <LarkIcon name="yuque-logo" className={styles.logo} size={24} />
             <div className={styles.hiddenWrapper}>{shortKey}</div>
           </div>
         </div>
