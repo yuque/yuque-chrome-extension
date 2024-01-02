@@ -12,7 +12,6 @@ import { listenShortcut } from './shortcut-listener';
 import chromeExtension from './core/chromeExtension';
 import HttpClient from './core/httpClient';
 
-console.log('-- in background.js');
 const httpClient = new HttpClient();
 initI18N();
 listenContextMenuEvents();
@@ -73,6 +72,8 @@ chromeExtension.storage.local.onChanged.addListener(res => {
     STORAGE_KEYS.SETTINGS.LEVITATE_BALL_CONFIG,
     STORAGE_KEYS.SETTINGS.SIDE_PANEL_CONFIG,
     STORAGE_KEYS.SETTINGS.WORD_MARK_CONFIG,
+    // 用户信息发生变化
+    STORAGE_KEYS.CURRENT_ACCOUNT,
   ];
 
   Object.keys(res).forEach(key => {

@@ -4,8 +4,12 @@ export class ImageParsePlugin extends BasePlugin {
   public parse(cloneDom: HTMLElement): Promise<void> | void {
     const images = cloneDom.querySelectorAll('img');
     images.forEach(image => {
-      // 有些 img 采用 srcset 属性去实现，src 中放的其实是小图，所以以 currentSrc 作为渲染的 src
-      image.setAttribute('src', image.currentSrc || image.src);
+      /**
+       * data-src 占位图
+       * currentSrc 真实渲染的图片
+       * src
+       */
+      image.setAttribute('src', image.getAttribute('data-src') || image.currentSrc || image.src);
     });
   }
 }

@@ -1,5 +1,6 @@
 import { pick } from 'lodash';
 import { httpProxy } from './base';
+import { IUser } from '@/isomorphic/interface';
 
 export interface ISavePosition {
   id: number;
@@ -61,6 +62,21 @@ export function createMineProxy() {
           },
           res => {
             return resolve(res);
+          },
+        );
+      });
+    },
+    getUserInfo: async (): Promise<IUser> => {
+      return new Promise(resolve => {
+        httpProxy.sendMethodCallToBackground(
+          {
+            url: '/api/mine',
+            config: {
+              method: 'GET',
+            },
+          },
+          res => {
+            resolve(res.data.data);
           },
         );
       });

@@ -19,6 +19,7 @@ import {
 import { IUser } from '@/isomorphic/interface';
 import Env from '@/isomorphic/env';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
+import { webProxy } from '@/core/webProxy';
 import styles from './app.module.less';
 import '@/styles/global.less';
 
@@ -58,6 +59,10 @@ function App() {
           const info = await storage.get(
             STORAGE_KEYS.CURRENT_ACCOUNT,
           );
+          const user = await webProxy.mine.getUserInfo();
+          if (user.id !== info.id) {
+            await storage.remove(STORAGE_KEYS.CURRENT_ACCOUNT);
+          }
           Tracert.start({
             spmAPos: TRACERT_CONFIG.spmAPos,
             spmBPos: TRACERT_CONFIG.spmBPos,

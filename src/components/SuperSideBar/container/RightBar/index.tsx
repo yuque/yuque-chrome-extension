@@ -6,6 +6,7 @@ import cs from 'classnames';
 import { AssistantType, IAssistant } from '@/components/SuperSideBar/declare';
 import useMeasure from '@/hooks/useMeasure';
 import { superSidebar } from '@/components/SuperSideBar';
+import LarkIcon from '@/components/LarkIcon';
 import styles from './index.module.less';
 
 interface IItemProps {
@@ -160,7 +161,7 @@ export const RightBar = () => {
             overlayClassName={styles.popover}
           >
             <div className={cs(styles.manifestsBtn, styles.moreAction)}>
-              <Icon name="moreAction" size={20} />
+              <LarkIcon name="more" size={20} />
             </div>
           </Popover>
         ) : null}

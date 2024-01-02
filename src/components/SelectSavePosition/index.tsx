@@ -93,7 +93,7 @@ function SelectSavePosition(props: ISelectSavePositionProps) {
           storage.update(rememberKey, DefaultSavePosition);
         }
       } else {
-        books[0] && setSelectSaveItem(books[0]);
+        books[0] && onSelectBook(books[0].id);
       }
       setPosition(value);
     },

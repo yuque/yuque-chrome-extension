@@ -188,10 +188,6 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
           },
           placeholder: __i18n('输入内容...'),
           defaultFontsize: 14,
-          typography: {
-            typography: 'classic',
-            paragraphSpacing: 'relax',
-          },
         });
         newEditor.on('visitLink', (url: string) => {
           window.open(url, '__blank');
@@ -216,6 +212,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
   useEffect(() => {
     if (!editor) return;
     editor.setDocument('text/html', value);
+    editor.execCommand('paragraphSpacing', 'relax');
     contextRef.current?.onLoad?.();
   }, [editor, value]);
 
@@ -304,7 +301,7 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
           await sleep(100);
         }
         if (type === 'lake') {
-          return editor.getDocument('text/lake');
+          return editor.getDocument('text/lake', { includeMeta: true });
         } else if (type === 'text/html') {
           return editor.getDocument('text/html');
         }

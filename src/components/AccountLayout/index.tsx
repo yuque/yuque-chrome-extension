@@ -38,12 +38,24 @@ function AccountLayout(props: IAccountLayoutProps) {
       setAppReady(true);
       return;
     }
-    try {
-      setUser(info);
-    } catch (error) {
-      console.log('init user error:', error);
-    }
+    setUser(info);
     setAppReady(true);
+  }, []);
+
+  useEffect(() => {
+    const remover = pageEvent.addListener(PageEventTypes.StorageUpdate, (data: Record<string, any>) => {
+      if (data.key !== STORAGE_KEYS.CURRENT_ACCOUNT) {
+        return;
+      }
+      if (!data.value) {
+        onLogout();
+        return;
+      }
+      setUser(data.value);
+    });
+    return () => {
+      remover();
+    };
   }, []);
 
   useEffect(() => {
@@ -68,7 +80,7 @@ function AccountLayout(props: IAccountLayoutProps) {
       {isLogined && !forceUpgradeHtml ? (
         props.children
       ) : (
-        <Login onLoginSuccess={setUser} forceUpgradeHtml={forceUpgradeHtml} />
+        <Login forceUpgradeHtml={forceUpgradeHtml} />
       )}
     </AccountContext.Provider>
   );
