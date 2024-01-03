@@ -127,11 +127,11 @@ export default class HttpClient {
   private async handlePrepareRequestParams(url: string, _config: IRequestConfig, _option?: IRequestOptions) {
     const headers = await this.prepareHeaders();
     const config: RequestInit = {
+      ..._config,
       headers: {
         ...headers,
         ..._config.headers,
       },
-      ..._config,
     };
     let queryString = '';
     if (_option?.isFileUpload) {

@@ -1,12 +1,12 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "语雀浏览器插件",
   "private": true,
   "releaseNotes": [
-    "[优化] 增加保存失败的提示",
-    "[修复] 修复插件导致特殊网页卡住问题",
-    "[修复] 语雀文档剪藏列表丢失情况"
+    "[特性] 支持全文剪藏",
+    "[优化] 优化插件性能",
+    "[修复] 修复上传图片失败的异常处理"
   ],
   "repository": {
     "type": "git",

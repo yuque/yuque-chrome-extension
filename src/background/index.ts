@@ -24,6 +24,7 @@ chromeExtension.runtime.onInstalled.addListener(async details => {
 
   createContextMenu();
   updateDynamicRules();
+  updateYuqueCookieRule();
 
   if (details.reason === 'install') {
     chromeExtension.tabs.create({
@@ -95,37 +96,72 @@ chromeExtension.storage.local.onChanged.addListener(res => {
 });
 
 function updateDynamicRules() {
-  const rules = [
-    {
-      id: 1,
-      action: {
-        type: chromeExtension.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-        requestHeaders: [
-          {
-            header: 'Referer',
-            operation: chromeExtension.declarativeNetRequest.HeaderOperation.SET,
-            value: YUQUE_DOMAIN,
-          },
-          {
-            header: 'Origin',
-            operation: chromeExtension.declarativeNetRequest.HeaderOperation.SET,
-            value: YUQUE_DOMAIN,
-          },
-        ],
+  chromeExtension.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: [1],
+    addRules: [
+      {
+        id: 1,
+        action: {
+          type: chromeExtension.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+          requestHeaders: [
+            {
+              header: 'Referer',
+              operation: chromeExtension.declarativeNetRequest.HeaderOperation.SET,
+              value: YUQUE_DOMAIN,
+            },
+            {
+              header: 'Origin',
+              operation: chromeExtension.declarativeNetRequest.HeaderOperation.SET,
+              value: YUQUE_DOMAIN,
+            },
+          ],
+        },
+        condition: {
+          domains: [chromeExtension.runtime.id],
+          urlFilter: `${YUQUE_DOMAIN}/api/upload/attach`,
+          resourceTypes: [chromeExtension.declarativeNetRequest.ResourceType.XMLHTTPREQUEST],
+        },
       },
-      condition: {
-        domains: [chromeExtension.runtime.id],
-        urlFilter: `${YUQUE_DOMAIN}/api/upload/attach`,
-        resourceTypes: [chromeExtension.declarativeNetRequest.ResourceType.XMLHTTPREQUEST],
-      },
-    },
-  ];
-
-  chromeExtension.declarativeNetRequest.getDynamicRules(previousRules => {
-    const previousRuleIds = previousRules.map(rule => rule.id);
-    chromeExtension.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: previousRuleIds,
-      addRules: rules,
-    });
+    ],
   });
 }
+
+const updateYuqueCookieRule = async () => {
+  // 通用 cookie
+  const normalCookie = await chromeExtension.cookies.getAll({ url: YUQUE_DOMAIN });
+  // 分区 cookie
+  const partitionCookie = await chromeExtension.cookies.getAll({ partitionKey: { topLevelSite: 'https://yuque.com' } });
+  const cookieArray = normalCookie.concat(partitionCookie || []).map(item => {
+    return `${item.name}=${item.value}`;
+  });
+  chromeExtension.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: [2],
+    addRules: [
+      {
+        id: 2,
+        action: {
+          type: chromeExtension.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+          requestHeaders: [
+            {
+              header: 'Cookie',
+              operation: chromeExtension.declarativeNetRequest.HeaderOperation.SET,
+              value: cookieArray.join(';'),
+            },
+          ],
+        },
+        condition: {
+          domains: [chromeExtension.runtime.id],
+          urlFilter: `${YUQUE_DOMAIN}`,
+          resourceTypes: [chromeExtension.declarativeNetRequest.ResourceType.XMLHTTPREQUEST],
+        },
+      },
+    ],
+  });
+};
+
+chromeExtension.cookies.onChanged.addListener(async res => {
+  if (!res.cookie.domain.includes('yuque.com') || res.removed) {
+    return;
+  }
+  updateYuqueCookieRule();
+});
