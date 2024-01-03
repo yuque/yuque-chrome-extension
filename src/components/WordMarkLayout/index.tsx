@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { backgroundBridge } from '@/core/bridge/background';
-import {
-  WordMarkMessageActions,
-  WordMarkMessageKey,
-} from '@/isomorphic/event/wordMark';
-import { IWordMarkConfig } from '@/isomorphic/constant/wordMark';
+import { IWordMarkConfig, wordMarkConfigManager } from '@/core/configManager/wordMark';
 import { IWordMarkContext, WordMarkContext } from './context';
 
 interface IWordMarkLayoutProps {
@@ -12,11 +7,18 @@ interface IWordMarkLayoutProps {
 }
 
 function WordMarkLayout(props: IWordMarkLayoutProps) {
-  const [wordMarkConfig, setWordMarkConfig] = useState<IWordMarkContext | null>(
-    null,
-  );
+  const [wordMarkConfig, setWordMarkConfig] = useState<IWordMarkContext | null>(null);
+
+  const [wordMarkVisible, setWordMarkVisible] = useState(true);
+
+  const destroyWordMark = () => {
+    setWordMarkVisible(false);
+  };
 
   const isEnableWordMark = (config: IWordMarkConfig | null) => {
+    if (!wordMarkVisible) {
+      return false;
+    }
     const url = `${window.location.origin}${window.location.pathname}`;
     if (!config?.enable && config?.evokeWordMarkShortKey) {
       return true;
@@ -29,34 +31,33 @@ function WordMarkLayout(props: IWordMarkLayoutProps) {
   };
 
   useEffect(() => {
-    backgroundBridge.configManager.get('wordMark').then(res => {
-      setWordMarkConfig(res);
+    wordMarkConfigManager.get().then(res => {
+      setWordMarkConfig(res as any);
     });
   }, []);
 
   useEffect(() => {
-    const onMessage = (e: MessageEvent<any>) => {
-      const { key, action, data } = e.data || {};
-      if (key !== WordMarkMessageKey) {
-        return;
-      }
-      switch (action) {
-        case WordMarkMessageActions.wordMarkConfigUpdate: {
-          data && setWordMarkConfig(data);
-          break;
-        }
-        default:
-          break;
-      }
-    };
-    window.addEventListener('message', onMessage);
+    const removerListener = wordMarkConfigManager.addListener(data => {
+      data &&
+        setWordMarkConfig({
+          ...data,
+          destroyWordMark,
+        });
+    });
     return () => {
-      window.removeEventListener('message', onMessage);
+      removerListener();
     };
   }, []);
 
   return (
-    <WordMarkContext.Provider value={wordMarkConfig as IWordMarkContext}>
+    <WordMarkContext.Provider
+      value={
+        {
+          ...(wordMarkConfig || {}),
+          destroyWordMark,
+        } as IWordMarkContext
+      }
+    >
       {isEnableWordMark(wordMarkConfig) ? props.children : null}
     </WordMarkContext.Provider>
   );

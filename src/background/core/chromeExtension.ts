@@ -1,3 +1,5 @@
+import { getMsgId } from '@/isomorphic/util';
+
 const chromeExtension = {
   action: chrome.action,
   cookies: chrome.cookies,
@@ -27,6 +29,14 @@ const chromeExtension = {
           // 吞掉错误
         }
       }
+    },
+    async sendToContent(tab: chrome.tabs.Tab, type: string, data: any, id?: string) {
+      const params = {
+        type,
+        data,
+        id: id || getMsgId({ type }),
+      };
+      chrome.tabs.sendMessage(tab.id as number, params);
     },
   },
   webRequest: chrome.webRequest,

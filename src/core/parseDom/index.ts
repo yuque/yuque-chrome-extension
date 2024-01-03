@@ -107,6 +107,9 @@ class ParseDom {
     Array.from(cloneDocument.body.children).forEach(item => item.parentNode?.removeChild(item));
     cloneDocument.body.appendChild(fragment);
 
+    // 克隆一份清洗后的 document ，这份不要做更改
+    const originCloneDocument = cloneDocument.cloneNode(true) as Document;
+
     // 将内容交给 Readability 去解析一次
     const result = new Readability(cloneDocument, {
       keepClasses: true,
@@ -119,6 +122,21 @@ class ParseDom {
           item.setAttribute('style', dataStyle as string);
           item.removeAttribute('data-style');
         });
+
+        /**
+         * 为了避免代码块的一些注释内容被 Readability 清掉
+         * 将 pre 结构的 dom 替换回去
+         * 如果清洗完成后和原先 pre 数量不一致，先不做处理
+         */
+        const originPres = originCloneDocument.querySelectorAll('pre');
+        const elPres = (el as HTMLElement).querySelectorAll('pre');
+        if (originPres.length === elPres.length) {
+          Array.from(elPres).forEach((pre, index) => {
+            const clonePre = originPres[index].cloneNode(true);
+            pre.parentNode?.replaceChild(clonePre, pre);
+          });
+        }
+
         return (el as HTMLElement).innerHTML;
       },
     }).parse();

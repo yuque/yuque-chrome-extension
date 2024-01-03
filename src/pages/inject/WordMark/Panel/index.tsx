@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Tooltip } from 'antd';
 import classnames from 'classnames';
+import { WordMarkOptionTypeEnum } from '@/core/configManager/wordMark';
 import LarkIcon from '@/components/LarkIcon';
-import { WordMarkOptionTypeEnum } from '@/isomorphic/constant/wordMark';
 import { __i18n } from '@/isomorphic/i18n';
-import { CloseOutlined } from '@ant-design/icons';
-import { backgroundBridge } from '@/core/bridge/background';
+import { webProxy } from '@/core/webProxy';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
 import { useInjectContent } from '@/pages/inject/components/InjectLayout';
 import { toolbars } from '../constants';
@@ -25,13 +24,7 @@ const StepMessage = {
 };
 
 function WordMarkPanel(props: WordMarkPanelProps) {
-  const {
-    selectText,
-    type: defaultType,
-    closeWordMark,
-    save,
-    editorRef,
-  } = props;
+  const { selectText, type: defaultType, closeWordMark, save, editorRef } = props;
   const wordMarkContext = useWordMarkContext();
   const [result, setResult] = useState<string>(StepMessage.onStart);
   const [type, setType] = useState(defaultType);
@@ -57,13 +50,12 @@ function WordMarkPanel(props: WordMarkPanelProps) {
     const item = toolbars.find(item => item.type === type);
     // 上报一次埋点请求
     if (item?.monitor) {
-      backgroundBridge.request.monitor.biz(item.monitor);
+      webProxy.monitor.biz(item.monitor);
     }
     try {
       let text = '';
       if (type === WordMarkOptionTypeEnum.translate) {
-        const { result: textResult } =
-          await backgroundBridge.request.wordMark.translate(selectText);
+        const textResult = await webProxy.wordMark.translate(selectText);
         text = textResult;
       }
       setResult(text);
@@ -110,12 +102,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
         <div className={styles.resultHeader}>
           <span>{__i18n('结果')}</span>
         </div>
-        <Input.TextArea
-          autoSize={{ minRows: 1, maxRows: 24 }}
-          className={styles.resultBody}
-          disabled
-          value={result}
-        />
+        <Input.TextArea autoSize={{ minRows: 1, maxRows: 24 }} className={styles.resultBody} disabled value={result} />
         {!loading && (
           <div className={styles.resultFooter}>
             <div className={styles.feedbackOperate} />
@@ -146,7 +133,7 @@ function WordMarkPanel(props: WordMarkPanelProps) {
         )}
       </div>
       <div className={styles.closWrapper} onClick={closeWordMark}>
-        <CloseOutlined />
+        <LarkIcon name="close-outline" />
       </div>
     </div>
   );

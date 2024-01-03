@@ -1,10 +1,10 @@
 import { pick } from 'lodash';
-import Chrome from '@/background/core/chromeExtension';
+import chromeExtension from '@/background/core/chromeExtension';
 import { IOperateUserData, OperateUserEnum } from '@/isomorphic/background/user';
 import { IUser } from '@/isomorphic/interface';
 import { storage } from '@/isomorphic/storage';
-import requestFn from '@/background/core/request';
 import { STORAGE_KEYS, YUQUE_DOMAIN } from '@/config';
+import HttpClient from '../core/httpClient';
 import { RequestMessage } from './index';
 
 export const SERVER_URLS = {
@@ -15,7 +15,7 @@ export const SERVER_URLS = {
 
 const createLoginWindow = (): Promise<number> => {
   return new Promise(resolve => {
-    Chrome.windows.create(
+    chromeExtension.windows.create(
       {
         focused: true,
         width: 500,
@@ -32,7 +32,7 @@ const createLoginWindow = (): Promise<number> => {
 
 const waitForWindowLogined = (windowId: number) => {
   return new Promise<void>(resolve => {
-    Chrome.webRequest.onCompleted.addListener(
+    chromeExtension.webRequest.onCompleted.addListener(
       data => {
         if ([SERVER_URLS.DASHBOARD, SERVER_URLS.LOGIN].includes(data.url)) {
           if (data.statusCode === 200) {
@@ -50,7 +50,7 @@ const waitForWindowLogined = (windowId: number) => {
 
 const removeWindow = (windowId: number) => {
   return new Promise(resolve => {
-    Chrome.windows.remove(windowId, resolve);
+    chromeExtension.windows.remove(windowId, resolve);
   });
 };
 
@@ -58,18 +58,19 @@ export async function createUserActionListener(
   request: RequestMessage<IOperateUserData>,
   callback: (params: any) => void,
   sender: chrome.runtime.MessageSender,
+  httpClient: HttpClient,
 ) {
   const { type } = request.data;
   switch (type) {
     case OperateUserEnum.login: {
       try {
-        await requestFn('/api/accounts/logout', {
+        await httpClient.handleRequest('/api/accounts/logout', {
           method: 'DELETE',
         });
         const windowId = await createLoginWindow();
         await waitForWindowLogined(windowId);
         await removeWindow(windowId);
-        const { data, status } = await requestFn('/api/mine', {
+        const { data, status } = await httpClient.handleRequest('/api/mine', {
           method: 'GET',
         });
         if (status === 200) {
@@ -89,7 +90,7 @@ export async function createUserActionListener(
       break;
     }
     case OperateUserEnum.getUserShortCut: {
-      const result = await Chrome.commands.getAll();
+      const result = await chromeExtension.commands.getAll();
       callback(result);
       break;
     }

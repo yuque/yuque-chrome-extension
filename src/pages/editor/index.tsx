@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { backgroundBridge } from '@/core/bridge/background';
+import { webProxy } from '@/core/webProxy';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { EditorMessageType, EditorMessageKey } from '@/isomorphic/event/editor';
 
@@ -8,7 +8,7 @@ function Editor() {
   const editorRef = useRef<IEditorRef>(null);
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
-    return backgroundBridge.request.upload.attach(params.data);
+    return webProxy.upload.attach(params.data);
   }, []);
 
   useEffect(() => {

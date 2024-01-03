@@ -7,9 +7,7 @@ interface IScreenShotOptions {
   y: number;
 }
 
-export async function screenShot(
-  options: IScreenShotOptions,
-): Promise<HTMLCanvasElement> {
+export async function screenShot(options: IScreenShotOptions): Promise<HTMLCanvasElement> {
   return new Promise(async (resolve, rejected) => {
     const base64: any = await backgroundBridge.tab.screenShot();
     try {

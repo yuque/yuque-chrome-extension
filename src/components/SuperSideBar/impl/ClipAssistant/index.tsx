@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Button, Spin, Tooltip, message, Input } from 'antd';
 import classnames from 'classnames';
 import { __i18n } from '@/isomorphic/i18n';
+import { webProxy } from '@/core/webProxy';
 import LakeEditor, { IEditorRef } from '@/components/lake-editor/editor';
 import { backgroundBridge } from '@/core/bridge/background';
 import { IStartOcrResult, ocrManager } from '@/core/ocr-manager';
@@ -10,8 +11,6 @@ import SelectSavePosition from '@/components/SelectSavePosition';
 import { buildParamsForDoc, buildParamsForNote } from '@/components/lake-editor/helper';
 import LinkHelper from '@/isomorphic/link-helper';
 import { STORAGE_KEYS } from '@/config';
-import { DefaultSavePosition, ISavePosition } from '@/core/bridge/background/request/mine';
-import { ITag } from '@/core/bridge/background/request/tag';
 import useClipShortCut from '@/hooks/useClipShortCut';
 import {
   ClipSelectAreaId,
@@ -21,7 +20,9 @@ import {
   ClipAssistantMessageActions,
 } from '@/isomorphic/event/clipAssistant';
 import Env from '@/isomorphic/env';
-import { IClipConfig } from '@/isomorphic/constant/clip';
+import { DefaultSavePosition, ISavePosition } from '@/core/webProxy/mine';
+import { ITag } from '@/core/webProxy/tag';
+import { clipConfigManager } from '@/core/configManager/clip';
 import LarkIcon from '@/components/LarkIcon';
 import { superSidebar } from '@/components/SuperSideBar/index';
 import AddTagButton from './component/AddTagButton';
@@ -93,8 +94,8 @@ function ClipContent() {
           ...(await buildParamsForNote(editor)),
           tag_meta_ids: selectTags.map(item => item.id),
         };
-        const result: any = await backgroundBridge.request.note.create(noteParams);
-        const url = LinkHelper.goMyNote(result.data.id);
+        const result: any = await webProxy.note.create(noteParams);
+        const url = LinkHelper.goMyNote(result.id);
         showSuccessMessage(__i18n('保存成功！'), {
           href: url,
           text: __i18n('去小记查看'),
@@ -105,7 +106,7 @@ function ClipContent() {
           title,
           book_id: selectSavePosition?.id as number,
         };
-        const doc = await backgroundBridge.request.doc.create(docParams);
+        const doc = await webProxy.doc.create(docParams);
         const url = LinkHelper.goDoc(doc);
         showSuccessMessage(__i18n('保存成功！'), {
           href: url,
@@ -128,10 +129,7 @@ function ClipContent() {
 
   const onUploadImage = useCallback(async (params: { data: string }) => {
     const file = await transformUrlToFile(params.data);
-    const res = await Promise.all([
-      backgroundBridge.request.upload.attach(params.data),
-      ocrManager.startOCR('file', file),
-    ]);
+    const res = await Promise.all([webProxy.upload.attach(params.data), ocrManager.startOCR('file', file)]);
     return {
       ...(res[0] || {}),
       ocrLocations: res[1],
@@ -162,7 +160,7 @@ function ClipContent() {
     if (!editorRef.current?.isEmpty()) {
       return false;
     }
-    const config: IClipConfig = await backgroundBridge.configManager.get('clip');
+    const config = await clipConfigManager.get();
     if (!config.addLink) return false;
     await onCollectLink();
     return true;
@@ -215,7 +213,7 @@ function ClipContent() {
 
   const handleRequestTag = async () => {
     try {
-      const tags = await backgroundBridge.request.tag.index();
+      const tags = await webProxy.tag.index();
       setUserTags(tags);
     } catch (error) {
       //
@@ -290,10 +288,7 @@ function ClipContent() {
     >
       {renderLoading()}
       <div className={styles.headerWrapper}>
-        <Tooltip
-          title={Env.isRunningHostPage ? shortcutMap.selectArea : ''}
-          getPopupContainer={node => node}
-        >
+        <Tooltip title={Env.isRunningHostPage ? shortcutMap.selectArea : ''} getPopupContainer={node => node}>
           <div
             className={styles.headerItem}
             onClick={onSelectArea}
@@ -305,10 +300,7 @@ function ClipContent() {
             <span>{__i18n('选取剪藏')}</span>
           </div>
         </Tooltip>
-        <Tooltip
-          title={Env.isRunningHostPage ? shortcutMap.startOcr : ''}
-          getPopupContainer={node => node}
-        >
+        <Tooltip title={Env.isRunningHostPage ? shortcutMap.startOcr : ''} getPopupContainer={node => node}>
           <div
             className={styles.headerItem}
             onClick={onScreenOcr}
@@ -352,23 +344,14 @@ function ClipContent() {
         />
       </div>
       <div className={styles.editorWrapper}>
-        <LakeEditor
-          ref={editorRef}
-          value=""
-          onLoad={onLoad}
-          uploadImage={onUploadImage as any}
-          onSave={onSave}
-        />
+        <LakeEditor ref={editorRef} value="" onLoad={onLoad} uploadImage={onUploadImage as any} onSave={onSave} />
       </div>
       {selectSavePosition?.id === DefaultSavePosition.id && (
         <TagList selectTags={selectTags} updateSelectTags={setSelectTags} />
       )}
       <div className={styles.saveOptionWrapper}>
         <div className={styles.savePositionWrapper}>
-          <SelectSavePosition
-            rememberKey={STORAGE_KEYS.USER.CLIPPING_SAVE_POSITION}
-            onChange={setSelectSavePosition}
-          >
+          <SelectSavePosition rememberKey={STORAGE_KEYS.USER.CLIPPING_SAVE_POSITION} onChange={setSelectSavePosition}>
             <AddTagButton
               tags={userTags}
               selectTags={selectTags}

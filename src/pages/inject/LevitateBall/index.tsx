@@ -1,16 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Icon from '@ant-design/icons';
 import classnames from 'classnames';
 import { Button, Radio } from 'antd';
-import CloseCircle from '@/assets/svg/close-circle.svg';
-import YuqueLogoSve from '@/assets/svg/yuque-logo.svg';
 import { backgroundBridge } from '@/core/bridge/background';
+import { ILevitateConfig, levitateConfigManager } from '@/core/configManager/levitate';
+import LarkIcon from '@/components/LarkIcon';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
-import { ILevitateConfig } from '@/isomorphic/constant/levitate';
-import {
-  LevitateBallMessageActions,
-  LevitateBallMessageKey,
-} from '@/isomorphic/event/levitateBall';
 import LinkHelper from '@/isomorphic/link-helper';
 import { useInjectContent } from '../components/InjectLayout';
 import styles from './index.module.less';
@@ -44,11 +38,9 @@ function App() {
         break;
       }
       case 'disableUrl': {
-        const iconLink =
-          document.querySelector("link[rel*='icon']") ||
-          document.querySelector("link[rel*='Icon']");
+        const iconLink = document.querySelector("link[rel*='icon']") || document.querySelector("link[rel*='Icon']");
         const iconUrl = (iconLink as HTMLLinkElement)?.href;
-        backgroundBridge.configManager.update('levitate', 'disableUrl', [
+        levitateConfigManager.update('disableUrl', [
           ...config.disableUrl,
           {
             origin: url,
@@ -58,15 +50,16 @@ function App() {
         break;
       }
       case 'disableForever': {
-        backgroundBridge.configManager.update('levitate', 'enable', false, {
-          notice: true,
-        });
+        levitateConfigManager.update('enable', false);
         break;
       }
       default:
         break;
     }
-    window._yuque_ext_app.removeLevitateBall();
+    setConfig(preConfig => ({
+      ...preConfig,
+      enable: false,
+    }));
   };
 
   const onCloseLevitateBall = () => {
@@ -82,9 +75,7 @@ function App() {
               disableType = e.target.value;
             }}
           >
-            <Radio value={'disableOnce'}>
-              {__i18n('在本次访问关闭')}
-            </Radio>
+            <Radio value={'disableOnce'}>{__i18n('在本次访问关闭')}</Radio>
             <Radio value={'disableUrl'}>{__i18n('在本页关闭')}</Radio>
             <Radio value={'disableForever'}>{__i18n('全部关闭')}</Radio>
           </Radio.Group>
@@ -134,43 +125,27 @@ function App() {
     positionRef.current.top = event.clientY;
     setDragging(false);
     entryStartActionRef.current = '';
-    backgroundBridge.configManager.update(
-      'levitate',
-      'position',
-      positionRef.current.top,
-    );
+    levitateConfigManager.update('position', `${positionRef.current.top}`);
   };
 
   useEffect(() => {
     backgroundBridge.user.getUserShortCut().then(res => {
       setShortKey(res.openSidePanel || '');
     });
-    backgroundBridge.configManager
-      .get('levitate')
-      .then((res: ILevitateConfig) => {
-        setConfig(res);
-        positionRef.current.top = parseInt(res.position);
-      });
+    levitateConfigManager.get().then(res => {
+      setConfig(res);
+      positionRef.current.top = parseInt(res.position);
+    });
   }, []);
 
   useEffect(() => {
-    const onMessage = (e: MessageEvent<any>) => {
-      const { key, action, data } = e.data || {};
-      if (key !== LevitateBallMessageKey) {
-        return;
+    const removerListener = levitateConfigManager.addListener(data => {
+      if (data) {
+        setConfig(data as ILevitateConfig);
       }
-      switch (action) {
-        case LevitateBallMessageActions.levitateBallConfigUpdate: {
-          data && setConfig(data);
-          break;
-        }
-        default:
-          break;
-      }
-    };
-    window.addEventListener('message', onMessage);
+    });
     return () => {
-      window.removeEventListener('message', onMessage);
+      removerListener();
     };
   }, []);
 
@@ -190,11 +165,7 @@ function App() {
         }}
       >
         <div className={styles.closeWrapper}>
-          <Icon
-            component={CloseCircle}
-            className={styles.closeIcon}
-            onClick={onCloseLevitateBall}
-          />
+          <LarkIcon className={styles.closeIcon} onClick={onCloseLevitateBall} name="close-circle" />
         </div>
         <div
           className={styles.ballEntry}
@@ -224,7 +195,7 @@ function App() {
           }}
         >
           <div className={styles.ballWrapper}>
-            <Icon component={YuqueLogoSve} className={styles.logo} />
+            <LarkIcon name="yuque-logo" className={styles.logo} size={24} />
             <div className={styles.hiddenWrapper}>{shortKey}</div>
           </div>
         </div>

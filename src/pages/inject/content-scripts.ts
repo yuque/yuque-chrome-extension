@@ -1,9 +1,5 @@
 import { initI18N } from '@/isomorphic/i18n';
 import { ClipAssistantMessageActions } from '@/isomorphic/event/clipAssistant';
-import { WordMarkMessageActions, WordMarkMessageKey } from '@/isomorphic/event/wordMark';
-import { AccountLayoutMessageActions, AccountLayoutMessageKey } from '@/isomorphic/event/accountLayout';
-import { LevitateBallMessageActions, LevitateBallMessageKey } from '@/isomorphic/event/levitateBall';
-import { initContentScriptActionListener } from './action-listener';
 import {
   InjectScriptRequestKey,
   InjectScriptResponseKey,
@@ -28,10 +24,7 @@ export class App {
   private _shadowRoot: ShadowRoot | null = null;
 
   private contentScriptAppRef: React.RefObject<ContentScriptAppRef> | null = null;
-  /**
-   * sidePanel iframe
-   */
-  private sidePanelIframe: HTMLIFrameElement | null = null;
+
   /**
    * 是否在操作选取，如 ocr 截屏、dom 选取
    */
@@ -81,7 +74,6 @@ export class App {
         shadowRoot.appendChild(root);
         this._shadowRoot = shadowRoot;
         document.body.appendChild(div);
-        initContentScriptActionListener(this);
         const { ref } = createContentScriptApp();
         this.contentScriptAppRef = ref;
       });
@@ -89,40 +81,6 @@ export class App {
 
   async toggleSidePanel(visible?: boolean) {
     this.contentScriptAppRef?.current?.toggleSidePanel(visible);
-  }
-
-  async sendMessageToAccountLayout(action: AccountLayoutMessageActions, data?: any) {
-    // 通知所有的 accountLayout 去触发强制更新，使用到的地方有 setting 页，sidePanel 页
-    this.sidePanelIframe?.contentWindow?.postMessage(
-      {
-        key: AccountLayoutMessageKey,
-        action,
-        data,
-      },
-      '*',
-    );
-  }
-
-  async sendMessageToWordMark(action: WordMarkMessageActions, data?: any) {
-    window.postMessage(
-      {
-        key: WordMarkMessageKey,
-        action,
-        data,
-      },
-      '*',
-    );
-  }
-
-  async sendMessageToLevitateBall(action: LevitateBallMessageActions, data?: any) {
-    window.postMessage(
-      {
-        key: LevitateBallMessageKey,
-        action,
-        data,
-      },
-      '*',
-    );
   }
 
   async senMessageToPage(params: MessageEventRequestData['data']) {

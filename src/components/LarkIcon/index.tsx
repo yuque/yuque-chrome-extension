@@ -1,6 +1,7 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import Icon from '@ant-design/icons';
 import { SvgMaps } from './SvgMap';
+import EmptyIcon from './EmptyIcon';
 
 export type ILarkIconName = keyof typeof SvgMaps;
 
@@ -9,25 +10,19 @@ interface IProps {
   size?: number;
   className?: string;
   spin?: boolean;
+  onClick?: () => void;
 }
 
 const LarkIcon = (props: IProps) => {
-  const { name, size = 16, className, spin = false } = props;
-  const SvgComponent = React.lazy(async () => {
-    if (!SvgMaps[name]) {
-      return import('./EmptyIcon');
-    }
-    return SvgMaps[name];
-  });
+  const { name, size = 16, className, spin = false, onClick } = props;
   return (
-    <Suspense fallback={null}>
-      <Icon
-        component={SvgComponent}
-        style={{ fontSize: `${size}px` }}
-        className={className}
-        spin={spin}
-      />
-    </Suspense>
+    <Icon
+      component={SvgMaps[name] || EmptyIcon}
+      style={{ fontSize: `${size}px` }}
+      className={className}
+      spin={spin}
+      onClick={onClick}
+    />
   );
 };
 

@@ -1,5 +1,4 @@
-import { BackgroundEvents } from '@/isomorphic/background';
-import { ICallBridgeImpl } from '../index';
+import { httpProxy } from './base';
 
 export interface NoteCreateParams {
   html: string;
@@ -12,13 +11,12 @@ export interface NoteCreateParams {
   tag_meta_ids?: number[];
 }
 
-export function createNoteProxy(impl: ICallBridgeImpl) {
+export function createNoteProxy() {
   return {
     create: async (params: NoteCreateParams) => {
       const time = new Date().getTime();
-      return new Promise((resolve, rejected) => {
-        impl(
-          BackgroundEvents.OperateRequest,
+      return new Promise((resolve, reject) => {
+        httpProxy.sendMethodCallToBackground(
           {
             url: '/api/modules/note/notes/NoteController/create',
             config: {
@@ -33,11 +31,12 @@ export function createNoteProxy(impl: ICallBridgeImpl) {
             },
           },
           res => {
-            if (res.status === 200) {
-              resolve(res);
+            if (res.status !== 200) {
+              reject(res);
               return;
             }
-            rejected(res);
+            resolve(res.data);
+            return;
           },
         );
       });

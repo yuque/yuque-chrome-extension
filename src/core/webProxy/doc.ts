@@ -1,5 +1,4 @@
-import { BackgroundEvents } from '@/isomorphic/background';
-import { ICallBridgeImpl } from '../index';
+import { httpProxy } from './base';
 
 export interface ICreateDocParams {
   title: string;
@@ -10,12 +9,11 @@ export interface ICreateDocParams {
   insert_to_catalog: boolean;
 }
 
-export function createDocProxy(impl: ICallBridgeImpl) {
+export function createDocProxy() {
   return {
     create: async (params: ICreateDocParams): Promise<{ id: number }> => {
-      return new Promise((resolve, rejected) => {
-        impl(
-          BackgroundEvents.OperateRequest,
+      return new Promise((resolve, reject) => {
+        httpProxy.sendMethodCallToBackground(
           {
             url: '/api/docs',
             config: {
@@ -29,11 +27,12 @@ export function createDocProxy(impl: ICallBridgeImpl) {
             },
           },
           res => {
-            if (res.status === 200) {
-              resolve(res.data.data);
+            if (!res.success) {
+              reject(res);
               return;
             }
-            rejected(res);
+            resolve(res.data.data);
+            return;
           },
         );
       });

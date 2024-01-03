@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Icon, { CloseOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { STORAGE_KEYS } from '@/config';
 import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
-import LarkIcon from '@/components/LarkIcon';
 import Env from '@/isomorphic/env';
 import { backgroundBridge } from '@/core/bridge/background';
+import LarkIcon from '@/components/LarkIcon';
 import UserAvatar from '@/components/UserAvatar';
-import SettingSvg from '@/assets/svg/setting.svg';
-import HomeSvg from '@/assets/svg/home.svg';
+import { storage } from '@/isomorphic/storage';
 import styles from './index.module.less';
 
 function SuperSidebarHeader() {
@@ -19,7 +17,7 @@ function SuperSidebarHeader() {
   };
 
   const hiddenTip = () => {
-    backgroundBridge.storage.update(STORAGE_KEYS.TIP.READ_SHORTCUT, true);
+    storage.update(STORAGE_KEYS.TIP.READ_SHORTCUT, true);
     setShowTip(false);
   };
 
@@ -37,7 +35,7 @@ function SuperSidebarHeader() {
   };
 
   useEffect(() => {
-    backgroundBridge.storage.get(STORAGE_KEYS.TIP.READ_SHORTCUT).then(res => {
+    storage.get(STORAGE_KEYS.TIP.READ_SHORTCUT).then(res => {
       if (!res) {
         setShowTip(true);
       }
@@ -54,17 +52,14 @@ function SuperSidebarHeader() {
         <div className={styles.infoWrapper}>
           <Tooltip title={__i18n('访问语雀')}>
             <div className={styles.itemWrapper} onClick={openHome}>
-              <Icon component={HomeSvg} />
+              <LarkIcon name="home" />
             </div>
           </Tooltip>
           <Tooltip
             title={
               <span>
                 {__i18n('立即设置快捷键，为操作提效')}
-                <CloseOutlined
-                  className={styles.closeTip}
-                  onClick={hiddenTip}
-                />
+                <LarkIcon name="close-outline" className={styles.closeTip} onClick={hiddenTip} />
               </span>
             }
             placement="bottomRight"
@@ -75,12 +70,12 @@ function SuperSidebarHeader() {
           >
             {showTip ? (
               <div className={styles.itemWrapper} onClick={openSetting}>
-                <Icon component={SettingSvg} />
+                <LarkIcon name="setting" />
               </div>
             ) : (
               <Tooltip title={__i18n('设置')}>
                 <div className={styles.itemWrapper} onClick={openSetting}>
-                  <Icon component={SettingSvg} />
+                  <LarkIcon name="setting" />
                 </div>
               </Tooltip>
             )}
@@ -91,7 +86,7 @@ function SuperSidebarHeader() {
         </div>
         {Env.isRunningHostPage && (
           <div onClick={closeSidePanel} className={styles.closeWrapper}>
-            <CloseOutlined />
+            <LarkIcon name="close-outline" />
           </div>
         )}
       </div>

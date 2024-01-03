@@ -1,14 +1,9 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Modal } from 'antd';
 import { IUser } from '@/isomorphic/interface';
-import { __i18n } from '@/isomorphic/i18n';
-import {
-  AccountLayoutMessageActions,
-  AccountLayoutMessageKey,
-} from '@/isomorphic/event/accountLayout';
+import { pageEvent } from '@/core/event/pageEvent';
+import { PageEventTypes } from '@/isomorphic/event/pageEvent';
+import { storage } from '@/isomorphic/storage';
 import { useEffectAsync } from '@/hooks/useAsyncEffect';
-import { backgroundBridge } from '@/core/bridge/background';
-import { findCookieSettingPage } from '@/core/uitl';
 import { STORAGE_KEYS } from '@/config';
 import Login from './Login';
 import { AccountContext } from './context';
@@ -24,7 +19,7 @@ function AccountLayout(props: IAccountLayoutProps) {
   const [forceUpgradeHtml, setForceUpgradeHtml] = useState<string>();
 
   const onLogout = useCallback(async () => {
-    await backgroundBridge.storage.remove(STORAGE_KEYS.CURRENT_ACCOUNT);
+    await storage.remove(STORAGE_KEYS.CURRENT_ACCOUNT);
     setUser(null);
   }, []);
 
@@ -37,68 +32,40 @@ function AccountLayout(props: IAccountLayoutProps) {
   );
 
   useEffectAsync(async () => {
-    const info = (await backgroundBridge.storage.get(
-      STORAGE_KEYS.CURRENT_ACCOUNT,
-    )) as IUser;
+    const info = (await storage.get(STORAGE_KEYS.CURRENT_ACCOUNT)) as IUser;
     if (!info?.login_at) {
       setUser(null);
       setAppReady(true);
       return;
     }
-    try {
-      if (!navigator.cookieEnabled) {
-        await new Promise(resolve => {
-          const pageUrl = findCookieSettingPage();
-          Modal.info({
-            content: __i18n(
-              '请前往「隐私和安全」打开「允许第三方cookies」，避免登录失败',
-            ),
-            title: __i18n('使用提示'),
-            closable: true,
-            icon: null,
-            okText: pageUrl ? __i18n('打开隐私和安全') : __i18n('确定'),
-            autoFocusButton: null,
-            onOk: () => {
-              if (pageUrl) {
-                backgroundBridge.tab.create(pageUrl);
-              }
-              resolve(true);
-            },
-            afterClose: () => {
-              resolve(true);
-            },
-          });
-        });
-      }
-      setUser(info);
-    } catch (error) {
-      console.log('init user error:', error);
-    }
+    setUser(info);
     setAppReady(true);
   }, []);
 
   useEffect(() => {
-    const onMessage = (e: MessageEvent<any>) => {
-      const { data, key, action } = e.data || {};
-      if (key !== AccountLayoutMessageKey) {
+    const remover = pageEvent.addListener(PageEventTypes.StorageUpdate, (data: Record<string, any>) => {
+      if (data.key !== STORAGE_KEYS.CURRENT_ACCOUNT) {
         return;
       }
-      switch (action) {
-        case AccountLayoutMessageActions.ForceUpdate: {
-          setForceUpgradeHtml(data.html);
-          break;
-        }
-        case AccountLayoutMessageActions.LoginOut: {
-          onLogout();
-          break;
-        }
-        default:
-          break;
+      if (!data.value) {
+        onLogout();
+        return;
       }
-    };
-    window.addEventListener('message', onMessage);
+      setUser(data.value);
+    });
     return () => {
-      window.removeEventListener('message', onMessage);
+      remover();
+    };
+  }, []);
+
+  useEffect(() => {
+    const removerLoginOutListener = pageEvent.addListener(PageEventTypes.LogOut, onLogout);
+    const removerForceUpdateListener = pageEvent.addListener(PageEventTypes.ForceUpgradeVersion, res => {
+      setForceUpgradeHtml(res.html);
+    });
+    return () => {
+      removerLoginOutListener();
+      removerForceUpdateListener();
     };
   }, []);
 
@@ -113,7 +80,7 @@ function AccountLayout(props: IAccountLayoutProps) {
       {isLogined && !forceUpgradeHtml ? (
         props.children
       ) : (
-        <Login onLoginSuccess={setUser} forceUpgradeHtml={forceUpgradeHtml} />
+        <Login forceUpgradeHtml={forceUpgradeHtml} />
       )}
     </AccountContext.Provider>
   );

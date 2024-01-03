@@ -1,14 +1,12 @@
-import { BackgroundEvents } from '@/isomorphic/background';
 import { MonitorAction } from '@/isomorphic/constant/monitor';
-import { ICallBridgeImpl } from '../index';
+import { httpProxy } from './base';
 
-export function createMonitorProxy(impl: ICallBridgeImpl) {
+export function createMonitorProxy() {
   return {
     // 这个埋点请求只用户注入插件内的，iframe 类走默认埋点
-    biz(action: MonitorAction): Promise<{ result: string }> {
-      return new Promise((resolve, rejected) => {
-        impl(
-          BackgroundEvents.OperateRequest,
+    async biz(action: MonitorAction) {
+      return new Promise(resolve => {
+        httpProxy.sendMethodCallToBackground(
           {
             url: '/api/chrome_extension/logs/action',
             config: {
@@ -20,11 +18,8 @@ export function createMonitorProxy(impl: ICallBridgeImpl) {
             },
           },
           res => {
-            if (res.status === 200) {
-              resolve(res?.data?.data);
-              return;
-            }
-            rejected(res);
+            resolve(res);
+            return;
           },
         );
       });

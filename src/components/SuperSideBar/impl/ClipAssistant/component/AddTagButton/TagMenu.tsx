@@ -3,8 +3,8 @@ import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import classnames from 'classnames';
 import { __i18n } from '@/isomorphic/i18n';
-import { ITag } from '@/core/bridge/background/request/tag';
-import { backgroundBridge } from '@/core/bridge/background';
+import { ITag } from '@/core/webProxy/tag';
+import { webProxy } from '@/core/webProxy';
 import TagInput from './TagInput';
 import styles from './TagMenu.module.less';
 
@@ -45,7 +45,7 @@ function TagMenu(props: ITagMenuProps) {
       return;
     }
     try {
-      const result = await backgroundBridge.request.tag.create({
+      const result = await webProxy.tag.create({
         name,
       });
       if (!result) {
@@ -129,9 +129,7 @@ function TagMenu(props: ITagMenuProps) {
                 }}
               >
                 <span className={styles.tagName}>{item.name}</span>
-                {selected && (
-                  <CheckOutlined width={16} className={styles.checkedIcon} />
-                )}
+                {selected && <CheckOutlined width={16} className={styles.checkedIcon} />}
               </div>
             );
           })}
@@ -146,9 +144,7 @@ function TagMenu(props: ITagMenuProps) {
           }}
         >
           <PlusOutlined className={styles.icon} />
-          <span className={styles.text}>
-            {__i18n('创建标签 “{name}”', { name: inputText })}
-          </span>
+          <span className={styles.text}>{__i18n('创建标签 “{name}”', { name: inputText })}</span>
         </div>
       )}
     </div>

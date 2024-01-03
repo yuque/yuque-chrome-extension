@@ -3,41 +3,31 @@ import { __i18n } from '@/isomorphic/i18n';
 import LinkHelper from '@/isomorphic/link-helper';
 import { backgroundBridge } from '@/core/bridge/background';
 import { useWordMarkContext } from '@/components/WordMarkLayout/useWordMarkContext';
+import { wordMarkConfigManager } from '@/core/configManager/wordMark';
 import styles from './DisableMenu.module.less';
 
 function DisableMenu() {
-  const { disableUrl } = useWordMarkContext();
+  const { disableUrl, destroyWordMark } = useWordMarkContext();
   const disableForever = () => {
-    backgroundBridge.configManager.update('wordMark', 'enable', false, {
-      notice: true,
-    });
-    window._yuque_ext_app.removeWordMark();
+    wordMarkConfigManager.update('enable', false);
+    destroyWordMark?.();
   };
 
   const disableForPage = () => {
-    const iconLink =
-      document.querySelector("link[rel*='icon']") ||
-      document.querySelector("link[rel*='Icon']");
+    const iconLink = document.querySelector("link[rel*='icon']") || document.querySelector("link[rel*='Icon']");
     const iconUrl = (iconLink as HTMLLinkElement)?.href;
-    backgroundBridge.configManager.update(
-      'wordMark',
-      'disableUrl',
-      [
-        ...disableUrl,
-        {
-          origin: `${window.location.origin}${window.location.pathname}`,
-          icon: iconUrl,
-        },
-      ],
+    wordMarkConfigManager.update('disableUrl', [
+      ...disableUrl,
       {
-        notice: true,
+        origin: `${window.location.origin}${window.location.pathname}`,
+        icon: iconUrl,
       },
-    );
-    window._yuque_ext_app.removeWordMark();
+    ]);
+    destroyWordMark?.();
   };
 
   const disableOnce = () => {
-    window._yuque_ext_app.removeWordMark();
+    destroyWordMark?.();
   };
 
   const openSetting = () => {

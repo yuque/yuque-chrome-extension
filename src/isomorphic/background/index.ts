@@ -5,6 +5,4 @@ export enum BackgroundEvents {
   OperateClip = 'background/operate-clip',
   OperateTab = 'background/operate-tab',
   OperateSidePanel = 'background/operate-sidePanel',
-  OperateRequest = 'background/operate-request',
-  OperateManagerConfig = 'background/operate-config-manager',
 }
