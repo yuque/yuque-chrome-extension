@@ -60,7 +60,7 @@ function App() {
             STORAGE_KEYS.CURRENT_ACCOUNT,
           );
           const user = await webProxy.mine.getUserInfo();
-          if (user.id !== info.id) {
+          if (user?.id !== info?.id) {
             await storage.remove(STORAGE_KEYS.CURRENT_ACCOUNT);
           }
           Tracert.start({

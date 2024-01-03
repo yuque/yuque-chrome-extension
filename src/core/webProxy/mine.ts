@@ -76,7 +76,7 @@ export function createMineProxy() {
             },
           },
           res => {
-            resolve(res.data.data);
+            resolve(res?.data?.data);
           },
         );
       });
