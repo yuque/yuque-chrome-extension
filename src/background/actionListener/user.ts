@@ -64,16 +64,7 @@ export async function createUserActionListener(
   switch (type) {
     case OperateUserEnum.login: {
       try {
-        await httpClient.handleRequest('/api/accounts/logout', {
-          method: 'DELETE',
-        });
-        const windowId = await createLoginWindow();
-        await waitForWindowLogined(windowId);
-        await removeWindow(windowId);
-        const { data, status } = await httpClient.handleRequest('/api/mine', {
-          method: 'GET',
-        });
-        if (status === 200) {
+        const setUser = async (data: any) => {
           const accountInfo = (data as any).data as IUser;
           const value = pick(accountInfo, ['id', 'login', 'name', 'avatar_url']);
           const newValue = {
@@ -82,6 +73,24 @@ export async function createUserActionListener(
           };
           await storage.update(STORAGE_KEYS.CURRENT_ACCOUNT, newValue);
           callback(newValue);
+        };
+        const { data, status } = await httpClient.handleRequest('/api/mine', {
+          method: 'GET',
+        });
+        if (status === 401) {
+          await httpClient.handleRequest('/api/accounts/logout', {
+            method: 'DELETE',
+          });
+          const windowId = await createLoginWindow();
+          await waitForWindowLogined(windowId);
+          await removeWindow(windowId);
+          const { data } = await httpClient.handleRequest('/api/mine', {
+            method: 'GET',
+          });
+          await setUser(data);
+        }
+        if (status === 200) {
+          await setUser(data);
         }
         callback(null);
       } catch (error) {
