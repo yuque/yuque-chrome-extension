@@ -13,13 +13,15 @@ import styles from './Login.module.less';
 
 interface ILoginProps {
   forceUpgradeHtml?: string;
+  setUser: (user: any) => void;
 }
 
 function Login(props: ILoginProps) {
-  const { forceUpgradeHtml } = props;
+  const { forceUpgradeHtml, setUser } = props;
 
   const onLogin = async () => {
     const user = await backgroundBridge.user.login();
+    setUser(user);
     if (!user) {
       message.error(__i18n('登录失败'));
       return;

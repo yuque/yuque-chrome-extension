@@ -175,6 +175,22 @@ export function InjectEditorPlugin({ EditorPlugin, KernelPlugin, PositionUtil, O
             },
           },
         );
+        htmlService.registerHTMLNodeReader(
+          ['code'],
+          {
+            readNode(context: any, node: any) {
+              context.setNode({
+                id: node.attrs.id || '',
+                type: 'element',
+                name: 'code',
+                attrs: {},
+              });
+            },
+            leaveNode() {
+              // ignore empty
+            },
+          },
+        );
       }
     }
   }

@@ -14,9 +14,9 @@ const {
 
 const { distFolder, sleep } = require('./common');
 
-const LAKE_EDITOR_VERSION = '1.11.0';
+const LAKE_EDITOR_VERSION = '1.17.0';
 
-const lakeIconURL = 'https://mdn.alipayobjects.com/design_kitchencore/afts/file/HWy0Q7LuuV0AAAAAAAAAAAAADhulAQBr';
+const lakeIconURL = 'https://mdn.alipayobjects.com/design_kitchencore/afts/file/GxqwR5_S3xIAAAAAAAAAAAAADhulAQBr';
 
 // 必须包含 name 名称
 const remoteAssetsUrls = {

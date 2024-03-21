@@ -1,12 +1,11 @@
 {
   "name": "yuque-chrome-extension",
-  "version": "0.5.5",
+  "version": "0.5.9",
   "description": "语雀浏览器插件",
   "private": true,
   "releaseNotes": [
-    "[特性] 支持全文剪藏",
-    "[优化] 优化插件性能",
-    "[修复] 修复上传图片失败的异常处理"
+    "[特性] 支持行内代码块",
+    "[优化] 优化图片剪藏逻辑"
   ],
   "repository": {
     "type": "git",

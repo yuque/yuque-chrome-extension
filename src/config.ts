@@ -39,3 +39,6 @@ export const TRACERT_CONFIG = {
   spmAPos: 'a385',
   spmBPos: 'b65721',
 };
+
+// sidePanel 的 zIndex 层级
+export const SidePanelZIndex = 2147483646;

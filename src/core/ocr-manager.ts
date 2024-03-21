@@ -31,6 +31,14 @@ class OCRManager {
   private ocrIframeId = 'yq-ocr-iframe-id';
   private sendMessageRef: ((requestData: { action: string; data?: any }) => Promise<any>) | undefined;
   private initSidePanelPromise: Promise<boolean> | undefined;
+  private ocrQueue: Array<{
+    task: () => Promise<Array<IOcrResultItem>>;
+    resolve: (res: Array<IOcrResultItem>) => void;
+  }> = [];
+  // 当前运行数
+  private runningTasks = 0;
+  // 最大的任务运行数
+  private concurrentTasks = 5;
 
   async init() {
     if (this.initSidePanelPromise) {
@@ -78,7 +86,7 @@ class OCRManager {
     return this.initSidePanelPromise;
   }
 
-  async startOCR(type: 'file' | 'blob' | 'url', content: File | Blob | string) {
+  private async executeOcr(type: 'file' | 'blob' | 'url', content: File | Blob | string) {
     // 调用 ocr 时，开始 ocr 等预热
     await this.init();
     const enableOcrStatus = await ocrManager.isWebOcrReady();
@@ -107,6 +115,26 @@ class OCRManager {
       //
     }
     return [];
+  }
+
+  async startOCR(type: 'file' | 'blob' | 'url', content: File | Blob | string) {
+    return await new Promise(resolve => {
+      this.ocrQueue.push({ resolve, task: () => this.executeOcr(type, content) });
+      this.dequeue();
+    });
+  }
+
+  private dequeue() {
+    if (this.runningTasks >= this.concurrentTasks || !this.ocrQueue.length) {
+      return;
+    }
+    const { task, resolve } = this.ocrQueue.shift()!;
+    this.runningTasks++;
+    task().then((res: any) => {
+      this.runningTasks--;
+      resolve(res);
+      this.dequeue();
+    });
   }
 
   async isWebOcrReady() {

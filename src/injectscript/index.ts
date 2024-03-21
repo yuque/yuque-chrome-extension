@@ -1,5 +1,5 @@
 import { InjectScriptRequestKey, MessageEventRequestData } from '../isomorphic/injectScript';
-import { YuqueService } from './service';
+import { YuqueService, CommonService } from './service';
 import { BaseService } from './service/base';
 
 class InjectScriptApp {
@@ -11,6 +11,7 @@ class InjectScriptApp {
 
   init() {
     this.registerService(new YuqueService());
+    this.registerService(new CommonService());
     window.addEventListener('message', async (e: MessageEvent<MessageEventRequestData>) => {
       if (e.data.key !== InjectScriptRequestKey) {
         return;

@@ -23,6 +23,14 @@ export class CodeParsePlugin extends BasePlugin {
     preElements.forEach(pre => {
       // 查询所有的代码块
       const codeElementArray = pre.querySelectorAll('code');
+      /**
+       *  有些页面的代码块不是
+       *  <pre>xxxx</pre>
+       *  对于这类不处理
+       */
+      if (!codeElementArray.length) {
+        return;
+      }
       Array.from(pre.childNodes).forEach(item => {
         pre.removeChild(item);
       });

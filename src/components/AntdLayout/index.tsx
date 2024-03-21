@@ -1,6 +1,7 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
 import { ConfigProviderProps } from 'antd/es/config-provider';
+import { SidePanelZIndex } from '@/config';
 
 interface IAntdLayoutProps {
   children: React.ReactNode;
@@ -24,6 +25,9 @@ function AntdLayout(props: IAntdLayoutProps) {
           Tooltip: {
             colorBgSpotlight: 'rgba(0, 0, 0, 0.75)',
             fontSize: 12,
+          },
+          Message: {
+            zIndexPopup: SidePanelZIndex,
           },
         },
       }}

@@ -11,16 +11,15 @@ export class HexoCodeParsePlugin extends BasePlugin {
       }
       const codeElement = code.querySelector('pre');
       if (codeElement) {
-        node.parentNode?.appendChild(codeElement);
+        node.parentNode?.replaceChild(codeElement, node);
       }
-      node.parentNode?.removeChild(node);
     };
-    figures.forEach(figure => {
+    Array.from(figures).forEach(figure => {
       processingCodeBlock(figure);
     });
     if (figures.length === 0) {
       const tables = cloneDom.querySelectorAll('table');
-      tables.forEach(table => {
+      Array.from(tables).forEach(table => {
         processingCodeBlock(table);
       });
     }

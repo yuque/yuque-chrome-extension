@@ -11,6 +11,7 @@ import { getMsgId, transformUrlToFile } from '@/isomorphic/util';
 import { PageEventTypes } from '@/isomorphic/event/pageEvent';
 import ExtensionMessage from '@/isomorphic/extensionMessage/extensionMessage';
 import { ExtensionMessageListener } from '@/isomorphic/extensionMessage/interface';
+import Env from '@/isomorphic/env';
 import chromeExtension from './chromeExtension';
 import { getCurrentAccount } from './util';
 
@@ -59,6 +60,10 @@ export default class HttpClient {
   private decoder = new TextDecoder();
 
   constructor() {
+    // 只在后台监听，其余系统页都不监听
+    if (!Env.isBackground) {
+      return;
+    }
     // 监听关闭的请求
     ExtensionMessage.addListener(ExtensionMessageListener.callRequestService, async (data, requestId, { tab }) => {
       const { type, methodParams = {}, callbackFnId } = data;
