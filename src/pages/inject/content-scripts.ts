@@ -133,12 +133,28 @@ export class App {
   }
 
   async parsePage() {
+    const enableDocumentCopy = await this.senMessageToPage({
+      serviceName: 'CommonService',
+      serviceMethod: 'enableDocumentCopy',
+    });
+    if (!enableDocumentCopy) {
+      this.showMessage({ type: 'error', text: __i18n('当前页面已开启防复制，不支持剪藏') });
+      return;
+    }
     const result = await parseDom.parsePage();
     return result;
   }
 
   async clipSelectArea(params?: { isRunningHostPage: boolean; formShortcut: boolean }) {
     if (this.isOperateSelecting) {
+      return;
+    }
+    const enableDocumentCopy = await this.senMessageToPage({
+      serviceName: 'CommonService',
+      serviceMethod: 'enableDocumentCopy',
+    });
+    if (!enableDocumentCopy) {
+      this.showMessage({ type: 'error', text: __i18n('当前页面已开启防复制，不支持剪藏') });
       return;
     }
     const { isRunningHostPage = true, formShortcut = false } = params || {};

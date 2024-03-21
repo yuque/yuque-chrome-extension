@@ -1,11 +1,14 @@
 import { getMsgId } from '@/isomorphic/util';
 import type { IRequestOptions, IRequestConfig } from '@/background/core/httpClient';
 import ExtensionMessage from '@/isomorphic/extensionMessage/extensionMessage';
+import Env from '@/isomorphic/env';
+import HttpClient from '@/background/core/httpClient';
 import { ExtensionMessageListener } from '@/isomorphic/extensionMessage/interface';
 
 // http 请求单独走一个通道
 class HttpProxy {
   private callServiceMethodCallbackFn: { [id: string]: (...rest: any[]) => void } = {};
+  private httpClient = Env.isExtensionPage ? new HttpClient() : null;
   constructor() {
     this.init();
   }
@@ -22,6 +25,19 @@ class HttpProxy {
     type?: 'abort' | 'request',
     id?: string,
   ) {
+    if (Env.isExtensionPage) {
+      if (methodParams?.options?.isFileUpload) {
+        this.httpClient?.uploadFile(methodParams.url, methodParams.config).then(res => callback?.(res));
+        return;
+      }
+      this.httpClient
+        ?.handleRequest(methodParams?.url, methodParams?.config, {
+          ...methodParams?.options,
+          streamCallback: callback,
+        })
+        .then(res => callback?.(res));
+      return;
+    }
     const callbackFnId = id ? id : this.generateCallbackFnId('', '');
     if (type !== 'abort') {
       this.callServiceMethodCallbackFn[callbackFnId] = (response: any) => {

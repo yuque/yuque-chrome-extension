@@ -5,6 +5,7 @@ import { useForceUpdate } from '@/hooks/useForceUpdate';
 import { useEnterShortcut } from '@/hooks/useEnterShortCut';
 import { parseDom } from '@/core/parseDom';
 import { __i18n } from '@/isomorphic/i18n';
+import Env from '@/isomorphic/env';
 import styles from './app.module.less';
 
 type Rect = Pick<DOMRect, 'width' | 'height' | 'left' | 'top'>;
@@ -26,6 +27,7 @@ function App(props: IAppProps) {
   const onSave = useCallback(async () => {
     setSaving(true);
     const selections = targetListRef.current.filter(item => item) || [];
+    Env.isRunningHostPage && window._yuque_ext_app.toggleSidePanel(true);
     const selectAreaElements = await parseDom.parseDom(selections);
     props.onSelectAreaSuccess(selectAreaElements.join(''));
   }, []);

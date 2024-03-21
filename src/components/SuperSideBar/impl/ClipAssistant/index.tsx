@@ -29,11 +29,16 @@ import AddTagButton from './component/AddTagButton';
 import TagList from './component/TagList';
 import styles from './index.module.less';
 
+const LoadingMessage = {
+  ocr: __i18n('正在识别中'),
+  parse: __i18n('正在解析中'),
+};
+
 function ClipContent() {
   const editorRef = useRef<IEditorRef>(null);
   const shortcutMap = useClipShortCut();
   const [loading, setLoading] = useState<{
-    type?: 'ocr';
+    type?: keyof typeof LoadingMessage;
     loading: boolean;
   }>({
     loading: false,
@@ -127,12 +132,13 @@ function ClipContent() {
     setLoading({ loading: false });
   };
 
-  const onUploadImage = useCallback(async (params: { data: string }) => {
+  const onUploadImage = useCallback(async (params: { data: any }) => {
     const file = await transformUrlToFile(params.data);
-    const res = await Promise.all([webProxy.upload.attach(params.data), ocrManager.startOCR('file', file)]);
+    const res = await webProxy.upload.attach(params.data);
+    const ocrTask = ocrManager.startOCR('file', file);
     return {
-      ...(res[0] || {}),
-      ocrLocations: res[1],
+      ...(res || {}),
+      ocrTask,
     };
   }, []);
 
@@ -148,12 +154,18 @@ function ClipContent() {
   };
 
   const onClipPage = async () => {
+    setLoading({ loading: true, type: 'parse' });
     const html = await backgroundBridge.clip.clipPage();
+    if (!html) {
+      setLoading({ loading: false });
+      return;
+    }
     const isAddLink = await addLinkWhenEmpty();
     if (!isAddLink) {
       editorRef.current?.insertBreakLine();
     }
     editorRef.current?.appendContent(html);
+    setLoading({ loading: false });
   };
 
   const addLinkWhenEmpty = async () => {
@@ -167,12 +179,18 @@ function ClipContent() {
   };
 
   const onSelectArea = async () => {
+    setLoading({ loading: true, type: 'parse' });
     const html = await backgroundBridge.clip.selectArea();
+    if (!html) {
+      setLoading({ loading: false });
+      return;
+    }
     const isAddLink = await addLinkWhenEmpty();
     if (!isAddLink) {
       editorRef.current?.insertBreakLine();
     }
     editorRef.current?.appendContent(html);
+    setLoading({ loading: false });
   };
 
   const onScreenOcr = async () => {
@@ -199,6 +217,10 @@ function ClipContent() {
           };
         });
         const text = textArray?.map(item => item.text)?.join('') || '';
+        if (!text) {
+          setLoading({ loading: false });
+          return;
+        }
         const isAddLink = await addLinkWhenEmpty();
         if (!isAddLink) {
           editorRef.current?.insertBreakLine();
@@ -224,7 +246,7 @@ function ClipContent() {
     if (!loading.loading) {
       return null;
     }
-    const text = loading.type === 'ocr' ? '正在识别中' : '';
+    const text = LoadingMessage[loading.type as keyof typeof LoadingMessage] || '';
     return (
       <div className={styles.loadingWrapper}>
         <Spin />

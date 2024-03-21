@@ -136,38 +136,22 @@ export default forwardRef<IEditorRef, EditorProps>((props, ref) => {
               return !url?.startsWith('https://cdn.nlark.com/yuque');
             },
             createUploadPromise: props.uploadImage,
+            editUI: class extends win.Doc.EditCardUI.extend(win.Doc.Plugins.Image.editImageUIAddon) {
+              init(...args: any[]) {
+                super.init(...args);
+                this.on('uploadSuccess', (data: { ocrTask: Promise<any>}) => {
+                  data.ocrTask.then(res => {
+                    this.cardData.setImageInfo({ ...data, ocrLocations: res });
+                  });
+                });
+              }
+            },
             innerButtonWidgets: [
               {
                 name: 'ocr',
                 title: 'OCR',
                 icon: <OcrIconSvg fill="#fff" />,
                 enable: (cardUI: any) => {
-                  cardUI.on('uploadSuccess', () => {
-                    setTimeout(() => {
-                      if (!cardUI.cardData._cardValue?.ocr?.length) {
-                        return;
-                      }
-                      cardUI.uiViewProxy.rerender({
-                        innerButtonWidgets:
-                          cardUI.pluginOption.innerButtonWidgets.map(
-                            (widget: any) => ({
-                              ...widget,
-                              execute: () => {
-                                widget.execute(cardUI);
-                              },
-                              enable:
-                                typeof widget.enable === 'function'
-                                  ? () => {
-                                    return widget.enable(cardUI);
-                                  }
-                                  : () => {
-                                    return !!widget.enable;
-                                  },
-                            }),
-                          ),
-                      });
-                    }, 500);
-                  });
                   return cardUI.cardData.getOcrLocations()?.length > 0;
                 },
                 execute: (cardUI: any) => {

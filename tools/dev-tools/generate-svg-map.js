@@ -19,15 +19,25 @@ function nameWithoutExt(name) {
     .join('.');
 }
 
+function convertToCamelCase(str) {
+  const words = str.split('-').map(word => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
+  return words.join('');
+}
+
 function updateAssetsMap({
   targetFilePath,
 }) {
   const svgMap = {};
+  const importArray = [];
 
   walkDirSync(svgAssetPath, (filePath, name) => {
     const key = nameWithoutExt(name);
     if (!key) return;
-    svgMap[key] = `import('@/assets/svg/${name}')`;
+    const componentName = convertToCamelCase(key);
+    svgMap[key] = componentName;
+    importArray.push(`import ${componentName} from '@/assets/svg/${name}';`);
   });
 
   const generateArray = map => {
@@ -38,6 +48,10 @@ function updateAssetsMap({
     return `{\n${result}}`;
   };
 
+  const generateImportant = array => {
+    return array.join('\n');
+  };
+
 
   // 写入文件
   fs.writeFileSync(
@@ -46,9 +60,9 @@ function updateAssetsMap({
 /* eslint-disable @typescript-eslint/indent */
 // 本文件为自动生成，不要手动修改
 // npm run update:assets
+${generateImportant(importArray)}
 
 export const SvgMaps = ${generateArray(svgMap)};
-
 `
   );
 
