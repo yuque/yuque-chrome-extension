@@ -41,6 +41,14 @@ export function createClipBridge(impl: ICallBridgeImpl) {
           );
         });
       },
+
+      async getImage(url: string): Promise<string> {
+        return new Promise(resolve => {
+          impl(BackgroundEvents.OperateClip, { type: OperateClipEnum.getImage, url }, (res: string) => {
+            resolve(res);
+          });
+        });
+      },
     },
   };
 }
