@@ -1,3 +1,4 @@
+import { backgroundBridge } from '@/core/bridge/background';
 import { BasePlugin } from './base';
 
 export class ImageParsePlugin extends BasePlugin {
@@ -26,6 +27,15 @@ export class ImageParsePlugin extends BasePlugin {
             resolve(true);
           };
         } catch (e: any) {
+          // 补充一次图片请求，避免被拦截
+          try {
+            const base64 = await backgroundBridge.clip.getImage(image.src);
+            if (base64) {
+              image.src = base64;
+            }
+          } catch (error) {
+            //
+          }
           resolve(true);
         }
       });
