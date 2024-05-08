@@ -5,6 +5,7 @@ export interface ITag {
   name: string;
   created_at: Date;
   updated_at: Date;
+  pinned_at?: Date;
 }
 
 export function createTagProxy() {

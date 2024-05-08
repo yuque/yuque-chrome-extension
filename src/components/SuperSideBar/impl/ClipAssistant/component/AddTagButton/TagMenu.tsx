@@ -7,6 +7,7 @@ import { ITag } from '@/core/webProxy/tag';
 import { webProxy } from '@/core/webProxy';
 import TagInput from './TagInput';
 import styles from './TagMenu.module.less';
+import LarkIcon from '@/components/LarkIcon';
 
 export interface ITagMenuProps {
   tags: ITag[];
@@ -128,6 +129,7 @@ function TagMenu(props: ITagMenuProps) {
                   }
                 }}
               >
+                {item.pinned_at ? <LarkIcon name='tag-pinned' className={styles.pinnedIcon} size={12} /> : null}
                 <span className={styles.tagName}>{item.name}</span>
                 {selected && <CheckOutlined width={16} className={styles.checkedIcon} />}
               </div>

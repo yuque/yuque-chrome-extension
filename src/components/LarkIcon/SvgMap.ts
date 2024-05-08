@@ -22,6 +22,7 @@ import More from '@/assets/svg/more.svg';
 import NoteLogo from '@/assets/svg/note-logo.svg';
 import OcrIcon from '@/assets/svg/ocr-icon.svg';
 import Setting from '@/assets/svg/setting.svg';
+import TagPinned from '@/assets/svg/tag-pinned.svg';
 import TimeOutlined from '@/assets/svg/time-outlined.svg';
 import Translate from '@/assets/svg/translate.svg';
 import YuqueLogo from '@/assets/svg/yuque-logo.svg';
@@ -48,6 +49,7 @@ export const SvgMaps = {
 	'note-logo': NoteLogo,
 	'ocr-icon': OcrIcon,
 	'setting': Setting,
+  'tag-pinned': TagPinned,
 	'time-outlined': TimeOutlined,
 	'translate': Translate,
 	'yuque-logo': YuqueLogo,

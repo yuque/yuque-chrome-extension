@@ -28,6 +28,7 @@ import { superSidebar } from '@/components/SuperSideBar/index';
 import AddTagButton from './component/AddTagButton';
 import TagList from './component/TagList';
 import styles from './index.module.less';
+import moment from 'moment';
 
 const LoadingMessage = {
   ocr: __i18n('正在识别中'),
@@ -236,6 +237,15 @@ function ClipContent() {
   const handleRequestTag = async () => {
     try {
       const tags = await webProxy.tag.index();
+      tags.sort((a, b) => {
+        if (a.pinned_at && b.pinned_at) {
+          return moment(a.pinned_at).isBefore(moment(b.pinned_at)) ? 1 : -1;
+        }
+        if (a.pinned_at || b.pinned_at) {
+          return a.pinned_at ? -1 : 1;
+        }
+        return 0;
+      });
       setUserTags(tags);
     } catch (error) {
       //
